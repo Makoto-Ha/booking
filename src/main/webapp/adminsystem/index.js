@@ -173,25 +173,25 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
+		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
+		const params = {};
+		Object.assign(params, paramters, extraValues, {'switch-page': currentPage});
+		
 		params['switch-page']--;
-
 		fetch(`/booking/${lastHref}/select`, {
 			method: "POST",
 			body: new URLSearchParams(params)
-		})
-			.then(res => res.text())
-			.then(html => {
-				document.documentElement.innerHTML = html
-				bindAdminSystemEvent();
-				const scripts = document.querySelector('.main-list').getElementsByTagName('script');
-				for (let script of scripts) {
-					const newScript = document.createElement('script');
-					newScript.textContent = script.textContent; // 将脚本内容复制到新创建的脚本标签中
-					document.head.appendChild(newScript); // 将脚本添加到页面中执行
-					document.head.removeChild(newScript); // 执行后移除脚本标签
-				}
-			});
+		}).then(res => res.text()).then(html => {
+			document.documentElement.innerHTML = html
+			bindAdminSystemEvent();
+			const scripts = document.querySelector('.main-list').getElementsByTagName('script');
+			for (let script of scripts) {
+				const newScript = document.createElement('script');
+				newScript.textContent = script.textContent; // 将脚本内容复制到新创建的脚本标签中
+				document.head.appendChild(newScript); // 将脚本添加到页面中执行
+				document.head.removeChild(newScript); // 执行后移除脚本标签
+			}
+		});
 	});
 
 	// 下一頁
@@ -224,7 +224,11 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
+		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
+		
+		const params = {};
+		Object.assign(params, paramters, extraValues, {'switch-page': currentPage});
+		
 		params['switch-page']++;
 
 		fetch(`/booking/${lastHref}/select`, {
@@ -279,8 +283,11 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		const params = { ...paramters, ...extraValues, 'switch-page': page };
-
+		// const params = { ...paramters, ...extraValues, 'switch-page': page };
+		const params = {};
+		Object.assign(params, paramters, extraValues, {'switch-page': page});
+		
+		
 		fetch(`/booking/${lastHref}/select`, {
 			method: "POST",
 			body: new URLSearchParams(params)
@@ -348,8 +355,10 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "attr-order-by": selectedAttr };
-
+		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "attr-order-by": selectedAttr };
+		const params = {};
+		Object.assign(params, paramters, extraValues, {'switch-page': currentPage, "attr-order-by": selectedAttr});
+		
 		fetch(`/booking/${lastHref}/select`, {
 			method: "POST",
 			body: new URLSearchParams(params)
@@ -395,8 +404,10 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "selected-sort": selectedSort };
-
+		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "selected-sort": selectedSort };
+		const params = {};
+		Object.assign(params, paramters, extraValues, {'switch-page': currentPage, 'selected-sort': selectedSort});
+		
 		fetch(`/booking/${lastHref}/select`, {
 			method: "POST",
 			body: new URLSearchParams(params)

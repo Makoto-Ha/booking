@@ -15,6 +15,7 @@
 			<%@include file="main-list.jsp" %>
 		</div>
 	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
 	<script src="${pageContext.request.contextPath}/adminsystem/index.js"></script>
 </body>
 </html>
