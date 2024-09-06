@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.booking.bean.attraction.Attraction;
-import com.booking.dto.activity.ActivityDTO;
 import com.booking.dto.attraction.AttractionDTO;
 import com.booking.service.attraction.AttractionService;
 import com.booking.utils.Listable;
