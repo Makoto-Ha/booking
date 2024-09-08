@@ -1,25 +1,65 @@
 package com.booking.bean.booking;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "roomtype")
 public class Roomtype {
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "roomtype_id")
 	private Integer roomtypeId;
+
+	@Column(name = "roomtype_name")
 	private String roomtypeName;
+
+	@Column(name = "roomtype_capacity")
 	private Integer roomtypeCapacity;
+
+	@Column(name = "roomtype_price")
 	private Integer roomtypePrice;
+
+	@Column(name = "roomtype_quantity")
 	private Integer roomtypeQuantity;
+
+	@Column(name = "roomtype_description")
 	private String roomtypeDescription;
+
+	@Column(name = "roomtype_address")
 	private String roomtypeAddress;
+
+	@Column(name = "roomtype_city")
 	private String roomtypeCity;
+
+	@Column(name = "roomtype_district")
 	private String roomtypeDistrict;
+
+	@Column(name = "updated_time")
 	private LocalDateTime updatedTime;
+
+	@Column(name = "created_time")
 	private LocalDateTime createdTime;
+
+	 @OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
+	 private List<Room> rooms = new ArrayList<>();
 
 	public Roomtype() {}
 
-	public Roomtype(Integer roomtypeId, String roomtypeName, Integer roomtypeCapacity, Integer roomtypePrice, Integer roomtypeQuantity,
-			String roomtypeDescription, String roomtypeAddress, String roomtypeCity, String roomtypeDistrict) {
+	public Roomtype(Integer roomtypeId, String roomtypeName, Integer roomtypeCapacity, Integer roomtypePrice,
+			Integer roomtypeQuantity, String roomtypeDescription, String roomtypeAddress, String roomtypeCity,
+			String roomtypeDistrict) {
 		this.roomtypeId = roomtypeId;
 		this.roomtypeName = roomtypeName;
 		this.roomtypeCapacity = roomtypeCapacity;
@@ -30,9 +70,10 @@ public class Roomtype {
 		this.roomtypeCity = roomtypeCity;
 		this.roomtypeDistrict = roomtypeDistrict;
 	}
-	
+
 	public Roomtype(String roomtypeName, Integer roomtypeCapacity, Integer roomtypePrice, Integer roomtypeQuantity,
-			String roomtypeDescription, String roomtypeAddress, String roomtypeCity, String roomtypeDistrict, LocalDateTime updatedTime, LocalDateTime createdTime) {
+			String roomtypeDescription, String roomtypeAddress, String roomtypeCity, String roomtypeDistrict,
+			LocalDateTime updatedTime, LocalDateTime createdTime) {
 		this.roomtypeName = roomtypeName;
 		this.roomtypeCapacity = roomtypeCapacity;
 		this.roomtypePrice = roomtypePrice;
@@ -46,7 +87,8 @@ public class Roomtype {
 	}
 
 	public Roomtype(Integer roomtypeId, String roomtypeName, Integer roomtypeCapacity, Integer roomtypePrice,
-			Integer roomtypeQuantity, String roomtypeDescription, String roomtypeAddress, String roomtypeCity, String roomtypeDistrict, LocalDateTime createdTime, LocalDateTime updatedTime) {
+			Integer roomtypeQuantity, String roomtypeDescription, String roomtypeAddress, String roomtypeCity,
+			String roomtypeDistrict, LocalDateTime createdTime, LocalDateTime updatedTime) {
 		this.roomtypeId = roomtypeId;
 		this.roomtypeName = roomtypeName;
 		this.roomtypeCapacity = roomtypeCapacity;
@@ -119,7 +161,7 @@ public class Roomtype {
 	public void setRoomtypeDescription(String roomtypeDescription) {
 		this.roomtypeDescription = roomtypeDescription;
 	}
-	
+
 	public String getRoomtypeAddress() {
 		return roomtypeAddress;
 	}
@@ -151,7 +193,7 @@ public class Roomtype {
 	public LocalDateTime getCreatedTime() {
 		return createdTime;
 	}
-	
+
 	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
@@ -160,11 +202,20 @@ public class Roomtype {
 		this.updatedTime = updatedTime;
 	}
 
+//	public List<Room> getRooms() {
+//		return rooms;
+//	}
+//
+//	public void setRooms(List<Room> rooms) {
+//		this.rooms = rooms;
+//	}
+
 	@Override
 	public String toString() {
 		return "Roomtype [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
 				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
-				+ ", roomtypeDescription=" + roomtypeDescription + ", createdTime=" + createdTime + ", updatedTime="
-				+ updatedTime + "]";
+				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
+				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
+				+ updatedTime + ", createdTime=" + createdTime + ", rooms=" + "rooms" + "]";
 	}
 }

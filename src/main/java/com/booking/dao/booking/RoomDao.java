@@ -41,10 +41,9 @@ public class RoomDao {
 	 * @return
 	 */
 	public DaoResult<Integer> addRoom(Room room) {
-		String sql = "INSERT INTO room (roomtype_id, room_number, room_status, room_description, updated_time, created_time) VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO room (room_number, room_status, room_description, updated_time, created_time) VALUES (?, ?, ?, ?, ?, ?)";
 		return DaoUtils.commonsUpdate(
 				sql, 
-				room.getRoomtypeId(), 
 				room.getRoomNumber(), 
 				room.getRoomStatus(), 
 				room.getRoomDescription(), 
@@ -80,7 +79,7 @@ public class RoomDao {
 	 */
 	public DaoResult<Integer> updateRoom(Room room) {
 		String sql = "UPDATE room SET roomtype_id = ?, room_number = ?, room_status = ?, room_description = ?, updated_time = ? WHERE room_id = ?";
-		return DaoUtils.commonsUpdate(sql, room.getRoomtypeId(), room.getRoomNumber(), room.getRoomStatus(), room.getRoomDescription(),  room.getUpdatedTime(), room.getRoomId());
+		return DaoUtils.commonsUpdate(sql, room.getRoomNumber(), room.getRoomStatus(), room.getRoomDescription(),  room.getUpdatedTime(), room.getRoomId());
 	}
 	
 	/**

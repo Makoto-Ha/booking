@@ -88,5 +88,6 @@
     	// 因為會後續會創建script標籤appendChild執行，使用let和const會重複定義失敗，所以用var宣告
 		var totalPages = "${pageNumber.totalPages}";
 		var requestParameters = '${requestParameters}';
+		console.log(requestParameters);
 	</script>
 </section>

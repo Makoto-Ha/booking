@@ -103,14 +103,13 @@ public class RoomController extends HttpServlet {
 	 * @throws IOException 
 	 */
 	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
 		Integer roomStatus = Integer.parseInt(request.getParameter("room-status"));
 		String roomNumber = request.getParameter("room-number");
 		String roomDescription = request.getParameter("room-description");
 		LocalDateTime updatedTime = LocalDateTime.now();
 		LocalDateTime createdTime = LocalDateTime.now();
 		
-		Result<Integer> roomServiceResult = roomService.addRoom(new Room(roomtypeId, roomNumber, roomStatus, roomDescription, updatedTime, createdTime));
+		Result<Integer> roomServiceResult = roomService.addRoom(new Room(roomNumber, roomStatus, roomDescription, updatedTime, createdTime));
 		if(!roomServiceResult.isSuccess()) {
 			response.getWriter().write(roomServiceResult.getMessage());
 			return;
