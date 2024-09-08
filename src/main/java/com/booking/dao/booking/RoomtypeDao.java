@@ -1,45 +1,52 @@
 package com.booking.dao.booking;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import com.booking.bean.booking.Roomtype;
-import com.booking.dto.booking.RoomtypeDTO;
-import com.booking.mapper.RoomtypeDTORowMapper;
-import com.booking.mapper.RoomtypeRowMapper;
-import com.booking.mapper.RowMapper;
-import com.booking.utils.DaoResult;
-import com.booking.utils.DaoUtils;
+import com.booking.utils.util.DaoResult;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public class RoomtypeDao {
+	private Session session;
+
+	public RoomtypeDao(Session session) {
+		this.session = session;
+	}
+
 	/**
 	 * 獲取所有房間類型
 	 * 
 	 * @return
 	 */
-	public DaoResult<Roomtype> getRoomtypeAll(Integer page) {
-		String sql = "SELECT * FROM roomtype ORDER BY roomtype_price OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";
-		return DaoUtils.commonsQuery(sql, new RoomtypeRowMapper(), (page - 1) * 10); // 當前頁數-1再承10，跳過的數據
+	public DaoResult<List<Roomtype>> getRoomtypeAll(Integer page) {
+		String hql = "FROM Roomtype rt ORDER BY rt.roomtypePrice";
+		Query<Roomtype> query = session.createQuery(hql, Roomtype.class);
+		
+		query.setFirstResult((page - 1) * 10);
+		query.setMaxResults(10);
+		List<Roomtype> roomtypes = query.getResultList();
+		return DaoResult.create(roomtypes).setSuccess(roomtypes != null);
 	}
-	
-	public DaoResult<Integer> getTotalCounts() {
-		String sql = "SELECT COUNT(*) AS total_count FROM roomtype";
-		return DaoUtils.commonsQuery(sql, new RowMapper<Integer>() {
 
-			@Override
-			public Integer getRow(ResultSet resultSet) {
-				try {
-					return resultSet.getInt("total_count");
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-		});
+	/**
+	 * 獲取房間類型數量
+	 * @return
+	 */
+	public DaoResult<Integer> getTotalCounts() {
+		String sql = "SELECT COUNT(*) FROM roomtype";
+		Query<Integer> query = session.createNativeQuery(sql, Integer.class);
+		Integer totalCounts = query.getSingleResult();
+		return DaoResult.create(totalCounts).setSuccess(totalCounts != null);
 	}
 
 	/**
@@ -48,9 +55,7 @@ public class RoomtypeDao {
 	 * @param roomtype
 	 * @return
 	 */
-	public DaoResult<RoomtypeDTO> dynamicQuery(Roomtype roomtype, Map<String, Object> extraValues) {
-		StringBuilder sql = new StringBuilder("SELECT *, COUNT(*) OVER() as total_counts FROM roomtype WHERE 1=1");
-		List<Object> list = new ArrayList<>();
+	public DaoResult<List<Roomtype>> dynamicQuery(Roomtype roomtype, Map<String, Object> extraValues) {
 		String roomtypeName = roomtype.getRoomtypeName();
 		Integer roomtypeCapacity = roomtype.getRoomtypeCapacity();
 		Integer roomtypePrice = roomtype.getRoomtypePrice();
@@ -64,72 +69,106 @@ public class RoomtypeDao {
 		Integer page = (Integer) extraValues.get("switchPage");
 		String attrOrderBy = (String) extraValues.get("attrOrderBy");
 		String selectedSort = (String) extraValues.get("selectedSort");
+		// 透過session創建CriteriaBuilder
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		// 創建CriteriaQuery查詢，分兩個Roomtype.class是因為root不能共用
+		CriteriaQuery<Roomtype> cq = cb.createQuery(Roomtype.class);
+		Root<Roomtype> root = cq.from(Roomtype.class);
+		
+		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+		Root<Roomtype> countRoot = countQuery.from(Roomtype.class);
+		
+		// where數據篩選
+		List<Predicate> predicates = new ArrayList<>();
+		List<Predicate> countPredicates = new ArrayList<>();
 		
 		if (roomtypeName != null) {
-			sql.append(" AND roomtype_name LIKE ?");
-			list.add("%" + roomtypeName + "%");
+			predicates.add(cb.like(root.get("roomtypeName"), "%" + roomtypeName + "%"));
+			countPredicates.add(cb.like(countRoot.get("roomtypeName"), "%" + roomtypeName + "%"));
 		}
 
 		if (roomtypeCapacity != null) {
-			sql.append(" AND roomtype_capacity LIKE ?");
-			list.add(roomtypeCapacity);
+			predicates.add(cb.equal(root.get("roomtypeCapacity"), roomtypeCapacity));
+			countPredicates.add(cb.equal(countRoot.get("roomtypeCapacity"), roomtypeCapacity));
 		}
 
 		if (roomtypePrice != null) {
-			sql.append(" AND roomtype_price LIKE ?");
-			list.add(roomtypePrice);
+			predicates.add(cb.equal(root.get("roomtypePrice"), roomtypePrice));
+			countPredicates.add(cb.equal(countRoot.get("roomtypePrice"), roomtypePrice));
 		}
 
 		if (roomtypeQuantity != null) {
-			sql.append(" AND roomtype_quantity >= ?");
-			list.add(roomtypeQuantity);
+			predicates.add(cb.ge(root.get("roomtypeQuantity"), roomtypeQuantity));
+			countPredicates.add(cb.ge(countRoot.get("roomtypeQuantity"), roomtypeQuantity));
 		}
 
 		if (roomtypeDescription != null) {
-			sql.append(" AND roomtype_description LIKE ?");
-			list.add("%" + roomtypeDescription + "%");
+			predicates.add(cb.like(root.get("roomtypeDescription"), "%" + roomtypeDescription + "%"));
+			countPredicates.add(cb.like(countRoot.get("roomtypeDescription"), roomtypeDescription));
 		}
 
 		if (roomtypeAddress != null) {
-			sql.append(" AND roomtype_description LIKE ?");
-			list.add("%" + roomtypeAddress + "%");
+			predicates.add(cb.like(root.get("roomtypeAddress"), "%" + roomtypeAddress + "%"));
+			countPredicates.add(cb.like(countRoot.get("roomtypeAddress"), "%" + roomtypeAddress + "%"));
 		}
 
 		if (roomtypeCity != null) {
-			sql.append(" AND roomtype_city LIKE ?");
-			list.add("%" + roomtypeCity + "%");
+			predicates.add(cb.like(root.get("roomtypeCity"), roomtypeCity));
+			countPredicates.add(cb.like(countRoot.get("roomtypeCity"), roomtypeCity));
 		}
 
 		if (roomtypeDistrict != null) {
-			sql.append(" AND roomtype_district LIKE ?");
-			list.add("%" + roomtypeDistrict + "%");
+			predicates.add(cb.like(root.get("roomtypeDistrict"), roomtypeDistrict));
+			countPredicates.add(cb.like(countRoot.get("roomtypeDistrict"), roomtypeDistrict));
 		}
 
 		if (minMoney != null) {
 			if (maxMoney != null) {
-				sql.append(" AND roomtype_price >= ? AND roomtype_price <= ?");
-				list.add(minMoney);
-				list.add(maxMoney);
+				predicates.add(cb.between(root.get("roomtypePrice"), minMoney, maxMoney));
+				countPredicates.add(cb.between(countRoot.get("roomtypePrice"), minMoney, maxMoney));
 			} else {
-				sql.append(" AND roomtype_price >= ?");
-				list.add(minMoney);
+				predicates.add(cb.ge(root.get("roomtypePrice"), minMoney));
+				countPredicates.add(cb.ge(countRoot.get("roomtypePrice"), minMoney));
+			}
+		}else {
+			if (maxMoney != null) {
+				predicates.add(cb.le(root.get("roomtypePrice"), maxMoney));
+				countPredicates.add(cb.le(countRoot.get("roomtypePrice"), maxMoney));
 			}
 		}
-
-		if (maxMoney != null && minMoney == null) {
-			sql.append(" AND roomtype_price <= ?");
-			list.add(maxMoney);
-		}
 		
-		sql.append(" ORDER BY " + attrOrderBy + " " + selectedSort + " OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY");
-	
-		if(page != null) {
-			list.add((page-1)*10);
+		// 查詢條件篩選的總數有多少(不包含分頁)
+		countQuery.select(cb.count(countRoot)).where(countPredicates.toArray(new Predicate[0]));
+		// 創建session查詢獲得結果
+		Long totalCounts = session.createQuery(countQuery).getSingleResult();
+		
+		// 篩選條件
+		cq.select(root).where(predicates.toArray(new Predicate[0]));		
+		
+		// 排序
+		Order order;
+		if(selectedSort.equals("asc")) {
+			order = cb.asc(root.get(attrOrderBy));
 		}else {
-			list.add(0);
+			order = cb.desc(root.get(attrOrderBy));
 		}
+		cq.orderBy(order);
 		
-		return DaoUtils.commonsQuery(sql.toString(), new RoomtypeDTORowMapper(), list.toArray());
+		// 創建session查詢
+		Query<Roomtype> query = session.createQuery(cq);
+		
+		// 分頁
+		if(page != null) {
+			query.setFirstResult((page - 1) * 10);		
+		}else {
+			query.setFirstResult(0);
+		}
+		query.setMaxResults(10);
+		
+		// 透過session查詢獲得結果
+		List<Roomtype> roomtypes = query.getResultList();
+		
+		return DaoResult.create(roomtypes).setSuccess(roomtypes != null).setExtraData("totalCounts", totalCounts);
 	}
 
 	/**
@@ -139,8 +178,9 @@ public class RoomtypeDao {
 	 * @return
 	 */
 	public DaoResult<Roomtype> getRoomtypeById(Integer roomtypeId) {
-		String sql = "SELECT * FROM roomtype WHERE roomtype_id = ?";
-		return DaoUtils.commonsQuery(sql, new RoomtypeRowMapper(), roomtypeId);
+		String hql = "FROM Roomtype rt WHERE rt.roomtypeId = :roomtypeId";
+		Roomtype roomtype = session.createQuery(hql, Roomtype.class).setParameter("roomtypeId", roomtypeId).getSingleResult();
+		return DaoResult.create(roomtype).setSuccess(roomtype != null);
 	}
 
 	/**
@@ -149,13 +189,10 @@ public class RoomtypeDao {
 	 * @param roomtype
 	 * @return
 	 */
-	public DaoResult<Integer> addRoomtype(Roomtype roomtype) {
-		String sql = "INSERT INTO roomtype (roomtype_name, roomtype_capacity, roomtype_price, roomtype_quantity, roomtype_description, roomtype_address, roomtype_city, roomtype_district, updated_time, created_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-		return DaoUtils.commonsUpdate(sql, roomtype.getRoomtypeName(), roomtype.getRoomtypeCapacity(),
-				roomtype.getRoomtypePrice(), roomtype.getRoomtypeQuantity(), roomtype.getRoomtypeDescription(),
-				roomtype.getRoomtypeAddress(), roomtype.getRoomtypeCity(), roomtype.getRoomtypeDistrict(),
-				Timestamp.valueOf(roomtype.getUpdatedTime()), Timestamp.valueOf(roomtype.getCreatedTime()));
+	public DaoResult<?> addRoomtype(Roomtype roomtype) {
+		session.persist(roomtype);
+		Integer roomtypeId = roomtype.getRoomtypeId();
+		return DaoResult.create().setGeneratedId(roomtypeId).setSuccess(roomtypeId != null);
 	}
 
 	/**
@@ -164,9 +201,13 @@ public class RoomtypeDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public DaoResult<Integer> removeRoomtypeById(Integer roomtypeId) {
-		String sql = "DELETE FROM roomtype WHERE roomtype_id = ?";
-		return DaoUtils.commonsUpdate(sql, roomtypeId);
+	public DaoResult<?> removeRoomtypeById(Integer roomtypeId) {
+		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		if(roomtype != null) {
+			session.remove(roomtype);
+			return DaoResult.create().setSuccess(true);
+		}
+		return DaoResult.create().setSuccess(false);
 	}
 
 	/**
@@ -175,12 +216,8 @@ public class RoomtypeDao {
 	 * @param roomtype
 	 * @return
 	 */
-	public DaoResult<Integer> updateRoomtype(Roomtype roomtype) {
-		String sql = "UPDATE roomtype SET roomtype_name = ?, roomtype_capacity = ?, roomtype_price = ?, roomtype_quantity = ?, roomtype_description = ?, roomtype_address = ?, roomtype_city = ?, roomtype_district = ?, updated_time = ? WHERE roomtype_id = ?";
-
-		return DaoUtils.commonsUpdate(sql, roomtype.getRoomtypeName(), roomtype.getRoomtypeCapacity(),
-				roomtype.getRoomtypePrice(), roomtype.getRoomtypeQuantity(), roomtype.getRoomtypeDescription(),
-				roomtype.getRoomtypeAddress(), roomtype.getRoomtypeCity(), roomtype.getRoomtypeDistrict(),
-				Timestamp.valueOf(roomtype.getUpdatedTime()), roomtype.getRoomtypeId());
+	public DaoResult<?> updateRoomtype(Roomtype roomtype) {
+		Roomtype updatedRoomtype = session.merge(roomtype);
+		return DaoResult.create().setSuccess(updatedRoomtype != null);
 	}
 }

@@ -23,7 +23,7 @@ public class RoomtypeDTO implements Listable {
 	private LocalDateTime createdTime;
 	private Integer totalCounts;
 	
-	private static String[] attrs = { "roomtype_name", "roomtype_capacity", "roomtype_price", "roomtype_quantity", "roomtype_description", "roomtype_address", "roomtype_city", "roomtype_district", "updated_time", "created_time",  };
+	private static String[] attrs = { "roomtypeName", "roomtypeCapacity", "roomtypePrice", "roomtypeQuantity", "roomtypeDescription", "roomtypeAddress", "roomtypeCity", "roomtypeDistrict", "updatedTime", "createdTime" };
 	private static String[] attrsChinese = { "房間名稱", "房間人數", "房間價錢", "房間數量", "房間介紹", "房間地址", "房間所在城市", "房間所在區域", "更新時間", "創建時間" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
 	

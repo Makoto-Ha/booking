@@ -21,11 +21,12 @@ public class OpenSessionViewFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		SessionFactory factory = HibernateUtil.getSessionFactory();
-		Session session = factory.getCurrentSession();
+		Session session = factory.openSession();
 		
 		try {
 			session.beginTransaction();
 			
+			request.setAttribute("hibernateSession", session);
 			System.out.println("交易開啟");
 			chain.doFilter(request, response);
 			

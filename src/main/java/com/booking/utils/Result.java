@@ -37,6 +37,10 @@ public class Result<T> {
     public boolean isSuccess() {
         return success;
     }
+    
+    public boolean isFailure() {
+    	return !success;
+    }
 
     public void setSuccess(boolean success) {
         this.success = success;
