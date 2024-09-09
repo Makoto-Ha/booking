@@ -2,15 +2,37 @@ package com.booking.bean.attraction;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity @Table(name = "attraction")
 public class Attraction implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id @Column(name = "attraction_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer attractionId;
+	
+	@Column(name = "attraction_name")
 	private String attractionName;
+	
+	@Column(name = "attraction_city")
 	private String attractionCity;
+	
+	@Column(name = "address")
 	private String address;
+	
+	@Column(name = "opening_hours")
 	private String openingHour;
+	
+	@Column(name = "attraction_type")
 	private String attractionType;
+	
+	@Column(name = "attraction_description")
 	private String attractionDescription;
 
 	public Attraction(Integer attractionId, String attractionName, String attractionCity, String address,
