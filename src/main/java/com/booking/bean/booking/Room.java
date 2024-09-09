@@ -38,7 +38,7 @@ public class Room {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "roomtype_id")
-	private transient Roomtype roomtype;
+	private Roomtype roomtype;
 
 	public Room() {}
 
@@ -114,6 +114,14 @@ public class Room {
 
 	public void setCreatedTime(LocalDateTime createdTime) {
 		this.createdTime = createdTime;
+	}
+	
+	public Roomtype getRoomtype() {
+		return roomtype;
+	}
+
+	public void setRoomtype(Roomtype roomtype) {
+		this.roomtype = roomtype;
 	}
 
 	@Override

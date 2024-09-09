@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
@@ -80,6 +81,7 @@ public class JsonUtil {
 			mapper.registerModule(new Hibernate6Module());
 			// 不要使用默認格式
 			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			
 			return mapper;
 		});
 		hasSetDatePattern.set(false);
@@ -102,5 +104,10 @@ public class JsonUtil {
 		LocalDateTimeSerializer localDateTimeSerializer = new LocalDateTimeSerializer(formatter);
 		javaTimeModule.addSerializer(LocalDateTime.class, localDateTimeSerializer);
 		hasSetDateTimePattern.set(true);
+	}
+	
+	public static void setNonNull() {
+		ObjectMapper mapper = threadLocalMapper.get();
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 	}
 }

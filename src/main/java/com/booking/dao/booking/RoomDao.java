@@ -1,18 +1,32 @@
 package com.booking.dao.booking;
 
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import com.booking.bean.booking.Room;
-import com.booking.mapper.RoomRowMapper;
-import com.booking.utils.DaoResult;
-import com.booking.utils.DaoUtils;
+import com.booking.bean.booking.Roomtype;
+import com.booking.utils.util.DaoResult;
 
 public class RoomDao {
+	private final Session session;
+	
+	public RoomDao(Session session) {
+		this.session = session;
+	}
+	
 	/**
 	 * 查詢所有房間
 	 * @return
 	 */
-	public DaoResult<Room> getRoomAll() {
-		String sql = "SELECT * FROM room";
-		return DaoUtils.commonsQuery(sql, new RoomRowMapper());
+	public DaoResult<List<Room>> getRoomAll() {
+		String hql = "From Room r ORDER BY r.roomNumber";
+		Query<Room> query = session.createQuery(hql, Room.class);
+		query.setFirstResult(0);
+		query.setMaxResults(10);
+		List<Room> rooms = query.getResultList();
+		return DaoResult.create(rooms).setSuccess(rooms != null);
 	}
 	
 	/**
@@ -21,8 +35,8 @@ public class RoomDao {
 	 * @return
 	 */
 	public DaoResult<Room> getRoomById(Integer roomId) {
-		String sql = "SELECT * FROM room WHERE room_id = ?";
-		return DaoUtils.commonsQuery(sql, new RoomRowMapper(), roomId); 
+		Room room = session.get(Room.class, roomId);		
+		return DaoResult.create(room).setSuccess(room != null); 
 	}
 	
 	/**
@@ -30,9 +44,10 @@ public class RoomDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public DaoResult<Room> getRoomsByRoomtypeId(Integer roomtypeId) {
-		String sql = "SELECT * FROM roomtype rt JOIN room r ON rt.roomtype_id = r.roomtype_id WHERE rt.roomtype_id = ?";
-		return DaoUtils.commonsQuery(sql, new RoomRowMapper(), roomtypeId);
+	public DaoResult<List<Room>> getRoomsByRoomtypeId(Integer roomtypeId) {
+		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		List<Room> rooms = roomtype.getRooms();
+		return DaoResult.create(rooms).setSuccess(rooms != null);
 	}
 
 	/**
@@ -40,16 +55,10 @@ public class RoomDao {
 	 * @param room
 	 * @return
 	 */
-	public DaoResult<Integer> addRoom(Room room) {
-		String sql = "INSERT INTO room (room_number, room_status, room_description, updated_time, created_time) VALUES (?, ?, ?, ?, ?, ?)";
-		return DaoUtils.commonsUpdate(
-				sql, 
-				room.getRoomNumber(), 
-				room.getRoomStatus(), 
-				room.getRoomDescription(), 
-				room.getUpdatedTime(), 
-				room.getCreatedTime()
-		);
+	public DaoResult<?> addRoom(Room room) {
+		session.persist(room);
+		Integer roomId = room.getRoomId();
+		return DaoResult.create().setGeneratedId(roomId).setSuccess(roomId != null); 
 	}
 	
 	/**
@@ -57,9 +66,13 @@ public class RoomDao {
 	 * @param roomId
 	 * @return
 	 */
-	public DaoResult<Integer> removeRoomById(Integer roomId) {
-		String sql = "DELETE FROM room WHERE room_id = ?";
-		return DaoUtils.commonsUpdate(sql, roomId);
+	public DaoResult<?> removeRoomById(Integer roomId) {
+		Room room = session.get(Room.class, roomId);
+		if(room != null) {
+			session.remove(room);
+			return DaoResult.create().setSuccess(true);
+		}
+		return DaoResult.create().setSuccess(false);
 	}
 	
 	/**
@@ -67,9 +80,13 @@ public class RoomDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public DaoResult<Integer> removeRoomsByRoomtypeId(Integer roomtypeId) {
-		String sql = "DELETE FROM room WHERE roomtype_id = ?";
-		return DaoUtils.commonsUpdate(sql, roomtypeId);
+	public DaoResult<?> removeRoomsByRoomtypeId(Integer roomtypeId) {
+		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		if(roomtype != null) {
+			session.remove(roomtype);
+			return DaoResult.create().setSuccess(true);
+		}
+		return DaoResult.create().setSuccess(false);
 	}
 
 	/**
@@ -77,9 +94,9 @@ public class RoomDao {
 	 * @param room
 	 * @return
 	 */
-	public DaoResult<Integer> updateRoom(Room room) {
-		String sql = "UPDATE room SET roomtype_id = ?, room_number = ?, room_status = ?, room_description = ?, updated_time = ? WHERE room_id = ?";
-		return DaoUtils.commonsUpdate(sql, room.getRoomNumber(), room.getRoomStatus(), room.getRoomDescription(),  room.getUpdatedTime(), room.getRoomId());
+	public DaoResult<?> updateRoom(Room room) {
+		Room mergeRoom = session.merge(room);
+		return DaoResult.create().setSuccess(mergeRoom != null);
 	}
 	
 	/**
@@ -87,9 +104,13 @@ public class RoomDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public DaoResult<Integer> decrementRoomtypeQuantity(Integer roomId) {
-		String sql = "UPDATE roomtype SET roomtype_quantity = roomtype_quantity - 1 WHERE roomtype_id = (SELECT roomtype_id FROM room WHERE room_id = ?)";
-		return DaoUtils.commonsUpdate(sql, roomId);
+	public DaoResult<?> decrementRoomtypeQuantity(Integer roomId) {
+		Room room = session.get(Room.class, roomId);
+		Roomtype roomtype = room.getRoomtype();
+		Integer quantity = roomtype.getRoomtypeQuantity();
+		roomtype.setRoomtypeQuantity(--quantity);
+		
+		return DaoResult.create().setSuccess(true);
 	}
 	
 	/**
@@ -97,8 +118,11 @@ public class RoomDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public DaoResult<Integer> inecrementRoomtypeQuantity(Integer roomtypeId) {
-		String sql = "UPDATE roomtype SET roomtype_quantity = roomtype_quantity + 1 WHERE roomtype_id = ?";
-		return DaoUtils.commonsUpdate(sql, roomtypeId);
+	public DaoResult<?> inecrementRoomtypeQuantity(Integer roomtypeId) {
+		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		Integer roomtypeQuantity = roomtype.getRoomtypeQuantity();
+		roomtype.setRoomtypeQuantity(++roomtypeQuantity);
+		
+		return DaoResult.create().setSuccess(true);
 	}
 }
