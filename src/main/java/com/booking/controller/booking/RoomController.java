@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.booking.bean.booking.Room;
 import com.booking.dto.booking.RoomDTO;
 import com.booking.service.booking.RoomService;
@@ -27,12 +29,15 @@ import jakarta.servlet.http.HttpServletResponse;
 })
 public class RoomController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private RoomService roomService = new RoomService();
+	private RoomService roomService;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String requestURI = request.getRequestURI();
 		String[] splitURI = requestURI.split("/");
 		String path = splitURI[splitURI.length - 1];
+		
+		Session session = (Session) request.getAttribute("hibernateSession");
+		roomService = new RoomService(session);
 		
 		switch (path) {
 			case "select" -> select(request, response);
@@ -78,6 +83,7 @@ public class RoomController extends HttpServlet {
 			return;
 		}
 		
+		JsonUtil.setNonNull();
 		String jsonData = JsonUtil.toJson(roomServiceResult.getData());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -121,9 +127,13 @@ public class RoomController extends HttpServlet {
 	 */
 	private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer roomId = Integer.parseInt(request.getParameter("room-id"));
-
+		System.out.println("============AAAAAAAAAAAA==========");
 		Result<String> removeRoomtypeResult = roomService.removeRoom(roomId);
-		response.getWriter().write(removeRoomtypeResult.getMessage());	
+		
+		if(removeRoomtypeResult.isFailure()) {
+			response.getWriter().write(removeRoomtypeResult.getMessage());
+			return;
+		}
 	}
 
 	/**

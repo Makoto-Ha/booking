@@ -33,14 +33,15 @@
 		<property name="hibernate.c3p0.testConnectionOnCheckin">true</property>
 
 		<!-- 這裡添加JavaBean -->
+		<!-- 房型 -->
 		<mapping class="com.booking.bean.booking.Roomtype" />
+		<!-- 房間 -->
 		<mapping class="com.booking.bean.booking.Room" />
 		<!-- 商城 -->
 		<mapping class="com.booking.bean.shopping.Product" />
+		<!-- 景點 -->
 		<mapping class="com.booking.bean.attraction.Attraction" />
+		<!-- 管理員 -->
 		<mapping class="com.booking.bean.admin.Admin" />
-		
-		<!-- 商城 -->
-  		<mapping class="com.booking.bean.shopping.Product" />
 	</session-factory>
 </hibernate-configuration>

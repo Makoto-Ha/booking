@@ -53,7 +53,7 @@ public class Roomtype {
 	private LocalDateTime createdTime;
 
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
-	private transient List<Room> rooms = new ArrayList<>();
+	private List<Room> rooms = new ArrayList<>();
 
 	public Roomtype() {}
 
@@ -202,13 +202,13 @@ public class Roomtype {
 		this.updatedTime = updatedTime;
 	}
 
-//	public List<Room> getRooms() {
-//		return rooms;
-//	}
-//
-//	public void setRooms(List<Room> rooms) {
-//		this.rooms = rooms;
-//	}
+	public List<Room> getRooms() {
+		return rooms;
+	}
+
+	public void setRooms(List<Room> rooms) {
+		this.rooms = rooms;
+	}
 
 	@Override
 	public String toString() {

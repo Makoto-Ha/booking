@@ -20,12 +20,14 @@ import com.booking.utils.Result;
 
 public class RoomtypeService {
 	private RoomtypeDao roomtypeDao;
-	private RoomDao roomDao = new RoomDao();
-	private RoomService roomService = new RoomService();
+	private RoomDao roomDao;
+	private RoomService roomService;
 	
 	
 	public RoomtypeService(Session session) {
 		this.roomtypeDao = new RoomtypeDao(session);
+		this.roomDao = new RoomDao(session);
+		this.roomService = new RoomService(session);
 	}
 	
 	/**
@@ -139,7 +141,11 @@ public class RoomtypeService {
 		}
 		
 		DaoResult<?> removeRoomtypeByIdResult = roomtypeDao.removeRoomtypeById(roomtypeId);
-		// DaoResult<Integer> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
+	    DaoResult<?> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
+	    
+	    if(removeRoomsByRoomtypeIdResult.isFailure()) {
+	    	return Result.failure("根據房型刪除所有房間失敗");
+	    }
 		
 		if(removeRoomtypeByIdResult.isFailure()) {
 			return Result.failure("刪除房間類型失敗");

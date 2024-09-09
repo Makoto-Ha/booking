@@ -17,26 +17,26 @@ import jakarta.persistence.criteria.Root;
 public class AttractionDao {
 
 	private Session session;
-	
+
 	public AttractionDao(Session session) {
 		this.session = session;
 	}
 
-
 	/**
 	 * 獲取所有景點
+	 * 
 	 * @return
 	 */
 	public DaoResult<List<Attraction>> getAttractionAll() {
-		String hql = "from attraction";
+		String hql = "From Attraction";
 		Query<Attraction> query = session.createQuery(hql, Attraction.class);
 		List<Attraction> attractions = query.getResultList();
 		return DaoResult.create(attractions).setSuccess(attractions != null);
 	}
-	
-	
+
 	/**
 	 * 模糊查詢
+	 * 
 	 * @param attraction
 	 * @return
 	 */
@@ -47,68 +47,68 @@ public class AttractionDao {
 		String openingHours = attraction.getOpeningHour();
 		String attractionType = attraction.getAttractionType();
 		String attractionDescription = attraction.getAttractionDescription();
-		
+
 		// 透過session創建CriteriaBuilder
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		// 創建CriteriaQuery查詢
 		CriteriaQuery<Attraction> cq = cb.createQuery(Attraction.class);
 		Root<Attraction> root = cq.from(Attraction.class);
-		
+
 		// where數據篩選
 		List<Predicate> predicates = new ArrayList<>();
-		
-		if(attractionName != null) {
+
+		if (attractionName != null) {
 			predicates.add(cb.like(root.get("attractionName"), "%" + attractionName + "%"));
 		}
-		
-		if(attractionCity != null) {
+
+		if (attractionCity != null) {
 			predicates.add(cb.like(root.get("attractionCity"), "%" + attractionCity + "%"));
 		}
-		
-		if(address != null) {
+
+		if (address != null) {
 			predicates.add(cb.like(root.get("address"), "%" + address + "%"));
 		}
-		
-		if(openingHours != null) {
+
+		if (openingHours != null) {
 			predicates.add(cb.like(root.get("openingHours"), "%" + openingHours + "%"));
 		}
-		
-		if(attractionType != null) {
+
+		if (attractionType != null) {
 			predicates.add(cb.like(root.get("attractionType"), "%" + attractionType + "%"));
 		}
-		
-		if(attractionDescription != null) {
+
+		if (attractionDescription != null) {
 			predicates.add(cb.like(root.get("attractionDescription"), "%" + attractionDescription + "%"));
 		}
-		
 
 		// 篩選條件
-		cq.select(root).where(predicates.toArray(new Predicate[0]));	
-		
+		cq.select(root).where(predicates.toArray(new Predicate[0]));
+
 		// 創建session查詢
 		Query<Attraction> query = session.createQuery(cq);
-		
+
 		// 透過session查詢獲得結果
 		List<Attraction> attractions = query.getResultList();
-		
+
 		return DaoResult.create(attractions).setSuccess(attractions != null);
 	}
-	
-	
+
 	/**
 	 * 依id獲取景點
+	 * 
 	 * @param attractionId
 	 * @return
 	 */
 	public DaoResult<Attraction> getAttractionById(Integer attractionId) {
-		String hql = "FROM attraction WHERE attractionId = :attractionId";
-		Attraction attraction = session.createQuery(hql, Attraction.class).setParameter("attractionId", attractionId).getSingleResult();
+		String hql = "FROM Attraction WHERE attractionId = :attractionId";
+		Attraction attraction = session.createQuery(hql, Attraction.class).setParameter("attractionId", attractionId)
+				.getSingleResult();
 		return DaoResult.create(attraction).setSuccess(attraction != null);
 	}
-	
-		
+
 	/**
 	 * 新增景點
+	 * 
 	 * @param attraction
 	 * @return
 	 */
@@ -117,24 +117,24 @@ public class AttractionDao {
 		Integer attractionId = attraction.getAttractionId();
 		return DaoResult.create().setGeneratedId(attractionId).setSuccess(attractionId != null);
 	}
-	
-	
+
 	/**
 	 * 依id刪除景點
+	 * 
 	 * @param attractionId
 	 */
 	public DaoResult<?> removeAddractionById(Integer attractionId) {
 		Attraction attraction = session.get(Attraction.class, attractionId);
-		if(attraction != null) {
+		if (attraction != null) {
 			session.remove(attraction);
 			return DaoResult.create().setSuccess(true);
 		}
 		return DaoResult.create().setSuccess(false);
 	}
-	
-	
+
 	/**
 	 * 更新景點
+	 * 
 	 * @param attraction
 	 */
 	public DaoResult<?> updateAttraction(Attraction attraction) {
@@ -142,6 +142,4 @@ public class AttractionDao {
 		return DaoResult.create().setSuccess(updatedAttraction != null);
 	}
 
-
-	}
-
+}
