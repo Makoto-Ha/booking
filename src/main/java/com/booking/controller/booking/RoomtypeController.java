@@ -12,12 +12,10 @@ import org.hibernate.Session;
 import com.booking.bean.booking.Roomtype;
 import com.booking.dto.booking.RoomtypeDTO;
 import com.booking.service.booking.RoomtypeService;
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.LocalDateTimeAdapter;
 import com.booking.utils.RequestParamUtils;
 import com.booking.utils.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -69,12 +67,14 @@ public class RoomtypeController extends HttpServlet {
 			response.getWriter().write(roomtypeServiceResult.getMessage());
 			return;
 		}
-		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
-
-		String jsonData = gson.toJson(roomtypeServiceResult.getData());
+			
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
+		
+		String jsonData = JsonUtil.toJson(roomtypeServiceResult.getData());
+		
 		response.getWriter().write(jsonData);
+		response.getWriter().flush();
 	}
 
 	/**
@@ -216,8 +216,7 @@ public class RoomtypeController extends HttpServlet {
 		requestParameters.put("paramters", roomtype);
 		requestParameters.put("extraValues", extraValues);
 		
-		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
-		String jsonData = gson.toJson(requestParameters);
+		String jsonData = JsonUtil.toJson(requestParameters);
 		
 		Map<String, Integer> pageNumber = new HashMap<>();
 		pageNumber.put("currentPage", switchPage);
