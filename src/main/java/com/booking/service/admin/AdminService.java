@@ -10,182 +10,174 @@ import org.apache.commons.beanutils.BeanUtils;
 import com.booking.bean.admin.Admin;
 import com.booking.dao.admin.AdminDao;
 import com.booking.dto.admin.AdminDTO;
-import com.booking.utils.DaoResult;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
 
 public class AdminService {
 
-	private AdminDao adminDao = new AdminDao();
+    private AdminDao adminDao = new AdminDao();
 
-	/**
-	 * 獲取所有管理員資料
-	 * 
-	 * @return
-	 */
-	public Result<List<Listable>> getAdminAll() {
-		DaoResult<Admin> daoResult = adminDao.getAdminAll();
-		List<Admin> admins = daoResult.getData();
-		List<Listable> lists = new ArrayList<>();
-		for (Admin admin : admins) {
-			AdminDTO adminDTO = new AdminDTO();
-			try {
-				BeanUtils.copyProperties(adminDTO, admin);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			lists.add(adminDTO);
-		}
-		if (admins == null) {
-			return Result.failure("查詢所有管理員失敗");
-		}
-		return Result.success(lists);
-	}
+    /**
+     * 獲取所有管理員資料
+     * 
+     * @return
+     */
+    public Result<List<Listable>> getAdminAll() {
+        List<Admin> admins = adminDao.getAdminAll();
+        List<Listable> lists = new ArrayList<>();
+        for (Admin admin : admins) {
+            AdminDTO adminDTO = new AdminDTO();
+            try {
+                BeanUtils.copyProperties(adminDTO, admin);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            lists.add(adminDTO);
+        }
+        if (admins == null || admins.isEmpty()) {
+            return Result.failure("查詢所有管理員失敗");
+        }
+        return Result.success(lists);
+    }
 
-	/**
-	 * 依id獲取管理員資料
-	 * 
-	 * @param adminId
-	 * @return
-	 */
-	public Result<Admin> getAdminById(Integer adminId) {
-		DaoResult<Admin> daoResult = adminDao.getAdminById(adminId);
-		Admin admin = daoResult.getEntity();
-		if (admin == null) {
-			return Result.failure("找不到該管理員");
-		}
-		return Result.success(admin);
-	}
+    /**
+     * 依id獲取管理員資料
+     * 
+     * @param adminId
+     * @return
+     */
+    public Result<Admin> getAdminById(Integer adminId) {
+        Admin admin = adminDao.getAdminById(adminId);
+        if (admin == null) {
+            return Result.failure("找不到該管理員");
+        }
+        return Result.success(admin);
+    }
 
-	/**
-	 * 根據模糊查詢得到多筆管理員資料
-	 * @param admin
-	 * @return
-	 */
-	public Result<List<Listable>> getAdmins(Admin admin) {
-		DaoResult<Admin> daynamicQueryDaoResult = adminDao.dynamicQuery(admin);
-		List<Admin> admins = daynamicQueryDaoResult.getData();
+    /**
+     * 根據模糊查詢得到多筆管理員資料
+     * @param admin
+     * @return
+     */
+    public Result<List<Listable>> getAdmins(Admin admin) {
+        List<Admin> admins = adminDao.dynamicQuery(admin);
+        if (admins == null || admins.isEmpty()) {
+            return Result.failure("查無此員工資料");
+        }
 
-		if (admins == null) {
-			return Result.failure("查無此員工資料");
-		}
-		List<Listable> adminsDTO = new ArrayList<>();
-		for(Admin adminOne : admins) {
-			AdminDTO adminDTO = new AdminDTO();
-			try {
-				BeanUtils.copyProperties(adminDTO, adminOne);
-				adminsDTO.add(adminDTO);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
-		}
-		return Result.success(adminsDTO);
-	}
-	
-	public Result<Integer> addAdmin(Admin admin) {
-		DaoResult<Integer> daoResult = adminDao.addAdmin(admin);
-		Integer addadmin = daoResult.getGeneratedId();
-		if (addadmin == null || daoResult.getAffectedRows() == 0) {
-			return Result.failure("新增管理員失敗");
-		}
-		return Result.success(addadmin);
-	}
+        List<Listable> adminsDTO = new ArrayList<>();
+        for (Admin adminOne : admins) {
+            AdminDTO adminDTO = new AdminDTO();
+            try {
+                BeanUtils.copyProperties(adminDTO, adminOne);
+                adminsDTO.add(adminDTO);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return Result.success(adminsDTO);
+    }
 
-	public Result<Integer> softremoveAdmin(Integer adminId) {
-		DaoResult<Integer> daoResult = adminDao.softremoveAdminById(adminId);
-		Integer softremoveadmin = daoResult.getAffectedRows();
-		if (softremoveadmin == 0) {
-			return Result.failure("刪除管理員失敗");
-		}
-		return Result.success(softremoveadmin);
-	}
+    /**
+     * 新增管理員
+     */
+    public Result<Integer> addAdmin(Admin admin) {
+        Integer addAdminId = adminDao.addAdmin(admin);
+        if (addAdminId == null) {
+            return Result.failure("新增管理員失敗");
+        }
+        return Result.success(addAdminId);
+    }
 
-	public Result<Integer> updateAdmin(Admin admin) {
-		Integer oldAdminId = admin.getAdminId();
-		Admin oldAdmin = adminDao.getAdminById(oldAdminId).getEntity();
-		
-		String adminAccount = admin.getAdminAccount();
-		String adminPassword = admin.getAdminPassword();
-		String adminName = admin.getAdminName();
-		String adminMail = admin.getAdminMail();
-		LocalDate hiredate = admin.getHiredate();
-		Integer adminStatus = admin.getAdminStatus();
+    /**
+     * 軟刪除管理員
+     */
+    public Result<Integer> softRemoveAdmin(Integer adminId) {
+        adminDao.softremoveAdminById(adminId);  // 软删除的逻辑放在 DAO 层
+        return Result.success(adminId);
+    }
 
-		if (adminAccount == null || adminAccount.isEmpty()) {
-			admin.setAdminAccount(oldAdmin.getAdminAccount());
-		}
+    /**
+     * 更新管理員
+     */
+    public Result<Integer> updateAdmin(Admin admin) {
+        Admin oldAdmin = adminDao.getAdminById(admin.getAdminId());
 
-		if (adminPassword == null || adminPassword.isEmpty()) {
-			admin.setAdminPassword(oldAdmin.getAdminPassword());
-		}
+        if (oldAdmin == null) {
+            return Result.failure("更新失敗，找不到該管理員");
+        }
 
-		if (adminName == null || adminName.isEmpty()) {
-			admin.setAdminName(oldAdmin.getAdminName());
-		}
+        if (admin.getAdminAccount() == null || admin.getAdminAccount().isEmpty()) {
+            admin.setAdminAccount(oldAdmin.getAdminAccount());
+        }
 
-		if (adminMail == null || adminMail.isEmpty()) {
-			admin.setAdminMail(oldAdmin.getAdminMail());
-		}
+        if (admin.getAdminPassword() == null || admin.getAdminPassword().isEmpty()) {
+            admin.setAdminPassword(oldAdmin.getAdminPassword());
+        }
 
-		if (hiredate == null) {
-			admin.setHiredate(oldAdmin.getHiredate());
-		}
+        if (admin.getAdminName() == null || admin.getAdminName().isEmpty()) {
+            admin.setAdminName(oldAdmin.getAdminName());
+        }
 
-		if (adminStatus == null) {
-			admin.setAdminStatus(oldAdmin.getAdminStatus());
-		}
-		admin.setHiredate(LocalDate.now());
+        if (admin.getAdminMail() == null || admin.getAdminMail().isEmpty()) {
+            admin.setAdminMail(oldAdmin.getAdminMail());
+        }
 
-		DaoResult<Integer> updateAdminDaoResult = adminDao.updateAdmin(admin);
+        if (admin.getHiredate() == null) {
+            admin.setHiredate(oldAdmin.getHiredate());
+        }
 
-		if (updateAdminDaoResult.getAffectedRows() == null) {
-			return Result.failure("更新管理員資料失敗");
-		}
-		return Result.success("更新管理員資料成功");
-	}
-	
-	//登入
-	public Result<Admin> loginAdmin(String adminAccount, String adminPassword) {
-    DaoResult<Admin> daoResult = adminDao.getAdminByAccountAndPassword(adminAccount, adminPassword);
-    Admin getadmin = daoResult.getEntity();
-        if (getadmin == null) {
+        if (admin.getAdminStatus() == null) {
+            admin.setAdminStatus(oldAdmin.getAdminStatus());
+        }
+
+        admin.setHiredate(LocalDate.now()); // 更新 hiredate 为当前日期
+
+        adminDao.updateAdmin(admin);
+        return Result.success(admin.getAdminId());
+    }
+
+    /**
+     * 登入管理員
+     */
+    public Result<Admin> loginAdmin(String adminAccount, String adminPassword) {
+        Admin admin = adminDao.getAdminByAccountAndPassword(adminAccount, adminPassword);
+        if (admin == null) {
             return Result.failure("登入失敗，請先註冊");
         }
-        return Result.success(getadmin);
+        return Result.success(admin);
     }
-	
-	
-	// 註冊
-	public Result<Admin> registerAdmin(String adminAccount, String adminPassword) {
-		DaoResult<Admin> daoResult = adminDao.getAdminByAccountAndPassword(adminAccount, adminPassword);
-		Admin admin = daoResult.getEntity();
-		if (admin == null) {
-			return Result.failure("");
-		}
-		return Result.success(admin);
-	}
 
-	// 檢查帳號重複
-	public Result<Admin> checkAccountExists(String adminAccount) {
-		 DaoResult<Admin> daoResult = adminDao.existsByAccount(adminAccount);
-		 Admin admin = daoResult.getEntity();
-		 if (admin == null) {
-			 return Result.success(admin);
-		}
-		 return Result.failure("此帳號已被註冊");
-	}
+    /**
+     * 註冊
+     */
+    public Result<Admin> registerAdmin(String adminAccount, String adminPassword) {
+        Admin admin = adminDao.getAdminByAccountAndPassword(adminAccount, adminPassword);
+        if (admin != null) {
+            return Result.failure("該帳號已存在");
+        }
+        return Result.success(admin);
+    }
 
-	/**
-	 * 註冊後在資料庫建立資料
-	 * @param admin
-	 * @return
-	 */
-	public Result<Integer> addNewAdmin(Admin admin) {
-		DaoResult<Integer> daoResult = adminDao.addAdmin(admin);
-		Integer addnewadmin= daoResult.getGeneratedId();
-		if (addnewadmin == null || daoResult.getAffectedRows() == 0) {
-			return Result.failure("註冊失敗");
-		}
-		return Result.success(addnewadmin);
-	}
+    /**
+     * 檢查帳號是否重複
+     */
+    public Result<Admin> checkAccountExists(String adminAccount) {
+        Admin admin = adminDao.existsByAccount(adminAccount);
+        if (admin != null) {
+            return Result.failure("此帳號已被註冊");
+        }
+        return Result.success(null);
+    }
+
+    /**
+     * 新增註冊用戶
+     */
+    public Result<Integer> addNewAdmin(Admin admin) {
+        Integer addNewAdminId = adminDao.addAdmin(admin);
+        if (addNewAdminId == null) {
+            return Result.failure("註冊失敗");
+        }
+        return Result.success(addNewAdminId);
+    }
 }
