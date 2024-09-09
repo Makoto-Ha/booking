@@ -7,11 +7,9 @@ import java.util.List;
 import com.booking.bean.booking.Room;
 import com.booking.dto.booking.RoomDTO;
 import com.booking.service.booking.RoomService;
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.LocalDateTimeAdapter;
 import com.booking.utils.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -80,8 +78,7 @@ public class RoomController extends HttpServlet {
 			return;
 		}
 		
-		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
-		String jsonData = gson.toJson(roomServiceResult.getData());
+		String jsonData = JsonUtil.toJson(roomServiceResult.getData());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonData);
