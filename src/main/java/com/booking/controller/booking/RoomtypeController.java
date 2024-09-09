@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hibernate.Session;
+
 import com.booking.bean.booking.Roomtype;
 import com.booking.dto.booking.RoomtypeDTO;
 import com.booking.service.booking.RoomtypeService;
@@ -27,7 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
 		"/roomtype/create.jsp", "/roomtype/edit.jsp", "/roomtype/select.jsp", "/roomtype", "/getroomtypejson" })
 public class RoomtypeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private RoomtypeService roomtypeService = new RoomtypeService();
+	private RoomtypeService roomtypeService;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String requestURI = request.getRequestURI();
@@ -35,7 +37,11 @@ public class RoomtypeController extends HttpServlet {
 		String path = splitURI[splitURI.length - 1];
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
-
+		response.setContentType("text/html; charset=utf8");
+		
+		Session session = (Session) request.getAttribute("hibernateSession");
+		roomtypeService = new RoomtypeService(session);
+		
 		switch (path) {
 		case "select" -> select(request, response);
 		case "create" -> create(request, response);
@@ -59,12 +65,12 @@ public class RoomtypeController extends HttpServlet {
 	private void getRoomtypeJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
 		Result<Roomtype> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
-		if (!roomtypeServiceResult.isSuccess()) {
+		if (roomtypeServiceResult.isFailure()) {
 			response.getWriter().write(roomtypeServiceResult.getMessage());
 			return;
 		}
-
 		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
+
 		String jsonData = gson.toJson(roomtypeServiceResult.getData());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -98,7 +104,7 @@ public class RoomtypeController extends HttpServlet {
 		Integer switchPage = Integer.parseInt(requestPage != null ? requestPage : "1");
 
 		Result<List<Listable>> roomtypeServiceResult = roomtypeService.getRoomtypeAll(switchPage);
-		if (!roomtypeServiceResult.isSuccess()) {
+		if (roomtypeServiceResult.isFailure()) {
 			response.getWriter().write(roomtypeServiceResult.getMessage());
 			return;
 		}
@@ -148,7 +154,7 @@ public class RoomtypeController extends HttpServlet {
 		request.getSession().setAttribute("roomtype-id", roomtypeId);
 		Result<Roomtype> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
 
-		if (!roomtypeServiceResult.isSuccess()) {
+		if (roomtypeServiceResult.isFailure()) {
 			response.getWriter().write("回寫編輯資料失敗");
 		}
 
@@ -188,10 +194,10 @@ public class RoomtypeController extends HttpServlet {
 		                           .filter(money -> money != 0)
 		                           .orElse(null);
 		String attrOrderBy = RequestParamUtils.getParameter(request, "attr-order-by", String.class);
-		attrOrderBy = attrOrderBy != null ? attrOrderBy : "roomtype_price";
+		attrOrderBy = attrOrderBy != null ? attrOrderBy : "roomtypePrice";
 		
 		String selectedSort = RequestParamUtils.getParameter(request, "selected-sort", String.class);
-		selectedSort = selectedSort != null ? selectedSort : "ASC";
+		selectedSort = selectedSort != null ? selectedSort : "asc";
 		
 		Roomtype roomtype = new Roomtype(roomtypeName, roomtypeCapacity, roomtypePrice, roomtypeQuantity, roomtypeDescription,roomtypeAddress,roomtypeCity,roomtypeDistrict);
 		Map<String, Object> extraValues = new HashMap<>();
@@ -202,7 +208,7 @@ public class RoomtypeController extends HttpServlet {
 		extraValues.put("selectedSort", selectedSort);
 		Result<List<Listable>> roomtypeServiceResult = roomtypeService.getRoomtypes(roomtype, extraValues);
 		List<Listable> roomtypes = roomtypeServiceResult.getData();
-		if(!roomtypeServiceResult.isSuccess()) {
+		if(roomtypeServiceResult.isFailure()) {
 			response.getWriter().write(roomtypeServiceResult.getMessage());
 			return;
 		}
@@ -215,10 +221,9 @@ public class RoomtypeController extends HttpServlet {
 		
 		Map<String, Integer> pageNumber = new HashMap<>();
 		pageNumber.put("currentPage", switchPage);
-		
-		int totalCounts = roomtypes.isEmpty() ? 0 : roomtypes.get(0).getTotalCounts();
+		Integer totalCounts = roomtypes.isEmpty() ? 0 : roomtypes.get(0).getTotalCounts();
 		int pageSize = 10; // 每頁顯示的記錄數量
-		int totalPages = (totalCounts + pageSize - 1) / pageSize; // 向上取整的頁數計算
+		Integer totalPages = (totalCounts + pageSize - 1) / pageSize; // 向上取整的頁數計算
 		pageNumber.put("totalPages", totalPages);
 		request.setAttribute("attrOrderBy", attrOrderBy);
 		request.setAttribute("selectedSort", selectedSort);
@@ -254,7 +259,7 @@ public class RoomtypeController extends HttpServlet {
 		Roomtype roomtype = new Roomtype(roomtypeName, roomtypeCapacity, roomtypePrice, roomtypeQuantity,
 				roomtypeDescription, roomtypeAddress, roomtypeCity, roomtypeDistrict, updatedTime, createdTime);
 		Result<Integer> result = roomtypeService.addRoomtype(roomtype);
-		if (!result.isSuccess()) {
+		if (result.isFailure()) {
 			response.getWriter().write(result.getMessage());
 			return;
 		}
@@ -297,7 +302,7 @@ public class RoomtypeController extends HttpServlet {
 				roomtypeDescription, roomtypeAddress, roomtypeCity, roomtypeDistrict);
 		Result<String> result = roomtypeService.updateRoomtype(roomtype);
 
-		if (!result.isSuccess()) {
+		if (result.isFailure()) {
 			response.getWriter().write(result.getMessage());
 			return;
 		}

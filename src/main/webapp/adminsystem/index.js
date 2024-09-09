@@ -223,8 +223,6 @@ function bindAdminSystemEvent() {
 			}
 			extraValues = extrayValuesKebab;
 		}
-
-		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
 		
 		const params = {};
 		Object.assign(params, paramters, extraValues, {'switch-page': currentPage});
@@ -283,7 +281,6 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		// const params = { ...paramters, ...extraValues, 'switch-page': page };
 		const params = {};
 		Object.assign(params, paramters, extraValues, {'switch-page': page});
 		
@@ -355,7 +352,6 @@ function bindAdminSystemEvent() {
 			extraValues = extrayValuesKebab;
 		}
 
-		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "attr-order-by": selectedAttr };
 		const params = {};
 		Object.assign(params, paramters, extraValues, {'switch-page': currentPage, "attr-order-by": selectedAttr});
 		

@@ -3,8 +3,9 @@ package com.booking.controller.attraction;
 import java.io.IOException;
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.booking.bean.attraction.Attraction;
-import com.booking.dto.activity.ActivityDTO;
 import com.booking.dto.attraction.AttractionDTO;
 import com.booking.service.attraction.AttractionService;
 import com.booking.utils.Listable;
@@ -31,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
 		"/getattractionjson"})
 public class AttractionController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private AttractionService attractionService = new AttractionService();
+	private AttractionService attractionService;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String requestURI = request.getRequestURI();
@@ -39,6 +40,10 @@ public class AttractionController extends HttpServlet {
 		String path = splitURI[splitURI.length - 1];
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setContentType("text/html; charset=utf8");
+		
+		Session session = (Session) request.getAttribute("hibernateSession");
+		attractionService = new AttractionService(session);
 
 		switch (path) {
 		case "create" -> create(request, response);
@@ -62,7 +67,7 @@ public class AttractionController extends HttpServlet {
 	private void getAttractionJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer attractionId = Integer.parseInt(request.getParameter("attraction-id"));
 		Result<Attraction> attractionServiceResult = attractionService.getAttractionById(attractionId);
-		if(!attractionServiceResult.isSuccess()) {
+		if(attractionServiceResult.isFailure()) {
 			response.getWriter().write(attractionServiceResult.getMessage());
 			return;
 		}
@@ -83,7 +88,7 @@ public class AttractionController extends HttpServlet {
 	 */
 	private void attraction(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Result<List<Listable>> attractionServiceResult = attractionService.getAttractionAll();
-		if(!attractionServiceResult.isSuccess()) {
+		if(attractionServiceResult.isFailure()) {
 			response.getWriter().write(attractionServiceResult.getMessage()); 
 			return;
 		}
@@ -131,7 +136,7 @@ public class AttractionController extends HttpServlet {
 		request.getSession().setAttribute("attraction-id", attractionId);
 		Result<Attraction> attractionServiceResult = attractionService.getAttractionById(attractionId);
 		
-		if(!attractionServiceResult.isSuccess()) {
+		if(attractionServiceResult.isFailure()) {
 			response.getWriter().write("回寫編輯資料失敗");
 			return;
 		}
@@ -163,7 +168,7 @@ public class AttractionController extends HttpServlet {
 						attractionType,
 						attractionDescription));
 		
-		if(!attractionServiceResult.isSuccess()) {
+		if(attractionServiceResult.isFailure()) {
 			response.getWriter().write(attractionServiceResult.getMessage());
 			return;
 		}
@@ -192,7 +197,7 @@ public class AttractionController extends HttpServlet {
 		Attraction attraction = new Attraction(attractionName,attractionCity , address, openingHour,
 				attractionType, attractionDescription);
 		Result<Integer> result = attractionService.addAttraction(attraction);
-		if (!result.isSuccess()) {
+		if (result.isFailure()) {
 			response.getWriter().write(result.getMessage());
 			return;
 		}
@@ -233,7 +238,7 @@ public class AttractionController extends HttpServlet {
 				openingHour, attractionType, attractionDescription);
 		Result<String> result = attractionService.updateAttraction(attraction);
 		
-		if(!result.isSuccess()) {
+		if(result.isFailure()) {
 			response.getWriter().write(result.getMessage());
 			return;
 		}

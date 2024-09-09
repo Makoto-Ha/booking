@@ -1,6 +1,5 @@
 package com.booking.mapper;
 
-import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;

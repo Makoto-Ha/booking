@@ -3,21 +3,35 @@ package com.booking.dao.attraction;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import com.booking.bean.attraction.Attraction;
-import com.booking.mapper.AttractionRowMapper;
-import com.booking.utils.DaoResult;
-import com.booking.utils.DaoUtils;
+import com.booking.utils.util.DaoResult;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public class AttractionDao {
 
+	private Session session;
 	
+	public AttractionDao(Session session) {
+		this.session = session;
+	}
+
+
 	/**
 	 * 獲取所有景點
 	 * @return
 	 */
-	public DaoResult<Attraction> getAttractionAll() {
-		String sql = "SELECT * FROM attraction";
-		return DaoUtils.commonsQuery(sql, new AttractionRowMapper());
+	public DaoResult<List<Attraction>> getAttractionAll() {
+		String hql = "from attraction";
+		Query<Attraction> query = session.createQuery(hql, Attraction.class);
+		List<Attraction> attractions = query.getResultList();
+		return DaoResult.create(attractions).setSuccess(attractions != null);
 	}
 	
 	
@@ -26,9 +40,7 @@ public class AttractionDao {
 	 * @param attraction
 	 * @return
 	 */
-	public DaoResult<Attraction> dynamicQuery(Attraction attraction) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM attraction WHERE 1=1");
-		List<Object> list = new ArrayList<>();
+	public DaoResult<List<Attraction>> dynamicQuery(Attraction attraction) {
 		String attractionName = attraction.getAttractionName();
 		String attractionCity = attraction.getAttractionCity();
 		String address = attraction.getAddress();
@@ -36,39 +48,50 @@ public class AttractionDao {
 		String attractionType = attraction.getAttractionType();
 		String attractionDescription = attraction.getAttractionDescription();
 		
+		// 透過session創建CriteriaBuilder
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		// 創建CriteriaQuery查詢
+		CriteriaQuery<Attraction> cq = cb.createQuery(Attraction.class);
+		Root<Attraction> root = cq.from(Attraction.class);
+		
+		// where數據篩選
+		List<Predicate> predicates = new ArrayList<>();
+		
 		if(attractionName != null) {
-			sql.append(" AND attraction_name LIKE ?");
-			list.add("%" + attractionName + "%");
+			predicates.add(cb.like(root.get("attractionName"), "%" + attractionName + "%"));
 		}
 		
 		if(attractionCity != null) {
-			sql.append(" AND attraction_city LIKE ?");
-			list.add("%" + attractionCity + "%");
+			predicates.add(cb.like(root.get("attractionCity"), "%" + attractionCity + "%"));
 		}
 		
 		if(address != null) {
-			sql.append(" AND address LIKE ?");
-			list.add("%" + address + "%");
+			predicates.add(cb.like(root.get("address"), "%" + address + "%"));
 		}
 		
 		if(openingHours != null) {
-			sql.append(" AND opening_hours LIKE ?");
-			list.add("%"+ openingHours + "%");
+			predicates.add(cb.like(root.get("openingHours"), "%" + openingHours + "%"));
 		}
 		
 		if(attractionType != null) {
-			sql.append(" AND attraction_type LIKE ?");
-			list.add("%" + attractionType + "%");
+			predicates.add(cb.like(root.get("attractionType"), "%" + attractionType + "%"));
 		}
 		
 		if(attractionDescription != null) {
-			sql.append(" AND attraction_description LIKE ?");
-			list.add("%" + attractionDescription + "%");
+			predicates.add(cb.like(root.get("attractionDescription"), "%" + attractionDescription + "%"));
 		}
 		
 
+		// 篩選條件
+		cq.select(root).where(predicates.toArray(new Predicate[0]));	
 		
-		return DaoUtils.commonsQuery(sql.toString(), new AttractionRowMapper(), list.toArray());
+		// 創建session查詢
+		Query<Attraction> query = session.createQuery(cq);
+		
+		// 透過session查詢獲得結果
+		List<Attraction> attractions = query.getResultList();
+		
+		return DaoResult.create(attractions).setSuccess(attractions != null);
 	}
 	
 	
@@ -78,9 +101,9 @@ public class AttractionDao {
 	 * @return
 	 */
 	public DaoResult<Attraction> getAttractionById(Integer attractionId) {
-		String sql = "SELECT * FROM attraction WHERE attraction_id = ?";
-		return DaoUtils.commonsQuery(sql, new AttractionRowMapper(), attractionId);
-
+		String hql = "FROM attraction WHERE attractionId = :attractionId";
+		Attraction attraction = session.createQuery(hql, Attraction.class).setParameter("attractionId", attractionId).getSingleResult();
+		return DaoResult.create(attraction).setSuccess(attraction != null);
 	}
 	
 		
@@ -89,14 +112,10 @@ public class AttractionDao {
 	 * @param attraction
 	 * @return
 	 */
-	public DaoResult<Integer> addAttraction(Attraction attraction) {
-		String sql = "INSERT INTO attraction (attraction_name, attraction_city, address, opening_hours,"
-				+ " attraction_type, attraction_description) VALUES(?,?,?,?,?,?)";
-		return DaoUtils.commonsUpdate(
-				sql, 
-				attraction.getAttractionName(),attraction.getAttractionCity(),
-				attraction.getAddress(),attraction.getOpeningHour(),
-				attraction.getAttractionType(),attraction.getAttractionDescription());
+	public DaoResult<?> addAttraction(Attraction attraction) {
+		session.persist(attraction);
+		Integer attractionId = attraction.getAttractionId();
+		return DaoResult.create().setGeneratedId(attractionId).setSuccess(attractionId != null);
 	}
 	
 	
@@ -104,9 +123,13 @@ public class AttractionDao {
 	 * 依id刪除景點
 	 * @param attractionId
 	 */
-	public DaoResult<Integer> removeAddractionById(Integer attractionId) {
-		String sql = "DELETE FROM attraction WHERE attraction_id= ?";
-		return DaoUtils.commonsUpdate(sql, attractionId);
+	public DaoResult<?> removeAddractionById(Integer attractionId) {
+		Attraction attraction = session.get(Attraction.class, attractionId);
+		if(attraction != null) {
+			session.remove(attraction);
+			return DaoResult.create().setSuccess(true);
+		}
+		return DaoResult.create().setSuccess(false);
 	}
 	
 	
@@ -114,14 +137,9 @@ public class AttractionDao {
 	 * 更新景點
 	 * @param attraction
 	 */
-	public DaoResult<Integer> updateAttraction(Attraction attraction) {
-		String sql = "UPDATE attraction SET attraction_name=?, attraction_city=?,address=?, opening_hours=?,"
-				+ " attraction_type=?, attraction_description=? WHERE attraction_id=?";
-		return DaoUtils.commonsUpdate(
-				sql, attraction.getAttractionName(), attraction.getAttractionCity(),
-				attraction.getAddress(), attraction.getOpeningHour(),
-				attraction.getAttractionType(),attraction.getAttractionDescription(),
-				attraction.getAttractionId());	
+	public DaoResult<?> updateAttraction(Attraction attraction) {
+		Attraction updatedAttraction = session.merge(attraction);
+		return DaoResult.create().setSuccess(updatedAttraction != null);
 	}
 
 
