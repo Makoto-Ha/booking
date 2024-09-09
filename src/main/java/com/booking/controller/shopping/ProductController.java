@@ -3,8 +3,11 @@ package com.booking.controller.shopping;
 import java.io.IOException;
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.booking.bean.shopping.Product;
 import com.booking.service.shopping.ProductService;
+import com.booking.utils.HibernateUtil;
 import com.booking.utils.Result;
 
 import jakarta.servlet.ServletException;
@@ -18,7 +21,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private ProductService productService = new ProductService();
+	private ProductService productService;
+	
+	@Override
+	public void init() throws ServletException {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		this.productService = new ProductService(session);
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -84,7 +93,7 @@ public class ProductController extends HttpServlet {
 		String sortOrder = request.getParameter("sortOrder");
 
 		if (sortBy == null || sortBy.isEmpty()) {
-			sortBy = "product_id"; // 默認排序字段
+			sortBy = "productId"; // 默認排序字段
 		}
 		if (sortOrder == null || sortOrder.isEmpty()) {
 			sortOrder = "DESC"; // 默認排序方式
@@ -99,6 +108,9 @@ public class ProductController extends HttpServlet {
 	}
 
 	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		
+		 Session session = (Session) request.getAttribute("hibernateSession");
+		    ProductService productService = new ProductService(session);
 		Integer categoryId = Integer.parseInt(request.getParameter("category-id"));
 		String productName = request.getParameter("product-name");
 		String productDescription = request.getParameter("product-description");
