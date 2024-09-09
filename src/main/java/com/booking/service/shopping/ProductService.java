@@ -2,109 +2,112 @@ package com.booking.service.shopping;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 import com.booking.bean.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
-import com.booking.utils.DaoResult;
 import com.booking.utils.Result;
+import com.booking.utils.util.DaoResult;
 
 public class ProductService {
 
-	private ProductDao productDao = new ProductDao();
+	private ProductDao productDao;
+
+	public ProductService(Session session) {
+		this.productDao = new ProductDao(session);
+	}
 
 	public Result<Product> getProductById(Integer productId) {
 		DaoResult<Product> daoResult = productDao.getProductById(productId);
-		Product product = daoResult.getEntity();
-		if (product == null) {
+		if (!daoResult.isSuccess()) {
 			return Result.failure("獲取商品失敗");
 		}
-		return Result.success(product);
+		return Result.success(daoResult.getData());
 	}
 
 	public Result<List<Product>> getProductByName(String productName, String sortBy, String sortOrder) {
 		if (sortBy == null || sortBy.isEmpty()) {
-			sortBy = "product_id"; // 默認排序字段
+			sortBy = "productId"; // 默認
 		}
 		if (sortOrder == null || sortOrder.isEmpty()) {
-			sortOrder = "DESC"; // 默認排序方式
+			sortOrder = "DESC"; // 默認
 		}
-		DaoResult<Product> daoResult = productDao.getProductByName(productName, sortBy,sortOrder);
-		List<Product> productList = daoResult.getData();
-		if (productList == null) {
+		DaoResult<List<Product>> daoResult = productDao.getProductByName(productName, sortBy, sortOrder);
+		if (!daoResult.isSuccess()) {
 			return Result.failure("獲取商品失敗");
 		}
-		return Result.success(productList);
+		return Result.success(daoResult.getData());
 	}
-	
+
 	public Result<List<Product>> getAllProduct(String sortBy, String sortOrder) {
-		DaoResult<Product> daoResult = productDao.getAllProduct(sortBy,sortOrder);
-		List<Product> productList = daoResult.getData();
-		if (productList == null) {
+		if (sortBy == null || sortBy.isEmpty()) {
+			sortBy = "productId"; // 默認
+		}
+		if (sortOrder == null || sortOrder.isEmpty()) {
+			sortOrder = "DESC"; // 默認
+		}
+		DaoResult<List<Product>> daoResult = productDao.getAllProduct(sortBy, sortOrder);
+		if (!daoResult.isSuccess()) {
 			return Result.failure("獲取商品失敗");
 		}
-		return Result.success(productList);
+		return Result.success(daoResult.getData());
 	}
 
 	public Result<Integer> addProduct(Product product) {
-		DaoResult<Integer> daoResult = productDao.addProduct(product);
-		if (daoResult.getGeneratedId() == null) {
+		DaoResult<?> daoResult = productDao.addProduct(product);
+		if (!daoResult.isSuccess()) {
 			return Result.failure("新增失敗");
 		}
 		return Result.success(daoResult.getGeneratedId());
 	}
 
 	public Result<String> removeProduct(Integer productId) {
-		DaoResult<Integer> productDaoResult = productDao.removeProduct(productId);
-
-		if (productDaoResult.getAffectedRows() == 0) {
+		DaoResult<?> daoResult = productDao.removeProductById(productId);
+		if (!daoResult.isSuccess()) {
 			return Result.failure("刪除失敗");
 		}
-
 		return Result.success("刪除成功");
 	}
 
 	public Result<String> updateProduct(Product product) {
-		Integer oldProductId = product.getProductId();
-		Product oldProduct = productDao.getProductById(oldProductId).getEntity();
+		
+		DaoResult<Product> daoResult = productDao.getProductById(product.getProductId());
+		
+		if (!daoResult.isSuccess()) {
+			return Result.failure("商品不存在");
+		}
 
-		Integer categoryId = product.getCategoryId();
-		String productName = product.getProductName();
-		String productImage = product.getProductImage();
-		String productDescription = product.getProductDescription();
-		Integer productPrice = product.getProductPrice();
-		Integer productSales = product.getProductSales();
-		Integer productInventorey = product.getProductInventorey();
-		Integer productState = product.getProductState();
-
-		if (categoryId == null) {
+		Product oldProduct = daoResult.getData();
+		
+		if (product.getCategoryId() == null) {
 			product.setCategoryId(oldProduct.getCategoryId());
 		}
-		if (productName == null || productName.isEmpty()) {
+		if (product.getProductName() == null || product.getProductName().isEmpty()) {
 			product.setProductName(oldProduct.getProductName());
 		}
-		if (productImage == null || productImage.isEmpty()) {
+		if (product.getProductImage() == null || product.getProductImage().isEmpty()) {
 			product.setProductImage(oldProduct.getProductImage());
 		}
-		if (productDescription == null || productDescription.isEmpty()) {
+		if (product.getProductDescription() == null || product.getProductDescription().isEmpty()) {
 			product.setProductDescription(oldProduct.getProductDescription());
 		}
-		if (productPrice == null) {
+		if (product.getProductPrice() == null) {
 			product.setProductPrice(oldProduct.getProductPrice());
 		}
-		if (productSales == null) {
+		if (product.getProductSales() == null) {
 			product.setProductSales(oldProduct.getProductSales());
 		}
-		if (productInventorey == null) {
+		if (product.getProductInventorey() == null) {
 			product.setProductInventorey(oldProduct.getProductInventorey());
 		}
-		if (productState == null) {
+		if (product.getProductState() == null) {
 			product.setProductState(oldProduct.getProductState());
 		}
-		DaoResult<Integer> updateProductDaoResult = productDao.updateProduct(product);
 
-		if (updateProductDaoResult.getAffectedRows() == null) {
+		DaoResult<?> updateProductDaoResult = productDao.updateProduct(product);
+		if (!updateProductDaoResult.isSuccess()) {
 			return Result.failure("商品更新失敗");
 		}
-
 		return Result.success("商品更新成功");
 	}
 
