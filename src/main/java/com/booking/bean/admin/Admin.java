@@ -2,125 +2,137 @@ package com.booking.bean.admin;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "admin") // 对应数据库中的表名为 "admin"
 public class Admin {
 
-	private static final long serialVersionUID = 1L;
-	private Integer adminId;
-	private String adminAccount;
-	private String adminName;
-	private String adminMail;
-	private LocalDate hiredate;
-	private Integer adminStatus;
-	private String adminPassword;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 主键生成策略为自增
+    @Column(name = "admin_id") // 对应数据库中的列名为 "admin_id"
+    private Integer adminId;
 
-	public Admin() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    @Column(name = "admin_account", nullable = false, length = 30) // 对应数据库中的列名为 "admin_account"，长度为 30，不能为空
+    private String adminAccount;
 
-	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
-			Integer adminStatus) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminName = adminName;
-		this.adminMail = adminMail;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-	}
+    @Column(name = "admin_name", nullable = false, length = 50) // 对应数据库中的列名为 "admin_name"，长度为 50，不能为空
+    private String adminName;
 
-	public Admin(Integer adminId, String adminAccount, String adminPassword, String adminName, String adminMail,
-			LocalDate hiredate, Integer adminStatus) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminPassword = adminPassword;
-		this.adminName = adminName;
-		this.adminMail = adminMail;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-	}
+    @Column(name = "admin_mail", nullable = false, length = 100) // 对应数据库中的列名为 "admin_mail"，长度为 100，不能为空
+    private String adminMail;
 
-	public Admin(String adminAccount, String adminPassword, String adminName, String adminMail, LocalDate hiredate,
-			Integer adminStatus) {
-		super();
-		this.adminAccount = adminAccount;
-		this.adminPassword = adminPassword;
-		this.adminName = adminName;
-		this.adminMail = adminMail;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-	}
+    @Column(name = "hiredate", nullable = false) // 对应数据库中的列名为 "hiredate"，不能为空
+    private LocalDate hiredate;
 
-	public Integer getAdminId() {
-		return adminId;
-	}
+    @Column(name = "admin_status", nullable = false) // 对应数据库中的列名为 "admin_status"，不能为空
+    private Integer adminStatus;
 
-	public void setAdminId(Integer adminId) {
-		this.adminId = adminId;
-	}
+    @Column(name = "admin_password", nullable = false, length = 100) // 对应数据库中的列名为 "admin_password"，长度为 100，不能为空
+    private String adminPassword;
 
-	public String getAdminAccount() {
-		return adminAccount;
-	}
+    // 默认构造函数
+    public Admin() {
+        super();
+    }
 
-	public void setAdminAccount(String adminAccount) {
-		this.adminAccount = adminAccount;
-	}
+    // 构造函数
+    public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate, Integer adminStatus) {
+        this.adminId = adminId;
+        this.adminAccount = adminAccount;
+        this.adminName = adminName;
+        this.adminMail = adminMail;
+        this.hiredate = hiredate;
+        this.adminStatus = adminStatus;
+    }
 
-	public String getAdminPassword() {
-		return adminPassword;
-	}
+    public Admin(Integer adminId, String adminAccount, String adminPassword, String adminName, String adminMail, LocalDate hiredate, Integer adminStatus) {
+        this.adminId = adminId;
+        this.adminAccount = adminAccount;
+        this.adminPassword = adminPassword;
+        this.adminName = adminName;
+        this.adminMail = adminMail;
+        this.hiredate = hiredate;
+        this.adminStatus = adminStatus;
+    }
 
-	public void setAdminPassword(String adminPassword) {
-		this.adminPassword = adminPassword;
-	}
+    public Admin(String adminAccount, String adminPassword, String adminName, String adminMail, LocalDate hiredate, Integer adminStatus) {
+        this.adminAccount = adminAccount;
+        this.adminPassword = adminPassword;
+        this.adminName = adminName;
+        this.adminMail = adminMail;
+        this.hiredate = hiredate;
+        this.adminStatus = adminStatus;
+    }
 
-	public String getAdminName() {
-		return adminName;
-	}
+    // Getters 和 Setters
+    public Integer getAdminId() {
+        return adminId;
+    }
 
-	public void setAdminName(String adminName) {
-		this.adminName = adminName;
-	}
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
+    }
 
-	public String getAdminMail() {
-		return adminMail;
-	}
+    public String getAdminAccount() {
+        return adminAccount;
+    }
 
-	public void setAdminMail(String adminMail) {
-		this.adminMail = adminMail;
-	}
+    public void setAdminAccount(String adminAccount) {
+        this.adminAccount = adminAccount;
+    }
 
-	public LocalDate getHiredate() {
-		return hiredate;
-	}
+    public String getAdminPassword() {
+        return adminPassword;
+    }
 
-	public void setHiredate(LocalDate hiredate) {
-		this.hiredate = hiredate;
-	}
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
 
-	public Integer getAdminStatus() {
-		return adminStatus;
-	}
+    public String getAdminName() {
+        return adminName;
+    }
 
-	public void setAdminStatus(Integer adminStatus) {
-		this.adminStatus = adminStatus;
-	}
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public String getAdminMail() {
+        return adminMail;
+    }
 
-	@Override
-	public String toString() {
-		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminPassword=" + adminPassword
-				+ ", adminName=" + adminName + ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus="
-				+ adminStatus + "]";
-	}
+    public void setAdminMail(String adminMail) {
+        this.adminMail = adminMail;
+    }
 
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public LocalDate getHiredate() {
+        return hiredate;
+    }
+
+    public void setHiredate(LocalDate hiredate) {
+        this.hiredate = hiredate;
+    }
+
+    public Integer getAdminStatus() {
+        return adminStatus;
+    }
+
+    public void setAdminStatus(Integer adminStatus) {
+        this.adminStatus = adminStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminPassword=" + adminPassword + ", adminName=" + adminName + ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus + "]";
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
 }
