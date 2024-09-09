@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC
-        "-//Hibernate/Hibernate Configuration DTD 5.3//EN"
-        "http://hibernate.org/dtd/hibernate-configuration-5.3.dtd">
 <hibernate-configuration>
 	<session-factory>
 		<!-- 使用JNDI數據 -->
