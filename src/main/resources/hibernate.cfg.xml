@@ -32,12 +32,12 @@
 
 		<!-- 這裡添加JavaBean -->
 		<mapping class="com.booking.bean.booking.Roomtype" />
-		<mapping class="com.booking.bean.booking.Room" />
+		<mapping class="com.booking.bean.booking.Room" /
 		
 		<!-- 商城 -->
-		<mapping class="com.booking.bean.shopping.Product" />
+  	<mapping class="com.booking.bean.shopping.Product" />
 		
-		
+    
 		<mapping class="com.booking.bean.attraction.Attraction" />
 	</session-factory>
 </hibernate-configuration>
