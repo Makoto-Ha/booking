@@ -1,18 +1,42 @@
 package com.booking.bean.shopping;
 
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-public class Product implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+@Entity
+@Table(name = "product")
+public class Product {
+	@Id
+	@Column(name = "product_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer productId;
+	
+	@Column(name = "category_id")
 	private Integer categoryId;
+	
+	@Column(name = "product_name")
 	private String productName;
+	
+	@Column(name = "product_image")
 	private String productImage;
+	
+	@Column(name = "product_description")
 	private String productDescription;
+	
+	@Column(name = "product_price")
 	private Integer productPrice;
+	
+	@Column(name = "product_sales")
 	private Integer productSales;
+	
+	@Column(name = "product_inventorey")
 	private Integer productInventorey;
+	
+	@Column(name = "product_state")
 	private Integer productState;
 
 	public Product() {
