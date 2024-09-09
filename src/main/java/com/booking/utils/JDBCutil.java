@@ -27,8 +27,8 @@ public class JDBCutil {
 //			String password = props.getProperty("password");
 
 			String url = "jdbc:sqlserver://localhost:1433;DatabaseName=bookingDB;encrypt=false";
-			String user = "makoto";
-			String password = "123456";
+			String user = "Cheng";
+			String password = "1234";
 
 			dataSource.setDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			dataSource.setJdbcUrl(url);

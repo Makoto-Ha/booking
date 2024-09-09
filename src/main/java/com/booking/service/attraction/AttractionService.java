@@ -5,25 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.Session;
 
 import com.booking.bean.attraction.Attraction;
 import com.booking.dao.attraction.AttractionDao;
 import com.booking.dto.attraction.AttractionDTO;
-import com.booking.utils.DaoResult;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
+import com.booking.utils.util.DaoResult;
 
 
 public class AttractionService {
-	private AttractionDao attractionDao = new AttractionDao();
+	private AttractionDao attractionDao;
 	
+	public AttractionService(Session session) {
+		this.attractionDao = new AttractionDao(session);
+	}
+
 	/**
 	 * 獲取所有景點
 	 * @return
 	 */
 	public Result<List<Listable>> getAttractionAll() {
-		DaoResult<Attraction> daoResult = attractionDao.getAttractionAll();
-		List<Attraction> attractions = daoResult.getData();
+		DaoResult<List<Attraction>> getAllResult = attractionDao.getAttractionAll();
+		List<Attraction> attractions = getAllResult.getData();
 		List<Listable> lists = new ArrayList<>();
 		for(Attraction attraction : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
@@ -34,7 +39,7 @@ public class AttractionService {
 			} 
 			lists.add(attractionDTO);
 		}
-		if(attractions == null) {
+		if(getAllResult.isFailure()) {
 			return Result.failure("查詢所有景點失敗");
 		}
 		return Result.success(lists);
@@ -46,10 +51,10 @@ public class AttractionService {
 	 * @return
 	 */
 	public Result<List<Listable>> getAttractions(Attraction attraction) {
-		DaoResult<Attraction> daynamicQueryDaoResult = attractionDao.dynamicQuery(attraction);
+		DaoResult<List<Attraction>> daynamicQueryDaoResult = attractionDao.dynamicQuery(attraction);
 		List<Attraction> attractions = daynamicQueryDaoResult.getData();
 		
-		if(attractions == null) {
+		if(daynamicQueryDaoResult.isFailure()) {
 			return Result.failure("無法查詢");
 		}
 		List<Listable> attractionsDTO = new ArrayList<>();
@@ -73,8 +78,8 @@ public class AttractionService {
 	 */
 	public Result<Attraction> getAttractionById(Integer attractionId) {
 		DaoResult<Attraction> daoResult = attractionDao.getAttractionById(attractionId);
-		Attraction attraction = daoResult.getEntity();
-		if(attraction == null) {
+		Attraction attraction = daoResult.getData();
+		if(daoResult.isFailure()) {
 			return Result.failure("沒有此景點");
 		}
 		return Result.success(attraction);
@@ -88,11 +93,11 @@ public class AttractionService {
 	 * @return
 	 */
 	public Result<Integer> addAttraction(Attraction attraction) {
-		DaoResult<Integer> daoResult = attractionDao.addAttraction(attraction);
-		if(daoResult.getAffectedRows() == null) {
+		DaoResult<?> addAttractionResult = attractionDao.addAttraction(attraction);
+		if(addAttractionResult.isFailure()) {
 			return Result.failure("新增失敗");
 		}
-		return Result.success(daoResult.getGeneratedId());
+		return Result.success(addAttractionResult.getGeneratedId());
 	}
 	
 	
@@ -101,16 +106,21 @@ public class AttractionService {
 	 * @param attractionId
 	 */
 	public Result<String> removeAttraction(Integer attractionId) {
-		DaoResult<Integer> daoResult = attractionDao.removeAddractionById(attractionId);
-		if(daoResult.getGeneratedId() == null) {
+		DaoResult<?> removeAttractionResult = attractionDao.removeAddractionById(attractionId);
+		if(removeAttractionResult.isFailure()) {
 			return Result.failure("刪除失敗");
 		}
 		return Result.success("刪除成功");
 	}
 	
+	/**
+	 * 更新景點
+	 * @param attraction
+	 * @return
+	 */
 	public Result<String> updateAttraction(Attraction attraction) {
 		Integer oldAttractionId = attraction.getAttractionId();
-		Attraction oldAttraction = attractionDao.getAttractionById(oldAttractionId).getEntity();
+		Attraction oldAttraction = attractionDao.getAttractionById(oldAttractionId).getData();
 		String attractionName = attraction.getAttractionName();
 		String attractionCity = attraction.getAttractionCity();
 		String address = attraction.getAddress();
@@ -137,9 +147,8 @@ public class AttractionService {
 			attraction.setAttractionDescription(oldAttraction.getAttractionDescription());
 		}
 
-		DaoResult<Integer> updateAttractionDaoResult = attractionDao.updateAttraction(attraction);
-		System.out.println(updateAttractionDaoResult.getAffectedRows());
-		if(updateAttractionDaoResult.getAffectedRows() == null) {
+		DaoResult<?> updateAttractionResult = attractionDao.updateAttraction(attraction);
+		if(updateAttractionResult.isFailure()) {
 			return Result.failure("更新失敗");
 		}
 		return Result.success("更新成功");

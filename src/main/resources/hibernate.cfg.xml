@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <hibernate-configuration>
 	<session-factory>
 		<!-- 使用JNDI數據 -->
@@ -33,5 +33,6 @@
 		<!-- 這裡添加JavaBean -->
 		<mapping class="com.booking.bean.booking.Roomtype" />
 		<mapping class="com.booking.bean.booking.Room" />
+		<mapping class="com.booking.bean.attraction.Attraction" />
 	</session-factory>
 </hibernate-configuration>
