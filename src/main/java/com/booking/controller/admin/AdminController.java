@@ -165,7 +165,6 @@ public class AdminController extends HttpServlet {
         response.sendRedirect("/booking/admin");
     }
 
-		
 //	/**
 //	 * 刪除房間類型
 //	 * 
