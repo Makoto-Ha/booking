@@ -33,5 +33,10 @@
 		<!-- 這裡添加JavaBean -->
 		<mapping class="com.booking.bean.booking.Roomtype" />
 		<mapping class="com.booking.bean.booking.Room" />
+		
+		<!-- 商城 -->
+		<mapping class="com.booking.bean.booking.product" />
+		
+		
 	</session-factory>
 </hibernate-configuration>

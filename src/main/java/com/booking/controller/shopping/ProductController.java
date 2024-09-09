@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private ProductService productService = new ProductService();
+	private ProductService productService;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
