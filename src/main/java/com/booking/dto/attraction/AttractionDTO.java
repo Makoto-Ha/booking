@@ -19,7 +19,7 @@ public class AttractionDTO implements Listable {
 	private String attractionDescription;
 	private Integer totalCounts;
 	
-	private static String[] attrs = { "attraction-name","attraction-city", "address", "opening-hour", "attraction-type", "attraction-description" };
+	private static String[] attrs = { "attractionName","attractionCity", "address", "openingHour", "attractionType", "attractionDescription" };
 	private static String[] attrsChinese = { "景點名稱", "城市", "地址", "開放時間", "景點類型", "景點介紹" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
 	
