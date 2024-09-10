@@ -22,7 +22,7 @@ public class ProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ProductService productService;
-	
+
 	@Override
 	public void init() throws ServletException {
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -61,14 +61,12 @@ public class ProductController extends HttpServlet {
 //		request.getRequestDispatcher("/product/SelectProduct.jsp").forward(request, response);
 //
 //	}
-	
+
 	private void sendProductIndex(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setAttribute("manageListName", "商城列表");
 		request.getRequestDispatcher("/adminsystem/shopping/product-select.jsp").forward(request, response);
 	}
-	
-
 
 	private void selectName(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -108,9 +106,9 @@ public class ProductController extends HttpServlet {
 	}
 
 	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		 Session session = (Session) request.getAttribute("hibernateSession");
-		    ProductService productService = new ProductService(session);
+
+		Session session = (Session) request.getAttribute("hibernateSession");
+		ProductService productService = new ProductService(session);
 		Integer categoryId = Integer.parseInt(request.getParameter("category-id"));
 		String productName = request.getParameter("product-name");
 		String productDescription = request.getParameter("product-description");
@@ -145,16 +143,21 @@ public class ProductController extends HttpServlet {
 	}
 
 	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		Integer productId = Integer.parseInt(request.getParameter("product-id"));
-		Result<Product> result = productService.getProductById(productId);
-		Product product = result.getData();
-		productService.removeProduct(productId);
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			ProductService productService = new ProductService(session);
+			Result<String> result = productService.removeProduct(productId);
 
-		request.setAttribute("product", product);
-		request.setAttribute("deleteId", productId);
-		response.sendRedirect(request.getContextPath() + "/product/selectAll");
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 
+			// 傳回 JSON 格式，包含 success 欄位
+			String jsonResponse = String.format("{\"success\": %b, \"message\": \"%s\"}", result.isSuccess(),
+					result.getMessage());
+			response.getWriter().write(jsonResponse);
+		} catch (Exception e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "刪除失敗");
+		}
 	}
 
 	/**

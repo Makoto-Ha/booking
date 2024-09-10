@@ -49,12 +49,12 @@
 						
 					<label for="sortBy">排序依據:</label>
 					<select id="sortBy" name="sortBy">
-						<option value="product_id" ${param.sortBy == 'product_id' ? 'selected' : ''}>編號</option>
-						<option value="category_id" ${param.sortBy == 'category_id' ? 'selected' : ''}>分類</option>
-						<option value="product_name" ${param.sortBy == 'product_name' ? 'selected' : ''}>名稱</option>
-						<option value="product_price" ${param.sortBy == 'product_price' ? 'selected' : ''} >價格</option>
-						<option value="product_sales" ${param.sortBy == 'product_sales' ? 'selected' : ''} >銷量</option>
-						<option value="product_inventorey" ${param.sortBy == 'product_inventorey' ? 'selected' : ''} >庫存</option>
+						<option value="productId" ${param.sortBy == 'productId' ? 'selected' : ''}>編號</option>
+						<option value="categoryId" ${param.sortBy == 'categoryId' ? 'selected' : ''}>分類</option>
+						<option value="productName" ${param.sortBy == 'productName' ? 'selected' : ''}>名稱</option>
+						<option value="productPrice" ${param.sortBy == 'productPrice' ? 'selected' : ''} >價格</option>
+						<option value="productSales" ${param.sortBy == 'productSales' ? 'selected' : ''} >銷量</option>
+						<option value="productInventorey" ${param.sortBy == 'productInventorey' ? 'selected' : ''} >庫存</option>
 					</select>
 					
 					 <label for="sortOrder">順序:</label> 
@@ -134,26 +134,28 @@
 		var contextPath = "${pageContext.request.contextPath}";		
 		// 刪除並刷新
 		function deleteProduct(productId) {
-		    if (confirm("確定要刪除這個產品嗎？")) {
-		        fetch(contextPath+'/product/delete?product-id=' + productId, {
-		            method: 'GET',
-		            headers: {
-		                'Content-Type': 'application/json'
-		            }
-		        })
-		        .then(response => {
-		            if (response.ok) {
-		                location.reload();// 刪除成功，重新加載頁面
-		            } else {
-		                alert("刪除失敗");
-		            }
-		        })
-		        .catch(error => {
-		            alert("發生錯誤: " + error.message);
-		        });
-		    }
-		}
-		
+    if (confirm("確定要刪除這個產品嗎？")) {
+        fetch(contextPath + '/product/delete?product-id=' + productId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("刪除成功！");
+                location.reload(); // 刪除成功後重新加載頁面
+            } else {
+                alert("刪除失敗: " + data.message);
+            }
+        })
+        .catch(error => {
+            alert("發生錯誤: " + error.message);
+        });
+    }
+}
+
 		// 檢查按下搜尋時是否輸入
 		document.getElementById("searchForm").addEventListener("submit",function(event) {
 			let productName = document.getElementById("productName").value.trim();

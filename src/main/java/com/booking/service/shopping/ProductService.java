@@ -62,11 +62,11 @@ public class ProductService {
 	}
 
 	public Result<String> removeProduct(Integer productId) {
-		DaoResult<?> daoResult = productDao.removeProductById(productId);
-		if (!daoResult.isSuccess()) {
-			return Result.failure("刪除失敗");
-		}
-		return Result.success("刪除成功");
+	     productDao.removeProductById(productId);
+	    
+	   
+	    
+	    return Result.success("刪除成功");
 	}
 
 	public Result<String> updateProduct(Product product) {
