@@ -16,8 +16,8 @@ public class ProductDao {
 	}
 
 	public DaoResult<Product> getProductById(Integer productId) {
-		String hql = "FROM product WHERE product_id = :id";
-		Product product = session.createQuery(hql, Product.class).setParameter("product_id", productId)
+		String hql = "FROM Product WHERE productId = :id";
+		Product product = session.createQuery(hql, Product.class).setParameter("id", productId)
 				.getSingleResult();
 		return DaoResult.create(product).setSuccess(product != null);
 	}

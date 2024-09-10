@@ -49,12 +49,12 @@
 						
 					<label for="sortBy">排序依據:</label>
 					<select id="sortBy" name="sortBy">
-						<option value="product_id" ${param.sortBy == 'product_id' ? 'selected' : ''}>編號</option>
-						<option value="category_id" ${param.sortBy == 'category_id' ? 'selected' : ''}>分類</option>
-						<option value="product_name" ${param.sortBy == 'product_name' ? 'selected' : ''}>名稱</option>
-						<option value="product_price" ${param.sortBy == 'product_price' ? 'selected' : ''} >價格</option>
-						<option value="product_sales" ${param.sortBy == 'product_sales' ? 'selected' : ''} >銷量</option>
-						<option value="product_inventorey" ${param.sortBy == 'product_inventorey' ? 'selected' : ''} >庫存</option>
+						<option value="productId" ${param.sortBy == 'product_id' ? 'selected' : ''}>編號</option>
+						<option value="categoryId" ${param.sortBy == 'category_id' ? 'selected' : ''}>分類</option>
+						<option value="productName" ${param.sortBy == 'product_name' ? 'selected' : ''}>名稱</option>
+						<option value="productPrice" ${param.sortBy == 'product_price' ? 'selected' : ''} >價格</option>
+						<option value="productSales" ${param.sortBy == 'product_sales' ? 'selected' : ''} >銷量</option>
+						<option value="productInventorey" ${param.sortBy == 'product_inventorey' ? 'selected' : ''} >庫存</option>
 					</select>
 					
 					 <label for="sortOrder">順序:</label> 
