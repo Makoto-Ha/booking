@@ -17,28 +17,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = { "/product/create", "/product/delete", "/product/update", "/product/selectUpdate",
-		"/product/select", "/product/selectName", "/product/selectAll", "/product" })
+		"/product/selectName", "/product/selectAll", "/product" })
 public class ProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ProductService productService;
-	
-	@Override
-	public void init() throws ServletException {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		this.productService = new ProductService(session);
-	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String requestURI = request.getRequestURI();
 		String[] splitURI = requestURI.split("/");
 		String path = splitURI[splitURI.length - 1];
-
+		
+		Session session=(Session) request.getAttribute("hibernateSession");
+		productService = new ProductService(session);
+		
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		switch (path) {
-//		case "select" -> select(request, response);
 		case "create" -> create(request, response);
 		case "delete" -> delete(request, response);
 		case "update" -> update(request, response);
@@ -50,25 +46,11 @@ public class ProductController extends HttpServlet {
 		}
 	}
 
-//	private void select(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
-//		Integer productId = Integer.parseInt(request.getParameter("product-id"));
-//		Result<Product> productResult = productService.getProductById(productId);
-//		Product product = productResult.getData();
-//
-//		request.setAttribute("product", product);
-//		request.setAttribute("seleteId", productId);
-//		request.getRequestDispatcher("/product/SelectProduct.jsp").forward(request, response);
-//
-//	}
-	
 	private void sendProductIndex(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setAttribute("manageListName", "商城列表");
 		request.getRequestDispatcher("/adminsystem/shopping/product-select.jsp").forward(request, response);
 	}
-	
-
 
 	private void selectName(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -108,9 +90,7 @@ public class ProductController extends HttpServlet {
 	}
 
 	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		 Session session = (Session) request.getAttribute("hibernateSession");
-		    ProductService productService = new ProductService(session);
+
 		Integer categoryId = Integer.parseInt(request.getParameter("category-id"));
 		String productName = request.getParameter("product-name");
 		String productDescription = request.getParameter("product-description");
@@ -167,6 +147,7 @@ public class ProductController extends HttpServlet {
 	 */
 	private void selectUpdate(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+		
 		Integer productId = Integer.parseInt(request.getParameter("product-id"));
 		Result<Product> result = productService.getProductById(productId);
 		Product product = result.getData();
