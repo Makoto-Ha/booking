@@ -26,6 +26,7 @@ public class ProductService {
 	}
 
 	public Result<List<Product>> getProductByName(String productName, String sortBy, String sortOrder) {
+		// 檢查、設定默認排序
 		if (sortBy == null || sortBy.isEmpty()) {
 			sortBy = "productId"; // 默認
 		}
@@ -40,6 +41,7 @@ public class ProductService {
 	}
 
 	public Result<List<Product>> getAllProduct(String sortBy, String sortOrder) {
+		// 檢查、設定默認排序
 		if (sortBy == null || sortBy.isEmpty()) {
 			sortBy = "productId"; // 默認
 		}

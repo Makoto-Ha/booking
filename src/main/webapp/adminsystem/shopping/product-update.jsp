@@ -83,8 +83,8 @@
                     <button type="submit">確認修改</button><br>
                     <button type="button" class="cancel">取消</button>
                 </div>
-                
-                <input type="hidden" id="referrer" name="referrer" value="<%= request.getHeader("referer") %>">
+                <!-- 拿前一頁的連結 -->
+                <input type="hidden" id="referrer" name="referrer" value="<%= request.getHeader("referer") %>"> 
             </form>
         </div>
     </div>

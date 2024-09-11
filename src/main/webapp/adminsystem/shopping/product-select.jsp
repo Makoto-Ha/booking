@@ -65,7 +65,7 @@
 					<button type="submit" style="width: 60px">查詢</button>
 					
 					<br>
-					<a href="${pageContext.request.contextPath}/adminsystem/shopping/product-create.jsp">
+					<a href="${pageContext.request.contextPath}/product/sendCreate">
 					<button type="button" class="btn" style="width:100px;">新增商品</button></a>
 					
 					<a href="${pageContext.request.contextPath}/product/selectAll">
@@ -154,7 +154,7 @@
 		    }
 		}
 		
-		// 檢查按下搜尋時是否輸入
+		// 檢查按下搜尋時是否有輸入
 		document.getElementById("searchForm").addEventListener("submit",function(event) {
 			let productName = document.getElementById("productName").value.trim();
 			if (productName === "") {
