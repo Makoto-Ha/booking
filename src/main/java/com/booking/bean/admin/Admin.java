@@ -15,30 +15,30 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "admin") // 对应数据库中的表名为 "admin"
+@Table(name = "admin") 
 public class Admin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 主键生成策略为自增
-    @Column(name = "admin_id") // 对应数据库中的列名为 "admin_id"
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "admin_id") 
     private Integer adminId;
 
-    @Column(name = "admin_account", nullable = false, length = 30) // 对应数据库中的列名为 "admin_account"，长度为 30，不能为空
+    @Column(name = "admin_account", nullable = false, length = 30) 
     private String adminAccount;
 
-    @Column(name = "admin_name", nullable = false, length = 50) // 对应数据库中的列名为 "admin_name"，长度为 50，不能为空
+    @Column(name = "admin_name", nullable = false, length = 50) 
     private String adminName;
 
-    @Column(name = "admin_mail", nullable = false, length = 100) // 对应数据库中的列名为 "admin_mail"，长度为 100，不能为空
+    @Column(name = "admin_mail", nullable = false, length = 100) 
     private String adminMail;
 
-    @Column(name = "hiredate", nullable = false) // 对应数据库中的列名为 "hiredate"，不能为空
+    @Column(name = "hiredate", nullable = false) 
     private LocalDate hiredate;
 
-    @Column(name = "admin_status", nullable = false) // 对应数据库中的列名为 "admin_status"，不能为空
+    @Column(name = "admin_status", nullable = false) 
     private Integer adminStatus;
 
-    @Column(name = "admin_password", nullable = false, length = 100) // 对应数据库中的列名为 "admin_password"，长度为 100，不能为空
+    @Column(name = "admin_password", nullable = false, length = 100) 
     private String adminPassword;
     
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
@@ -134,7 +134,7 @@ public class Admin {
     public void setAdminStatus(Integer adminStatus) {
         this.adminStatus = adminStatus;
     }
-
+  
 	public List<Comment> getComments() {
 		return comments;
 	}

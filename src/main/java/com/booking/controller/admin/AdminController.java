@@ -2,19 +2,15 @@ package com.booking.controller.admin;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.booking.bean.admin.Admin;
 import com.booking.dto.admin.AdminDTO;
 import com.booking.service.admin.AdminService;
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.LocalDateAdapter;
-import com.booking.utils.LocalDateTimeAdapter;
 import com.booking.utils.RequestParamUtils;
 import com.booking.utils.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -68,9 +64,7 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
-        String jsonData = gson.toJson(adminServiceResult.getData());
+        String jsonData = JsonUtil.toJson(adminServiceResult.getData());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonData);
@@ -115,24 +109,17 @@ public class AdminController extends HttpServlet {
         request.getRequestDispatcher("../adminsystem/admin/admin-select.jsp").forward(request, response);
     }
 
-//	/**
-//	 * 新增管理員資料
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws ServletException
-//	 * @throws IOException
-//	 */
+
 	
 
-//	/**
-//	 * 新增管理員資料
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws ServletException
-//	 * @throws IOException
-//	 */
+	/**
+	 * 新增管理員資料
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	private void sendCreateJsp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.getRequestDispatcher("../adminsystem/admin/admin-create.jsp").forward(request, response);
@@ -165,13 +152,13 @@ public class AdminController extends HttpServlet {
         response.sendRedirect("/booking/admin");
     }
 
-//	/**
-//	 * 刪除房間類型
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws IOException
-//	 */
+	/**
+	 * 刪除房間類型
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Integer adminId = Integer.parseInt(request.getParameter("admin-id"));
 		Result<Integer> adminServiceResult = adminService.softRemoveAdmin(adminId);
@@ -182,14 +169,14 @@ public class AdminController extends HttpServlet {
 		response.sendRedirect("/booking/admin");
 	}
 
-//	/**
-//	 * 轉去edit.jsp
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws ServletException
-//	 * @throws IOException
-//	 */
+	/**
+	 * 轉去edit.jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	private void sendEditJsp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Integer adminId = Integer.parseInt(request.getParameter("admin-id"));
@@ -204,14 +191,14 @@ public class AdminController extends HttpServlet {
         request.getRequestDispatcher("../adminsystem/admin/admin-edit.jsp").forward(request, response);
     }
 
-//	/**
-//	 * 更新員工狀態
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws IOException
-//	 * @throws ServletException
-//	 */
+	/**
+	 * 更新員工狀態
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Integer adminId = (Integer) request.getSession().getAttribute("admin-id");
 		String adminAccount = RequestParamUtils.getParameter(request, "admin-account", String.class);
@@ -230,14 +217,14 @@ public class AdminController extends HttpServlet {
         response.sendRedirect("/booking/admin");
     }
 
-//	/**
-//	 * 登入
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws IOException
-//	 * @throws ServletException
-//	 */
+	/**
+	 * 登入
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void login(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, IndexOutOfBoundsException {
 		String adminAccount = request.getParameter("admin-account");
@@ -252,14 +239,14 @@ public class AdminController extends HttpServlet {
         response.sendRedirect("/booking/admin");
     }
 
-//	/**
-//	 * 註冊
-//	 * 
-//	 * @param request
-//	 * @param response
-//	 * @throws IOException
-//	 * @throws ServletException
-//	 */
+	/**
+	 * 註冊
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void register(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		String adminAccount = request.getParameter("admin-account");
