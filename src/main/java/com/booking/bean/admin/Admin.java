@@ -1,12 +1,17 @@
 package com.booking.bean.admin;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.booking.bean.comment.Comment;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,6 +40,9 @@ public class Admin {
 
     @Column(name = "admin_password", nullable = false, length = 100) // 对应数据库中的列名为 "admin_password"，长度为 100，不能为空
     private String adminPassword;
+    
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     // 默认构造函数
     public Admin() {
@@ -126,8 +134,16 @@ public class Admin {
     public void setAdminStatus(Integer adminStatus) {
         this.adminStatus = adminStatus;
     }
+  
+	public List<Comment> getComments() {
+		return comments;
+	}
 
-    @Override
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	@Override
     public String toString() {
         return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminPassword=" + adminPassword + ", adminName=" + adminName + ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus + "]";
     }

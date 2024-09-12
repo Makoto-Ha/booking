@@ -216,6 +216,7 @@ public class RoomtypeController extends HttpServlet {
 		requestParameters.put("paramters", roomtype);
 		requestParameters.put("extraValues", extraValues);
 		
+		JsonUtil.setNonNull();
 		String jsonData = JsonUtil.toJson(requestParameters);
 		
 		Map<String, Integer> pageNumber = new HashMap<>();

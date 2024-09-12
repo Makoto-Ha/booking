@@ -15,43 +15,43 @@
             <%@include file="../navbar.jsp"%>
             <form class="form" action="${pageContext.request.contextPath}/comment/replyToComment" method="post">
                 <div class="form-group">
-                    <label for="comment-Id">評論編號</label>
-                    <input type="text" id="comment-Id" name="comment-Id" placeholder="評論編號" value="${comment.getCommentId()}" readonly>
+                    <label for="comment-id"">評論編號</label>
+                    <input type="text" id="comment-id" name="comment-id" placeholder="評論編號" value="${comment.commentId}" readonly>
                 </div>
                 
                 <div class="form-group">
-                    <label for="roomtype-Id">房間類型編號</label>
-                    <input type="text" id="roomtype-Id" name="roomtype-Id" placeholder="房間類型編號" value="${comment.getRoomtypeId()}" readonly>
+                    <label for="roomtype-id"">房間類型編號</label>
+                    <input type="text" id="roomtype-id"" name="roomtype-id"" placeholder="房間類型編號" value="${comment.getRoomtypeId()}" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="member-Id">會員編號</label>
-                    <input type="text" id="member-Id" name="member-Id" placeholder="會員編號" value="${comment.getMemberId()}" readonly>
+                    <label for="member-id"">會員編號</label>
+                    <input type="text" id="member-id"" name="member-id"" placeholder="會員編號" value="${comment.getMemberId()}" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="comment-Score">評分</label>
-                    <input type="text" id="comment-Score" name="comment-Score" placeholder="評分" value="${comment.getCommentScore()}" readonly>
+                    <input type="text" id="comment-Score" name="comment-score" placeholder="評分" value="${comment.getCommentScore()}" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="comment-Content">評論內容</label>
-                    <textarea id="comment-Content" name="comment-Content" placeholder="評論內容" readonly>${comment.getCommentContent()}</textarea>
+                    <textarea id="comment-Content" name="comment-content" placeholder="評論內容" readonly>${comment.getCommentContent()}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="created-Time">評論時間</label>
-                    <input type="text" id="created-Time" name="created-Time" placeholder="評論時間" value="${comment.getCreatedTime()}" readonly>
+                    <input type="text" id="created-Time" name="created-time" placeholder="評論時間" value="${comment.getCreatedTime()}" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="employee-Id">員工編號</label>
-                    <input type="text" id="employee-Id" name="employee-Id" placeholder="輸入員工編號" value="${comment.getEmployeeId()}">
+                    <label for="admin-id">員工編號</label>
+                    <input type="text" id="admin-id" name="admin-id" placeholder="輸入員工編號" value="${comment.adminId}">
                 </div>
 
                 <div class="form-group">
-                    <label for="employee-Reply">員工回覆</label>
-                    <textarea id="employee-Reply" name="employee-Reply" placeholder="輸入員工回覆">${comment.getEmployeeReply()}</textarea>
+                    <label for="admin-reply">員工回覆</label>
+                    <textarea id="admin-reply" name="admin-reply" placeholder="輸入員工回覆">${comment.adminReply}</textarea>
                 </div>
 
                 <div class="form-group">

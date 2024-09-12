@@ -11,7 +11,9 @@ import org.hibernate.Session;
 
 import com.booking.bean.booking.Room;
 import com.booking.bean.booking.Roomtype;
+import com.booking.dao.booking.RoomDaoImpl;
 import com.booking.dao.booking.RoomDao;
+import com.booking.dao.booking.RoomtypeDaoImpl;
 import com.booking.dao.booking.RoomtypeDao;
 import com.booking.dto.booking.RoomtypeDTO;
 import com.booking.utils.util.DaoResult;
@@ -20,12 +22,14 @@ import com.booking.utils.Result;
 
 public class RoomtypeService {
 	private RoomtypeDao roomtypeDao;
-	private RoomDao roomDao = new RoomDao();
-	private RoomService roomService = new RoomService();
+	private RoomDao roomDao;
+	private RoomService roomService;
 	
 	
 	public RoomtypeService(Session session) {
-		this.roomtypeDao = new RoomtypeDao(session);
+		this.roomtypeDao = new RoomtypeDaoImpl(session);
+		this.roomDao = new RoomDaoImpl(session);
+		this.roomService = new RoomService(session);
 	}
 	
 	/**
@@ -139,7 +143,11 @@ public class RoomtypeService {
 		}
 		
 		DaoResult<?> removeRoomtypeByIdResult = roomtypeDao.removeRoomtypeById(roomtypeId);
-		// DaoResult<Integer> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
+	    DaoResult<?> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
+	    
+	    if(removeRoomsByRoomtypeIdResult.isFailure()) {
+	    	return Result.failure("根據房型刪除所有房間失敗");
+	    }
 		
 		if(removeRoomtypeByIdResult.isFailure()) {
 			return Result.failure("刪除房間類型失敗");

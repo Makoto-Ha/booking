@@ -9,13 +9,13 @@ import java.util.Map;
 import com.booking.utils.Listable;
 
 public class CommentDTO implements Listable {
+	private Integer roomtypeId;
+	private Integer memberId;
+	private String commentScore;
+	private String adminReply;
+	private String createdTime;
+	private String commentContent;
     private Integer commentId;
-    private Integer roomtypeId;
-    private Integer memberId;
-    private String commentScore;
-    private String commentContent;
-    private String createdTime;
-    private String employeeReply;
 
     private static String[] attrs = { "member-id", "comment-score", "comment-content", "created-time", "employee-reply" };
     private static String[] attrsChinese = { "會員ID", "評分", "管理員回覆內容", "創建時間", "會員評論" };
@@ -93,12 +93,12 @@ public class CommentDTO implements Listable {
         this.createdTime = createdTime;
     }
 
-    public String getEmployeeReply() {
-        return employeeReply;
+    public String getAdminReply() {
+        return adminReply;
     }
 
-    public void setEmployeeReply(String employeeReply) {
-        this.employeeReply = employeeReply;
+    public void setAdminReply(String adminReply) {
+        this.adminReply = adminReply;
     }
 
     public String[] getAttrs() {
@@ -123,7 +123,7 @@ public class CommentDTO implements Listable {
     public String toString() {
         return "CommentDTO [commentId=" + commentId + ", roomtypeId=" + roomtypeId + ", memberId=" + memberId 
                 + ", commentScore=" + commentScore + ", commentContent=" + commentContent 
-                + ", createdTime=" + createdTime + ", employeeReply=" + employeeReply 
+                + ", createdTime=" + createdTime + ", employeeReply=" + adminReply 
                 + ", attrs=" + Arrays.toString(attrs) + ", attrsChinese=" + Arrays.toString(attrsChinese) + "]";
     }
 
@@ -131,29 +131,29 @@ public class CommentDTO implements Listable {
     public Map<String, Object> getAdditionProperties() {
         Map<String, Object> properties = new HashMap<>();
         
-        // 設置最大顯示長度
-        int maxLength = 15;
-        String comma = "";
-
-        // 處理評論內容，使其長度不超過 maxLength
-        String truncatedCommentContent = commentContent.length() > maxLength
-            ? commentContent.substring(0, maxLength) + comma
-            : commentContent;
-
-        // 將評分值轉換為星星圖示
-        String stars = "";
-        try {
-            int score = Integer.parseInt(commentScore);
-            stars = "★".repeat(Math.max(0, score)) + "☆".repeat(Math.max(0, 5 - score));
-        } catch (NumberFormatException e) {
-            // 評分值無法轉換為整數時顯示空白
-            stars = "☆☆☆☆☆";
-        }
-
-        // 設置附加屬性
-        properties.put("評論內容", truncatedCommentContent);       
-        properties.put("評分值", stars);
-        properties.put("創建時間", createdTime);
+//        // 設置最大顯示長度
+//        int maxLength = 15;
+//        String comma = "";
+//
+//        // 處理評論內容，使其長度不超過 maxLength
+//        String truncatedCommentContent = commentContent.length() > maxLength
+//            ? commentContent.substring(0, maxLength) + comma
+//            : commentContent;
+//
+//        // 將評分值轉換為星星圖示
+//        String stars = "";
+//        try {
+//            int score = Integer.parseInt(commentScore);
+//            stars = "★".repeat(Math.max(0, score)) + "☆".repeat(Math.max(0, 5 - score));
+//        } catch (NumberFormatException e) {
+//            // 評分值無法轉換為整數時顯示空白
+//            stars = "☆☆☆☆☆";
+//        }
+//
+//        // 設置附加屬性
+//        properties.put("評論內容", truncatedCommentContent);       
+//        properties.put("評分值", stars);
+//        properties.put("創建時間", createdTime);
        
 
         return properties;
