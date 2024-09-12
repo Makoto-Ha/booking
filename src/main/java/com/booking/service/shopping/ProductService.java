@@ -6,6 +6,7 @@ import org.hibernate.Session;
 
 import com.booking.bean.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
+import com.booking.dao.shopping.ProductDaoImpl;
 import com.booking.utils.Result;
 import com.booking.utils.util.DaoResult;
 
@@ -14,7 +15,7 @@ public class ProductService {
 	private ProductDao productDao;
 
 	public ProductService(Session session) {
-		this.productDao = new ProductDao(session);
+		this.productDao = new ProductDaoImpl(session);
 	}
 
 	public Result<Product> getProductById(Integer productId) {
