@@ -1,118 +1,161 @@
 package com.booking.bean.comment;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Comment implements Serializable {
-	private static final long serialVersionUID = 1L;
+import com.booking.bean.admin.Admin;
 
-	private Integer roomtypeId; // 房間類型編號
-	private Integer memberId; // 會員編號
-	private String commentScore; // 評分值
-	private String employeeReply; // 管理員回覆
-	private LocalDateTime createdTime; // 評論時間
-	private String commentContent; // 評論內容
-	private Integer commentId; // 旅館評論編號
-	private Integer employeeId; // 員工編號
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-	// Getter 和 Setter 方法
+@Entity
+@Table(name = "comment")
+public class Comment {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "comment_id") // 對應資料庫中的主鍵欄位
+	private Integer commentId;
+
+	@Column(name = "roomtype_id") // 對應房型ID
+	private Integer roomtypeId;
+	
+	@Column(name = "admin_id") // 員工ID
+	private Integer adminId;
+
+	@Column(name = "member_id") // 對應會員ID
+	private Integer memberId;
+
+	@Column(name = "comment_score") // 評分
+	private String commentScore;
+
+	@Column(name = "comment_content") // 評論內容
+	private String commentContent;
+
+	@Column(name = "created_time") // 創建時間
+	private LocalDateTime createdTime;
+
+	@Column(name = "admin_reply") // 員工回覆
+	private String adminReply;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "admin_id", insertable = false, updatable = false)
+	private Admin admin;
+
+	public Comment(Integer commentId, Integer roomtypeId, Integer adminId, Integer memberId, String commentScore,
+			String commentContent, LocalDateTime createdTime, String adminReply) {
+		this.commentId = commentId;
+		this.roomtypeId = roomtypeId;
+		this.adminId = adminId;
+		this.memberId = memberId;
+		this.commentScore = commentScore;
+		this.commentContent = commentContent;
+		this.createdTime = createdTime;
+		this.adminReply = adminReply;
+	}
+
+	public Comment(Integer roomtypeId, Integer adminId, Integer memberId, String commentScore, String commentContent,
+			String adminReply) {
+		this.roomtypeId = roomtypeId;
+		this.adminId = adminId;
+		this.memberId = memberId;
+		this.commentScore = commentScore;
+		this.commentContent = commentContent;
+		this.adminReply = adminReply;
+	}
+
+	public Comment(Integer commentId, Integer adminId, String adminReply) {
+		this.commentId = commentId;
+		this.adminId = adminId;
+		this.adminReply = adminReply;
+	}
+
+	public Comment() {
+	}
+
 	public Integer getCommentId() {
 		return commentId;
-	}
-
-	public Integer getRoomtypeId() {
-		return roomtypeId;
-	}
-
-	public Integer getEmployeeId() {
-		return employeeId;
-	}
-
-	public Integer getMemberId() {
-		return memberId;
-	}
-
-	public String getCommentScore() {
-		return commentScore;
-	}
-
-	public String getCommentContent() {
-		return commentContent;
-	}
-
-	public String getEmployeeReply() {
-		return employeeReply;
-	}
-
-	public LocalDateTime getCreatedTime() {
-		return createdTime;
 	}
 
 	public void setCommentId(Integer commentId) {
 		this.commentId = commentId;
 	}
 
+	public Integer getRoomtypeId() {
+		return roomtypeId;
+	}
+
 	public void setRoomtypeId(Integer roomtypeId) {
 		this.roomtypeId = roomtypeId;
 	}
 
-	public void setEmployeeId(Integer employeeId) {
-		this.employeeId = employeeId;
+	public Integer getMemberId() {
+		return memberId;
 	}
 
 	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
 	}
 
+	public String getCommentScore() {
+		return commentScore;
+	}
+
 	public void setCommentScore(String commentScore) {
 		this.commentScore = commentScore;
+	}
+
+	public String getAdminReply() {
+		return adminReply;
+	}
+
+	public void setAdminReply(String adminReply) {
+		this.adminReply = adminReply;
+	}
+
+	public LocalDateTime getCreatedTime() {
+		return createdTime;
 	}
 
 	public void setCreatedTime(LocalDateTime createdTime) {
 		this.createdTime = createdTime;
 	}
 
+	public String getCommentContent() {
+		return commentContent;
+	}
+
 	public void setCommentContent(String commentContent) {
 		this.commentContent = commentContent;
 	}
 
-	public void setEmployeeReply(String employeeReply) {
-		this.employeeReply = employeeReply;
+	public Integer getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	public Admin getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
 	}
 
 	@Override
 	public String toString() {
-		return "Comment{" + "commentId=" + commentId + ", roomtypeId=" + roomtypeId + ", employeeId=" + employeeId
-				+ ", memberId=" + memberId + ", commentScore='" + commentScore + '\'' + ", commentContent='"
-				+ commentContent + '\'' + ", createdTime=" + createdTime + ", employeeReply='" + employeeReply + '\''
-				+ '}';
-	}
-
-	public Comment(Integer commentId, Integer roomtypeId, Integer employeeId, Integer memberId, String commentScore,
-			String commentContent, LocalDateTime createdTime, String employeeReply) {
-		this.commentId = commentId;
-		this.roomtypeId = roomtypeId;
-		this.employeeId = employeeId;
-		this.memberId = memberId;
-		this.commentScore = commentScore;
-		this.commentContent = commentContent;
-		this.createdTime = createdTime;
-		this.employeeReply = employeeReply;
-	}
-
-	  public Comment(Integer roomtypeId, Integer employeeId, Integer memberId, 
-              String commentScore, String commentContent, String employeeReply) {
-   this.roomtypeId = roomtypeId;
-   this.employeeId = employeeId;
-   this.memberId = memberId;
-   this.commentScore = commentScore;
-   this.commentContent = commentContent;
-   this.employeeReply = employeeReply;
-}
-
-	
-	public Comment() {
-		// TODO Auto-generated constructor stub
+		return "Comment [commentId=" + commentId + ", roomtypeId=" + roomtypeId + ", memberId=" + memberId
+				+ ", commentScore=" + commentScore + ", adminReply=" + adminReply + ", createdTime=" + createdTime
+				+ ", commentContent=" + commentContent + ", adminId=" + adminId + ", admin=" + admin + "]";
 	}
 
 }

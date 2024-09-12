@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+	<session-factory>
+		<!-- 使用JNDI數據 -->
+		<property name="hibernate.connection.datasource">java:comp/env/jdbc/SqlServerDataSource
+		</property>
+
+		<!-- 其他Hibernate設置 -->
+		<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect
+		</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+
+		<!-- C3P0連線池設置 -->
+		<!-- 最小數連線數 -->
+		<property name="hibernate.c3p0.min_size">5</property>
+		<!-- 最大數連線數 -->
+		<property name="hibernate.c3p0.max_size">20</property>
+		<!-- 連線超過多少時間 -->
+		<property name="hibernate.c3p0.timeout">300</property>
+		<!-- 連線最大空閒時間 -->
+		<property name="hibernate.c3p0.max_idle_time">600</property>
+		<!-- 連線中SQL語句快取最大數量 -->
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<!-- 測試連線是否有效的週期時間 -->
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+		<!-- 當連線池沒有可憐現時，每次增加的連線數量 -->
+		<property name="hibernate.c3p0.acquire_increment">5</property>
+		<!-- 從連線池獲取連線時，測試連線的有效性 -->
+		<property name="hibernate.c3p0.testConnectionOnCheckout">true</property>
+		<!-- 每次連線返回連線池的時候，測試連線的有效性 -->
+		<property name="hibernate.c3p0.testConnectionOnCheckin">true</property>
+
+		<!-- 這裡添加JavaBean -->
+		<!-- 房型 -->
+		<mapping class="com.booking.bean.booking.Roomtype" />
+		<!-- 房間 -->
+		<mapping class="com.booking.bean.booking.Room" />
+		<!-- 商城 -->
+		<mapping class="com.booking.bean.shopping.Product" />
+		<!-- 景點 -->
+		<mapping class="com.booking.bean.attraction.Attraction" />
+		<!-- 管理員 -->
+		<mapping class="com.booking.bean.admin.Admin" />
+		<!-- 評論 -->
+		<mapping class="com.booking.bean.comment.Comment" />
+	</session-factory>
+</hibernate-configuration>

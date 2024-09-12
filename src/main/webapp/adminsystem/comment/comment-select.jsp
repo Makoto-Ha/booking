@@ -83,7 +83,7 @@
             <form class="form" action="${pageContext.request.contextPath}/comment/selectByRoomtypeId" method="GET">
                 <div class="form-group">
                     <label for="roomtypeId">房型編號</label>
-                    <input type="text" id="roomtype-Id" name="roomtype-Id" placeholder="輸入房型編號">
+                    <input type="text" id="roomtype-id" name="roomtype-id" placeholder="輸入房型編號">
                     <button type="submit">查詢房型</button>
                 </div>
             </form>
@@ -91,15 +91,15 @@
             <form class="form" action="${pageContext.request.contextPath}/comment/selectByMemberId" method="GET">
                 <div class="form-group">
                     <label for="memberId">會員帳號</label>
-                    <input type="text" id="member-Id" name="member-Id" placeholder="輸入會員帳號">
+                    <input type="text" id="member-id" name="member-id" placeholder="輸入會員帳號">
                     <button type="submit">查詢會員帳號</button>
                 </div>
             </form>
             <!-- 查詢員工編號 -->
             <form class="form" action="${pageContext.request.contextPath}/comment/selectByEmployeeId" method="GET">
                 <div class="form-group">
-                    <label for="employeeId">員工編號</label>
-                    <input type="text" id="employee-Id" name="employee-Id" placeholder="輸入員工編號">
+                    <label for="adminId">員工編號</label>
+                    <input type="text" id="admin-id" name="admin-id" placeholder="輸入員工編號">
                     <button type="submit">查詢員工</button>
                 </div>
             </form>
@@ -134,7 +134,7 @@
                                 <td>${comment.commentScore}</td>
                                 <td>${comment.commentContent}</td>
                                 <td>${comment.createdTime}</td>
-                                <td>${comment.employeeReply}</td>
+                                <td>${comment.adminReply}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
