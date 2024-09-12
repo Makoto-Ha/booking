@@ -9,6 +9,7 @@ import org.hibernate.Session;
 
 import com.booking.bean.attraction.Attraction;
 import com.booking.dao.attraction.AttractionDao;
+import com.booking.dao.attraction.AttractionDaoImpl;
 import com.booking.dto.attraction.AttractionDTO;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
@@ -19,7 +20,7 @@ public class AttractionService {
 	private AttractionDao attractionDao;
 	
 	public AttractionService(Session session) {
-		this.attractionDao = new AttractionDao(session);
+		this.attractionDao = new AttractionDaoImpl(session);
 	}
 
 	/**
