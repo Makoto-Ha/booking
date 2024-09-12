@@ -1,18 +1,20 @@
 package com.booking.controller.comment;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.hibernate.Session;
 
 import com.booking.bean.comment.Comment;
 import com.booking.dto.comment.CommentDTO;
 import com.booking.service.comment.CommentService; // 引入服务层
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.LocalDateTimeAdapter;
 import com.booking.utils.RequestParamUtils;
 import com.booking.utils.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.beanutils.BeanUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,13 +41,16 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CommentController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private CommentService commentService = new CommentService(); 
+    private CommentService commentService; 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
         String[] splitURI = requestURI.split("/");
         String path = splitURI[splitURI.length - 1];
 
+        Session session = (Session) request.getAttribute("hibernateSession");
+        commentService = new CommentService(session);
+        
         switch (path) {
             case "select" -> select(request, response);
             case "create" -> create(request, response);
@@ -57,10 +62,10 @@ public class CommentController extends HttpServlet {
             case "replyToComment" -> replyToComment(request, response);
             case "select.jsp" -> sendSelectJsp(request, response);
             case "selectUpdate" -> selectUpdate(request, response);
-            case "selectByEmployeeId" -> selectByEmployeeId(request, response);  // 新增員工編號查詢
-            case "selectByMemberId" -> selectByMemberId(request, response);      // 新增會員編號查詢
-            case "selectByRoomtypeId" -> selectByRoomtypeId(request, response);  // 新增房型編號查詢
-            case "searchComments" -> searchComments(request, response);  // 新增房型編號查詢
+            case "selectByEmployeeId" -> selectByEmployeeId(request, response); 
+            case "selectByMemberId" -> selectByMemberId(request, response);      
+            case "selectByRoomtypeId" -> selectByRoomtypeId(request, response); 
+            case "searchComments" -> searchComments(request, response);  
             case "list" -> listComments(request, response);
             case "getcommentjson" -> getCommentJson(request, response);
         }
@@ -87,16 +92,20 @@ public class CommentController extends HttpServlet {
 	private void getCommentJson(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer commentId = Integer.parseInt(request.getParameter("comment-id"));
 		Result<Comment> commentServiceResult = commentService.getCommentById(commentId);
-		if(!commentServiceResult.isSuccess()) {
+		if(commentServiceResult.isFailure()) {
 			response.getWriter().write(commentServiceResult.getMessage());
 			return;
 		}
 		Comment comment = commentServiceResult.getData();
-		if(comment.getEmployeeReply() == null || comment.getEmployeeReply().isEmpty()) {
-			comment.setEmployeeReply("管理員沒有回覆");
+		CommentDTO commentDTO = new CommentDTO();
+		try {
+			BeanUtils.copyProperties(commentDTO, comment);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
 		}
-		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
-		String jsonData = gson.toJson(comment);
+		
+		String jsonData = JsonUtil.toJson(commentDTO);
+		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonData);
@@ -149,10 +158,10 @@ public class CommentController extends HttpServlet {
    	 */
     protected void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-Id"));
-            Integer memberId = Integer.parseInt(request.getParameter("member-Id"));
-            String commentScore = request.getParameter("comment-Score");
-            String commentContent = request.getParameter("comment-Content");
+            Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
+            Integer memberId = Integer.parseInt(request.getParameter("member-id"));
+            String commentScore = request.getParameter("comment-score");
+            String commentContent = request.getParameter("comment-content");
             LocalDateTime createdTime = LocalDateTime.now();
 
             Comment newComment = new Comment();
@@ -195,7 +204,7 @@ public class CommentController extends HttpServlet {
    	 * @throws ServletException
    	 */
     private void selectUpdate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer commentId = Integer.parseInt(request.getParameter("comment-Id"));
+        Integer commentId = Integer.parseInt(request.getParameter("comment-id"));
         Result<Comment> result = commentService.getCommentById(commentId);
         
         if (result.isSuccess()) {
@@ -214,12 +223,15 @@ public class CommentController extends HttpServlet {
    	 * @throws ServletException
    	 */
     protected void replyToComment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int commentId = Integer.parseInt(request.getParameter("comment-Id"));
-            int employeeId = Integer.parseInt(request.getParameter("employee-Id"));
-            String employeeReply = request.getParameter("employee-Reply");
-
-            Result<Boolean> result = commentService.replyToComment(commentId, employeeId, employeeReply);
+     
+            int commentId = Integer.parseInt(request.getParameter("comment-id"));
+            int adminId = Integer.parseInt(request.getParameter("admin-id"));
+            
+            String adminReply = request.getParameter("admin-reply");
+            
+            Comment comment = new Comment(commentId, adminId, adminReply);
+            
+            Result<String> result = commentService.replyToComment(comment);
 
             if (result.isSuccess()) {
                 // 成功後重新加載更新後的評論數據
@@ -234,13 +246,10 @@ public class CommentController extends HttpServlet {
                 request.setAttribute("messageContent", "抱歉，評論回覆失敗：" + result.getMessage());
             }
 
-        } catch (NumberFormatException e) {
-            request.setAttribute("messageTitle", "回覆失敗");
-            request.setAttribute("messageContent", "無效的輸入。請檢查評論ID、員工編號和回覆內容是否正確。");
-        }
-
+      
+        
         // 最後轉發到編輯頁面
-        request.getRequestDispatcher("../adminsystem/comment/comment-edit.jsp").forward(request, response);
+        request.getRequestDispatcher("/comment").forward(request, response);
     }
 
     /**
@@ -287,7 +296,7 @@ public class CommentController extends HttpServlet {
    	 */
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Integer commentId = Integer.parseInt(request.getParameter("comment-id"));
-		Result<Boolean> removeCommentResult = commentService.deleteComment(commentId);
+		Result<String> removeCommentResult = commentService.removeCommentById(commentId);
 		
 		response.getWriter().write(removeCommentResult.getMessage());	
 	}
@@ -329,7 +338,7 @@ public class CommentController extends HttpServlet {
     protected void selectByEmployeeId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
     		Integer employeeId = Integer.parseInt(request.getParameter("employee-Id"));                    
-    		Result<Comment> result = commentService.getCommentsByEmployeeId(employeeId);
+    		Result<List<Comment>> result = commentService.getCommentsByEmployeeId(employeeId);
     		if (result.isSuccess()) {
     			request.setAttribute("comment", result.getData());
     		} else {
