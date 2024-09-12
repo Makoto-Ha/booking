@@ -8,14 +8,14 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.booking.bean.admin.Admin;
-import com.booking.dao.admin.AdminDao;
+import com.booking.dao.admin.AdminDaolmpl;
 import com.booking.dto.admin.AdminDTO;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
 
 public class AdminService {
 
-    private AdminDao adminDao = new AdminDao();
+    private AdminDaolmpl adminDao = new AdminDaolmpl();
 
     /**
      * 獲取所有管理員資料
@@ -131,7 +131,7 @@ public class AdminService {
             admin.setAdminStatus(oldAdmin.getAdminStatus());
         }
 
-        admin.setHiredate(LocalDate.now()); // 更新 hiredate 为当前日期
+        //admin.setHiredate(LocalDate.now()); // 更新 hiredate 为当前日期
 
         adminDao.updateAdmin(admin);
         return Result.success(admin.getAdminId());

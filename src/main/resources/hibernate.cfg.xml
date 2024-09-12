@@ -43,5 +43,7 @@
 		<mapping class="com.booking.bean.attraction.Attraction" />
 		<!-- 管理員 -->
 		<mapping class="com.booking.bean.admin.Admin" />
+    <!-- 評論 -->
+    <mapping class="com.booking.bean.comment.Comment" />
 	</session-factory>
 </hibernate-configuration>
