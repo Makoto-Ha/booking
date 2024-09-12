@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import com.booking.bean.booking.Room;
 import com.booking.bean.booking.Roomtype;
+import com.booking.dao.booking.RoomDaoImpl;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dto.booking.RoomDTO;
 import com.booking.utils.Listable;
@@ -20,7 +21,7 @@ public class RoomService {
 	private RoomDao roomDao;
 	
 	public RoomService(Session session) {
-		this.roomDao = new RoomDao(session);
+		this.roomDao = new RoomDaoImpl(session);
 	}
 	
 	/**
