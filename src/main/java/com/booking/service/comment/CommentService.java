@@ -6,19 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.Session;
 
 import com.booking.bean.comment.Comment;
-import com.booking.dao.comment.CommentDao;
+import com.booking.dao.comment.CommentDaoImpl;
 import com.booking.dto.comment.CommentDTO;
-import com.booking.utils.DaoResult;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
+import com.booking.utils.util.DaoResult;
 
 import jakarta.servlet.ServletException;
 
 public class CommentService {
+	
+	
+	private  CommentDaoImpl commentDao;
+	
+    public CommentService(Session session) {
+    	this.commentDao = new CommentDaoImpl(session);
+    }
 
-    private final CommentDao commentDao = new CommentDao(); // 實體化數據訪問層
     /**
 	 * 新建評論
 	 * @param request
@@ -27,11 +34,11 @@ public class CommentService {
 	 * @throws ServletException
 	 */
     public Result<Integer> addComment(Comment comment) {
-        DaoResult<Integer> daoResult = commentDao.addComment(comment);
-        if (daoResult.getAffectedRows() == null) {
+        DaoResult<?> createCommentResult = commentDao.createComment(comment);
+        if (createCommentResult.isFailure()) {
             return Result.failure("新增失敗");
         }
-        return Result.success(daoResult.getGeneratedId());
+        return Result.success(createCommentResult.getGeneratedId());
     }
     /**
 	 * 獲取所有評論
@@ -41,7 +48,7 @@ public class CommentService {
 	 * @throws ServletException
 	 */
     public Result<List<Listable>> getAllComments() {
-    	DaoResult<Comment> daoResult = commentDao.getAllComments();
+    	DaoResult<List<Comment>> daoResult = commentDao.getAllComments();
     	List<Comment> comments = daoResult.getData();
 		List<Listable> lists = new ArrayList<>();
 		for(Comment comment : comments) {
@@ -66,10 +73,7 @@ public class CommentService {
 	 * @throws ServletException
 	 */
     public Result<Boolean> updateComment(Comment comment) {
-        if (comment == null || comment.getCommentId() == null || comment.getCommentId() <= 0) {
-            return Result.failure("無效的評論數據");
-        }
-        DaoResult<Integer> daoResult = commentDao.updateComment(comment);
+        DaoResult<?> daoResult = commentDao.updateComment(comment);
         if (daoResult.getAffectedRows() == null || daoResult.getAffectedRows() <= 0) {
             return Result.failure("更新評論失敗");
         }
@@ -82,15 +86,12 @@ public class CommentService {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-    public Result<Boolean> replyToComment(int commentId, int employeeId, String employeeReply) {
-        if (commentId <= 0 || employeeId <= 0 || employeeReply == null || employeeReply.isEmpty()) {
-            return Result.failure("無效的數據用於回覆評論");
-        }
-        DaoResult<Integer> daoResult = commentDao.replyToComment(commentId, employeeId, employeeReply);
-        if (daoResult.getAffectedRows() == null || daoResult.getAffectedRows() <= 0) {
+    public Result<String> replyToComment(Comment comment) {
+        DaoResult<?> updateCommentResult = commentDao.updateComment(comment);
+        if (updateCommentResult.isFailure()) {
             return Result.failure("回覆評論失敗");
         }
-        return Result.success(true);
+        return Result.success("回覆評論成功");
     }
     /**
    	 * 依ID刪除評論
@@ -99,15 +100,12 @@ public class CommentService {
    	 * @throws IOException
    	 * @throws ServletException
    	 */
-    public Result<Boolean> deleteComment(Integer commentId) {
-        if (commentId == null || commentId <= 0) {
-            return Result.failure("無效的評論ID");
-        }
-        DaoResult<Integer> daoResult = commentDao.deleteComment(commentId);
-        if (daoResult.getAffectedRows() == null || daoResult.getAffectedRows() <= 0) {
+    public Result<String>removeCommentById(Integer commentId) {
+        DaoResult<?> deleteCommentByIdResult = commentDao.deleteCommentById(commentId);
+        if (deleteCommentByIdResult.isFailure()) {
             return Result.failure("删除評論失敗");
         }
-        return Result.success(true);
+        return Result.success("刪除評論成功");
     }
     /**
    	 * 依員工ID查詢評論
@@ -115,15 +113,31 @@ public class CommentService {
    	 * @param response
    	 * @throws IOException
    	 * @throws ServletException
+   	 * 
+   	 * 	public Result<Attraction> getAttractionById(Integer attractionId) {
+		DaoResult<Attraction> daoResult = attractionDao.getAttractionById(attractionId);
+		Attraction attraction = daoResult.getData();
+		if(daoResult.isFailure()) {
+			return Result.failure("沒有此景點");
+		}
+		return Result.success(attraction);
+	}
    	 */
-    public Result<Comment> getCommentsByEmployeeId(Integer employeeId) {
+    public Result<List<Comment>> getCommentsByEmployeeId(Integer employeeId) {
      
-        DaoResult<Comment> daoResult = commentDao.getCommentsByEmployeeId(employeeId);
-        if (daoResult.getData() == null ) {
-            return Result.failure("查詢員工評論失敗");
+        DaoResult<List<Comment>> commentsByEmployeeIdResult = commentDao.getCommentsByEmployeeId(employeeId);
+        
+        
+        
+        if(commentsByEmployeeIdResult.isFailure()) {
+        	 return Result.failure("查詢員工評論失敗");
         }
-        return Result.success(daoResult.getEntity());
+        
+        List<Comment> comments = commentsByEmployeeIdResult.getData();
+
+        return Result.success(comments);
     }
+ 
     /**
    	 * 依會員ID查詢評論
    	 * @param request
@@ -132,11 +146,8 @@ public class CommentService {
    	 * @throws ServletException
    	 */
     public Result<Comment> getCommentsByMemberId(Integer memberId) {
-        DaoResult<Comment> daoResult = commentDao.getCommentsByMemberId(memberId);
-        if (daoResult.getData() == null ) {
-            return Result.failure("查詢評論失敗");
-        }
-        return Result.success(daoResult.getEntity());
+    	// 還沒有會員表，先擱置
+    	return null;
     }
     /**
    	 * 依房型ID查詢評論
@@ -146,25 +157,23 @@ public class CommentService {
    	 * @throws ServletException
    	 */
     public Result<Comment> getCommentsByRoomtypeId(Integer roomtypeId) {
-        DaoResult<Comment> daoResult = commentDao.getCommentsByRoomtypeId(roomtypeId);
-        if (daoResult.getData() == null ) {
-            return Result.failure("查詢房型評論失敗");
-        }
-        return Result.success(daoResult.getEntity());
+    	// 房型還沒有外鍵，先擱置
+    	return null;
     }
     /**
-   	 * 依評論ID查詢評論，包含業務邏輯，如ID驗證
+   	 * 依評論ID查詢評論
    	 * @param request
    	 * @param response
    	 * @throws IOException
    	 * @throws ServletException
    	 */
     public Result<Comment> getCommentById(Integer commentId) {
-        DaoResult<Comment> daoResult = commentDao.getCommentById(commentId);
-        if (daoResult.getData() == null) {
+        DaoResult<Comment> getCommentsByRoomtypeId = commentDao.getCommentById(commentId);
+        Comment comment = getCommentsByRoomtypeId.getData();
+        if (getCommentsByRoomtypeId.isFailure()) {
             return Result.failure("查詢評論失敗");
         }
-        return Result.success(daoResult.getEntity());
+        return Result.success(comment);
     }
     /**
    	 * 模糊查詢
@@ -175,12 +184,14 @@ public class CommentService {
    	 */
     
     public Result<List<Listable>> searchComments(Comment comment) {
-		DaoResult<Comment> daynamicQueryDaoResult = commentDao.dynamicQuery(comment);
-		List<Comment> comments = daynamicQueryDaoResult.getData();
+		DaoResult<List<Comment>> daynamicQueryResult = commentDao.dynamicQuery(comment);
 		
-		if(comments == null) {
+		if(daynamicQueryResult.isFailure()) {
 			return Result.failure("模糊查詢房間類型失敗");
 		}
+
+		List<Comment> comments = daynamicQueryResult.getData();
+		
 		List<Listable> commentsDTO = new ArrayList<>();
 		for(Comment commentOne : comments) {
 			CommentDTO commentDTO = new CommentDTO();

@@ -41,34 +41,34 @@
             <%@include file="../navbar.jsp"%>
             <form class="form" action="${pageContext.request.contextPath}/comment/create" method="post">
                 <div class="form-group">
-                    <label for="roomtypeId">房間類型ID</label>
-                    <input type="number" id="roomtype-Id" name="roomtype-Id" placeholder="輸入房間類型ID" required>
+                    <label for="roomtype-id">房間類型ID</label>
+                    <input type="number" id="roomtype-id" name="roomtype-id" placeholder="輸入房間類型ID" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="memberId">會員ID</label>
-                    <input type="number" id="member-Id" name="member-Id" placeholder="輸入會員ID" required>
+                    <label for="member-id">會員ID</label>
+                    <input type="number" id="member-id" name="member-id" placeholder="輸入會員ID" required>
                 </div>
 
                 <div class="form-group">
                     <label>評論評分</label>
                     <div class="star-rating">
-                        <input type="radio" id="star5" name="comment-Score" value="5" required>
+                        <input type="radio" id="star5" name="comment-score" value="5" required>
                         <label for="star5" title="5顆星">&#9733;</label>
-                        <input type="radio" id="star4" name="comment-Score" value="4">
+                        <input type="radio" id="star4" name="comment-score" value="4">
                         <label for="star4" title="4顆星">&#9733;</label>
-                        <input type="radio" id="star3" name="comment-Score" value="3">
+                        <input type="radio" id="star3" name="comment-score" value="3">
                         <label for="star3" title="3顆星">&#9733;</label>
-                        <input type="radio" id="star2" name="comment-Score" value="2">
+                        <input type="radio" id="star2" name="comment-score" value="2">
                         <label for="star2" title="2顆星">&#9733;</label>
-                        <input type="radio" id="star1" name="comment-Score" value="1">
+                        <input type="radio" id="star1" name="comment-score" value="1">
                         <label for="star1" title="1顆星">&#9733;</label>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="commentContent">評論內容</label>
-                    <textarea id="comment-Content" name="comment-Content" placeholder="輸入評論內容" required></textarea>
+                    <textarea id="comment-content" name="comment-content" placeholder="輸入評論內容" required></textarea>
                 </div>
 
                 <div class="form-group">
