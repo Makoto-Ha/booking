@@ -6,7 +6,6 @@ import org.hibernate.Session;
 
 import com.booking.bean.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
-import com.booking.dao.shopping.ProductDaoImpl;
 import com.booking.utils.Result;
 import com.booking.utils.util.DaoResult;
 

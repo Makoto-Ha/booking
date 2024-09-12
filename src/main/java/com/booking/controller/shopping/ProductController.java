@@ -7,6 +7,7 @@ import org.hibernate.Session;
 
 import com.booking.bean.shopping.Product;
 import com.booking.service.shopping.ProductService;
+import com.booking.utils.HibernateUtil;
 import com.booking.utils.Result;
 
 import jakarta.servlet.ServletException;

@@ -134,7 +134,7 @@ public class Admin {
     public void setAdminStatus(Integer adminStatus) {
         this.adminStatus = adminStatus;
     }
-
+  
 	public List<Comment> getComments() {
 		return comments;
 	}
