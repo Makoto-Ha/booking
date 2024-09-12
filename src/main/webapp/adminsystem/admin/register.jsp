@@ -29,10 +29,10 @@ html, body {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	text-align: center;
 	width: 360px;
-	margin: auto 0; /* 上下方向自動居中 */
+	margin: auto 0;
 	display: flex;
 	flex-direction: column;
-	align-items: center;;
+	align-items: center;
 	justify-content: center;
 }
 
@@ -42,11 +42,11 @@ html, body {
 
 .register-container h2 {
 	height: 32px;
-	font-size: 24px; /* 字體大小可以根據需求調整 */
-	font-weight: bold; /* 字體粗細 */
-	background: linear-gradient(to right, #da8cff, #9a55ff); /* 設定漸變色 */
-	-webkit-background-clip: text; /* 只顯示背景漸變在文字上 */
-	-webkit-text-fill-color: transparent; /* 將文字顏色設為透明，讓背景顯示出來 */
+	font-size: 24px;
+	font-weight: bold;
+	background: linear-gradient(to right, #da8cff, #9a55ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .input-group {
@@ -169,7 +169,7 @@ select[name="admin-status"] {
 			alt="Logo">
 			<h2>管理員註冊</h2>
 		</div>
-		<form action="/booking/admin/register" method="post">
+		<form id="form" action="/booking/admin/register" method="post">
 			<div class="input-group">
 				<label for="account"></label> <input type="text" id="account"
 					name="admin-account" required="" placeholder="帳號"> <span
@@ -203,7 +203,6 @@ select[name="admin-status"] {
 					<option value="0">離職</option>
 				</select> <span id="status-error" class="error-message"></span>
 			</div>
-			<!-- 錯誤訊息區域 -->
 			<c:if test="${not empty errorMessage}">
 				<div class="error-message"
 					style="color: red; text-align: center; font-size: 18px;">
@@ -218,13 +217,18 @@ select[name="admin-status"] {
 	<script src="https://kit.fontawesome.com/cc1b58587a.js"
 		crossorigin="anonymous"></script>
 	<script>
-		document.getElementById("account").addEventListener("blur",
-				checkAccount);
+		document.getElementById("form").addEventListener("submit", function(event) {
+			// 檢查密碼是否符合規定
+			if (!checkPassword()) {
+				event.preventDefault(); // 阻止表單提交
+			}
+		});
+
+		document.getElementById("account").addEventListener("blur", checkAccount);
 
 		function checkAccount() {
 			let theAccountObj = document.getElementById("account");
 			let theAccountObjVal = theAccountObj.value.trim();
-			let theAccountObjValLen = theAccountObjVal.length;
 			let sp = document.getElementById("account-error");
 
 			if (theAccountObjVal === "") {
@@ -234,8 +238,7 @@ select[name="admin-status"] {
 			}
 		}
 
-		document.getElementById("password").addEventListener("blur",
-				checkPassword);
+		document.getElementById("password").addEventListener("blur", checkPassword);
 
 		function checkPassword() {
 			let thePwdObj = document.getElementById("password");
@@ -243,10 +246,11 @@ select[name="admin-status"] {
 			let thePwdObjValLen = thePwdObjVal.length;
 			let spp = document.getElementById("password-error");
 
-			let flag1 = false, flag2 = false, flag3 = false, flag4 = false;
+			let flag1 = false, flag2 = false, flag3 = false;
 
 			if (thePwdObjVal === "") {
 				spp.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> 密碼不可空白";
+				return false;
 			} else if (thePwdObjValLen >= 8) {
 				for (let i = 0; i < thePwdObjValLen; i++) {
 					let ch = thePwdObjVal.charAt(i);
@@ -263,13 +267,15 @@ select[name="admin-status"] {
 				if (flag1 && flag2 && flag3) {
 					spp.innerHTML = "格式正確";
 					spp.style.color = "green";
+					return true; // 密碼格式正確
 				} else {
-					spp.innerHTML = "格式錯誤";
+					spp.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> 密碼格式錯誤";
+					return false; // 格式錯誤
 				}
 			} else {
 				spp.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> 密碼至少8個字";
+				return false; // 密碼太短
 			}
-			sp.innerHTML = ""; // 清除可能的錯誤訊息
 		}
 
 		document.getElementById("name").addEventListener("blur", checkName);
@@ -288,6 +294,3 @@ select[name="admin-status"] {
 	</script>
 </body>
 </html>
-
-
-
