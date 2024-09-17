@@ -1,36 +1,38 @@
 package com.booking.dao.admin;
 
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import com.booking.bean.admin.Admin;
 import com.booking.utils.HibernateUtil;
+import com.booking.utils.util.DaoResult;
 
-public class AdminDaolmpl implements AdminDao{
+public class AdminDaolmpl implements AdminDao {
 
     /**
      * 獲取所有管理員資料
      * 
-     * @return List<Admin>
+     * @return DaoResult<List<Admin>>
      */
-	@Override
-    public List<Admin> getAdminAll() {
+    @Override
+    public DaoResult<List<Admin>> getAdminAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "FROM Admin"; // HQL查询
+            String hql = "FROM Admin";
             List<Admin> admins = session.createQuery(hql, Admin.class).getResultList();
-            return admins;
-        } 
+            return DaoResult.create(admins).setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<List<Admin>>create(null).setSuccess(false);
+        }
     }
 
     /**
      * 模糊查詢
      * @param admin
-     * @return List<Admin>
+     * @return DaoResult<List<Admin>>
      */
-	@Override
-    public List<Admin> dynamicQuery(Admin admin) {
+    @Override
+    public DaoResult<List<Admin>> dynamicQuery(Admin admin) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             StringBuilder hql = new StringBuilder("FROM Admin WHERE 1=1");
 
@@ -74,65 +76,78 @@ public class AdminDaolmpl implements AdminDao{
                 query.setParameter("adminStatus", admin.getAdminStatus());
             }
 
-            return query.list();
+            List<Admin> admins = query.list();
+            return DaoResult.create(admins).setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<List<Admin>>create(null).setSuccess(false);
         }
     }
 
     /**
      * 根據姓名查詢管理員
      * @param adminName
-     * @return List<Admin>
+     * @return DaoResult<List<Admin>>
      */
-	@Override
-    public List<Admin> getAdminByName(String adminName) {
+    @Override
+    public DaoResult<List<Admin>> getAdminByName(String adminName) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Admin WHERE adminName LIKE :adminName";
-            return session.createQuery(hql, Admin.class)
-                          .setParameter("adminName", "%" + adminName + "%")
-                          .list();
+            List<Admin> admins = session.createQuery(hql, Admin.class)
+                                        .setParameter("adminName", "%" + adminName + "%")
+                                        .list();
+            return DaoResult.create(admins).setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<List<Admin>>create(null).setSuccess(false);
         }
     }
 
     /**
      * 根據ID獲取管理員
      * @param adminId
-     * @return Admin
+     * @return DaoResult<Admin>
      */
-	@Override
-    public Admin getAdminById(Integer adminId) {
+    @Override
+    public DaoResult<Admin> getAdminById(Integer adminId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Admin.class, adminId); // 根據ID查找
-        } 
+            Admin admin = session.get(Admin.class, adminId);
+            return DaoResult.create(admin).setSuccess(admin != null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<Admin>create(null).setSuccess(false);
+        }
     }
 
     /**
      * 添加管理員
      * @param admin
-     * @return Integer
+     * @return DaoResult<Integer>
      */
-	@Override
-    public Integer addAdmin(Admin admin) {
+    @Override
+    public DaoResult<Integer> addAdmin(Admin admin) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.persist(admin);
             transaction.commit();
-            return admin.getAdminId();
+            return DaoResult.create(admin.getAdminId()).setSuccess(true);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
-            return null;
+            return DaoResult.<Integer>create(null).setSuccess(false);
         }
     }
 
     /**
      * 軟刪除管理員
      * @param adminId
+     * @return DaoResult<Void>
      */
-	@Override
-    public void softremoveAdminById(Integer adminId) {
+    @Override
+    public DaoResult<?> softremoveAdminById(Integer adminId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
@@ -142,30 +157,35 @@ public class AdminDaolmpl implements AdminDao{
                 session.merge(admin);
             }
             transaction.commit();
+            return DaoResult.<Void>create(null).setSuccess(true);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
+            return DaoResult.<Void>create(null).setSuccess(false);
         }
     }
 
     /**
      * 更新管理員
      * @param admin
+     * @return DaoResult<Void>
      */
-	@Override
-    public void updateAdmin(Admin admin) {
+    @Override
+    public DaoResult<?> updateAdmin(Admin admin) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.merge(admin); // 更新实体
+            session.merge(admin);
             transaction.commit();
+            return DaoResult.<Void>create(null).setSuccess(true);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
+            return DaoResult.<Void>create(null).setSuccess(false);
         }
     }
 
@@ -173,31 +193,39 @@ public class AdminDaolmpl implements AdminDao{
      * 根據帳號和密碼查詢管理員
      * @param adminAccount
      * @param adminPassword
-     * @return Admin
+     * @return DaoResult<Admin>
      */
-	@Override
-    public Admin getAdminByAccountAndPassword(String adminAccount, String adminPassword) {
+    @Override
+    public DaoResult<Admin> getAdminByAccountAndPassword(String adminAccount, String adminPassword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Admin WHERE adminAccount = :adminAccount AND adminPassword = :adminPassword";
-            return session.createQuery(hql, Admin.class)
-                          .setParameter("adminAccount", adminAccount)
-                          .setParameter("adminPassword", adminPassword)
-                          .uniqueResult();
+            Admin admin = session.createQuery(hql, Admin.class)
+                                 .setParameter("adminAccount", adminAccount)
+                                 .setParameter("adminPassword", adminPassword)
+                                 .uniqueResult();
+            return DaoResult.create(admin).setSuccess(admin != null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<Admin>create(null).setSuccess(false);
         }
     }
 
     /**
      * 檢查帳號是否存在
      * @param adminAccount
-     * @return Admin
+     * @return DaoResult<Admin>
      */
-	@Override
-    public Admin existsByAccount(String adminAccount) {
+    @Override
+    public DaoResult<Admin> existsByAccount(String adminAccount) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Admin WHERE adminAccount = :adminAccount";
-            return session.createQuery(hql, Admin.class)
-                          .setParameter("adminAccount", adminAccount)
-                          .uniqueResult();
+            Admin admin = session.createQuery(hql, Admin.class)
+                                 .setParameter("adminAccount", adminAccount)
+                                 .uniqueResult();
+            return DaoResult.create(admin).setSuccess(admin != null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DaoResult.<Admin>create(null).setSuccess(false);
         }
     }
 }
