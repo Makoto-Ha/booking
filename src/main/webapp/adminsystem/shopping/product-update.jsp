@@ -23,22 +23,27 @@
         <div class="main-content">
             <%@include file="../navbar.jsp"%>
             <form id="productForm" class="form" action="${pageContext.request.contextPath}/product/update" method="POST">
-
+            
+				 <!-- 隱藏字段 -->
+   				<input type="hidden" name="searchName" value="${param.searchName}" />
+   				<input type="hidden" name="sortBy" value="${param.sortBy}" />
+   				<input type="hidden" name="sortOrder" value="${param.sortOrder}" />
+   				
                 <div class="form-group">
                     <label for="productId">商品編號</label>
-                    <input type="text" id="productId" name="product-id" placeholder="輸入內容不可為空" value="<%= product.getProductId() %>" readonly>
+                    <input type="text" id="productId" name="productId" placeholder="輸入內容不可為空" value="<%= product.getProductId() %>" readonly>
                     <span id="productIdSP"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="productName">商品名稱</label>
-                    <input type="text" id="productName" name="product-name" placeholder="輸入內容不可為空" value="<%= product.getProductName() %>">
+                    <input type="text" id="productName" name="productName" placeholder="輸入內容不可為空" value="<%= product.getProductName() %>">
                     <span id="productNameSP"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="categoryId">分類編號</label>
-                    <select id="categoryId" name="category-id" required>
+                    <select id="categoryId" name="categoryId" required>
                         <option value="" disabled>請選擇分類編號</option>
                         <option value="100" <%= product.getCategoryId() == 100 ? "selected" : "" %>>100</option>
                         <option value="200" <%= product.getCategoryId() == 200 ? "selected" : "" %>>200</option>
@@ -51,27 +56,27 @@
 
                 <div class="form-group">
                     <label for="productDescription">商品描述</label>
-                    <input type="text" id="productDescription" name="product-description" placeholder="輸入內容" value="<%= product.getProductDescription() %>">
+                    <input type="text" id="productDescription" name="productDescription" placeholder="輸入內容" value="<%= product.getProductDescription() %>">
                 </div>
 
                 <div class="form-group">
                     <label for="productPrice">商品價格</label>
-                    <input type="number" id="productPrice" name="product-price" placeholder="輸入內容" value="<%= product.getProductPrice() %>">
+                    <input type="number" id="productPrice" name="productPrice" placeholder="輸入內容" value="<%= product.getProductPrice() %>">
                 </div>
 
                 <div class="form-group">
                     <label for="productSales">商品銷量</label>
-                    <input type="number" id="productSales" name="product-sales" placeholder="輸入內容" value="<%= product.getProductSales() %>">
+                    <input type="number" id="productSales" name="productSales" placeholder="輸入內容" value="<%= product.getProductSales() %>">
                 </div>
 
                 <div class="form-group">
                     <label for="productInventorey">商品庫存</label>
-                    <input type="number" id="productInventorey" name="product-inventorey" placeholder="輸入內容" value="<%= product.getProductInventorey() %>">
+                    <input type="number" id="productInventorey" name="productInventorey" placeholder="輸入內容" value="<%= product.getProductInventorey() %>">
                 </div>
 
                 <div class="form-group">
                     <label for="productState">商品狀態</label>
-                    <select id="productState" name="product-state" required>
+                    <select id="productState" name="productState" required>
                         <option value="" disabled>請選擇商品狀態</option>
                         <option value="1" <%= product.getProductState() == 1 ? "selected" : "" %>>開放販售</option>
                         <option value="2" <%= product.getProductState() == 2 ? "selected" : "" %>>未開放販售</option>
@@ -83,30 +88,11 @@
                     <button type="submit">確認修改</button><br>
                     <button type="button" class="cancel">取消</button>
                 </div>
-                <!-- 拿前一頁的連結 -->
-                <input type="hidden" id="referrer" name="referrer" value="<%= request.getHeader("referer") %>"> 
             </form>
         </div>
     </div>
 
     <script src="${pageContext.request.contextPath}/adminsystem/shopping/back.js"></script>
     <script src="${pageContext.request.contextPath}/adminsystem/shopping/CheckProduct.js"></script>
-    <script>
-        document.getElementById("productForm").addEventListener("submit", function(event) {
-            let referrer = document.getElementById("referrer").value;
-            if (!referrer) {
-                referrer = document.referrer;
-            }
-            // 檢查 referrer 是否有效
-            if (referrer) {
-                let form = document.getElementById("productForm");
-                let inputReferrer = document.createElement("input");
-                inputReferrer.type = "hidden";
-                inputReferrer.name = "referrer";
-                inputReferrer.value = referrer;
-                form.appendChild(inputReferrer);
-            }
-        });
-    </script>
 </body>
 </html>

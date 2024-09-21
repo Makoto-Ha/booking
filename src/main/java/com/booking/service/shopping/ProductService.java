@@ -2,21 +2,20 @@ package com.booking.service.shopping;
 
 import java.util.List;
 
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
-import com.booking.dao.shopping.ProductDaoImpl;
 import com.booking.utils.Result;
 import com.booking.utils.util.DaoResult;
 
+@Service
 public class ProductService {
 
+	@Autowired
 	private ProductDao productDao;
-
-	public ProductService(Session session) {
-		this.productDao = new ProductDaoImpl(session);
-	}
 
 	public Result<Product> getProductById(Integer productId) {
 		DaoResult<Product> daoResult = productDao.getProductById(productId);
@@ -55,7 +54,7 @@ public class ProductService {
 		}
 		return Result.success(daoResult.getData());
 	}
-
+	@Transactional
 	public Result<Integer> addProduct(Product product) {
 		DaoResult<?> daoResult = productDao.addProduct(product);
 		if (!daoResult.isSuccess()) {
@@ -63,7 +62,7 @@ public class ProductService {
 		}
 		return Result.success(daoResult.getGeneratedId());
 	}
-
+	@Transactional
 	public Result<String> removeProduct(Integer productId) {
 		DaoResult<?> daoResult = productDao.removeProductById(productId);
 		if (!daoResult.isSuccess()) {
@@ -71,17 +70,17 @@ public class ProductService {
 		}
 		return Result.success("刪除成功");
 	}
-
+	@Transactional
 	public Result<String> updateProduct(Product product) {
-		
+
 		DaoResult<Product> daoResult = productDao.getProductById(product.getProductId());
-		
+
 		if (!daoResult.isSuccess()) {
 			return Result.failure("商品不存在");
 		}
 
 		Product oldProduct = daoResult.getData();
-		
+
 		if (product.getCategoryId() == null) {
 			product.setCategoryId(oldProduct.getCategoryId());
 		}
