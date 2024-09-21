@@ -20,34 +20,34 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 @EnableWebMvc
 @ComponentScan(basePackages = { "com.booking" })
 public class WebAppConfig implements WebMvcConfigurer {
+//
+//	@Bean
+//	public MappingJackson2JsonView jsonView() {
+//		MappingJackson2JsonView jv = new MappingJackson2JsonView();
+//		jv.setPrettyPrint(true);
+//		return jv;
+//	}
 
-	@Bean
-	public MappingJackson2JsonView jsonView() {
-		MappingJackson2JsonView jv = new MappingJackson2JsonView();
-		jv.setPrettyPrint(true);
-		return jv;
-	}
+//	@Bean
+//	public ContentNegotiatingViewResolver cnViewResolver() {
+//		ContentNegotiatingViewResolver cnv = new ContentNegotiatingViewResolver();
+//		ArrayList<View> lists = new ArrayList<View>();
+//		lists.add(jsonView());
+//		cnv.setDefaultViews(lists);
+//		return cnv;
+//	}
 
-	@Bean
-	public ContentNegotiatingViewResolver cnViewResolver() {
-		ContentNegotiatingViewResolver cnv = new ContentNegotiatingViewResolver();
-		ArrayList<View> lists = new ArrayList<View>();
-		lists.add(jsonView());
-		cnv.setDefaultViews(lists);
-		return cnv;
-	}
+//	@Override
+//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//		registry.addResourceHandler("/adminsystem/**").addResourceLocations("/adminsystem/");
+//	}
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/adminsystem/**").addResourceLocations("/adminsystem/");
-	}
-
-	@Bean
-	public InternalResourceViewResolver irViewResolver() {
-		InternalResourceViewResolver irv1 = new InternalResourceViewResolver("/booking/adminsystem/", ".jsp");
-		irv1.setOrder(1);
-		return irv1;
-	}
+//	@Bean
+//	public InternalResourceViewResolver irViewResolver() {
+//		InternalResourceViewResolver irv1 = new InternalResourceViewResolver("/booking/adminsystem/", ".jsp");
+//		irv1.setOrder(1);
+//		return irv1;
+//	}
 
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

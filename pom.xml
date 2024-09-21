@@ -76,7 +76,7 @@
 			<artifactId>spring-context</artifactId>
 			<version>6.1.12</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
@@ -88,21 +88,21 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>6.1.12</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>6.1.12</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>6.1.12</version>
 		</dependency>
-		
+
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -112,21 +112,21 @@
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
-		 <plugins>
-        <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
-            <configuration>
-                <release>21</release>
-                <compilerArgs>
-                    <arg>-parameters</arg>
-                </compilerArgs>
-            </configuration>
-        </plugin>
-        <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>3.2.3</version>
-        </plugin>
-    </plugins>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>21</release>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+			</plugin>
+		</plugins>
 	</build>
 </project>
