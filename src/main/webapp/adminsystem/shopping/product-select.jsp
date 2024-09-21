@@ -13,24 +13,28 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/adminsystem/shopping/product.css">
 <style>
-.form-group label{
-	 font-size: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: 0;
+.form-group label {
+	font-size: 18px;
+	width: auto;
+	display: inline-block;
+	margin-bottom: 0;
 }
-.form-group input[type="text"], .form-group select, .form-group input[type="number"]{
-	width:200px;
+
+.form-group input[type="text"], .form-group select, .form-group input[type="number"]
+	{
+	width: 200px;
 }
+
 .form-group button[type="submit"] {
-	padding-top:8px;
-	padding-bottom:8px;
-	margin-left:5px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	margin-left: 5px;
 }
+
 .form-group .btn {
-	background-color:#6666CC;
-	padding-top:6px;
-	padding-bottom:6px;
+	background-color: #6666CC;
+	padding-top: 6px;
+	padding-bottom: 6px;
 }
 </style>
 </head>
@@ -40,48 +44,55 @@
 		<%@include file="../sidebar.jsp"%>
 		<div class="main-content">
 			<%@include file="../navbar.jsp"%>
-			
-			<form class="form" action="${pageContext.request.contextPath}/product/selectName" id="searchForm">
+
+			<form class="form"
+				action="${pageContext.request.contextPath}/product/select"
+				id="searchForm">
 				<div class="form-group">
-					<label for="selectName">搜尋名稱:</label> 
-					<input type="text" id="productName" name="product-name" placeholder="輸入內容" 
-						value="${param['product-name'] != null ? param['product-name'] : ''}">
-						
-					<label for="sortBy">排序依據:</label>
-					<select id="sortBy" name="sortBy">
-						<option value="productId" ${param.sortBy == 'product_id' ? 'selected' : ''}>編號</option>
-						<option value="categoryId" ${param.sortBy == 'category_id' ? 'selected' : ''}>分類</option>
-						<option value="productName" ${param.sortBy == 'product_name' ? 'selected' : ''}>名稱</option>
-						<option value="productPrice" ${param.sortBy == 'product_price' ? 'selected' : ''} >價格</option>
-						<option value="productSales" ${param.sortBy == 'product_sales' ? 'selected' : ''} >銷量</option>
-						<option value="productInventorey" ${param.sortBy == 'product_inventorey' ? 'selected' : ''} >庫存</option>
-					</select>
-					
-					 <label for="sortOrder">順序:</label> 
-					 <select id="sortOrder"	name="sortOrder">
-						<option value="DESC" ${param.sortOrder == 'DESC' ? 'selected' : ''}>降冪</option>
+					<label for="selectName">搜尋名稱:</label> <input type="text"
+						id="searchName" name="searchName" placeholder="輸入內容"
+						value="${param.searchName != null ? param.searchName : ''}">
+
+
+					<label for="sortBy">排序依據:</label> <select id="sortBy" name="sortBy">
+						<option value="productId"
+							${param.sortBy == 'productId' ? 'selected' : ''}>編號</option>
+						<option value="categoryId"
+							${param.sortBy == 'categoryId' ? 'selected' : ''}>分類</option>
+						<option value="productName"
+							${param.sortBy == 'productName' ? 'selected' : ''}>名稱</option>
+						<option value="productPrice"
+							${param.sortBy == 'productPrice' ? 'selected' : ''}>價格</option>
+						<option value="productSales"
+							${param.sortBy == 'productSales' ? 'selected' : ''}>銷量</option>
+						<option value="productInventorey"
+							${param.sortBy == 'productInventorey' ? 'selected' : ''}>庫存</option>
+					</select> <label for="sortOrder">順序:</label> <select id="sortOrder"
+						name="sortOrder">
+						<option value="DESC"
+							${param.sortOrder == 'DESC' ? 'selected' : ''}>降冪</option>
 						<option value="ASC" ${param.sortOrder == 'ASC' ? 'selected' : ''}>升冪</option>
 					</select>
 					<button type="submit" style="width: 60px">查詢</button>
-					
-					<br>
-					<a href="${pageContext.request.contextPath}/product/sendCreate">
-					<button type="button" class="btn" style="width:100px;">新增商品</button></a>
-					
-					<a href="${pageContext.request.contextPath}/product/selectAll">
-					<button type="button" class="btn" style="width: 100px;">列出全部</button></a>
-					
+
+					<br> <a
+						href="${pageContext.request.contextPath}/product/sendCreate">
+						<button type="button" class="btn" style="width: 100px;">新增商品</button>
+					</a> <a href="${pageContext.request.contextPath}/product/select">
+						<button type="button" class="btn" style="width: 100px;">列出全部</button>
+					</a>
+
 				</div>
 			</form>
-			
+
 			<div class="table">
 				<%
-				boolean hasTerm = request.getParameter("product-name") != null && !request.getParameter("product-name").trim().isEmpty();
+				boolean hasTerm = request.getParameter("searchName") != null && !request.getParameter("searchName").trim().isEmpty();
 				List<Product> products = (List<Product>) request.getAttribute("products");
-				
+
 				if (products != null && !products.isEmpty()) {
 				%>
-				
+
 				<table border="1">
 					<thead>
 						<tr>
@@ -109,8 +120,10 @@
 							<td><%=product.getProductSales()%></td>
 							<td><%=product.getProductInventorey()%></td>
 							<td><%=product.getProductState()%></td>
-							<td><a href="${pageContext.request.contextPath}/product/selectUpdate?product-id=<%=product.getProductId()%>"><button>修改</button></a>
-								<button type="button" onclick="deleteProduct(<%=product.getProductId()%>)">刪除</button>
+							<td><a href="${pageContext.request.contextPath}/product/selectUpdate?productId=<%= product.getProductId() %>&searchName=${param.searchName}&sortBy=${param.sortBy}&sortOrder=${param.sortOrder}">
+   								<button>修改</button></a>
+								<button type="button"
+									onclick="deleteProduct(<%=product.getProductId()%>)">刪除</button>
 							</td>
 						</tr>
 						<%
@@ -118,24 +131,24 @@
 						%>
 					</tbody>
 				</table>
-				<%} else if(hasTerm) {
-				%>
-					<p>找不到符合條件的商品。</p>
 				<%
-					}
-				 
+				} else if (hasTerm) {
+				%>
+				<p>找不到符合條件的商品。</p>
+				<%
+				}
 				%>
 			</div>
 		</div>
 	</div>
-	
+
 	<script>
 	
 		var contextPath = "${pageContext.request.contextPath}";		
 		// 刪除並刷新
 		function deleteProduct(productId) {
 		    if (confirm("確定要刪除這個產品嗎？")) {
-		        fetch(contextPath+'/product/delete?product-id=' + productId, {
+		        fetch(contextPath+'/product/delete?productId=' + productId, {
 		            method: 'GET',
 		            headers: {
 		                'Content-Type': 'application/json'
@@ -156,7 +169,7 @@
 		
 		// 檢查按下搜尋時是否有輸入
 		document.getElementById("searchForm").addEventListener("submit",function(event) {
-			let productName = document.getElementById("productName").value.trim();
+			let productName = document.getElementById("searchName").value.trim();
 			if (productName === "") {
 				alert("商品名稱不可為空");
 				event.preventDefault(); // 阻止表單提交

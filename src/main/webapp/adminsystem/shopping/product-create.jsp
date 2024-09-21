@@ -23,13 +23,13 @@
             <form id="productForm" class="form" action="${pageContext.request.contextPath}/product/create" method="POST">
                 <div class="form-group">
                     <label for="productName">商品名稱</label>
-                    <input type="text" id="productName" name="product-name" placeholder="輸入內容不可為空">
+                    <input type="text" id="productName" name="productName" placeholder="輸入內容不可為空">
                     <span id="productNameSP"></span>
                 </div>
 
                 <div class="form-group">
                 	<label for="categoryId">分類編號</label>
-              		<select id="categoryId" name="category-id">
+              		<select id="categoryId" name="categoryId">
                         <option value="" disabled selected>請選擇分類編號</option>
                         <option value="100">100</option>
                         <option value="200">200</option>
@@ -42,27 +42,27 @@
 
                 <div class="form-group">
                     <label for="productDescription">商品描述</label>
-                    <input type="text" id="productDescription" name="product-description" placeholder="輸入內容">
+                    <input type="text" id="productDescription" name="productDescription" placeholder="輸入內容">
                 </div>
 
                 <div class="form-group">
                     <label for="productPrice">商品價格</label>
-                    <input type="number" id="productPrice" name="product-price" placeholder="輸入內容" min="0">
+                    <input type="number" id="productPrice" name="productPrice" placeholder="輸入內容" min="0">
                 </div>
 
                 <div class="form-group">
                     <label for="productSales">商品銷量</label>
-                    <input type="number" id="productSales" name="product-sales" placeholder="輸入內容" min="0">
+                    <input type="number" id="productSales" name="productSales" placeholder="輸入內容" min="0">
                 </div>
 
                 <div class="form-group">
                     <label for="productInventorey">商品庫存</label>
-                    <input type="number" id="productInventorey" name="product-inventorey" placeholder="輸入內容" min="0">
+                    <input type="number" id="productInventorey" name="productInventorey" placeholder="輸入內容" min="0">
                 </div>
 
                 <div class="form-group">
                 	<label for="productState">商品狀態</label>
-                	<select id="productState" name="product-state">
+                	<select id="productState" name="productState">
                         <option value="" disabled selected>請選擇商品狀態</option>
                         <option value="1">開放販售</option>
                         <option value="2">未開放販售</option>
