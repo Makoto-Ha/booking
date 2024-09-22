@@ -3,18 +3,19 @@ package com.booking.dao.booking;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.booking.bean.booking.Room;
 import com.booking.bean.booking.Roomtype;
 import com.booking.utils.util.DaoResult;
 
+@Repository
 public class RoomDaoImpl implements RoomDao {
-	private final Session session;
-	
-	public RoomDaoImpl(Session session) {
-		this.session = session;
-	}
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	/**
 	 * 查詢所有房間
@@ -23,7 +24,7 @@ public class RoomDaoImpl implements RoomDao {
 	@Override
 	public DaoResult<List<Room>> getRoomAll() {
 		String hql = "From Room r ORDER BY r.roomNumber";
-		Query<Room> query = session.createQuery(hql, Room.class);
+		Query<Room> query = sessionFactory.getCurrentSession().createQuery(hql, Room.class);
 		query.setFirstResult(0);
 		query.setMaxResults(10);
 		List<Room> rooms = query.getResultList();
@@ -37,7 +38,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<Room> getRoomById(Integer roomId) {
-		Room room = session.get(Room.class, roomId);		
+		Room room = sessionFactory.getCurrentSession().get(Room.class, roomId);		
 		return DaoResult.create(room).setSuccess(room != null); 
 	}
 	
@@ -48,7 +49,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<List<Room>> getRoomsByRoomtypeId(Integer roomtypeId) {
-		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		Roomtype roomtype = sessionFactory.getCurrentSession().get(Roomtype.class, roomtypeId);
 		List<Room> rooms = roomtype.getRooms();
 		return DaoResult.create(rooms).setSuccess(rooms != null);
 	}
@@ -60,7 +61,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> addRoom(Room room) {
-		session.persist(room);
+		sessionFactory.getCurrentSession().persist(room);
 		Integer roomId = room.getRoomId();
 		return DaoResult.create().setGeneratedId(roomId).setSuccess(roomId != null); 
 	}
@@ -72,9 +73,9 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> removeRoomById(Integer roomId) {
-		Room room = session.get(Room.class, roomId);
+		Room room = sessionFactory.getCurrentSession().get(Room.class, roomId);
 		if(room != null) {
-			session.remove(room);
+			sessionFactory.getCurrentSession().remove(room);
 			return DaoResult.create().setSuccess(true);
 		}
 		return DaoResult.create().setSuccess(false);
@@ -87,9 +88,9 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> removeRoomsByRoomtypeId(Integer roomtypeId) {
-		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		Roomtype roomtype = sessionFactory.getCurrentSession().get(Roomtype.class, roomtypeId);
 		if(roomtype != null) {
-			session.remove(roomtype);
+			sessionFactory.getCurrentSession().remove(roomtype);
 			return DaoResult.create().setSuccess(true);
 		}
 		return DaoResult.create().setSuccess(false);
@@ -102,7 +103,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> updateRoom(Room room) {
-		Room mergeRoom = session.merge(room);
+		Room mergeRoom = sessionFactory.getCurrentSession().merge(room);
 		return DaoResult.create().setSuccess(mergeRoom != null);
 	}
 	
@@ -113,7 +114,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> decrementRoomtypeQuantity(Integer roomId) {
-		Room room = session.get(Room.class, roomId);
+		Room room = sessionFactory.getCurrentSession().get(Room.class, roomId);
 		Roomtype roomtype = room.getRoomtype();
 		Integer quantity = roomtype.getRoomtypeQuantity();
 		roomtype.setRoomtypeQuantity(--quantity);
@@ -128,7 +129,7 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<?> inecrementRoomtypeQuantity(Integer roomtypeId) {
-		Roomtype roomtype = session.get(Roomtype.class, roomtypeId);
+		Roomtype roomtype = sessionFactory.getCurrentSession().get(Roomtype.class, roomtypeId);
 		Integer roomtypeQuantity = roomtype.getRoomtypeQuantity();
 		roomtype.setRoomtypeQuantity(++roomtypeQuantity);
 		

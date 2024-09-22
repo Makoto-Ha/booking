@@ -6,23 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.booking.bean.booking.Room;
 import com.booking.bean.booking.Roomtype;
-import com.booking.dao.booking.RoomDaoImpl;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dto.booking.RoomDTO;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
 import com.booking.utils.util.DaoResult;
 
+@Service
 public class RoomService {
+	@Autowired
 	private RoomDao roomDao;
-	
-	public RoomService(Session session) {
-		this.roomDao = new RoomDaoImpl(session);
-	}
 	
 	/**
 	 * 獲取單筆房間

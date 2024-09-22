@@ -5,108 +5,75 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.booking.Roomtype;
 import com.booking.dto.booking.RoomtypeDTO;
 import com.booking.service.booking.RoomtypeService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.RequestParamUtils;
 import com.booking.utils.Result;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = { "/roomtype/create", "/roomtype/delete", "/roomtype/update", "/roomtype/select",
-		"/roomtype/create.jsp", "/roomtype/edit.jsp", "/roomtype/select.jsp", "/roomtype", "/getroomtypejson" })
-public class RoomtypeController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/roomtype")
+public class RoomtypeController  {
+	
+	@Autowired
 	private RoomtypeService roomtypeService;
-
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String requestURI = request.getRequestURI();
-		String[] splitURI = requestURI.split("/");
-		String path = splitURI[splitURI.length - 1];
-
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setContentType("text/html; charset=utf8");
-		
-		Session session = (Session) request.getAttribute("hibernateSession");
-		roomtypeService = new RoomtypeService(session);
-		
-		switch (path) {
-		case "select" -> select(request, response);
-		case "create" -> create(request, response);
-		case "delete" -> delete(request, response);
-		case "update" -> update(request, response);
-		case "roomtype" -> sendRoomtypeIndex(request, response);
-		case "create.jsp" -> sendCreateJsp(request, response);
-		case "edit.jsp" -> sendEditJsp(request, response);
-		case "select.jsp" -> sendSelectJsp(request, response);
-		case "getroomtypejson" -> getRoomtypeJSON(request, response);
-		}
-	}
-
+	
 	/**
 	 * 返回所有roomtype的JSON數據
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param roomtypeId
+	 * @return
 	 */
-	private void getRoomtypeJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
-		Result<Roomtype> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
+	@GetMapping("/json/{id}")
+	@ResponseBody
+	private String getRoomtypeJSON(@PathVariable Integer id) {
+		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.getRoomtype(id);
 		if (roomtypeServiceResult.isFailure()) {
-			response.getWriter().write(roomtypeServiceResult.getMessage());
-			return;
+			return null;
 		}
-			
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		
-		String jsonData = JsonUtil.toJson(roomtypeServiceResult.getData());
-		
-		response.getWriter().write(jsonData);
-		response.getWriter().flush();
+		return JsonUtil.toJson(roomtypeServiceResult.getData());
 	}
 
 	/**
 	 * 轉到查詢
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @return
 	 * @throws ServletException
+	 * @throws IOException
 	 */
-	private void sendSelectJsp(HttpServletRequest request, HttpServletResponse response)
+	@GetMapping("/select/jsp")
+	private String sendSelectJsp()
 			throws ServletException, IOException {
-		request.getRequestDispatcher("../adminsystem/booking/roomtype-select.jsp").forward(request, response);
+		return "/adminsystem/booking/roomtype-select";
 	}
 
 	/**
 	 * 房間類型管理首頁
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
+	 * @param switchPage
+	 * @param model
+	 * @return
 	 */
-	private void sendRoomtypeIndex(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		String requestPage = request.getParameter("switch-page");
-		Integer switchPage = Integer.parseInt(requestPage != null ? requestPage : "1");
+	@GetMapping("")
+	private String sendRoomtypeIndex(@RequestParam(required = false, defaultValue = "1") Integer switchPage, Model model) {
 
 		Result<List<Listable>> roomtypeServiceResult = roomtypeService.getRoomtypeAll(switchPage);
 		if (roomtypeServiceResult.isFailure()) {
-			response.getWriter().write(roomtypeServiceResult.getMessage());
-			return;
+			return "";
 		}
 
 		List<Listable> roomtypes = roomtypeServiceResult.getData();
@@ -118,100 +85,86 @@ public class RoomtypeController extends HttpServlet {
 		int totalPages = (totalCounts + pageSize - 1) / pageSize; // 向上取整的頁數計算
 		
 		pageNumber.put("totalPages", totalPages);
-		request.setAttribute("lists", roomtypes);
-		request.setAttribute("pageNumber", pageNumber);
-		request.setAttribute("attrOrderBy", "roomtype_price");
-		request.setAttribute("pageInfos", RoomtypeDTO.pageInfos);
-		request.setAttribute("listInfos", RoomtypeDTO.listInfos);
-		request.setAttribute("manageListName", RoomtypeDTO.manageListName);
-		request.getRequestDispatcher("adminsystem/index.jsp").forward(request, response);
+		model.addAttribute("lists", roomtypes);
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("attrOrderBy", "roomtypePrice");
+		model.addAttribute("pageInfos", RoomtypeDTO.pageInfos);
+		model.addAttribute("listInfos", RoomtypeDTO.listInfos);
+		model.addAttribute("manageListName", RoomtypeDTO.manageListName);
+		return "/adminsystem/index";
 	}
 
 	/**
 	 * 轉去create.jsp
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @return
 	 */
-	private void sendCreateJsp(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		request.getRequestDispatcher("../adminsystem/booking/roomtype-create.jsp").forward(request, response);
+	@GetMapping("/create/jsp")
+	private String sendCreateJsp() {
+		return "/adminsystem/booking/roomtype-create";
 	}
 
 	/**
 	 * 轉去edit.jsp
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param roomtypeId
+	 * @param session
+	 * @param model
+	 * @return
 	 */
-	private void sendEditJsp(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
-		request.getSession().setAttribute("roomtype-id", roomtypeId);
-		Result<Roomtype> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
+	@GetMapping("/edit/jsp")
+	private String sendEditJsp(@RequestParam Integer roomtypeId, HttpSession session, Model model) {
+		session.setAttribute("roomtypeId", roomtypeId);
+		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
 
 		if (roomtypeServiceResult.isFailure()) {
-			response.getWriter().write("回寫編輯資料失敗");
+			return "";
 		}
 
-		request.setAttribute("roomtype", roomtypeServiceResult.getData());
-		request.getRequestDispatcher("../adminsystem/booking/roomtype-edit.jsp").forward(request, response);
+		model.addAttribute("roomtype", roomtypeServiceResult.getData());
+		return "/adminsystem/booking/roomtype-edit";
 	}
 
 	/**
 	 * 多重模糊查詢
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param roomtype
+	 * @param switchPage
+	 * @param maxMoney
+	 * @param minMoney
+	 * @param attrOrderBy
+	 * @param selectedSort
+	 * @param model
+	 * @return
 	 */
-	private void select(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String roomtypeName = RequestParamUtils.getParameter(request, "roomtype-name", String.class);
-		Integer roomtypeCapacity = RequestParamUtils.getParameter(request, "roomtype-capacity", Integer.class);
-		Integer roomtypePrice = RequestParamUtils.getParameter(request, "roomtype-price", Integer.class);
-		Integer roomtypeQuantity = RequestParamUtils.getParameter(request, "roomtype-quantity", Integer.class);
-		String roomtypeDescription = RequestParamUtils.getParameter(request, "roomtype-description", String.class);
-		String roomtypeAddress = RequestParamUtils.getParameter(request, "roomtype-address", String.class);
-		String roomtypeCity = RequestParamUtils.getParameter(request, "roomtype-city", String.class);
-		String roomtypeDistrict = RequestParamUtils.getParameter(request, "roomtype-district", String.class);
+	@GetMapping("/select")
+	private String select(
+			Roomtype roomtype,
+			@RequestParam(required = false, defaultValue = "1") Integer switchPage,
+			@RequestParam(required = false, defaultValue = "0") Integer maxMoney,
+			@RequestParam(required = false, defaultValue = "0") Integer minMoney,
+			@RequestParam(required = false, defaultValue = "roomtypePrice") String attrOrderBy,
+			@RequestParam(required = false, defaultValue = "asc") String selectedSort,
+			Model model
+	) {
 		
-		String requestPage = request.getParameter("switch-page");
-		Integer switchPage = Integer.parseInt(requestPage != null ? requestPage : "1");
+		if(maxMoney == 0 && minMoney == 0) {
+			maxMoney = null;
+			minMoney = null;
+		}
 		
-		String roomtypeMaxMoney = Optional.ofNullable(request.getParameter("max-money")).orElse("0");
-		Integer maxMoney = Optional.of(roomtypeMaxMoney)
-		                           .map(Integer::parseInt)
-		                           .filter(money -> money != 0)
-		                           .orElse(null);
-	
-		String roomtypeMinMoney = Optional.ofNullable(request.getParameter("min-money")).orElse("0");
-		Integer minMoney = Optional.of(roomtypeMinMoney)
-		                           .map(Integer::parseInt)
-		                           .filter(money -> money != 0)
-		                           .orElse(null);
-		String attrOrderBy = RequestParamUtils.getParameter(request, "attr-order-by", String.class);
-		attrOrderBy = attrOrderBy != null ? attrOrderBy : "roomtypePrice";
-		
-		String selectedSort = RequestParamUtils.getParameter(request, "selected-sort", String.class);
-		selectedSort = selectedSort != null ? selectedSort : "asc";
-		
-		Roomtype roomtype = new Roomtype(roomtypeName, roomtypeCapacity, roomtypePrice, roomtypeQuantity, roomtypeDescription,roomtypeAddress,roomtypeCity,roomtypeDistrict);
 		Map<String, Object> extraValues = new HashMap<>();
 		extraValues.put("maxMoney", maxMoney);
 		extraValues.put("minMoney", minMoney);
 		extraValues.put("switchPage", switchPage);
 		extraValues.put("attrOrderBy", attrOrderBy);
 		extraValues.put("selectedSort", selectedSort);
+		
 		Result<List<Listable>> roomtypeServiceResult = roomtypeService.getRoomtypes(roomtype, extraValues);
-		List<Listable> roomtypes = roomtypeServiceResult.getData();
+		
 		if(roomtypeServiceResult.isFailure()) {
-			response.getWriter().write(roomtypeServiceResult.getMessage());
-			return;
+			return "";
 		}
+		
+		List<Listable> roomtypes = roomtypeServiceResult.getData();
+		
 		Map<String, Object> requestParameters = new HashMap<>();
 		requestParameters.put("paramters", roomtype);
 		requestParameters.put("extraValues", extraValues);
@@ -221,95 +174,64 @@ public class RoomtypeController extends HttpServlet {
 		
 		Map<String, Integer> pageNumber = new HashMap<>();
 		pageNumber.put("currentPage", switchPage);
+		
 		Integer totalCounts = roomtypes.isEmpty() ? 0 : roomtypes.get(0).getTotalCounts();
-		int pageSize = 10; // 每頁顯示的記錄數量
-		Integer totalPages = (totalCounts + pageSize - 1) / pageSize; // 向上取整的頁數計算
+		Integer totalPages = (totalCounts + 10 - 1) / 10; // 向上取整的頁數計算
 		pageNumber.put("totalPages", totalPages);
-		request.setAttribute("attrOrderBy", attrOrderBy);
-		request.setAttribute("selectedSort", selectedSort);
-		request.setAttribute("requestParameters", jsonData);
-		request.setAttribute("pageNumber", pageNumber);
-		request.setAttribute("lists", roomtypes);
-		request.setAttribute("pageInfos", RoomtypeDTO.pageInfos);
-		request.setAttribute("listInfos", RoomtypeDTO.listInfos);
-		request.setAttribute("manageListName", RoomtypeDTO.manageListName);
-		request.getRequestDispatcher("../adminsystem/index.jsp").forward(request, response);	
+		
+		model.addAttribute("attrOrderBy", attrOrderBy);
+		model.addAttribute("selectedSort", selectedSort);
+		model.addAttribute("requestParameters", jsonData);
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("lists", roomtypes);
+		model.addAttribute("pageInfos", RoomtypeDTO.pageInfos);
+		model.addAttribute("listInfos", RoomtypeDTO.listInfos);
+		model.addAttribute("manageListName", RoomtypeDTO.manageListName);
+		return "/adminsystem/index";
 	}
 
 	/**
 	 * 新建單筆房間類型
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param roomtype
+	 * @return
 	 */
-	private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String roomtypeName = RequestParamUtils.getParameter(request, "roomtype-name", String.class);
-		Integer roomtypeCapacity = RequestParamUtils.getParameter(request, "roomtype-capacity", Integer.class);
-		Integer roomtypePrice = RequestParamUtils.getParameter(request, "roomtype-price", Integer.class);
-		Integer roomtypeQuantity = RequestParamUtils.getParameter(request, "roomtype-quantity", Integer.class);
-		String roomtypeDescription = RequestParamUtils.getParameter(request, "roomtype-description", String.class);
-		String roomtypeAddress = RequestParamUtils.getParameter(request, "roomtype-address", String.class);
-		String roomtypeCity = RequestParamUtils.getParameter(request, "roomtype-city", String.class);
-		String roomtypeDistrict = RequestParamUtils.getParameter(request, "roomtype-district", String.class);
-		LocalDateTime updatedTime = LocalDateTime.now();
-		LocalDateTime createdTime = LocalDateTime.now();
+	@PostMapping("/create")
+	private String create(Roomtype roomtype) {
+		LocalDateTime now = LocalDateTime.now();
+		roomtype.setCreatedTime(now);
+		roomtype.setUpdatedTime(now);
 
-		Roomtype roomtype = new Roomtype(roomtypeName, roomtypeCapacity, roomtypePrice, roomtypeQuantity,
-				roomtypeDescription, roomtypeAddress, roomtypeCity, roomtypeDistrict, updatedTime, createdTime);
 		Result<Integer> result = roomtypeService.addRoomtype(roomtype);
 		if (result.isFailure()) {
-			response.getWriter().write(result.getMessage());
-			return;
+			return "";
 		}
-		response.sendRedirect("/booking/roomtype");
+		return "redirect:/roomtype";
 	}
 
 	/**
 	 * 刪除房間類型
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param roomtypeId
 	 */
-	private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
-
-		Result<String> removeRoomtypeResult = roomtypeService.removeRoomtype(roomtypeId);
-		response.getWriter().write(removeRoomtypeResult.getMessage());
+	@PostMapping("/delete")
+	private void delete(@RequestParam Integer roomtypeId) {
+		roomtypeService.removeRoomtype(roomtypeId);
 	}
 
 	/**
 	 * 更新房間類型
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
+	 * @param roomtype
+	 * @param roomtypeId
+	 * @return
 	 */
-	private void update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		Integer roomtypeId = (Integer) request.getSession().getAttribute("roomtype-id");
-		String roomtypeName = RequestParamUtils.getParameter(request, "roomtype-name", String.class);
-		Integer roomtypeCapacity = RequestParamUtils.getParameter(request, "roomtype-capacity", Integer.class);
-		Integer roomtypePrice = RequestParamUtils.getParameter(request, "roomtype-price", Integer.class);
-		Integer roomtypeQuantity = RequestParamUtils.getParameter(request, "roomtype-quantity", Integer.class);
-		String roomtypeDescription = RequestParamUtils.getParameter(request, "roomtype-description", String.class);
-		String roomtypeAddress = RequestParamUtils.getParameter(request, "roomtype-address", String.class);
-		String roomtypeCity = RequestParamUtils.getParameter(request, "roomtype-city", String.class);
-		String roomtypeDistrict = RequestParamUtils.getParameter(request, "roomtype-district", String.class);
-		Roomtype roomtype = new Roomtype(roomtypeId, roomtypeName, roomtypeCapacity, roomtypePrice, roomtypeQuantity,
-				roomtypeDescription, roomtypeAddress, roomtypeCity, roomtypeDistrict);
+	@PostMapping("/update")
+	private String update(Roomtype roomtype, @SessionAttribute Integer roomtypeId) {
+		roomtype.setRoomtypeId(roomtypeId);
 		Result<String> result = roomtypeService.updateRoomtype(roomtype);
 
 		if (result.isFailure()) {
-			response.getWriter().write(result.getMessage());
-			return;
+			return "";
 		}
-		response.sendRedirect("/booking/roomtype");
+		return "redirect:/roomtype";
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		doGet(request, response);
-	}
 }
