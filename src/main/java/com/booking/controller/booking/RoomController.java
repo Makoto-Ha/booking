@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.Session;
+import org.springframework.stereotype.Controller;
 
 import com.booking.bean.booking.Room;
 import com.booking.dto.booking.RoomDTO;
@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 		"/room",
 		"/getroomjson"
 })
+@Controller
 public class RoomController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private RoomService roomService;
@@ -35,9 +36,6 @@ public class RoomController extends HttpServlet {
 		String requestURI = request.getRequestURI();
 		String[] splitURI = requestURI.split("/");
 		String path = splitURI[splitURI.length - 1];
-		
-		Session session = (Session) request.getAttribute("hibernateSession");
-		roomService = new RoomService(session);
 		
 		switch (path) {
 			case "select" -> select(request, response);

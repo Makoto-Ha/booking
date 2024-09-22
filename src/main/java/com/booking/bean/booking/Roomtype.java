@@ -12,6 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "roomtype")
@@ -52,10 +56,12 @@ public class Roomtype {
 	@Column(name = "created_time")
 	private LocalDateTime createdTime;
 
+	@Transient
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
 	private List<Room> rooms = new ArrayList<>();
 
-	public Roomtype() {}
+	public Roomtype() {
+	}
 
 	public Roomtype(Integer roomtypeId, String roomtypeName, Integer roomtypeCapacity, Integer roomtypePrice,
 			Integer roomtypeQuantity, String roomtypeDescription, String roomtypeAddress, String roomtypeCity,
@@ -186,20 +192,20 @@ public class Roomtype {
 		this.roomtypeDistrict = roomtypeDistrict;
 	}
 
-	public void setCreatedTime(LocalDateTime createdTime) {
-		this.createdTime = createdTime;
-	}
-
-	public LocalDateTime getCreatedTime() {
-		return createdTime;
-	}
-
 	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
 
 	public void setUpdatedTime(LocalDateTime updatedTime) {
 		this.updatedTime = updatedTime;
+	}
+
+	public LocalDateTime getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(LocalDateTime createdTime) {
+		this.createdTime = createdTime;
 	}
 
 	public List<Room> getRooms() {

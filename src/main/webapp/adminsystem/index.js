@@ -37,7 +37,7 @@ function bindAdminSystemEvent() {
 	document.querySelector('.add-btn').addEventListener('click', function() {
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		location.href = `/booking/${lastHref}/create.jsp`;
+		location.href = `/booking/${lastHref}/create/jsp`;
 	});
 
 	// 轉送到編輯
@@ -46,7 +46,7 @@ function bindAdminSystemEvent() {
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
 			let hrefSplit = location.pathname.split('/');
 			let lastHref = hrefSplit[2];
-			location.href = `/booking/${lastHref}/edit.jsp?${lastHref}-id=${currentListId}`;
+			location.href = `/booking/${lastHref}/edit/jsp?${lastHref}Id=${currentListId}`;
 		});
 	});
 
@@ -54,7 +54,7 @@ function bindAdminSystemEvent() {
 	document.getElementById('search-btn').addEventListener('click', function() {
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		location.href = `/booking/${lastHref}/select.jsp`;
+		location.href = `/booking/${lastHref}/select/jsp`;
 	});
 
 	// 開啟檢查視窗
@@ -65,12 +65,7 @@ function bindAdminSystemEvent() {
 			let hrefSplit = location.pathname.split('/');
 			let lastHref = hrefSplit[2];
 
-			fetch(`/booking/get${lastHref}json`, {
-				method: 'POST',
-				body: new URLSearchParams({
-					[`${lastHref}-id`]: currentListId
-				})
-			})
+			fetch(`/booking/${lastHref}/json/${currentListId}`)
 				.then(res => res.json())
 				.then(data => {
 					let values = [];
@@ -110,7 +105,7 @@ function bindAdminSystemEvent() {
 		fetch(`/booking/${lastHref}/delete`, {
 			method: 'POST',
 			body: new URLSearchParams({
-				[`${lastHref}-id`]: currentList.id
+				[`${lastHref}Id`]: currentList.id
 			})
 		})
 			.then(res => {
@@ -151,36 +146,15 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		let paramters, extraValues;
+		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
+		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
 
-		if (requestParameters) {
-			let jsonData = JSON.parse(requestParameters);
-			paramters = jsonData.paramters;
-			extraValues = jsonData.extraValues;
-			let paramsKebab = {};
-			for (let paramKey in paramters) {
-				let camelKey = camelToKebab(paramKey);
-				paramsKebab[camelKey] = paramters[paramKey];
-
-			}
-			paramters = paramsKebab;
-
-			let extrayValuesKebab = {};
-			for (let extraKey in extraValues) {
-				let camelKey = camelToKebab(extraKey);
-				extrayValuesKebab[camelKey] = extraValues[extraKey];
-			}
-			extraValues = extrayValuesKebab;
-		}
-
-		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage };
 		const params = {};
-		Object.assign(params, paramters, extraValues, {'switch-page': currentPage});
+		Object.assign(params, paramters, extraValues, {switchPage: currentPage-1});
 		
-		params['switch-page']--;
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams(params)
+		let queryString = new URLSearchParams(params).toString();
+		
+		fetch(`/booking/${lastHref}/select?${queryString}`, {
 		}).then(res => res.text()).then(html => {
 			document.documentElement.innerHTML = html
 			bindAdminSystemEvent();
@@ -202,37 +176,14 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		let paramters, extraValues;
-
-		if (requestParameters) {
-			let jsonData = JSON.parse(requestParameters);
-			paramters = jsonData.paramters;
-			extraValues = jsonData.extraValues;
-			let paramsKebab = {};
-			for (let paramKey in paramters) {
-				let camelKey = camelToKebab(paramKey);
-				paramsKebab[camelKey] = paramters[paramKey];
-
-			}
-			paramters = paramsKebab;
-
-			let extrayValuesKebab = {};
-			for (let extraKey in extraValues) {
-				let camelKey = camelToKebab(extraKey);
-				extrayValuesKebab[camelKey] = extraValues[extraKey];
-			}
-			extraValues = extrayValuesKebab;
-		}
+		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
+		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
 		
 		const params = {};
-		Object.assign(params, paramters, extraValues, {'switch-page': currentPage});
-		
-		params['switch-page']++;
+		Object.assign(params, paramters, extraValues, {switchPage: currentPage+1});
 
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams(params)
-		})
+		let queryString = new URLSearchParams(params).toString();
+		fetch(`/booking/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
 				document.documentElement.innerHTML = html
@@ -259,36 +210,14 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		let paramters, extraValues;
-
-		if (requestParameters) {
-			let jsonData = JSON.parse(requestParameters);
-			paramters = jsonData.paramters;
-			extraValues = jsonData.extraValues;
-			let paramsKebab = {};
-			for (let paramKey in paramters) {
-				let camelKey = camelToKebab(paramKey);
-				paramsKebab[camelKey] = paramters[paramKey];
-
-			}
-			paramters = paramsKebab;
-
-			let extrayValuesKebab = {};
-			for (let extraKey in extraValues) {
-				let camelKey = camelToKebab(extraKey);
-				extrayValuesKebab[camelKey] = extraValues[extraKey];
-			}
-			extraValues = extrayValuesKebab;
-		}
+		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
+		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
 
 		const params = {};
-		Object.assign(params, paramters, extraValues, {'switch-page': page});
+		Object.assign(params, paramters, extraValues, {switchPage: page});
 		
-		
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams(params)
-		})
+		let queryString = new URLSearchParams(params).toString();
+		fetch(`/booking/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
 				document.documentElement.innerHTML = html
@@ -303,15 +232,16 @@ function bindAdminSystemEvent() {
 			});
 	});
 
+	// 根據名字簡單查詢
 	document.getElementById('search-input').addEventListener('change', function() {
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams({
-				"roomtype-name": this.value
-			})
-		})
+		
+		let queryString = new URLSearchParams({
+				[`${lastHref}Name`]: this.value
+			}).toString();
+		
+		fetch(`/booking/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
 				document.documentElement.innerHTML = html
@@ -326,39 +256,20 @@ function bindAdminSystemEvent() {
 			})
 	});
 
+	// 選擇排序種類
 	document.getElementById('select-order-by').addEventListener('change', function(e) {
 		let selectedAttr = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		let paramters, extraValues;
-
-		if (requestParameters) {
-			let jsonData = JSON.parse(requestParameters);
-			paramters = jsonData.paramters;
-			extraValues = jsonData.extraValues;
-			let paramsKebab = {};
-			for (let paramKey in paramters) {
-				let camelKey = camelToKebab(paramKey);
-				paramsKebab[camelKey] = paramters[paramKey];
-
-			}
-			paramters = paramsKebab;
-
-			let extrayValuesKebab = {};
-			for (let extraKey in extraValues) {
-				let camelKey = camelToKebab(extraKey);
-				extrayValuesKebab[camelKey] = extraValues[extraKey];
-			}
-			extraValues = extrayValuesKebab;
-		}
+		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
+		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
 
 		const params = {};
-		Object.assign(params, paramters, extraValues, {'switch-page': currentPage, "attr-order-by": selectedAttr});
+		Object.assign(params, paramters, extraValues, {switchPage: currentPage, attrOrderBy: selectedAttr});
 		
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams(params)
-		})
+		let queryString = new URLSearchParams(params).toString();
+		
+		fetch(`/booking/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
 				document.documentElement.innerHTML = html
@@ -373,41 +284,21 @@ function bindAdminSystemEvent() {
 			});
 
 	});
-
+	
+	// 選擇排序
 	document.getElementById('select-sort').addEventListener('change', function(e) {
 		let selectedSort = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[2];
-		let paramters, extraValues;
+		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
+		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
 
-		if (requestParameters) {
-			let jsonData = JSON.parse(requestParameters);
-			paramters = jsonData.paramters;
-			extraValues = jsonData.extraValues;
-			let paramsKebab = {};
-			for (let paramKey in paramters) {
-				let camelKey = camelToKebab(paramKey);
-				paramsKebab[camelKey] = paramters[paramKey];
-
-			}
-			paramters = paramsKebab;
-
-			let extrayValuesKebab = {};
-			for (let extraKey in extraValues) {
-				let camelKey = camelToKebab(extraKey);
-				extrayValuesKebab[camelKey] = extraValues[extraKey];
-			}
-			extraValues = extrayValuesKebab;
-		}
-
-		// const params = { ...paramters, ...extraValues, 'switch-page': currentPage, "selected-sort": selectedSort };
 		const params = {};
-		Object.assign(params, paramters, extraValues, {'switch-page': currentPage, 'selected-sort': selectedSort});
+		Object.assign(params, paramters, extraValues, {switchPage: currentPage, selectedSort});
 		
-		fetch(`/booking/${lastHref}/select`, {
-			method: "POST",
-			body: new URLSearchParams(params)
-		})
+		let queryString = new URLSearchParams(params).toString();
+		
+		fetch(`/booking/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
 				document.documentElement.innerHTML = html
@@ -421,11 +312,6 @@ function bindAdminSystemEvent() {
 				}
 			});
 	});
-
-	// 小駝峰轉串型
-	function camelToKebab(camelStr) {
-		return camelStr.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-	}
 }
 
 bindAdminSystemEvent();
