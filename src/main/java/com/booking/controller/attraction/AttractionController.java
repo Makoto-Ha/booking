@@ -1,251 +1,182 @@
 package com.booking.controller.attraction;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.attraction.Attraction;
 import com.booking.dto.attraction.AttractionDTO;
 import com.booking.service.attraction.AttractionService;
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
-import com.booking.utils.RequestParamUtils;
 import com.booking.utils.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = { 
-		"/attraction/create", 
-		"/attraction/delete", 
-		"/attraction/update", 
-		"/attraction/select",
-		"/attraction/create.jsp",
-		"/attraction/edit.jsp",
-		"/attraction/select.jsp",
-		"/attraction",
-		"/getattractionjson"})
-public class AttractionController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/attraction")
+public class AttractionController {
+	
+	@Autowired
 	private AttractionService attractionService;
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String requestURI = request.getRequestURI();
-		String[] splitURI = requestURI.split("/");
-		String path = splitURI[splitURI.length - 1];
-
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setContentType("text/html; charset=utf8");
-		
-		Session session = (Session) request.getAttribute("hibernateSession");
-		attractionService = new AttractionService(session);
-
-		switch (path) {
-		case "create" -> create(request, response);
-		case "delete" -> delete(request, response);
-		case "update" -> update(request, response);
-		case "select" -> select(request, response);
-		case "create.jsp" -> sendCreateJsp(request, response);
-		case "edit.jsp" -> sendEditJsp(request, response);
-		case "select.jsp" -> sendSelectJsp(request, response);
-		case "attraction" -> attraction(request, response);
-		case "getattractionjson" -> getAttractionJSON(request, response);
-		}
-	}
 
 	/**
 	 * 返回所有景點的數據
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param attractionid
+	 * return
 	 */
-	private void getAttractionJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer attractionId = Integer.parseInt(request.getParameter("attraction-id"));
-		Result<Attraction> attractionServiceResult = attractionService.getAttractionById(attractionId);
+	@GetMapping("/json/{id}")
+	@ResponseBody
+	private String getAttractionJSON(@PathVariable Integer id) {
+		Result<AttractionDTO> attractionServiceResult = attractionService.getAttractionById(id);
 		if(attractionServiceResult.isFailure()) {
-			response.getWriter().write(attractionServiceResult.getMessage());
-			return;
+			return null;
 		}
-		Gson gson = new GsonBuilder().create();
-		String jsonData = gson.toJson(attractionServiceResult.getData());
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(jsonData);
+		return JsonUtil.toJson(attractionServiceResult.getData());
 	}
 	
 	
 	/**
 	 * 轉到景點首頁
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
+	 * @param model
 	 */
-	private void attraction(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	@GetMapping("")
+	private String attraction(Model model) {
+		
 		Result<List<Listable>> attractionServiceResult = attractionService.getAttractionAll();
 		if(attractionServiceResult.isFailure()) {
-			response.getWriter().write(attractionServiceResult.getMessage()); 
-			return;
+			return "";
 		}
 		List<Listable> attractions = attractionServiceResult.getData();
-		request.setAttribute("lists", attractions);
-		request.setAttribute("pageInfos", AttractionDTO.pageInfos);
-		request.setAttribute("listInfos", AttractionDTO.listInfos);
-		request.setAttribute("manageListName", AttractionDTO.manageListName);
-		request.getRequestDispatcher("adminsystem/index.jsp").forward(request, response);
+		
+		
+		model.addAttribute("lists", attractions);
+		model.addAttribute("pageInfos", AttractionDTO.pageInfos);
+		model.addAttribute("listInfos", AttractionDTO.listInfos);
+		model.addAttribute("manageListName", AttractionDTO.manageListName);
+		return "/adminsystem/index";
 	}
 	
 	/**
 	 * 轉到查詢
-	 * @param request
-	 * @param response
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	private void sendSelectJsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
-		request.getRequestDispatcher("../adminsystem/attraction/attraction-select.jsp").forward(request, response);
+	@GetMapping("/select/jsp")
+	private String sendSelectJsp() throws ServletException, IOException {	
+		return "/adminsystem/attraction/attraction-select";
 	}
 
 	
 	/**
 	 * 轉去create.jsp
-	 * @param request
-	 * @param response
 	 * @throws ServletExceptions
 	 * @throws IOException
 	 */
-	private void sendCreateJsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("../adminsystem/attraction/attraction-create.jsp").forward(request, response);
+	@GetMapping("/create/jsp")
+	private String sendCreateJsp() throws ServletException, IOException {
+		return "/adminsystem/attraction/attraction-create";
 	}
 	
 
 	/**
 	 * 轉去edit.jsp
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param attractionId
+	 * @param session
+	 * @param model
 	 */
-	private void sendEditJsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Integer attractionId = Integer.parseInt(request.getParameter("attraction-id"));
-		request.getSession().setAttribute("attraction-id", attractionId);
-		Result<Attraction> attractionServiceResult = attractionService.getAttractionById(attractionId);
+	@GetMapping("/edit/jsp")
+	private String sendEditJsp(@RequestParam Integer attractionId, HttpSession session, Model model) {
+		session.setAttribute("attractionId", attractionId);
+		Result<AttractionDTO> attractionServiceResult = attractionService.getAttractionById(attractionId);
 		
 		if(attractionServiceResult.isFailure()) {
-			response.getWriter().write("回寫編輯資料失敗");
-			return;
+			return "";
 		}
 		
-		request.setAttribute("attraction", attractionServiceResult.getData());
-		request.getRequestDispatcher("../adminsystem/attraction/attraction-edit.jsp").forward(request, response);
+		model.addAttribute("attraction", attractionServiceResult.getData());
+		return "/adminsystem/attraction/attraction-edit";
 	}
 	
 	/**
 	 * 模糊查詢
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param 
+	 * @param 
 	 */
-	private void select(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String attractionName = RequestParamUtils.getParameter(request, "attraction-name", String.class);
-		String attractionCity = RequestParamUtils.getParameter(request, "attraction-city", String.class);
-		String address = RequestParamUtils.getParameter(request, "address", String.class);
-		String openingHours = RequestParamUtils.getParameter(request, "opening-hours", String.class);
-		String attractionType = RequestParamUtils.getParameter(request, "attraction-type", String.class);
-		String attractionDescription = RequestParamUtils.getParameter(request, "attraction-description", String.class);
-		Result<List<Listable>> attractionServiceResult = attractionService.getAttractions(
-						new Attraction(
-						attractionName,
-						attractionCity,
-						address,
-						openingHours,
-						attractionType,
-						attractionDescription));
+	@GetMapping("/select")
+	private String select(Attraction attraction, Model model) {
 		
+		Result<List<Listable>> attractionServiceResult = attractionService.getAttractions(attraction);
 		if(attractionServiceResult.isFailure()) {
-			response.getWriter().write(attractionServiceResult.getMessage());
-			return;
+			return "";
 		}
+		List<Listable> attractions = attractionServiceResult.getData();
 		
-		request.setAttribute("lists", attractionServiceResult.getData());
-		request.setAttribute("pageInfos", AttractionDTO.pageInfos);
-		request.setAttribute("listInfos", AttractionDTO.listInfos);
-		request.getRequestDispatcher("../adminsystem/index.jsp").forward(request, response);	
+		Map<String, Object> requestParameters = new HashMap<>();
+		requestParameters.put("paramters", attraction);
+		
+		JsonUtil.setNonNull();
+		String jsonData = JsonUtil.toJson(requestParameters);
+		
+		model.addAttribute("lists", attractions);
+		model.addAttribute("requestParameters", jsonData);
+		model.addAttribute("pageInfos", AttractionDTO.pageInfos);
+		model.addAttribute("listInfos", AttractionDTO.listInfos);
+		model.addAttribute("manageListName", AttractionDTO.manageListName);
+		return "/adminsystem/index";	
 	}
 	
 	/**
 	 * 新增景點
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param attraction
 	 */
-	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String attractionName = RequestParamUtils.getParameter(request, "attraction-name", String.class);
-		String attractionCity = RequestParamUtils.getParameter(request, "attraction-city", String.class);
-		String address = RequestParamUtils.getParameter(request, "address", String.class);
-		String openingHour = RequestParamUtils.getParameter(request, "opening-hour", String.class);
-		String attractionType = RequestParamUtils.getParameter(request, "attraction-type", String.class);
-		String attractionDescription = RequestParamUtils.getParameter(request, "attraction-description", String.class);
-
-		Attraction attraction = new Attraction(attractionName,attractionCity , address, openingHour,
-				attractionType, attractionDescription);
+	@PostMapping("/create")
+	private String create(Attraction attraction) {
 		Result<Integer> result = attractionService.addAttraction(attraction);
 		if (result.isFailure()) {
-			response.getWriter().write(result.getMessage());
-			return;
+			return "";
 		}
-		response.sendRedirect("/booking/attraction");
+		return "redirect:/attraction";
 		
 	}
 
 	/**
 	 * 刪除景點
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @param attractionId
 	 */
-	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Integer attractionId = Integer.parseInt(request.getParameter("attraction-id"));
-
-		Result<String> result = attractionService.removeAttraction(attractionId);
-		response.getWriter().write(result.getMessage());
+	@PostMapping("/delete")
+	private void delete(@RequestParam Integer attractionId) {
+		attractionService.removeAttraction(attractionId);
 	}
 
 	/**
 	 * 更新景點
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param attraction
+	 * @param attractionId
 	 */
-	private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		Integer attractionId = (Integer) request.getSession().getAttribute("attraction-id");
-		String attractionName = RequestParamUtils.getParameter(request, "attraction-name", String.class);
-		String attractionCity = RequestParamUtils.getParameter(request, "attraction-city", String.class);
-		String address = RequestParamUtils.getParameter(request, "address", String.class);
-		String openingHour = RequestParamUtils.getParameter(request, "opening-hour", String.class);
-		String attractionType = RequestParamUtils.getParameter(request, "attraction-type", String.class);
-		String attractionDescription = RequestParamUtils.getParameter(request, "attraction-description", String.class);
-		Attraction attraction = new Attraction(attractionId, attractionName, attractionCity, address,
-				openingHour, attractionType, attractionDescription);
+	@PostMapping("/update")
+	private String update(Attraction attraction, @SessionAttribute Integer attractionId) {
+		attraction.setAttractionId(attractionId);
 		Result<String> result = attractionService.updateAttraction(attraction);
 		
 		if(result.isFailure()) {
-			response.getWriter().write(result.getMessage());
-			return;
+			return "";
 		}
-		response.sendRedirect("/booking/attraction");
+		return "redirect:/attraction";
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		doGet(request, response);
-	}
 }

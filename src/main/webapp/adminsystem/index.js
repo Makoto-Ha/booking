@@ -64,7 +64,7 @@ function bindAdminSystemEvent() {
 			currentList.id = currentListId;
 			let hrefSplit = location.pathname.split('/');
 			let lastHref = hrefSplit[2];
-
+				
 			fetch(`/booking/${lastHref}/json/${currentListId}`)
 				.then(res => res.json())
 				.then(data => {
