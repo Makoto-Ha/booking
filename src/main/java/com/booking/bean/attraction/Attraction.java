@@ -39,7 +39,6 @@ public class Attraction implements Serializable {
 
 	public Attraction(Integer attractionId, String attractionName, String attractionCity, String address,
 			String openingHour, String attractionType, String attractionDescription) {
-		super();
 		this.attractionId = attractionId;
 		this.attractionName = attractionName;
 		this.attractionCity = attractionCity;
@@ -51,7 +50,6 @@ public class Attraction implements Serializable {
 
 	public Attraction(String attractionName, String attractionCity, String address, String openingHour,
 			String attractionType, String attractionDescription) {
-		super();
 		this.attractionName = attractionName;
 		this.attractionCity = attractionCity;
 		this.address = address;

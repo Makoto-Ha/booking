@@ -5,23 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.attraction.Attraction;
 import com.booking.dao.attraction.AttractionDao;
-import com.booking.dao.attraction.AttractionDaoImpl;
 import com.booking.dto.attraction.AttractionDTO;
+import com.booking.utils.BeanUtil;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
 import com.booking.utils.util.DaoResult;
 
 
+@Service
+@Transactional
 public class AttractionService {
+	
+	@Autowired
 	private AttractionDao attractionDao;
 	
-	public AttractionService(Session session) {
-		this.attractionDao = new AttractionDaoImpl(session);
-	}
 
 	/**
 	 * 獲取所有景點
@@ -77,13 +80,15 @@ public class AttractionService {
 	 * @param attractionId
 	 * @return
 	 */
-	public Result<Attraction> getAttractionById(Integer attractionId) {
+	public Result<AttractionDTO> getAttractionById(Integer attractionId) {
 		DaoResult<Attraction> daoResult = attractionDao.getAttractionById(attractionId);
 		Attraction attraction = daoResult.getData();
 		if(daoResult.isFailure()) {
 			return Result.failure("沒有此景點");
 		}
-		return Result.success(attraction);
+		AttractionDTO attractionDTO = new AttractionDTO();
+		BeanUtil.copyProperties(attractionDTO, attraction);
+		return Result.success(attractionDTO);
 	}
 	
 	
