@@ -13,15 +13,15 @@
 		<%@include file="../sidebar.jsp"%>
 		<div class="main-content">
 			<%@include file="../navbar.jsp"%>
-			<form class="form" action="${pageContext.request.contextPath}/attraction/update">
+			<form class="form" action="${pageContext.request.contextPath}/attraction/update" method="post">
 		        <div class="form-group">
 		            <label for="name">景點名稱</label>
-		            <input type="text" id="name" name="attraction-name" placeholder="輸入內容" value="${attraction.getAttractionName()}">
+		            <input type="text" id="name" name="attractionName" placeholder="輸入內容" value="${attraction.getAttractionName()}">
 		        </div>
 		
 				<div class="form-group">
 		            <label for="view">縣市</label>
-		            <select id="select-city" name="attraction-city"></select>
+		            <select id="select-city" name="attractionCity"></select>
 		        </div>
 		        
 		        <div class="form-group">
@@ -31,12 +31,12 @@
 		
 		        <div class="form-group">
         			<label for="openinghour">開放時間</label>
-        			<textarea id="openinghour" name="opening-hour" placeholder="輸入內容" rows="5" style="width: 100%;"></textarea>
+        			<textarea id="openinghour" name="openingHour" placeholder="輸入內容" rows="5" style="width: 100%;"></textarea>
     			</div>
 		
 		        <div class="form-group">
     				<label for="type">景點類型</label>
-    				<select id="type" name="attraction-type" value="${attraction.getAttractionType()}">
+    				<select id="type" name="attractionType" value="${attraction.getAttractionType()}">
     					<option value="">選擇類型</option>
         				<option value="自然景點">自然景點</option>
         				<option value="歷史文化">歷史文化</option>
@@ -47,7 +47,7 @@
 		
 		        <div class="form-group">
         			<label for="description">景點介紹</label>
-        			<textarea id="description" name="attraction-description" placeholder="輸入內容" rows="8" style="width: 100%;"></textarea>
+        			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;"></textarea>
     			</div>
 		
 		        <div class="form-group">
