@@ -14,8 +14,8 @@ public class RoomDTO implements Listable {
 	private String roomDescription;
 	private Integer totalCounts;
 	
-	private static String[] attrs = { "roomtype-id", "room-number", "room-status", "room-description" };
-	private static String[] attrsChinese = { "房間類型", "房間號碼", "房間狀態", "房間簡介" };
+	private static String[] attrs = { "roomNumber", "roomStatus", "roomDescription" };
+	private static String[] attrsChinese = { "房間號碼", "房間狀態", "房間簡介" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
 	
 	private static String[] bookingPages = { "房間類型", "房間" };
