@@ -1,10 +1,17 @@
 package com.booking.controller.booking;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.booking.bean.booking.Room;
 import com.booking.dto.booking.RoomDTO;
@@ -13,144 +20,102 @@ import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = { 
-		"/room/select",
-		"/room/create", 
-		"/room/update",
-		"/room/delete",
-		"/room",
-		"/getroomjson"
-})
 @Controller
+@RequestMapping("/room")
 public class RoomController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	@Autowired
 	private RoomService roomService;
-
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String requestURI = request.getRequestURI();
-		String[] splitURI = requestURI.split("/");
-		String path = splitURI[splitURI.length - 1];
-		
-		switch (path) {
-			case "select" -> select(request, response);
-			case "create" -> create(request, response);
-			case "update" -> update(request, response);
-			case "delete" -> delete(request, response);
-			case "room" -> room(request, response);
-			case "getroomjson" -> getRoomJSON(request, response);
-		}
-	}
 	
 	/**
 	 * 房間首頁
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
+	 * @param model
+	 * @return
 	 */
-	private void room(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	@GetMapping("")
+	private String room(Model model) {
 		Result<List<Listable>> roomServiceResult = roomService.getRoomAll();
-		if(!roomServiceResult.isSuccess()) {
-			response.getWriter().write(roomServiceResult.getMessage()); 
-			return;
+		if(roomServiceResult.isFailure()) {
+			return "";
 		}
 		List<Listable> rooms = roomServiceResult.getData();
-		request.setAttribute("lists", rooms);
-		request.setAttribute("pageInfos", RoomDTO.pageInfos);
-		request.setAttribute("listInfos", RoomDTO.listInfos);
-		request.getRequestDispatcher("adminsystem/index.jsp").forward(request, response);
+		model.addAttribute("lists", rooms);
+		model.addAttribute("pageInfos", RoomDTO.pageInfos);
+		model.addAttribute("listInfos", RoomDTO.listInfos);
+		return "adminsystem/index";
 	}
 	
 	/**
-	 * 返回room的json數據
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * 根據id返回room的json數據
+	 * @param roomId
+	 * @return
 	 */
-	private void getRoomJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomId = Integer.parseInt(request.getParameter("room-id"));
-		Result<Room> roomServiceResult = roomService.getRoom(roomId);
-		if(!roomServiceResult.isSuccess()) {
-			response.getWriter().write(roomServiceResult.getMessage());
-			return;
+	@GetMapping("/json/{id}")
+	@ResponseBody
+	private String getRoomJSON(@PathVariable("id") Integer roomId) {
+		Result<RoomDTO> roomServiceResult = roomService.getRoom(roomId);
+		if(roomServiceResult.isFailure()) {
+			return "";
 		}
 		
 		JsonUtil.setNonNull();
-		String jsonData = JsonUtil.toJson(roomServiceResult.getData());
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(jsonData);
+		return JsonUtil.toJson(roomServiceResult.getData());	
 	}
 	
 	/**
 	 * 查找多筆房間
-	 * @param request
-	 * @param response
 	 */
-	private void select(HttpServletRequest request, HttpServletResponse response) {
+	@GetMapping("/select")
+	private void select() {
 		roomService.getRooms(1);
 	}
 	
 	/**
 	 * 創建房間
-	 * @param request
-	 * @param response
-	 * @throws IOException 
+	 * @param room
+	 * @return
 	 */
-	private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomStatus = Integer.parseInt(request.getParameter("room-status"));
-		String roomNumber = request.getParameter("room-number");
-		String roomDescription = request.getParameter("room-description");
+	@PostMapping("/create")
+	private String create(Room room) {
 		LocalDateTime updatedTime = LocalDateTime.now();
 		LocalDateTime createdTime = LocalDateTime.now();
+		room.setCreatedTime(createdTime);
+		room.setUpdatedTime(updatedTime);
 		
-		Result<Integer> roomServiceResult = roomService.addRoom(new Room(roomNumber, roomStatus, roomDescription, updatedTime, createdTime));
+		Result<Integer> roomServiceResult = roomService.addRoom(room);
 		if(!roomServiceResult.isSuccess()) {
-			response.getWriter().write(roomServiceResult.getMessage());
-			return;
+			return "";
 		}
+		
+		return "redirect:/room";
 	}
 	
 	/**
 	 * 刪除房間
-	 * @param request
-	 * @param response
-	 * @throws IOException 
+	 * @param roomId
+	 * @return
 	 */
-	private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomId = Integer.parseInt(request.getParameter("room-id"));
-		System.out.println("============AAAAAAAAAAAA==========");
-		Result<String> removeRoomtypeResult = roomService.removeRoom(roomId);
-		
-		if(removeRoomtypeResult.isFailure()) {
-			response.getWriter().write(removeRoomtypeResult.getMessage());
-			return;
-		}
+	@PostMapping("/delete")
+	@ResponseBody
+	private String delete(@RequestParam Integer roomId) {
+		Result<String> removeRoomtypeResult = roomService.removeRoom(roomId);	
+		return removeRoomtypeResult.getMessage();
 	}
 
 	/**
 	 * 更新房間
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param room
+	 * @return
 	 */
-	private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Integer roomId = Integer.parseInt(request.getParameter("room-id"));
-		Integer roomtypeId = Integer.parseInt(request.getParameter("roomtype-id"));
-		Integer roomStatus = Integer.parseInt(request.getParameter("room-status"));
-		String roomNumber = request.getParameter("room-number");
-		String roomDescription = request.getParameter("room-description");
+	@PostMapping("/update")
+	private String update(Room room) {	
+		Result<String> roomServiceResult = roomService.updateRoom(room);
+		if(roomServiceResult.isFailure()) {
+			return "";
+		}
 		
-		roomService.updateRoom(new Room(roomId, roomtypeId, roomNumber, roomStatus, roomDescription));
-	}
-
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		doGet(request, response);
+		return "redirect:/room";
 	}
 }
