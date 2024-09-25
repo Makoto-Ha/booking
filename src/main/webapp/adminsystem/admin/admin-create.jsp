@@ -21,7 +21,7 @@
 				method="post">
 				<div class="form-group">
 					<label for="admin-account">新增員工帳號</label> <input type="text"
-						id="admin-account" name="admin-account" placeholder="輸入內容">
+						id="admin-account" name="adminAccount" placeholder="輸入內容">
 				</div>
 				<!-- 錯誤訊息區域 -->
             <c:if test="${not empty errorMessage}">
@@ -31,17 +31,17 @@
             </c:if>
 				<div class="form-group">
 					<label for="admin-password">新增員工密碼</label> <input type="text"
-						id="admin-password" name="admin-password" placeholder="輸入內容">
+						id="admin-password" name="adminPassword" placeholder="輸入內容">
 				</div>
 
 				<div class="form-group">
 					<label for="admin-name">新增員工姓名</label> <input type="text"
-						id="admin-name" name="admin-name" placeholder="輸入內容">
+						id="admin-name" name="adminName" placeholder="輸入內容">
 				</div>
 
 				<div class="form-group">
 					<label for="admin-mail">新增員工信箱</label> <input type="text"
-						id="admin-mail" name="admin-mail" placeholder="輸入內容">
+						id="admin-mail" name="adminMail" placeholder="輸入內容">
 				</div>
 
 				<div class="form-group">
@@ -51,7 +51,7 @@
 
 				<div class="form-group">
 					<label for="adminStatus">新增員工狀態</label> <select id="adminStatus"
-						name="admin-status">
+						name="adminStatus">
 						<option value="1">在職</option>
 						<option value="0">離職</option>
 					</select>

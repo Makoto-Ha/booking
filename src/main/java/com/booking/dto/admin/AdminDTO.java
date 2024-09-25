@@ -9,6 +9,8 @@ import java.util.Map;
 
 import com.booking.utils.Listable;
 
+
+
 public class AdminDTO implements Listable {
 	private Integer adminId;
 	private String adminAccount;
@@ -16,16 +18,16 @@ public class AdminDTO implements Listable {
 	private String adminName;
 	private LocalDate hiredate;
 	private Integer adminStatus;
+	private Integer totalCounts;
 
-	private static String[] attrs = { "admin-account", "admin-name", "admin-mail", "hiredate", "admin-status" };
+	private static String[] attrs = { "adminAccount", "adminName", "adminMail", "hiredate", "adminStatus" };
 	private static String[] attrsChinese = { "管理員帳號", "管理員姓名", "管理員信箱", "到職日期", "管理員狀態" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
-	
-	private static String[] pages = { "管理員"};
+
+	private static String[] pages = { "管理員" };
 	private static String[] pageURL = {"/booking/admin"};
-	public static List<Map<String, String>> pageInfos = new ArrayList<>();
-	
-	public static String manageListName = "管理員列表"; 
+public static List<Map<String, String>> pageInfos = new ArrayList<>();
+	public static String manageListName = "管理員列表";
 
 	static {
 		for (int i = 0; i < attrs.length; i++) {
@@ -35,7 +37,7 @@ public class AdminDTO implements Listable {
 			listInfos.add(map);
 		}
 		
-		for(int i = 0; i < pages.length; i++) {
+		for(int i=0; i<pages.length; i++) {
 			Map<String, String> map = new HashMap<>();
 			map.put("page", pages[i]);
 			map.put("url", pageURL[i]);
@@ -43,7 +45,31 @@ public class AdminDTO implements Listable {
 		}
 	}
 
-	public AdminDTO() {}
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus, Integer totalCounts) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.totalCounts = totalCounts;
+	}
+
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
+			Integer totalCounts) {
+		super();
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.totalCounts = totalCounts;
+	}
+
+	public AdminDTO() {
+	}
 
 	public Integer getAdminId() {
 		return adminId;
@@ -101,9 +127,18 @@ public class AdminDTO implements Listable {
 		return attrsChinese;
 	}
 
+	public void setTotalCounts(Integer totalCounts) {
+		this.totalCounts = totalCounts;
+	}
+
 	@Override
 	public String getName() {
 		return adminName;
+	}
+
+	@Override
+	public Integer getTotalCounts() {
+		return totalCounts;
 	}
 
 	@Override
@@ -113,21 +148,30 @@ public class AdminDTO implements Listable {
 
 	@Override
 	public String toString() {
-		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" 
-		       + adminName + ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" 
-		       + adminStatus + ", attrs=" + Arrays.toString(attrs) + ", attrsChinese=" 
-		       + Arrays.toString(attrsChinese) + "]";
-	}
-
-	@Override
-	public Integer getTotalCounts() {
-		return null;
+		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" + adminName
+				+ ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus + ", attrs="
+				+ Arrays.toString(attrs) + ", attrsChinese=" + Arrays.toString(attrsChinese) + "]";
 	}
 
 	@Override
 	public Map<String, Object> getAdditionProperties() {
-		return new HashMap<>();
+		Map<String, Object> properties = new HashMap<>();
+		List<String> strs = new ArrayList<>();
+		int maxLength = 5;
+		String comma = "...";
+		strs.add(adminAccount);
+		strs.add(adminName);
+		strs.add(adminMail);
+
+		Object[] subLists = strs.stream().map(s -> s.length() >= maxLength ? s.substring(0, maxLength) + comma : s)
+				.toArray();
+
+		properties.put("管理員帳號", subLists[0]);
+		properties.put("管理員姓名", subLists[1]);
+		properties.put("管理員信箱", subLists[2]);
+		properties.put("到職日期", hiredate);
+		properties.put("管理員狀態", adminStatus);
+
+		return properties;
 	}
 }
-
-
