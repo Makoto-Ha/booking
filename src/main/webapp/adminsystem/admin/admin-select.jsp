@@ -16,22 +16,22 @@
 			<form class="form" action="${pageContext.request.contextPath}/admin/select" method="post">
 		        <div class="form-group">
 		            <label for="adminId">管理員編號</label>
-		            <input type="text" id="adminId" name="admin-id" placeholder="輸入編號" value="${admin.getAdminId()}">
+		            <input type="text" id="adminId" name="adminId" placeholder="輸入編號" value="${admin.getAdminId()}">
 		        </div>
 		
 		        <div class="form-group">
 		            <label for="adminAccount">管理員帳號</label>
-		            <input type="text" id="adminAccount" name="admin-account" placeholder="輸入帳號" value="${admin.getAdminAccount()}">
+		            <input type="text" id="adminAccount" name="adminAccount" placeholder="輸入帳號" value="${admin.getAdminAccount()}">
 		        </div>
 		
 		        <div class="form-group">
 		            <label for="adminName">管理員姓名</label>
-		            <input type="text" id="adminName" name="admin-name" placeholder="輸入姓名" value="${admin.getAdminName()}">
+		            <input type="text" id="adminName" name="adminName" placeholder="輸入姓名" value="${admin.getAdminName()}">
 		        </div>
 		
 		        <div class="form-group">
 		            <label for="adminMail">管理員信箱</label>
-		            <input type="email" id="adminMail" name="admin-mail" placeholder="輸入信箱" value="${admin.getAdminMail()}">
+		            <input type="email" id="adminMail" name="adminMail" placeholder="輸入信箱" value="${admin.getAdminMail()}">
 		        </div>
 		
 		        <div class="form-group">
@@ -41,7 +41,7 @@
 		
 		        <div class="form-group">
 		            <label for="adminStatus">管理員狀態</label>
-		            <select id="adminStatus" name="admin-status">
+		            <select id="adminStatus" name="adminStatus">
 		                <option value="1" ${admin.getAdminStatus() == 1 ? 'selected' : ''}>在職</option>
 		                <option value="0" ${admin.getAdminStatus() == 0 ? 'selected' : ''}>離職</option>
 		            </select>
