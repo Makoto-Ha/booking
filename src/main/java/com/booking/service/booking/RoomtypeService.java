@@ -49,19 +49,19 @@ public class RoomtypeService {
 			return Result.failure("查詢所有房間類型失敗");
 		}
 		
-		List<Listable> lists = new ArrayList<>();
+		List<Listable> list = new ArrayList<>();
 		for(Roomtype roomtype : roomtypes) {
 			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 			roomtypeDTO.setTotalCounts(totalCounts); 
 			BeanUtil.copyProperties(roomtypeDTO, roomtype);
-			lists.add(roomtypeDTO);
+			list.add(roomtypeDTO);
 		}
 	
-		return Result.success(lists);
+		return Result.success(list);
 	}
 	
 	/**
-	 * 根據模糊查詢得到多筆房間類型
+	 * 根據多條選項模糊查詢得到多筆房間類型
 	 * @param roomtype
 	 * @return
 	 */
@@ -73,15 +73,39 @@ public class RoomtypeService {
 			return Result.failure("模糊查詢房間類型失敗");
 		}
 		
-		List<Listable> lists = new ArrayList<>();
+		List<Listable> list = new ArrayList<>();
 		for(Roomtype roomtypeEntity : roomtypes) {
 			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 			roomtypeDTO.setTotalCounts(totalCounts);
 			BeanUtil.copyProperties(roomtypeDTO, roomtypeEntity);		
-			lists.add(roomtypeDTO);
+			list.add(roomtypeDTO);
 		}
 		
-		return Result.success(lists);
+		return Result.success(list);
+	}
+
+	/**
+	 * 根據房間類型名稱獲取房間類型
+	 * @param name
+	 * @return
+	 */
+	public Result<List<RoomtypeDTO>> getRoomtypesByName(String roomtypeName) {
+		DaoResult<List<Roomtype>> getRoomtypeByNameResult = roomtypeDao.getRoomtypesByName(roomtypeName);
+		
+		if(getRoomtypeByNameResult.isFailure()) {
+			return Result.failure("根據房間類型名稱獲取房間類型失敗");
+		}
+		
+		List<RoomtypeDTO> list = new ArrayList<>();
+		List<Roomtype> roomtypes = getRoomtypeByNameResult.getData();
+		
+		for(Roomtype roomtype : roomtypes) {
+			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+			BeanUtil.copyProperties(roomtypeDTO, roomtype);
+			list.add(roomtypeDTO);
+		}
+		
+		return Result.success(list);
 	}
 	
 	/**

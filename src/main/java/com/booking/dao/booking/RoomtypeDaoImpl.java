@@ -50,6 +50,20 @@ public class RoomtypeDaoImpl implements RoomtypeDao {
 		Integer totalCounts = query.getSingleResult();
 		return DaoResult.create(totalCounts).setSuccess(totalCounts != null);
 	}
+	
+	
+	/**
+	 * 根據房間類型名稱獲取房間類型
+	 * @param roomtypeName
+	 * @return
+	 */
+	public DaoResult<List<Roomtype>> getRoomtypesByName(String roomtypeName) {
+		String hql = "FROM Roomtype rt WHERE rt.roomtypeName LIKE :roomtypeName";
+		Query<Roomtype> query = sessionFactory.getCurrentSession().createQuery(hql, Roomtype.class);
+		query.setParameter("roomtypeName", "%" + roomtypeName + "%");
+		List<Roomtype> roomtypes = query.getResultList();
+		return DaoResult.create(roomtypes).setSuccess(roomtypes != null);
+	}
 
 	/**
 	 * 模糊查詢

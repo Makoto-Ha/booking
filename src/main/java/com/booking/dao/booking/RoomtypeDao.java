@@ -20,6 +20,13 @@ public interface RoomtypeDao {
 	 * @return
 	 */
 	DaoResult<Integer> getTotalCounts();
+	
+	/**
+	 * 根據房間類型名稱獲取房間類型
+	 * @param name
+	 * @return
+	 */
+	DaoResult<List<Roomtype>> getRoomtypesByName(String roomtypeName);
 
 	/**
 	 * 模糊查詢

@@ -2,12 +2,13 @@ package com.booking.dto.booking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.booking.utils.Listable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RoomtypeDTO implements Listable {
 	private Integer roomtypeId;
@@ -22,13 +23,15 @@ public class RoomtypeDTO implements Listable {
 	private LocalDateTime updatedTime;
 	private LocalDateTime createdTime;
 	private Integer totalCounts;
-	
-	private static String[] attrs = { "roomtypeName", "roomtypeCapacity", "roomtypePrice", "roomtypeQuantity", "roomtypeDescription", "roomtypeAddress", "roomtypeCity", "roomtypeDistrict", "updatedTime", "createdTime" };
-	private static String[] attrsChinese = { "房間名稱", "房間人數", "房間價錢", "房間數量", "房間介紹", "房間地址", "房間所在城市", "房間所在區域", "更新時間", "創建時間" };
+
+	private static String[] attrs = { "roomtypeName", "roomtypeCapacity", "roomtypePrice", "roomtypeQuantity",
+			"roomtypeDescription", "roomtypeAddress", "roomtypeCity", "roomtypeDistrict", "updatedTime",
+			"createdTime" };
+	private static String[] attrsChinese = { "房間名稱", "房間人數", "房間價錢", "房間數量", "房間介紹", "房間地址", "房間所在城市", "房間所在區域", "更新時間",
+			"創建時間" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
-	
-	private static String[] pages = { "房間類型", "房間"};
-	private static String[] pageURL = {"/booking/roomtype", "/booking/room"};
+	private static String[] pages = { "房間類型", "房間" };
+	private static String[] pageURL = { "/booking/roomtype", "/booking/room" };
 	public static String manageListName = "訂房管理列表";
 	public static List<Map<String, String>> pageInfos = new ArrayList<>();
 
@@ -39,8 +42,8 @@ public class RoomtypeDTO implements Listable {
 			map.put("attrChinese", attrsChinese[i]);
 			listInfos.add(map);
 		}
-		
-		for(int i=0; i<pages.length; i++) {
+
+		for (int i = 0; i < pages.length; i++) {
 			Map<String, String> map = new HashMap<>();
 			map.put("page", pages[i]);
 			map.put("url", pageURL[i]);
@@ -65,7 +68,8 @@ public class RoomtypeDTO implements Listable {
 		this.totalCounts = totalCounts;
 	}
 
-	public RoomtypeDTO() {}
+	public RoomtypeDTO() {
+	}
 
 	public Integer getRoomtypeId() {
 		return roomtypeId;
@@ -115,10 +119,12 @@ public class RoomtypeDTO implements Listable {
 		this.roomtypeDescription = roomtypeDescription;
 	}
 
+	@JsonIgnore
 	public String[] getAttrs() {
 		return attrs;
 	}
 
+	@JsonIgnore
 	public String[] getAttrsChinese() {
 		return attrsChinese;
 	}
@@ -146,7 +152,7 @@ public class RoomtypeDTO implements Listable {
 	public void setRoomtypeDistrict(String roomtypeDistrict) {
 		this.roomtypeDistrict = roomtypeDistrict;
 	}
-	
+
 	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
@@ -182,45 +188,45 @@ public class RoomtypeDTO implements Listable {
 	}
 
 	@Override
-	public String toString() {
-		return "RoomtypeDTO [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
-				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
-				+ ", roomtypeDescription=" + roomtypeDescription + ", attrs=" + Arrays.toString(attrs)
-				+ ", attrsChinese=" + Arrays.toString(attrsChinese) + "]";
-	}
-
-	@Override
+	@JsonIgnore
 	public Map<String, Object> getAdditionProperties() {
-		Map<String, Object> properties = new HashMap<>();
+		Map<String, Object> properties = new LinkedHashMap<>();
 		List<String> values = new ArrayList<>();
 		int maxLength = 4;
 		String comma = "....";
-		
-		if(roomtypeName != null) {
-			values.add(roomtypeName);
-		}
-		
-		if(roomtypeDescription != null) {
+
+		if (roomtypeDescription != null) {
 			values.add(roomtypeDescription);
 		}
-		
-		if(roomtypeAddress != null) {
+
+		if (roomtypeAddress != null) {
 			values.add(roomtypeAddress);
 		}
-		
-		Object[] subLists = values.stream().map(s -> s.length() >= maxLength ? s.substring(0, maxLength) + comma : s).toArray();
-		
-		if(subLists.length == 0) {
+
+		Object[] subLists = values.stream().map(s -> s.length() >= maxLength ? s.substring(0, maxLength) + comma : s)
+				.toArray();
+
+		if (subLists.length == 0) {
 			return properties;
 		}
-		
-        properties.put("房間類型名稱", subLists[0]);
-        properties.put("房間類型價錢", roomtypePrice);
-        properties.put("房間類型數量", roomtypeQuantity);
-        properties.put("房間類型說明", subLists[1]);
-        properties.put("房間類型地址", subLists[2]);
-        properties.put("房間類型城市", roomtypeCity);
-        properties.put("房間類型地區", roomtypeDistrict);
-        return properties;
+
+		properties.put("房間類型價錢", roomtypePrice);
+		properties.put("房間類型數量", roomtypeQuantity);
+		properties.put("房間類型地址", subLists[1]);
+		properties.put("房間類型城市", roomtypeCity);
+		properties.put("房間類型地區", roomtypeDistrict);
+		properties.put("房間類型說明", subLists[0]);
+
+		return properties;
 	}
+
+	@Override
+	public String toString() {
+		return "RoomtypeDTO [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
+				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
+				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
+				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
+				+ updatedTime + ", createdTime=" + createdTime + ", totalCounts=" + totalCounts + "]";
+	}
+
 }
