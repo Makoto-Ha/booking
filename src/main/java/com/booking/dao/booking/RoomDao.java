@@ -11,7 +11,7 @@ public interface RoomDao {
 	 * 查詢所有房間
 	 * @return
 	 */
-	DaoResult<List<Room>> getRoomAll();
+	DaoResult<List<Object[]>> getRoomAll();
 
 	/**
 	 * 根據roomId查找單筆房間
@@ -19,6 +19,13 @@ public interface RoomDao {
 	 * @return
 	 */
 	DaoResult<Room> getRoomById(Integer roomId);
+	
+	/**
+	 * 根據roomName模糊查詢
+	 * @param name
+	 * @return
+	 */
+	DaoResult<List<Room>> getRoomByName(String roomNumber);
 
 	/**
 	 * 根據roomtypeId查找多筆房間
@@ -27,6 +34,14 @@ public interface RoomDao {
 	 */
 	DaoResult<List<Room>> getRoomsByRoomtypeId(Integer roomtypeId);
 
+	/**
+	 * 添加空房間
+	 * @param room
+	 * @param roomtypeName
+	 * @return
+	 */
+	DaoResult<?> addRoom(Room room, String roomtypeName);
+	
 	/**
 	 * 添加空房間
 	 * @param room
@@ -67,6 +82,6 @@ public interface RoomDao {
 	 * @param roomtypeId
 	 * @return
 	 */
-	DaoResult<?> inecrementRoomtypeQuantity(Integer roomtypeId);
+	DaoResult<?> incrementRoomtypeQuantity(Integer roomtypeId);
 
 }

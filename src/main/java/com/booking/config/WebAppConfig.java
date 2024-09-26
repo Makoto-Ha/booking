@@ -59,7 +59,8 @@ public class WebAppConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
         converters.add(stringConverter);
-        converters.add(new MappingJackson2HttpMessageConverter());
+        MappingJackson2HttpMessageConverter mj2hmc = new MappingJackson2HttpMessageConverter();
+        converters.add(mj2hmc);
     }
 
 }

@@ -45,11 +45,11 @@
 		        </div>
 		        
 		        <label class="money-range-label" for="money"></label>
-			    <input class="money-range" type="range" id="min-range-money" name="min-money" min="0" max="50000" value="0">
+			    <input class="money-range" type="range" id="min-range-money" name="minMoney" min="0" max="50000" value="0">
 			    <p class="show-range-money">最低金額: $<span id="min-money" class="volumeValue">0</span></p>
 			    
 			    <label class="money-range-label" for="money"></label>
-			    <input class="money-range" type="range" id="max-range-money" name="max-money" min="0" max="50000" value="0">
+			    <input class="money-range" type="range" id="max-range-money" name="maxMoney" min="0" max="50000" value="0">
 			    <p class="show-range-money">最高金額: $<span id="max-money" class="volumeValue">0</span></p>
 	
 		        <div class="form-group roomtype-capacity-group">

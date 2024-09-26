@@ -2,6 +2,7 @@ package com.booking.dao.booking;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,16 @@ public class RoomDaoImpl implements RoomDao {
 	 * @return
 	 */
 	@Override
-	public DaoResult<List<Room>> getRoomAll() {
-		String hql = "From Room r ORDER BY r.roomNumber";
-		Query<Room> query = sessionFactory.getCurrentSession().createQuery(hql, Room.class);
-		query.setFirstResult(0);
-		query.setMaxResults(10);
-		List<Room> rooms = query.getResultList();
-		return DaoResult.create(rooms).setSuccess(rooms != null);
+	public DaoResult<List<Object[]>> getRoomAll() {
+	    String hql = "SELECT r, rt FROM Room r INNER JOIN r.roomtype rt";
+	    
+		Query<Object[]> query = sessionFactory.getCurrentSession().createQuery(hql, Object[].class);
+	    query.setFirstResult(0);
+	    query.setMaxResults(10);
+	    
+	    List<Object[]> results = query.list(); 
+	    
+	    return DaoResult.create(results).setSuccess(results != null);  
 	}
 	
 	/**
@@ -37,8 +41,9 @@ public class RoomDaoImpl implements RoomDao {
 	 */
 	@Override
 	public DaoResult<Room> getRoomById(Integer roomId) {
-		Room room = sessionFactory.getCurrentSession().get(Room.class, roomId);		
-		return DaoResult.create(room).setSuccess(room != null); 
+		Room room = sessionFactory.getCurrentSession().get(Room.class, roomId);
+		Roomtype roomtype = room.getRoomtype();
+		return DaoResult.create(room).setExtraData("roomtype", roomtype).setSuccess(room != null && roomtype != null);
 	}
 	
 	/**
@@ -59,8 +64,27 @@ public class RoomDaoImpl implements RoomDao {
 	 * @return
 	 */
 	@Override
+	public DaoResult<?> addRoom(Room room, String roomtypeName) {
+		String hql = "FROM Roomtype rt WHERE rt.roomtypeName = :roomtypeName";
+		Session session = sessionFactory.getCurrentSession();
+		Query<Roomtype> query = session.createQuery(hql, Roomtype.class);
+		query.setParameter("roomtypeName", roomtypeName);
+		Roomtype roomtype = query.getSingleResult();
+		room.setRoomtype(roomtype);
+		session.persist(room);
+		Integer roomId = room.getRoomId();
+		return DaoResult.create().setGeneratedId(roomId).setSuccess(roomId != null && roomtype != null); 
+	}
+	
+	/**
+	 * 添加空房間
+	 * @param room
+	 * @return
+	 */
+	@Override
 	public DaoResult<?> addRoom(Room room) {
-		sessionFactory.getCurrentSession().persist(room);
+		Session session = sessionFactory.getCurrentSession();
+		session.persist(room);
 		Integer roomId = room.getRoomId();
 		return DaoResult.create().setGeneratedId(roomId).setSuccess(roomId != null); 
 	}
@@ -127,11 +151,23 @@ public class RoomDaoImpl implements RoomDao {
 	 * @return
 	 */
 	@Override
-	public DaoResult<?> inecrementRoomtypeQuantity(Integer roomtypeId) {
+	public DaoResult<?> incrementRoomtypeQuantity(Integer roomtypeId) {
 		Roomtype roomtype = sessionFactory.getCurrentSession().get(Roomtype.class, roomtypeId);
 		Integer roomtypeQuantity = roomtype.getRoomtypeQuantity();
 		roomtype.setRoomtypeQuantity(++roomtypeQuantity);
 		
 		return DaoResult.create().setSuccess(true);
+	}
+
+	/**
+	 * 根據roomNumber模糊查詢
+	 */
+	@Override
+	public DaoResult<List<Room>> getRoomByName(String roomNumber) {
+		String hql = "FROM Room r WHERE r.roomNumber LIKE ?";
+		Session session = sessionFactory.getCurrentSession();
+		Query<Room> query = session.createQuery(hql, Room.class);
+		List<Room> rooms = query.getResultList();
+		return DaoResult.create(rooms).setSuccess(rooms != null);
 	}
 }
