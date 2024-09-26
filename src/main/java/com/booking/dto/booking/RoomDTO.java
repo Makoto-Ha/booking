@@ -2,6 +2,7 @@ package com.booking.dto.booking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,13 +10,14 @@ import com.booking.utils.Listable;
 
 public class RoomDTO implements Listable {
 	private Integer roomId;
+	private String roomtypeName;
 	private String roomNumber;
 	private Integer roomStatus;
 	private String roomDescription;
 	private Integer totalCounts;
 	
-	private static String[] attrs = { "roomNumber", "roomStatus", "roomDescription" };
-	private static String[] attrsChinese = { "房間號碼", "房間狀態", "房間簡介" };
+	private static String[] attrs = {"roomtypeName", "roomNumber", "roomStatus", "roomDescription" };
+	private static String[] attrsChinese = {"所屬房間類型", "房間號碼", "房間狀態(0: 閒置、1: 已預定、2: 已入住)", "房間簡介" };
 	public static List<Map<String, String>> listInfos = new ArrayList<>();
 	
 	private static String[] bookingPages = { "房間類型", "房間" };
@@ -38,6 +40,14 @@ public class RoomDTO implements Listable {
 		}
 	}
 	
+	public String getRoomtypeName() {
+		return roomtypeName;
+	}
+
+	public void setRoomtypeName(String roomtypeName) {
+		this.roomtypeName = roomtypeName;
+	}
+
 	public Integer getRoomId() {
 		return roomId;
 	}
@@ -81,7 +91,7 @@ public class RoomDTO implements Listable {
 
 	@Override
 	public String getName() {
-		return roomNumber;
+		return roomtypeName + ": " + roomNumber + "號碼";
 	}
 
 	@Override
@@ -91,7 +101,8 @@ public class RoomDTO implements Listable {
 
 	@Override
 	public Map<String, Object> getAdditionProperties() {
-		Map<String, Object> properties = new HashMap<>();
+		Map<String, Object> properties = new LinkedHashMap<>();
+		properties.put("所屬房間類型", roomtypeName);
         properties.put("房間號碼", roomNumber);
         properties.put("房間狀態", roomStatus);
         properties.put("房間說明", roomDescription);

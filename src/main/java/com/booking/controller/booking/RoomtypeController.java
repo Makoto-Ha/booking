@@ -10,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.booking.Roomtype;
@@ -35,22 +33,6 @@ public class RoomtypeController  {
 	private RoomtypeService roomtypeService;
 	
 	/**
-	 * 返回所有roomtype的JSON數據
-	 * @param roomtypeId
-	 * @return
-	 */
-	@GetMapping("/json/{id}")
-	@ResponseBody
-	private String getRoomtypeJSON(@PathVariable Integer id) {
-		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.getRoomtype(id);
-		if (roomtypeServiceResult.isFailure()) {
-			return null;
-		}
-		
-		return JsonUtil.toJson(roomtypeServiceResult.getData());
-	}
-
-	/**
 	 * 轉到查詢
 	 * @return
 	 * @throws ServletException
@@ -68,7 +50,7 @@ public class RoomtypeController  {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("")
+	@GetMapping
 	private String sendRoomtypeIndex(@RequestParam(required = false, defaultValue = "1") Integer switchPage, Model model) {
 
 		Result<List<Listable>> roomtypeServiceResult = roomtypeService.getRoomtypeAll(switchPage);

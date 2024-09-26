@@ -28,7 +28,7 @@ public class RoomService {
 	 * 
 	 * @return
 	 */
-	public Result<RoomDTO> getRoom(Integer roomId) {
+	public Result<RoomDTO> getRoomById(Integer roomId) {
 		DaoResult<Room> getRoomByIdResult = roomDao.getRoomById(roomId);
 	
 		if (getRoomByIdResult.isFailure()) {
@@ -37,9 +37,13 @@ public class RoomService {
 		
 		Room room = getRoomByIdResult.getData();
 		
+		Roomtype roomtype = (Roomtype) getRoomByIdResult.getExtraData("roomtype");
+		
 		RoomDTO roomDTO = new RoomDTO();
 		
 		BeanUtil.copyProperties(roomDTO, room);
+		
+		roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
 		
 		return Result.success(roomDTO);
 	}
@@ -50,24 +54,58 @@ public class RoomService {
 	 * @return
 	 */
 	public Result<List<Listable>> getRoomAll() {
-		DaoResult<List<Room>> getRoomAllResult = roomDao.getRoomAll();
-		List<Room> rooms = getRoomAllResult.getData();
+		DaoResult<List<Object[]>> getRoomAllResult = roomDao.getRoomAll();
+		
 		if (getRoomAllResult.isFailure()) {
 			return Result.failure("獲取所有房間失敗");
 		}
-
+		
+		List<Object[]> results = getRoomAllResult.getData();
+		
 		List<Listable> listDTO = new ArrayList<>();
-		for (Room room : rooms) {
+		for (Object[] result : results) {
+			
+			Room room = (Room) result[0];
+			Roomtype roomtype = (Roomtype) result[1];
+			
 			RoomDTO roomDTO = new RoomDTO();
-
 			BeanUtil.copyProperties(roomDTO, room);
+			
+			roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
+			
 			listDTO.add(roomDTO);
 		}
 		return Result.success(listDTO);
 	}
+	
+	/**
+	 * 根據房間名稱獲得房間
+	 * @param name
+	 * @return
+	 */
+	public Result<List<Room>> getRoomsByName(String name) {
+		DaoResult<List<Room>> getRoomByNameResult = roomDao.getRoomByName(name);
+		
+		if(getRoomByNameResult.isFailure()) {
+			return Result.failure("根據名稱獲取所有房間失敗");
+		}
+		
+		List<Room> rooms = getRoomByNameResult.getData();
+		
+		RoomDTO roomDTO = new RoomDTO();
+		
+		List<RoomDTO> list = new ArrayList<>();
+		
+		for(Room room : rooms) {
+			BeanUtil.copyProperties(roomDTO, room);
+			list.add(roomDTO);
+		}
+		
+		return Result.success(rooms);
+	}
 
 	/**
-	 * 獲取多筆房間
+	 * 根據roomtypeId獲取多筆房間
 	 * 
 	 * @param roomtypeId
 	 * @return
@@ -87,17 +125,17 @@ public class RoomService {
 	 * @param room
 	 * @return
 	 */
-	public Result<Integer> addRoom(Room room) {
-		DaoResult<?> inecrementRoomtypeQuantityResult = roomDao
-				.inecrementRoomtypeQuantity(room.getRoomtype().getRoomtypeId());
-
-		if (inecrementRoomtypeQuantityResult.isFailure()) {
-			return Result.failure("房型數量加一失敗");
-		}
-
-		DaoResult<?> addRoomResult = roomDao.addRoom(room);
+	public Result<Integer> addRoom(Room room, String roomtypeName) {
+		DaoResult<?> addRoomResult = roomDao.addRoom(room, roomtypeName);
+		
 		if (addRoomResult.isFailure()) {
 			return Result.failure("新增房間失敗");
+		}
+		
+		DaoResult<?> incrementRoomtypeQuantityResult = roomDao.incrementRoomtypeQuantity(room.getRoomtype().getRoomtypeId());
+
+		if (incrementRoomtypeQuantityResult.isFailure()) {
+			return Result.failure("房型數量加一失敗");
 		}
 
 		return Result.success("新增空房成功");
@@ -116,7 +154,7 @@ public class RoomService {
 		Integer roomtypeQuanity = roomtype.getRoomtypeQuantity();
 
 		for (int i = 0; i < roomtypeQuanity; i++) {
-			Room room = new Room("C1", 0, roomtypeDescription, updatedTime, createdTime);
+			Room room = new Room("無", 0, roomtypeDescription, updatedTime, createdTime);
 			room.setRoomtype(roomtype);
 			DaoResult<?> addRoomResult = roomDao.addRoom(room);
 			if (addRoomResult.isFailure()) {
@@ -166,6 +204,8 @@ public class RoomService {
 		}
 
 		room.setUpdatedTime(LocalDateTime.now());
+		
+		room.setRoomtype(oldRoom.getRoomtype());
 
 		DaoResult<?> updateRoomResult = roomDao.updateRoom(room);
 
