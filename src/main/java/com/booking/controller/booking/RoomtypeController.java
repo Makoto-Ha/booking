@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.service.booking.RoomtypeService;
-import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -141,8 +140,6 @@ public class RoomtypeController  {
 		requestParameters.put("paramters", roomtype);
 		requestParameters.put("extraValues", extraValues);
 		
-		JsonUtil.setNonNull();
-		String jsonData = JsonUtil.toJson(requestParameters);
 		Map<String, Long> pageNumber = new HashMap<>();
 		pageNumber.put("currentPage", switchPage.longValue());
 		
@@ -151,7 +148,7 @@ public class RoomtypeController  {
 		pageNumber.put("totalPages", totalPages);
 		model.addAttribute("attrOrderBy", attrOrderBy);
 		model.addAttribute("selectedSort", selectedSort);
-		model.addAttribute("requestParameters", jsonData);
+		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("roomtypes", roomtypes);
 		return "/management-system/booking/roomtype-list";

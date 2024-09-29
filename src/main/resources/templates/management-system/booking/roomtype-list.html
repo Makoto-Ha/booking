@@ -139,9 +139,10 @@
 			            </li>
 			        </ul>
 			    </section>
-			    <script th:inline="javascript">
-					var totalPages = /*[[${pageNumber.totalPages}]]*/
-					var requestParameters = /*[[${requestParameters}]]*/ {}
+			    <script th:inline="javascript">  	
+					var totalPages = /*[[${pageNumber.totalPages}]]*/;
+					var requestParameters = [[${requestParameters}]] || {};
+					
 					console.log(requestParameters);
 			    </script>
 			  </section>

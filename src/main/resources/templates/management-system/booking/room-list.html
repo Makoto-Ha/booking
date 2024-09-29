@@ -108,7 +108,7 @@
 			    </section>
 			    <script th:inline="javascript">
 					var totalPages = /*[[${page.pageable.pageNumber}+1]]*/
-					var requestParameters = [[${requestParameters}]];
+					var requestParameters = [[${requestParameters}]] || {};
 					console.log(requestParameters);
 			    </script>
 			  </section>

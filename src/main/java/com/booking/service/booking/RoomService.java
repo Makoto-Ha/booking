@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -221,8 +222,8 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public Page<RoomDTO> findRooms(Room room, Map<String, Object> extraValues) {
-		Specification<RoomDTO> spec = Specification.where(RoomSpecification.numberContains(room.getRoomNumber()))
+	public PageImpl<RoomDTO> findRooms(Room room, Map<String, Object> extraValues) {
+		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(room.getRoomNumber()))
 													.and(RoomSpecification.statusContains(room.getRoomStatus()))
 													.and(RoomSpecification.descriptionContains(room.getRoomDescription()));
 			
@@ -237,6 +238,20 @@ public class RoomService {
 			pageable = PageRequest.of(pageNumber-1, 10, Direction.ASC, attrOrderBy);
 		}
 		
-		return roomRepo.findAllRoomDTO(spec, pageable);
+		Page<Room> page = roomRepo.findAll(spec, pageable);
+		
+		List<Room> rooms = page.getContent();
+		List<RoomDTO> roomDTOs = new ArrayList<>();
+		for(Room r : rooms) {
+			Roomtype roomtype = r.getRoomtype();
+			RoomDTO roomDTO = new RoomDTO();
+			BeanUtils.copyProperties(r, roomDTO);
+			roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
+			roomDTOs.add(roomDTO);
+		}
+		
+		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		
+		return new PageImpl<>(roomDTOs, newPageable, page.getTotalElements());
 	}
 }

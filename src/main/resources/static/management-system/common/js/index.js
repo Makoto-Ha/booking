@@ -147,9 +147,8 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
-		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
-
+		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
+		deleteNullValue(paramters, extraValues);
 		const params = {};
 		Object.assign(params, paramters, extraValues, {switchPage: currentPage-1});
 		
@@ -180,12 +179,11 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
-		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
-		
+		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
+		deleteNullValue(paramters, extraValues);
 		const params = {};
 		Object.assign(params, paramters, extraValues, {switchPage: currentPage+1});
-
+		
 		let queryString = new URLSearchParams(params).toString();
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
@@ -210,12 +208,11 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
-		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
+		let paramters = requestParameters.paramters, requestParameters = jsonData.extraValues;
 
 		const params = {};
 		Object.assign(params, paramters, extraValues, {switchPage: page});
-		
+		deleteNullValue(paramters, extraValues);
 		let queryString = new URLSearchParams(params).toString();
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
@@ -253,9 +250,8 @@ function bindAdminSystemEvent() {
 		let selectedAttr = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
-		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
-
+		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
+		deleteNullValue(paramters, extraValues);
 		const params = {};
 		Object.assign(params, paramters, extraValues, {switchPage: currentPage, attrOrderBy: selectedAttr});
 		
@@ -278,9 +274,8 @@ function bindAdminSystemEvent() {
 		let selectedSort = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let jsonData = requestParameters ? JSON.parse(requestParameters) : "";
-		let paramters = jsonData.paramters, extraValues = jsonData.extraValues;
-
+		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
+		deleteNullValue(paramters, extraValues);
 		const params = {};
 		Object.assign(params, paramters, extraValues, {switchPage: currentPage, selectedSort});
 		
@@ -306,6 +301,16 @@ function enableScript(dom) {
 		document.head.appendChild(newScript); // 将脚本添加到页面中执行
 		document.head.removeChild(newScript); // 执行后移除脚本标签
 	}
+}
+
+function deleteNullValue(...objects) {
+	objects.forEach(object => {
+		for(let k in object) {
+			if(object[k] === null || object[k] === undefined	) {
+				delete object[k];
+			}
+		}
+	});
 }
 
 bindAdminSystemEvent();
