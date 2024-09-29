@@ -6,6 +6,6 @@ import java.util.Map;
 public interface Listable {
 	String getName();
 	Integer getId();
-	Integer getTotalCounts();
+	Long getTotalCounts();
 	Map<String, Object> getAdditionProperties();
 }

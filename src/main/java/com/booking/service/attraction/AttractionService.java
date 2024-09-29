@@ -1,21 +1,19 @@
 package com.booking.service.attraction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.bean.attraction.Attraction;
+import com.booking.bean.dto.attraction.AttractionDTO;
+import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.dao.attraction.AttractionDao;
-import com.booking.dto.attraction.AttractionDTO;
-import com.booking.utils.BeanUtil;
+import com.booking.utils.DaoResult;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
-import com.booking.utils.util.DaoResult;
 
 
 @Service
@@ -36,11 +34,7 @@ public class AttractionService {
 		List<Listable> lists = new ArrayList<>();
 		for(Attraction attraction : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
-			try {
-				BeanUtils.copyProperties(attractionDTO, attraction);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			} 
+			BeanUtils.copyProperties(attraction, attractionDTO);
 			lists.add(attractionDTO);
 		}
 		if(getAllResult.isFailure()) {
@@ -64,12 +58,8 @@ public class AttractionService {
 		List<Listable> attractionsDTO = new ArrayList<>();
 		for(Attraction attractionOne : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
-			try {
-				BeanUtils.copyProperties(attractionDTO, attractionOne);
-				attractionsDTO.add(attractionDTO);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(attractionOne, attractionDTO);
+			attractionsDTO.add(attractionDTO);
 		}
 		return Result.success(attractionsDTO);
 	}
@@ -87,7 +77,7 @@ public class AttractionService {
 			return Result.failure("沒有此景點");
 		}
 		AttractionDTO attractionDTO = new AttractionDTO();
-		BeanUtil.copyProperties(attractionDTO, attraction);
+		BeanUtils.copyProperties(attraction, attractionDTO);
 		return Result.success(attractionDTO);
 	}
 	

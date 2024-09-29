@@ -1,19 +1,19 @@
 package com.booking.service.admin;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.beanutils.BeanUtils;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.booking.bean.admin.Admin;
+
+import com.booking.bean.dto.admin.AdminDTO;
+import com.booking.bean.pojo.admin.Admin;
 import com.booking.dao.admin.AdminDao;
-import com.booking.dto.admin.AdminDTO;
-import com.booking.utils.BeanUtil;
+import com.booking.utils.DaoResult;
 import com.booking.utils.Listable;
 import com.booking.utils.Result;
-import com.booking.utils.util.DaoResult;
 
 @Service
 @Transactional
@@ -36,11 +36,7 @@ public class AdminService {
 		List<Listable> lists = new ArrayList<>();
 		for (Admin admin : admins) {
 			AdminDTO adminDTO = new AdminDTO();
-			try {
-				BeanUtils.copyProperties(adminDTO, admin);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(admin, adminDTO);
 			lists.add(adminDTO);
 		}
 		return Result.success(lists);
@@ -61,12 +57,8 @@ public class AdminService {
 		List<Listable> adminsDTO = new ArrayList<>();
 		for (Admin adminOne : daoResult.getData()) {
 			AdminDTO adminDTO = new AdminDTO();
-			try {
-				BeanUtils.copyProperties(adminDTO, adminOne);
-				adminsDTO.add(adminDTO);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			BeanUtils.copyProperties(adminOne, adminDTO);
+			adminsDTO.add(adminDTO);
 		}
 		return Result.success(adminsDTO);
 	}
@@ -84,7 +76,7 @@ public class AdminService {
 			return Result.failure("找不到該管理員");
 		}
 		AdminDTO adminDTO = new AdminDTO();
-		BeanUtil.copyProperties(adminDTO, admin);
+		BeanUtils.copyProperties(admin, adminDTO);
 		return Result.success(adminDTO);
 	}
 

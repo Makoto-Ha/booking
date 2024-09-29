@@ -58,8 +58,9 @@ public class Result<T> {
 		return this.extraData.get(extraDataName);
 	}
 
-	public void setExtraData(String extraDataName, Object extraDataValue) {
+	public Result<T> setExtraData(String extraDataName, Object extraDataValue) {
 		this.extraData.put(extraDataName, extraDataValue);
+		return this;
 	}
 
     public String getMessage() {

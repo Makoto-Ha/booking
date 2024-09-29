@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.bean.shopping.Product;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.shopping.Product;
+import com.booking.utils.DaoResult;
 
 @Repository // 表明這是一個 DAO 類別
 @Transactional

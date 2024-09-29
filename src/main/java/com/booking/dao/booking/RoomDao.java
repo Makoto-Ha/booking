@@ -2,8 +2,8 @@ package com.booking.dao.booking;
 
 import java.util.List;
 
-import com.booking.bean.booking.Room;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.booking.Room;
+import com.booking.utils.DaoResult;
 
 public interface RoomDao {
 

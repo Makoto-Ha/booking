@@ -3,8 +3,8 @@ package com.booking.dao.booking;
 import java.util.List;
 import java.util.Map;
 
-import com.booking.bean.booking.Roomtype;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.utils.DaoResult;
 
 public interface RoomtypeDao {
 
@@ -19,7 +19,7 @@ public interface RoomtypeDao {
 	 * 獲取房間類型數量
 	 * @return
 	 */
-	DaoResult<Integer> getTotalCounts();
+	DaoResult<Long> getTotalCounts();
 	
 	/**
 	 * 根據房間類型名稱獲取房間類型
@@ -35,14 +35,6 @@ public interface RoomtypeDao {
 	 * @return
 	 */
 	DaoResult<List<Roomtype>> dynamicQuery(Roomtype roomtype, Map<String, Object> extraValues);
-
-	/**
-	 * 根據id獲取房間類型
-	 * 
-	 * @param roomtypeId
-	 * @return
-	 */
-	DaoResult<Roomtype> getRoomtypeById(Integer roomtypeId);
 
 	/**
 	 * 添加房間類型

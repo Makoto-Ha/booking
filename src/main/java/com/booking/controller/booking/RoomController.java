@@ -1,9 +1,11 @@
 package com.booking.controller.booking;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.booking.bean.booking.Room;
-import com.booking.dto.booking.RoomDTO;
+import com.booking.bean.dto.booking.RoomDTO;
+import com.booking.bean.pojo.booking.Room;
 import com.booking.service.booking.RoomService;
-import com.booking.utils.Listable;
+import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/room")
+@RequestMapping("/management/room")
 public class RoomController {
 	@Autowired
 	private RoomService roomService;
@@ -33,25 +35,32 @@ public class RoomController {
 	 * @return
 	 */
 	@GetMapping
-	private String room(Model model) {
-		Result<List<Listable>> roomServiceResult = roomService.getRoomAll();
+	private String sendRoomPage(
+			@RequestParam(defaultValue = "1") Integer pageNumber,
+			@RequestParam(defaultValue = "roomNumber") String attrOrderBy,
+			@RequestParam(defaultValue = "false") Boolean selectedSort,
+			Model model
+		) {
+		
+		Result<Page<RoomDTO>> roomServiceResult = roomService.findRoomAll(pageNumber, attrOrderBy, selectedSort);
+		
 		if(roomServiceResult.isFailure()) {
 			return "";
 		}
-		List<Listable> rooms = roomServiceResult.getData();
-		model.addAttribute("lists", rooms);
-		model.addAttribute("pageInfos", RoomDTO.pageInfos);
-		model.addAttribute("listInfos", RoomDTO.listInfos);
-		return "adminsystem/index";
+		Page<RoomDTO> page = roomServiceResult.getData();
+		
+		model.addAttribute("page", page);
+		model.addAttribute("selectedSort", selectedSort);
+		return "/management-system/booking/room-list";
 	}
 	
 	/**
 	 * 轉去room的新增頁面
 	 * @return
 	 */
-	@GetMapping("/create/jsp")
-	private String sendCreateJsp() {
-		return "/adminsystem/booking/room-create";
+	@GetMapping("/create/page")
+	private String sendCreatePage() {
+		return "/management-system/booking/room-create";
 	}
 	
 	/**
@@ -60,8 +69,8 @@ public class RoomController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/edit/jsp")
-	private String sendEditJsp(@RequestParam Integer roomId, Model model, HttpSession session) {
+	@GetMapping("/edit/page")
+	private String sendEditPage(@RequestParam Integer roomId, Model model, HttpSession session) {
 		Result<RoomDTO> roomServiceResult = roomService.getRoomById(roomId);
 		if(roomServiceResult.isFailure()) {
 			return "";
@@ -73,15 +82,40 @@ public class RoomController {
 		
 		model.addAttribute("room", room);
 		
-		return "/adminsystem/booking/room-edit";
+		return "/management-system/booking/room-edit";
 	}
 	
 	/**
-	 * 查找多筆房間
+	 * 模糊查詢
 	 */
 	@GetMapping("/select")
-	private void select() {
-		roomService.getRooms(1);
+	private String findRooms(
+			Room room,
+			@RequestParam(defaultValue = "1") Integer pageNumber,
+			@RequestParam(defaultValue = "roomNumber") String attrOrderBy,
+			@RequestParam(defaultValue = "false") Boolean selectedSort,
+			Model model
+		) {
+		
+		Map<String, Object> extraValues = new HashMap<>();
+		extraValues.put("attrOrderBy", attrOrderBy);
+		extraValues.put("selectedSort", selectedSort);
+		extraValues.put("pageNumber", pageNumber);
+		Page<RoomDTO> page = roomService.findRooms(room, extraValues);
+		
+		Map<String, Object> requestParameters = new HashMap<>();
+		
+		requestParameters.put("extraValues", extraValues);
+		requestParameters.put("room", room);
+		JsonUtil.setNonNull();
+		String jsonData = JsonUtil.toJson(requestParameters);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("requestParameters", jsonData);
+		model.addAttribute("attrOrderBy", attrOrderBy);
+		model.addAttribute("selectedSort", selectedSort);
+		
+		return "/management-system/booking/room-list";
 	}
 	
 	/**
@@ -90,7 +124,7 @@ public class RoomController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String create(Room room, @RequestParam String roomtypeName) {
+	private String createRoom(Room room, @RequestParam String roomtypeName) {
 		LocalDateTime updatedTime = LocalDateTime.now();
 		LocalDateTime createdTime = LocalDateTime.now();
 		room.setCreatedTime(createdTime);
@@ -101,7 +135,7 @@ public class RoomController {
 			return "";
 		}
 		
-		return "redirect:/room";
+		return "redirect:/management/room";
 	}
 	
 	/**
@@ -111,7 +145,7 @@ public class RoomController {
 	 */
 	@PostMapping("/delete")
 	@ResponseBody
-	private String delete(@RequestParam Integer roomId) {
+	private String deleteById(@RequestParam Integer roomId) {
 		Result<String> removeRoomtypeResult = roomService.removeRoom(roomId);	
 		return removeRoomtypeResult.getMessage();
 	}
@@ -122,18 +156,13 @@ public class RoomController {
 	 * @return
 	 */
 	@PostMapping("/update")
-	private String update(Room room, @SessionAttribute Integer roomId) {
+	private String updateById(Room room, @SessionAttribute Integer roomId) {
 		room.setRoomId(roomId);
 		Result<String> roomServiceResult = roomService.updateRoom(room);
 		if(roomServiceResult.isFailure()) {
 			return "";
 		}
 		
-		return "redirect:/room";
+		return "redirect:/management/room";
 	}
-	
-//	@GetMapping("/select/{name}")
-//	private String selectByName(@PathVariable String name) {
-//		
-//	}
 }

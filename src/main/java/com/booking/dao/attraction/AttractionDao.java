@@ -2,8 +2,8 @@ package com.booking.dao.attraction;
 
 import java.util.List;
 
-import com.booking.bean.attraction.Attraction;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.utils.DaoResult;
 
 public interface AttractionDao {
 

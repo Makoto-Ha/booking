@@ -1,0 +1,236 @@
+@charset "UTF-8";
+
+.form {
+	width: 600px;
+	padding: 20px;
+}
+
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
+	color: #666;
+}
+
+.form-group input[type="text"], .form-group select, .form-group input[type="number"]
+	{
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	font-size: 16px;
+	box-sizing: border-box;
+}
+
+.form-group .checkbox-label, .form-group .radio-label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+.form-group .checkbox-label input[type="checkbox"], .form-group .radio-label input[type="radio"]
+	{
+	margin-right: 10px;
+}
+
+.form-group button {
+	width: 100%;
+	padding: 12px;
+	background-color: #28a745;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+.form-group button.cancel {
+	background-color: #6c757d;
+}
+
+.form-group button:hover {
+	opacity: 0.9;
+}
+
+.money-range-label {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.money-range {
+	-webkit-appearance: none;
+	width: 300px;
+	height: 8px;
+	background: #ddd;
+	border-radius: 5px;
+	outline: none;
+	transition: background 0.3s;
+}
+
+.money-range::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	background-color: #FFD700; /* 金黃色 */
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.3s;
+}
+
+.money-range::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	background-color: #FFD700; /* 金黃色 */
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.3s;
+}
+
+.show-range-money {
+	margin-top: 20px;
+	font-size: 18px;
+}
+
+.volumeValue {
+	font-weight: bold;
+	color: #2ecc71;
+}
+
+.form-group.roomtype-capacity-group, .form-group.room-status-group {
+	display: flex !important;
+}
+
+.form-group .choose-roomtype-capacity, choose-room-status {
+	margin: 10px;
+}
+
+.form-group .submit-edit {
+	background-color: #007bff;
+}
+
+.form-group .submit:disabled {
+	background-color: #cccccc;
+	/* 淡灰色顯示禁用狀態 */
+	color: #666666;
+	/* 字體也調整為較暗的灰色 */
+	cursor: not-allowed;
+	/* 滑鼠指標顯示為禁止符號 */
+	opacity: 0.6;
+	/* 降低透明度，讓禁用狀態更明顯 */
+	box-shadow: none;
+	/* 移除陰影效果 */
+}
+
+.invalid {
+	border: 1px solid red;
+	/* 红色边框提示输入框无效 */
+	background-color: #fdd !important; /* 背景颜色提示无效 */
+}
+
+.form-group input:focus {
+	background-color: white;
+	outline: 1px solid white;
+}
+
+input:-webkit-autofill {
+	box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+input.invalid:-webkit-autofill {
+	box-shadow: 0 0 0px 1000px #fdd inset !important;
+	border: 1px solid red;
+}
+
+/* room的下拉選單 */
+
+.form > .dropdown-input {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+
+.form > .dropdown-input input {
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+.form > .dropdown-input a {
+	position: absolute;
+	right: 0;
+	bottom: 15px;
+	width: 30px;
+	padding: 10px 0 10px 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+	cursor: pointer;
+	text-align: center;
+}
+
+.form > .dropdown-input a::after {
+	content: "▼";
+	font-size: 16px;
+	color: #333;
+}
+
+.form .dropdown-menu {
+	display: none;
+	position: absolute;
+	top: calc(100% - 15px);
+	left: 0;
+	right: 0;
+	max-height: 150px;
+	overflow-y: auto;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: white;
+	z-index: 1;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 自定義滾動條樣式 */
+.form .dropdown-menu::-webkit-scrollbar {
+	width: 8px; /* 滾動條的寬度 */
+}
+
+.form .dropdown-menu::-webkit-scrollbar-track {
+	background: #f1f1f1; /* 滾動條軌道的背景顏色 */
+	border-radius: 10px; /* 讓軌道的邊緣圓滑 */
+}
+
+.form .dropdown-menu::-webkit-scrollbar-thumb {
+	background-color: #888; /* 滾動條滑塊的顏色 */
+	border-radius: 10px; /* 滑塊的圓角 */
+	border: 2px solid #f1f1f1; /* 滑塊的邊框，讓滑塊有一個內陰影效果 */
+}
+
+.form .dropdown-menu::-webkit-scrollbar-thumb:hover {
+	background-color: #555; /* 當鼠標懸停時，改變滑塊的顏色 */
+}
+
+.form .dropdown-menu.show {
+	display: block;
+}
+
+.form .dropdown-menu div {
+	padding: 8px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.form .dropdown-menu div:hover {
+	background-color: #f1f1f1;
+}
