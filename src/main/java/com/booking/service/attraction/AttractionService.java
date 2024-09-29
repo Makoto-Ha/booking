@@ -3,7 +3,10 @@ package com.booking.service.attraction;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 import org.springframework.beans.BeanUtils;
+=======
+>>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,14 +35,17 @@ public class AttractionService {
 		DaoResult<List<Attraction>> getAllResult = attractionDao.getAttractionAll();
 		List<Attraction> attractions = getAllResult.getData();
 		List<Listable> lists = new ArrayList<>();
+		
 		for(Attraction attraction : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
+<<<<<<< HEAD
 			BeanUtils.copyProperties(attraction, attractionDTO);
+=======
+			BeanUtil.copyProperties(attractionDTO, attraction);
+>>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
 			lists.add(attractionDTO);
 		}
-		if(getAllResult.isFailure()) {
-			return Result.failure("查詢所有景點失敗");
-		}
+		
 		return Result.success(lists);
 	}
 	
@@ -58,8 +64,14 @@ public class AttractionService {
 		List<Listable> attractionsDTO = new ArrayList<>();
 		for(Attraction attractionOne : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
+<<<<<<< HEAD
 			BeanUtils.copyProperties(attractionOne, attractionDTO);
 			attractionsDTO.add(attractionDTO);
+=======
+			BeanUtil.copyProperties(attractionDTO, attractionOne);
+			attractionsDTO.add(attractionDTO);
+
+>>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
 		}
 		return Result.success(attractionsDTO);
 	}
