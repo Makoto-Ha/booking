@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +55,12 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
-	}
 
+	}
+<<<<<<< HEAD
+
+=======
+>>>>>>> 95596f0 (鄭家霖.修改: SpringMvc移植成SpringBoot)
 	/**
 	 * 依模糊查詢得到多筆景點
 	 * 
@@ -84,8 +90,22 @@ public class AttractionService {
 			attractionsDTOs.add(responseAttractionDTO);
 
 		}
+
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionsDTOs, newPageable, page.getTotalElements()));
+
+		List<Listable> attractionsDTO = new ArrayList<>();
+		for(Attraction attractionOne : attractions) {
+			AttractionDTO attractionDTO = new AttractionDTO();
+
+			BeanUtils.copyProperties(attractionOne, attractionDTO);
+			attractionsDTO.add(attractionDTO);
+
+
+
+		}
+		return Result.success(attractionsDTO);
+
 	}
 
 	/**
@@ -198,5 +218,10 @@ public class AttractionService {
 		}
 		return Result.success("更新景點成功");
 	}
+<<<<<<< HEAD
 
 }
+=======
+		
+}
+>>>>>>> 95596f0 (鄭家霖.修改: SpringMvc移植成SpringBoot)
