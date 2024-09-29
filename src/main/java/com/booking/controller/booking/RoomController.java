@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import com.booking.bean.dto.booking.RoomDTO;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.service.booking.RoomService;
-import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -55,6 +55,15 @@ public class RoomController {
 	}
 	
 	/**
+	 * 轉去room的搜尋頁面
+	 * @return
+	 */
+	@GetMapping("/select/page")
+	private String sendSelectPage() {
+		return "/management-system/booking/room-select";
+	}
+	
+	/**
 	 * 轉去room的新增頁面
 	 * @return
 	 */
@@ -78,7 +87,7 @@ public class RoomController {
 		
 		RoomDTO room = roomServiceResult.getData();
 		
-		session.setAttribute("roomId", room.getId());
+		session.setAttribute("roomId", room.getRoomId());
 		
 		model.addAttribute("room", room);
 		
@@ -101,17 +110,15 @@ public class RoomController {
 		extraValues.put("attrOrderBy", attrOrderBy);
 		extraValues.put("selectedSort", selectedSort);
 		extraValues.put("pageNumber", pageNumber);
-		Page<RoomDTO> page = roomService.findRooms(room, extraValues);
+		PageImpl<RoomDTO> page = roomService.findRooms(room, extraValues);
 		
 		Map<String, Object> requestParameters = new HashMap<>();
 		
 		requestParameters.put("extraValues", extraValues);
-		requestParameters.put("room", room);
-		JsonUtil.setNonNull();
-		String jsonData = JsonUtil.toJson(requestParameters);
-		
+		requestParameters.put("paramters", room);
+		   	
 		model.addAttribute("page", page);
-		model.addAttribute("requestParameters", jsonData);
+		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("attrOrderBy", attrOrderBy);
 		model.addAttribute("selectedSort", selectedSort);
 		
