@@ -63,6 +63,7 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
+
 	}
 	/**
 	 * 依模糊查詢得到多筆景點
@@ -96,6 +97,8 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionsDTOs, newPageable, page.getTotalElements()));
+
+
 	}
 
 	/**
