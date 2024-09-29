@@ -7,8 +7,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import com.booking.bean.admin.Admin;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.admin.Admin;
+import com.booking.utils.DaoResult;
 
 @Repository // 表明這是一個 DAO 類別
 public class AdminDaolmpl implements AdminDao {

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.booking.bean.shopping.Product;
+import com.booking.bean.pojo.shopping.Product;
 import com.booking.service.shopping.ProductService;
 import com.booking.utils.Result;
 

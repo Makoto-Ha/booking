@@ -8,8 +8,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.booking.bean.attraction.Attraction;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.utils.DaoResult;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

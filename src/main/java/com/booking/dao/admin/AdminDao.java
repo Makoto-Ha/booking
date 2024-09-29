@@ -1,8 +1,8 @@
 package com.booking.dao.admin;
 
 import java.util.List;
-import com.booking.bean.admin.Admin;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.admin.Admin;
+import com.booking.utils.DaoResult;
 
 public interface AdminDao {
 

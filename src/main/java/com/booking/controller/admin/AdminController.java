@@ -1,11 +1,9 @@
 package com.booking.controller.admin;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
 
-import com.booking.bean.admin.Admin;
-import com.booking.bean.attraction.Attraction;
-import com.booking.dto.admin.AdminDTO;
-import com.booking.dto.attraction.AttractionDTO;
+import com.booking.bean.pojo.admin.Admin;
+import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.service.admin.AdminService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;

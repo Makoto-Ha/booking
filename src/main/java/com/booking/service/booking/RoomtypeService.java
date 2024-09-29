@@ -4,26 +4,25 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.bean.booking.Room;
-import com.booking.bean.booking.Roomtype;
+import com.booking.bean.dto.booking.RoomtypeDTO;
+import com.booking.bean.pojo.booking.Room;
+import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomDao;
-import com.booking.dao.booking.RoomtypeDao;
-import com.booking.dto.booking.RoomtypeDTO;
-import com.booking.utils.BeanUtil;
-import com.booking.utils.Listable;
+import com.booking.dao.booking.RoomtypeRepository;
+import com.booking.utils.DaoResult;
 import com.booking.utils.Result;
-import com.booking.utils.util.DaoResult;
 
 @Service
-@Transactional
 public class RoomtypeService {
 	@Autowired
-	private RoomtypeDao roomtypeDao;
+	private RoomtypeRepository roomtypeRepo;
 	@Autowired
 	private RoomDao roomDao;
 	@Autowired
@@ -34,12 +33,12 @@ public class RoomtypeService {
 	 * @param page
 	 * @return
 	 */
-	public Result<List<Listable>> getRoomtypeAll(Integer page) {
-		DaoResult<List<Roomtype>> getAllResult = roomtypeDao.getRoomtypeAll(page);
-		DaoResult<Integer> getTotalCountsResult = roomtypeDao.getTotalCounts();
+	public Result<List<RoomtypeDTO>> getRoomtypeAll(Integer page) {
+		DaoResult<List<Roomtype>> getAllResult = roomtypeRepo.getRoomtypeAll(page);
+		DaoResult<Long> getTotalCountsResult = roomtypeRepo.getTotalCounts();
 		
 		List<Roomtype> roomtypes = getAllResult.getData();
-		Integer totalCounts = getTotalCountsResult.getData();
+		Long totalCounts = getTotalCountsResult.getData();
 		
 		if(getAllResult.isFailure()) {
 			return Result.failure("獲取全部數量失敗");
@@ -49,11 +48,11 @@ public class RoomtypeService {
 			return Result.failure("查詢所有房間類型失敗");
 		}
 		
-		List<Listable> list = new ArrayList<>();
+		List<RoomtypeDTO> list = new ArrayList<>();
 		for(Roomtype roomtype : roomtypes) {
 			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 			roomtypeDTO.setTotalCounts(totalCounts); 
-			BeanUtil.copyProperties(roomtypeDTO, roomtype);
+			BeanUtils.copyProperties(roomtype, roomtypeDTO);
 			list.add(roomtypeDTO);
 		}
 	
@@ -65,22 +64,22 @@ public class RoomtypeService {
 	 * @param roomtype
 	 * @return
 	 */
-	public Result<List<Listable>> getRoomtypes(Roomtype roomtype, Map<String, Object> extraValues) {
-		DaoResult<List<Roomtype>> daynamicQueryResult = roomtypeDao.dynamicQuery(roomtype, extraValues);
+	public Result<List<RoomtypeDTO>> getRoomtypes(Roomtype roomtype, Map<String, Object> extraValues) {
+		DaoResult<List<Roomtype>> daynamicQueryResult = roomtypeRepo.dynamicQuery(roomtype, extraValues);
 		List<Roomtype> roomtypes = daynamicQueryResult.getData();
-		Integer totalCounts = ((Long)daynamicQueryResult.getExtraData("totalCounts")).intValue();
+		Long totalCounts = (Long) daynamicQueryResult.getExtraData("totalCounts");
 		if(daynamicQueryResult.isFailure()) {
 			return Result.failure("模糊查詢房間類型失敗");
 		}
 		
-		List<Listable> list = new ArrayList<>();
+		List<RoomtypeDTO> list = new ArrayList<>();
 		for(Roomtype roomtypeEntity : roomtypes) {
 			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 			roomtypeDTO.setTotalCounts(totalCounts);
-			BeanUtil.copyProperties(roomtypeDTO, roomtypeEntity);		
+			BeanUtils.copyProperties(roomtypeEntity, roomtypeDTO);		
 			list.add(roomtypeDTO);
 		}
-		
+	
 		return Result.success(list);
 	}
 
@@ -90,7 +89,7 @@ public class RoomtypeService {
 	 * @return
 	 */
 	public Result<List<RoomtypeDTO>> getRoomtypesByName(String roomtypeName) {
-		DaoResult<List<Roomtype>> getRoomtypeByNameResult = roomtypeDao.getRoomtypesByName(roomtypeName);
+		DaoResult<List<Roomtype>> getRoomtypeByNameResult = roomtypeRepo.getRoomtypesByName(roomtypeName);
 		
 		if(getRoomtypeByNameResult.isFailure()) {
 			return Result.failure("根據房間類型名稱獲取房間類型失敗");
@@ -101,7 +100,7 @@ public class RoomtypeService {
 		
 		for(Roomtype roomtype : roomtypes) {
 			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
-			BeanUtil.copyProperties(roomtypeDTO, roomtype);
+			BeanUtils.copyProperties(roomtype, roomtypeDTO);
 			list.add(roomtypeDTO);
 		}
 		
@@ -114,15 +113,15 @@ public class RoomtypeService {
 	 * @return
 	 */
 	public Result<RoomtypeDTO> getRoomtype(Integer roomtypeId) {
-		DaoResult<Roomtype> getRoomtypeByIdResult = roomtypeDao.getRoomtypeById(roomtypeId);
-		
-		if(getRoomtypeByIdResult.isFailure()) {
+		Optional<Roomtype> optional = roomtypeRepo.findById(roomtypeId);
+	
+		if(optional.isEmpty()) {
 			return Result.failure("找不到該房間類型");
 		}
 		
-		Roomtype roomtype = getRoomtypeByIdResult.getData();
+		Roomtype roomtype = optional.get();
 		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
-		BeanUtil.copyProperties(roomtypeDTO, roomtype);
+		BeanUtils.copyProperties(roomtype, roomtypeDTO);
 		
 		return Result.success(roomtypeDTO);
 	}
@@ -132,8 +131,9 @@ public class RoomtypeService {
 	 * @param roomtype
 	 * @return
 	 */
+	@Transactional
 	public Result<Integer> addRoomtype(Roomtype roomtype) {
-		DaoResult<?> addRoomtypeResult = roomtypeDao.addRoomtype(roomtype);
+		DaoResult<?> addRoomtypeResult = roomtypeRepo.addRoomtype(roomtype);
 		if(addRoomtypeResult.isFailure()) {
 			return Result.failure("新增房間類型失敗");
 		}
@@ -152,6 +152,7 @@ public class RoomtypeService {
 	 * @param roomtypeId
 	 * @return
 	 */
+	@Transactional
 	public Result<String> removeRoomtype(Integer roomtypeId) {
 		List<Room> rooms = roomDao.getRoomsByRoomtypeId(roomtypeId).getData();
 		
@@ -161,7 +162,7 @@ public class RoomtypeService {
 			}
 		}
 		
-		DaoResult<?> removeRoomtypeByIdResult = roomtypeDao.removeRoomtypeById(roomtypeId);
+		DaoResult<?> removeRoomtypeByIdResult = roomtypeRepo.removeRoomtypeById(roomtypeId);
 	    DaoResult<?> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
 	    
 	    if(removeRoomsByRoomtypeIdResult.isFailure()) {
@@ -180,9 +181,15 @@ public class RoomtypeService {
 	 * @param roomtype
 	 * @return
 	 */
+	@Transactional
 	public Result<String> updateRoomtype(Roomtype roomtype) {
 		Integer oldRoomtypeId = roomtype.getRoomtypeId();
-		Roomtype oldRoomtype = roomtypeDao.getRoomtypeById(oldRoomtypeId).getData();
+		Optional<Roomtype> optional = roomtypeRepo.findById(oldRoomtypeId);
+		
+		if(optional.isEmpty()) {
+			return Result.failure("找不到房間類型");
+		}
+		Roomtype oldRoomtype = optional.get();		
 		String roomtypeName = roomtype.getRoomtypeName();
 		Integer roomtypeCapacity = roomtype.getRoomtypeCapacity();
 		Integer roomtypePrice = roomtype.getRoomtypePrice();
@@ -228,7 +235,7 @@ public class RoomtypeService {
 		roomtype.setUpdatedTime(LocalDateTime.now());
 		roomtype.setCreatedTime(oldRoomtype.getCreatedTime());
 		
-		DaoResult<?> updateRoomtypeResult = roomtypeDao.updateRoomtype(roomtype);
+		DaoResult<?> updateRoomtypeResult = roomtypeRepo.updateRoomtype(roomtype);
 		
 		if(updateRoomtypeResult.isFailure()) {
 			return Result.failure("更新房間類型失敗");

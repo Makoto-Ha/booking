@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.bean.shopping.Product;
+import com.booking.bean.pojo.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
+import com.booking.utils.DaoResult;
 import com.booking.utils.Result;
-import com.booking.utils.util.DaoResult;
 
 @Service
 public class ProductService {

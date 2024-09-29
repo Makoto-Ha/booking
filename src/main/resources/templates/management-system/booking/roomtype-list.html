@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>roomtype-list</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<section class="main-list">
+			  <!-- 搜索欄 -->
+			  <div class="search-bar">
+			      <input type="text" id="search-input" placeholder="搜索...">
+			      <button id="search-btn">進階搜索</button>
+			      <div class="pagination">
+				      <button id="prev-page">上一頁</button>
+				      <input type="number" id="page-input" th:value="${pageNumber.currentPage}" min="1">
+				       / <span id="total-pages" th:text="${pageNumber.totalPages}"></span>
+				      <button id="next-page">下一頁</button>
+				   </div>
+				   <div class="attr-order-by">
+				      <select class="attr-select-order-by" id="select-order-by">                     
+			              <option value="roomtypePrice" th:selected="roomtypePrice == ${attrOrderBy}">房間價錢</option>
+			              <option value="roomtypeName" th:selected="roomtypeName == ${attrOrderBy}">房間名字</option>
+			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${attrOrderBy}">房間人數</option>
+			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${attrOrderBy}">房間數量</option>
+			              <option value="roomtypeCity" th:selected="roomtypeCity == ${attrOrderBy}">所在城市</option>
+			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${attrOrderBy}">所在區域</option>
+			              <option value="updatedTime" th:selected="updatedTime == ${attrOrderBy}">更新時間</option>
+			              <option value="createdTime" th:selected="createdTime == ${attrOrderBy}">創建時間</option>
+				      </select>
+				      <select class="attr-select-order-by" id="select-sort">
+			    			<option value="asc" th:selected="${selectedSort == 'asc'}">升冪</option>
+				      		<option value="desc" th:selected="${selectedSort == 'desc'}">降冪</option>
+				      </select>
+				   </div>
+			      <div class="search-bar-addbtn">
+			          <button class="action-btn add-btn">新增</button>
+			      </div>
+			  </div> 
+				  
+			  <div class="content-area-pages">
+			  		<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
+			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
+			  </div>  
+			  <!-- 管理頁面內容 -->
+			  <section id="content" class="content-area">       
+			     <div id="modal-overlay" class="overlay">
+			         <div class="modal">
+			             <h2 id="modal-title">查看</h2>
+			             <form id="modal-form">      
+					         <div class="form-group">
+			                     <label>房間名稱</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間人數</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間價錢</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間數量</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間介紹</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間地址</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間所在城市</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間所在區域</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>更新時間</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>創建時間</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div> 
+			                 <button type="button" id="modal-cancel-btn">取消</button>
+			             </form>
+			         </div>
+			     </div>
+			     <!-- 刪除確認視窗 -->
+			     <div id="delete-overlay" class="overlay">
+			         <div class="delete-modal">
+			             <h2>確認刪除</h2>
+			             <p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
+			             <button id="confirmDeleteBtn">確認</button>
+			             <button type="button" id="cancelDeleteBtn">取消</button>
+			         </div>
+			     </div>
+			     <!-- 這裡是管理頁面的動態內容 -->
+			        <ul class="item-list">
+			            <li th:each="roomtype : ${roomtypes}" class="list-item" th:data-current-list-id="${roomtype.roomtypeId}">
+			                <div>
+			                	<span class="item-title" th:text="${roomtype.roomtypeName}"></span>
+			                	<div class="listInfo-group">
+		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
+		                			<span th:text="${roomtype.roomtypePrice}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間類型數量</span>
+		                			<span th:text="${roomtype.roomtypeQuantity}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間類型地址</span>
+		                			<span th:text="${roomtype.roomtypeAddress}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間類型城市</span>
+		                			<span th:text="${roomtype.roomtypeCity}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間類型區域</span>
+		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間類型說明</span>
+		                			<span th:text="${roomtype.roomtypeDescription}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
+			                	</div>
+			                </div>
+			                <div class="item-actions">
+			                	<button class="action-btn check-btn">查看</button>
+			                    <button class="action-btn edit-btn">編輯</button>
+			                    <button class="action-btn delete-btn">刪除</button>
+			                </div> 
+			            </li>
+			        </ul>
+			    </section>
+			    <script th:inline="javascript">
+					var totalPages = /*[[${pageNumber.totalPages}]]*/
+					var requestParameters = /*[[${requestParameters}]]*/ {}
+					console.log(requestParameters);
+			    </script>
+			  </section>
+			  
+			  
+		  </div>
+	</div>
+	<script th:src="@{/management-system/common/js/index.js}"></script>
+</body>
+</html>

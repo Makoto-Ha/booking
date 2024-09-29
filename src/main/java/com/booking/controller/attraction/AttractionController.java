@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.booking.bean.attraction.Attraction;
-import com.booking.dto.attraction.AttractionDTO;
+import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.service.attraction.AttractionService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;

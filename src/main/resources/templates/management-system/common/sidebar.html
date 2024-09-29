@@ -1,0 +1,14 @@
+<aside class="sidebar">
+    <div class="profile">
+        <img th:src="@{/management-system/common/image/profile.png}" alt="Profile Picture">
+        <h3>David Grey</h3>
+        <p>Project Manager</p>
+    </div>
+    <ul id="navList">
+        <li><a th:href="@{/management/admin}" data-page="admin-management">管理員列表</a></li>
+        <li><a href="#" data-page="member-management">會員管理</a></li>
+        <li><a th:href="@{/management/roomtype}" data-page="booking-management">訂房管理</a></li>
+        <li><a th:href="@{/management/attraction}" data-page="attraction-management">景點管理</a></li>
+        <li><a th:href="@{/management/product}" data-page="shopping-management">商城管理</a></li>
+    </ul>
+</aside>

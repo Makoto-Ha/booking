@@ -2,8 +2,8 @@ package com.booking.dao.shopping;
 
 import java.util.List;
 
-import com.booking.bean.shopping.Product;
-import com.booking.utils.util.DaoResult;
+import com.booking.bean.pojo.shopping.Product;
+import com.booking.utils.DaoResult;
 
 public interface ProductDao {
 

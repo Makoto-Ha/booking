@@ -3,25 +3,34 @@ package com.booking.service.booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.bean.booking.Room;
-import com.booking.bean.booking.Roomtype;
+import com.booking.bean.dto.booking.RoomDTO;
+import com.booking.bean.pojo.booking.Room;
+import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomDao;
-import com.booking.dto.booking.RoomDTO;
-import com.booking.utils.BeanUtil;
-import com.booking.utils.Listable;
+import com.booking.dao.booking.RoomRepository;
+import com.booking.dao.booking.RoomSpecification;
+import com.booking.utils.DaoResult;
 import com.booking.utils.Result;
-import com.booking.utils.util.DaoResult;
 
 @Service
-@Transactional
 public class RoomService {
 	@Autowired
 	private RoomDao roomDao;
+	
+	@Autowired
+	private RoomRepository roomRepo;
 
 	/**
 	 * 獲取單筆房間
@@ -41,7 +50,7 @@ public class RoomService {
 		
 		RoomDTO roomDTO = new RoomDTO();
 		
-		BeanUtil.copyProperties(roomDTO, room);
+		BeanUtils.copyProperties(room, roomDTO);
 		
 		roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
 		
@@ -53,29 +62,15 @@ public class RoomService {
 	 * 
 	 * @return
 	 */
-	public Result<List<Listable>> getRoomAll() {
-		DaoResult<List<Object[]>> getRoomAllResult = roomDao.getRoomAll();
-		
-		if (getRoomAllResult.isFailure()) {
-			return Result.failure("獲取所有房間失敗");
+	public Result<Page<RoomDTO>> findRoomAll(Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		Pageable pageable = null;
+		if(selectedSort) {
+			pageable = PageRequest.of(pageNumber-1, 10, Direction.DESC, attrOrderBy);
+		}else {
+			pageable = PageRequest.of(pageNumber-1, 10, Direction.ASC, attrOrderBy);
 		}
-		
-		List<Object[]> results = getRoomAllResult.getData();
-		
-		List<Listable> listDTO = new ArrayList<>();
-		for (Object[] result : results) {
-			
-			Room room = (Room) result[0];
-			Roomtype roomtype = (Roomtype) result[1];
-			
-			RoomDTO roomDTO = new RoomDTO();
-			BeanUtil.copyProperties(roomDTO, room);
-			
-			roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
-			
-			listDTO.add(roomDTO);
-		}
-		return Result.success(listDTO);
+		Page<RoomDTO> page = roomRepo.findAllRoomDTO(pageable);
+		return Result.success(page);
 	}
 	
 	/**
@@ -97,7 +92,7 @@ public class RoomService {
 		List<RoomDTO> list = new ArrayList<>();
 		
 		for(Room room : rooms) {
-			BeanUtil.copyProperties(roomDTO, room);
+			BeanUtils.copyProperties(room, roomDTO);
 			list.add(roomDTO);
 		}
 		
@@ -125,6 +120,7 @@ public class RoomService {
 	 * @param room
 	 * @return
 	 */
+	@Transactional
 	public Result<Integer> addRoom(Room room, String roomtypeName) {
 		DaoResult<?> addRoomResult = roomDao.addRoom(room, roomtypeName);
 		
@@ -147,6 +143,7 @@ public class RoomService {
 	 * @param roomtype
 	 * @return
 	 */
+	@Transactional
 	public Result<Integer> addRoom(Roomtype roomtype) {
 		LocalDateTime updatedTime = roomtype.getUpdatedTime();
 		LocalDateTime createdTime = roomtype.getCreatedTime();
@@ -164,6 +161,7 @@ public class RoomService {
 		return Result.success("新增空房成功");
 	}
 
+	@Transactional
 	public Result<String> removeRoom(Integer roomId) {
 		DaoResult<?> decrementRoomtypeQuantityResult = roomDao.decrementRoomtypeQuantity(roomId);
 		if (decrementRoomtypeQuantityResult.isFailure()) {
@@ -184,6 +182,7 @@ public class RoomService {
 	 * @param room
 	 * @return
 	 */
+	@Transactional
 	public Result<String> updateRoom(Room room) {
 		Room oldRoom = roomDao.getRoomById(room.getRoomId()).getData();
 
@@ -214,5 +213,30 @@ public class RoomService {
 		}
 
 		return Result.success("更新房間成功");
+	}
+	
+	/**
+	 * 模糊查詢
+	 * @param room
+	 * @param extraValues
+	 * @return
+	 */
+	public Page<RoomDTO> findRooms(Room room, Map<String, Object> extraValues) {
+		Specification<RoomDTO> spec = Specification.where(RoomSpecification.numberContains(room.getRoomNumber()))
+													.and(RoomSpecification.statusContains(room.getRoomStatus()))
+													.and(RoomSpecification.descriptionContains(room.getRoomDescription()));
+			
+		String attrOrderBy = (String) extraValues.get("attrOrderBy");
+		Boolean selectedSort = (Boolean) extraValues.get("selectedSort");
+		Integer pageNumber = (Integer) extraValues.get("pageNumber");
+		Pageable pageable = null;
+		
+		if(selectedSort) {
+			pageable = PageRequest.of(pageNumber-1, 10, Direction.DESC, attrOrderBy);
+		}else {
+			pageable = PageRequest.of(pageNumber-1, 10, Direction.ASC, attrOrderBy);
+		}
+		
+		return roomRepo.findAllRoomDTO(spec, pageable);
 	}
 }
