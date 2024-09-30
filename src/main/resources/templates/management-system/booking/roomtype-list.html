@@ -17,24 +17,24 @@
 			      <button id="search-btn">進階搜索</button>
 			      <div class="pagination">
 				      <button id="prev-page">上一頁</button>
-				      <input type="number" id="page-input" th:value="${pageNumber.currentPage}" min="1">
-				       / <span id="total-pages" th:text="${pageNumber.totalPages}"></span>
+				      <input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
+				       / <span id="total-pages" th:text="${page.totalPages}"></span>
 				      <button id="next-page">下一頁</button>
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="roomtypePrice" th:selected="roomtypePrice == ${attrOrderBy}">房間價錢</option>
-			              <option value="roomtypeName" th:selected="roomtypeName == ${attrOrderBy}">房間名字</option>
-			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${attrOrderBy}">房間人數</option>
-			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${attrOrderBy}">房間數量</option>
-			              <option value="roomtypeCity" th:selected="roomtypeCity == ${attrOrderBy}">所在城市</option>
-			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${attrOrderBy}">所在區域</option>
-			              <option value="updatedTime" th:selected="updatedTime == ${attrOrderBy}">更新時間</option>
-			              <option value="createdTime" th:selected="createdTime == ${attrOrderBy}">創建時間</option>
+			              <option value="roomtypePrice" th:selected="roomtypePrice == ${roomtypeDTO.attrOrderBy}">房間價錢</option>
+			              <option value="roomtypeName" th:selected="roomtypeName == ${roomtypeDTO.attrOrderBy}">房間名字</option>
+			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${roomtypeDTO.attrOrderBy}">房間人數</option>
+			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${roomtypeDTO.attrOrderBy}">房間數量</option>
+			              <option value="roomtypeCity" th:selected="roomtypeCity == ${roomtypeDTO.attrOrderBy}">所在城市</option>
+			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${roomtypeDTO.attrOrderBy}">所在區域</option>
+			              <option value="updatedTime" th:selected="updatedTime == ${roomtypeDTO.attrOrderBy}">更新時間</option>
+			              <option value="createdTime" th:selected="createdTime == ${roomtypeDTO.attrOrderBy}">創建時間</option>
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="asc" th:selected="${selectedSort == 'asc'}">升冪</option>
-				      		<option value="desc" th:selected="${selectedSort == 'desc'}">降冪</option>
+			    			<option value="false" th:selected="${roomtypeDTO.selectedSort} == false">升冪</option>
+				      		<option value="true" th:selected="${roomtypeDTO.selectedSort} == true">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -107,27 +107,27 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="roomtype : ${roomtypes}" class="list-item" th:data-current-list-id="${roomtype.roomtypeId}">
+			            <li th:each="roomtypeDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomtypeDTO.roomtypeId}">
 			                <div>
-			                	<span class="item-title" th:text="${roomtype.roomtypeName}"></span>
+			                	<span class="item-title" th:text="${roomtypeDTO.roomtypeName}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
-		                			<span th:text="${roomtype.roomtypePrice}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypePrice}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型數量</span>
-		                			<span th:text="${roomtype.roomtypeQuantity}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypeQuantity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型地址</span>
-		                			<span th:text="${roomtype.roomtypeAddress}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypeAddress}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型城市</span>
-		                			<span th:text="${roomtype.roomtypeCity}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypeCity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型區域</span>
-		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypeDistrict}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型說明</span>
-		                			<span th:text="${roomtype.roomtypeDescription}"></span>
+		                			<span th:text="${roomtypeDTO.roomtypeDescription}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
 			                	</div>
 			                </div>
@@ -140,9 +140,10 @@
 			        </ul>
 			    </section>
 			    <script th:inline="javascript">  	
-					var totalPages = /*[[${pageNumber.totalPages}]]*/;
-					var requestParameters = [[${requestParameters}]] || {};
-					
+					var requestParameters = [[${requestParameters}]];
+					var page = [[${page}]];
+			    	var totalPages = page.totalPages;
+			    	console.log(totalPages);
 					console.log(requestParameters);
 			    </script>
 			  </section>

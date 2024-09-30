@@ -6,6 +6,9 @@ public class RoomDTO {
 	private String roomNumber;
 	private Integer roomStatus;
 	private String roomDescription;
+	private Integer pageNumber = 1;
+	private String attrOrderBy = "roomNumber";
+	private Boolean selectedSort = false;
 	
 	public RoomDTO() {}
 	
@@ -56,5 +59,35 @@ public class RoomDTO {
 	public void setRoomDescription(String roomDescription) {
 		this.roomDescription = roomDescription;
 	}
-	
+
+	public String getAttrOrderBy() {
+		return attrOrderBy;
+	}
+
+	public void setAttrOrderBy(String attrOrderBy) {
+		this.attrOrderBy = attrOrderBy;
+	}
+
+	public Boolean getSelectedSort() {
+		return selectedSort;
+	}
+
+	public void setSelectedSort(Boolean selectedSort) {
+		this.selectedSort = selectedSort;
+	}
+
+	public Integer getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	@Override
+	public String toString() {
+		return "RoomDTO [roomId=" + roomId + ", roomtypeName=" + roomtypeName + ", roomNumber=" + roomNumber
+				+ ", roomStatus=" + roomStatus + ", roomDescription=" + roomDescription + ", pageNumber=" + pageNumber
+				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
+	}
 }
