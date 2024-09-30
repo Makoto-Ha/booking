@@ -1,7 +1,6 @@
 package com.booking.controller.booking;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +30,27 @@ public class RoomController {
 	
 	/**
 	 * 房間首頁
+	 * @param requestParameters
+	 * @param roomDTO
 	 * @param model
 	 * @return
 	 */
 	@GetMapping
 	private String sendRoomPage(
-			@RequestParam(defaultValue = "1") Integer pageNumber,
-			@RequestParam(defaultValue = "roomNumber") String attrOrderBy,
-			@RequestParam(defaultValue = "false") Boolean selectedSort,
+			@RequestParam Map<String, String> requestParameters,
+			RoomDTO roomDTO,
 			Model model
 		) {
 		
-		Result<Page<RoomDTO>> roomServiceResult = roomService.findRoomAll(pageNumber, attrOrderBy, selectedSort);
+		Result<Page<RoomDTO>> roomServiceResult = roomService.findRoomAll(roomDTO);
 		
 		if(roomServiceResult.isFailure()) {
 			return "";
 		}
 		Page<RoomDTO> page = roomServiceResult.getData();
-		
+		model.addAttribute("requestParameters", requestParameters);
+		model.addAttribute("roomDTO", roomDTO);
 		model.addAttribute("page", page);
-		model.addAttribute("selectedSort", selectedSort);
 		return "/management-system/booking/room-list";
 	}
 	
@@ -76,6 +76,7 @@ public class RoomController {
 	 * 轉去room的編輯頁面
 	 * @param roomId
 	 * @param model
+	 * @param session
 	 * @return
 	 */
 	@GetMapping("/edit/page")
@@ -96,38 +97,30 @@ public class RoomController {
 	
 	/**
 	 * 模糊查詢
+	 * @param requestParameters
+	 * @param roomDTO
+	 * @param model
+	 * @return
 	 */
 	@GetMapping("/select")
 	private String findRooms(
-			Room room,
-			@RequestParam(defaultValue = "1") Integer pageNumber,
-			@RequestParam(defaultValue = "roomNumber") String attrOrderBy,
-			@RequestParam(defaultValue = "false") Boolean selectedSort,
+			@RequestParam Map<String, String> requestParameters,
+			RoomDTO roomDTO,
 			Model model
 		) {
 		
-		Map<String, Object> extraValues = new HashMap<>();
-		extraValues.put("attrOrderBy", attrOrderBy);
-		extraValues.put("selectedSort", selectedSort);
-		extraValues.put("pageNumber", pageNumber);
-		PageImpl<RoomDTO> page = roomService.findRooms(room, extraValues);
+		PageImpl<RoomDTO> page = roomService.findRooms(roomDTO);
 		
-		Map<String, Object> requestParameters = new HashMap<>();
-		
-		requestParameters.put("extraValues", extraValues);
-		requestParameters.put("paramters", room);
-		   	
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);
-		model.addAttribute("attrOrderBy", attrOrderBy);
-		model.addAttribute("selectedSort", selectedSort);
-		
+		model.addAttribute("roomDTO", roomDTO);
 		return "/management-system/booking/room-list";
 	}
 	
 	/**
 	 * 創建房間
 	 * @param room
+	 * @param roomtypeName
 	 * @return
 	 */
 	@PostMapping("/create")
@@ -160,6 +153,7 @@ public class RoomController {
 	/**
 	 * 更新房間
 	 * @param room
+	 * @param roomId
 	 * @return
 	 */
 	@PostMapping("/update")

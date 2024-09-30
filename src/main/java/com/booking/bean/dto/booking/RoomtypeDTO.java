@@ -14,7 +14,12 @@ public class RoomtypeDTO {
 	private String roomtypeDistrict;
 	private LocalDateTime updatedTime;
 	private LocalDateTime createdTime;
-	private Long totalCounts;
+	
+	private Integer pageNumber = 1;
+	private String attrOrderBy = "roomtypePrice";
+	private Boolean selectedSort = false;
+	private Integer minMoney = 0;
+	private Integer maxMoney = 0;
 
 	public RoomtypeDTO() {
 	}
@@ -107,11 +112,45 @@ public class RoomtypeDTO {
 		this.createdTime = createdTime;
 	}
 
-	public Long getTotalCounts() {
-		return totalCounts;
+	public Integer getPageNumber() {
+		return pageNumber;
 	}
 
-	public void setTotalCounts(Long totalCounts) {
-		this.totalCounts = totalCounts;
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
 	}
+
+	public String getAttrOrderBy() {
+		return attrOrderBy;
+	}
+
+	public void setAttrOrderBy(String attrOrderBy) {
+		this.attrOrderBy = attrOrderBy;
+	}
+
+	public Boolean getSelectedSort() {
+		return selectedSort;
+	}
+
+	public void setSelectedSort(Boolean selectedSort) {
+		this.selectedSort = selectedSort;
+	}
+
+	public Integer getMinMoney() {
+		return minMoney;
+	}
+
+	public void setMinMoney(Integer minMoney) {
+		this.minMoney = minMoney;
+	}
+
+	public Integer getMaxMoney() {
+		return maxMoney;
+	}
+
+	public void setMaxMoney(Integer maxMoney) {
+		this.maxMoney = maxMoney;
+	}
+	
+	
 }

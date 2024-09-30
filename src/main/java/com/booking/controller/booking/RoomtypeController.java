@@ -1,11 +1,11 @@
 package com.booking.controller.booking;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,25 +44,23 @@ public class RoomtypeController  {
 	 * @return
 	 */
 	@GetMapping
-	private String sendRoomtypePage(@RequestParam(required = false, defaultValue = "1") Integer switchPage, Model model) {
+	private String sendRoomtypePage(
+			@RequestParam Map<String, String> requestParameters,
+			RoomtypeDTO roomtypeDTO,
+			Model model
+	) {
 
-		Result<List<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.getRoomtypeAll(switchPage);
+		Result<PageImpl<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
+		
 		if (roomtypeServiceResult.isFailure()) {
 			return "";
 		}
 
-		List<RoomtypeDTO> roomtypes = roomtypeServiceResult.getData();
-		Map<String, Long> pageNumber = new HashMap<>();
-		pageNumber.put("currentPage",  switchPage.longValue());
+		Page<RoomtypeDTO> page = roomtypeServiceResult.getData();	
 		
-		long totalCounts = roomtypes.isEmpty() ? 0 : roomtypes.get(0).getTotalCounts();
-		int pageSize = 10; // 每頁顯示的記錄數量
-		long totalPages = (totalCounts + pageSize - 1) / pageSize; // 向上取整的頁數計算
-		
-		pageNumber.put("totalPages", totalPages);
-		model.addAttribute("roomtypes", roomtypes);
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("attrOrderBy", "roomtypePrice");
+		model.addAttribute("requestParameters", requestParameters);
+		model.addAttribute("roomtypeDTO", roomtypeDTO);
+		model.addAttribute("page", page);
 		return "management-system/booking/roomtype-list";
 	}
 
@@ -108,49 +106,22 @@ public class RoomtypeController  {
 	 */
 	@GetMapping("/select")
 	private String findRoomtypes(
-			Roomtype roomtype,
-			@RequestParam(required = false, defaultValue = "1") Integer switchPage,
-			@RequestParam(required = false, defaultValue = "0") Integer maxMoney,
-			@RequestParam(required = false, defaultValue = "0") Integer minMoney,
-			@RequestParam(required = false, defaultValue = "roomtypePrice") String attrOrderBy,
-			@RequestParam(required = false, defaultValue = "asc") String selectedSort,
+			@RequestParam Map<String, String> requestParameters,
+			RoomtypeDTO roomtypeDTO,
 			Model model
 	) {
-		if(maxMoney == 0 && minMoney == 0) {
-			maxMoney = null;
-			minMoney = null;
-		}
-		
-		Map<String, Object> extraValues = new HashMap<>();
-		extraValues.put("maxMoney", maxMoney);
-		extraValues.put("minMoney", minMoney);
-		extraValues.put("switchPage", switchPage);
-		extraValues.put("attrOrderBy", attrOrderBy);
-		extraValues.put("selectedSort", selectedSort);
-		
-		Result<List<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.getRoomtypes(roomtype, extraValues);
+
+		Result<PageImpl<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypes(roomtypeDTO);
 		
 		if(roomtypeServiceResult.isFailure()) {
 			return "";
 		}
 		
-		List<RoomtypeDTO> roomtypes = roomtypeServiceResult.getData();
+		Page<RoomtypeDTO> page = roomtypeServiceResult.getData();
 		
-		Map<String, Object> requestParameters = new HashMap<>();
-		requestParameters.put("paramters", roomtype);
-		requestParameters.put("extraValues", extraValues);
-		
-		Map<String, Long> pageNumber = new HashMap<>();
-		pageNumber.put("currentPage", switchPage.longValue());
-		
-		long totalCounts = roomtypes.isEmpty() ? 0 : roomtypes.get(0).getTotalCounts();
-		long totalPages = (totalCounts + 10 - 1) / 10; // 向上取整的頁數計算
-		pageNumber.put("totalPages", totalPages);
-		model.addAttribute("attrOrderBy", attrOrderBy);
-		model.addAttribute("selectedSort", selectedSort);
 		model.addAttribute("requestParameters", requestParameters);
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("roomtypes", roomtypes);
+		model.addAttribute("roomtypeDTO", roomtypeDTO);
+		model.addAttribute("page", page);
 		return "/management-system/booking/roomtype-list";
 	}
 

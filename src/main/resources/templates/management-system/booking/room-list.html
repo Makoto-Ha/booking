@@ -23,14 +23,14 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="roomNumber" th:selected="roomNumber == ${attrOrderBy}">房間號碼</option>
-			              <option value="roomStatus" th:selected="roomStatus == ${attrOrderBy}">房間狀態</option>
-			              <option value="updatedTime" th:selected="updatedTime == ${attrOrderBy}">更新時間</option>
-			              <option value="createdTime" th:selected="createdTime == ${attrOrderBy}">創建時間</option>            
+			              <option value="roomNumber" th:selected="roomNumber == ${roomDTO.attrOrderBy}">房間號碼</option>
+			              <option value="roomStatus" th:selected="roomStatus == ${roomDTO.attrOrderBy}">房間狀態</option>
+			              <option value="updatedTime" th:selected="updatedTime == ${roomDTO.attrOrderBy}">更新時間</option>
+			              <option value="createdTime" th:selected="createdTime == ${roomDTO.attrOrderBy}">創建時間</option>            
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${selectedSort} == false">升冪</option>
-				      		<option value="true" th:selected="${selectedSort} == true">降冪</option>
+			    			<option value="false" th:selected="${roomDTO.selectedSort} == false">升冪</option>
+				      		<option value="true" th:selected="${roomDTO.selectedSort} == true">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -83,18 +83,18 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="room : ${page.content}" class="list-item" th:data-current-list-id="${room.roomId}">
+			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}">
 			                <div>
-			                	<span class="item-title" th:text="${room.roomtypeName}"></span>
+			                	<span class="item-title" th:text="${roomDTO.roomtypeName}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間號碼</span>
-		                			<span th:text="${room.roomNumber}"></span>
+		                			<span th:text="${roomDTO.roomNumber}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間狀態</span>
-		                			<span th:text="${room.roomStatus}"></span>
+		                			<span th:text="${roomDTO.roomStatus}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間介紹</span>
-		                			<span th:text="${room.roomDescription}"></span>
+		                			<span th:text="${roomDTO.roomDescription}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
 			                	</div>
 			                </div>
@@ -107,9 +107,12 @@
 			        </ul>
 			    </section>
 			    <script th:inline="javascript">
-					var totalPages = /*[[${page.pageable.pageNumber}+1]]*/
-					var requestParameters = [[${requestParameters}]] || {};
-					console.log(requestParameters);
+			    	
+			    	var requestParameters = [[${requestParameters}]];
+			    	var page = [[${page}]];
+			    	var totalPages = page.totalPages;
+			 		console.log(totalPages);
+			    	console.log(requestParameters);
 			    </script>
 			  </section>
 			  

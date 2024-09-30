@@ -98,4 +98,27 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+	// 根據價錢區間進行模糊查詢
+	public static Specification<Roomtype> moneyContains (Integer minMoney, Integer maxMoney) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(minMoney == 0 && maxMoney == 0) {
+				return builder.conjunction();
+			}
+			
+			if (minMoney != null) {
+				if (maxMoney != null) {
+					return builder.between(root.get("roomtypePrice"), minMoney, maxMoney);
+				} else {
+					return builder.ge(root.get("roomtypePrice"), minMoney);
+				}
+			}else {
+				if (maxMoney != null) {
+					return builder.le(root.get("roomtypePrice"), maxMoney);
+				}
+			}
+			
+			return builder.conjunction();
+		};
+	}
+	
 }

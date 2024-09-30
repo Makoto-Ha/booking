@@ -138,6 +138,7 @@ function bindAdminSystemEvent() {
 	const prevPageBtn = document.getElementById("prev-page");
 	const nextPageBtn = document.getElementById("next-page");
 	const pageInput = document.getElementById("page-input");
+	
 	let currentPage = parseInt(pageInput.value);
 	// 上一頁
 	prevPageBtn.addEventListener("click", () => {
@@ -147,12 +148,12 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
-		deleteNullValue(paramters, extraValues);
-		const params = {};
-		Object.assign(params, paramters, extraValues, {switchPage: currentPage-1});
 		
-		let queryString = new URLSearchParams(params).toString();
+		deleteNullValue(requestParameters);
+		
+		Object.assign(requestParameters, {pageNumber: currentPage-1});
+		
+		let queryString = new URLSearchParams(requestParameters).toString();
 		
 		fetch(`/booking/management/${lastHref}/select?${queryString}`, {
 		}).then(res => res.text()).then(html => {
@@ -160,14 +161,7 @@ function bindAdminSystemEvent() {
 			const doc = parser.parseFromString(html, 'text/html');
 			document.body.innerHTML = doc.body.innerHTML;
 			bindAdminSystemEvent();
-			const scripts = document.querySelector('.main-list').getElementsByTagName('script');
-			
-			for (let script of scripts) {
-				const newScript = document.createElement('script');
-				newScript.textContent = script.textContent; // 将脚本内容复制到新创建的脚本标签中
-				document.head.appendChild(newScript); // 将脚本添加到页面中执行
-				document.head.removeChild(newScript); // 执行后移除脚本标签
-			}
+			enableScript('.main-list');
 		});
 	});
 
@@ -179,12 +173,10 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
-		deleteNullValue(paramters, extraValues);
-		const params = {};
-		Object.assign(params, paramters, extraValues, {switchPage: currentPage+1});
+		deleteNullValue(requestParameters);
+		Object.assign(requestParameters, {pageNumber: currentPage+1});
 		
-		let queryString = new URLSearchParams(params).toString();
+		let queryString = new URLSearchParams(requestParameters).toString();
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
@@ -208,12 +200,12 @@ function bindAdminSystemEvent() {
 
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let paramters = requestParameters.paramters, requestParameters = jsonData.extraValues;
-
-		const params = {};
-		Object.assign(params, paramters, extraValues, {switchPage: page});
-		deleteNullValue(paramters, extraValues);
-		let queryString = new URLSearchParams(params).toString();
+		
+		deleteNullValue(requestParameters);
+		Object.assign(requestParameters, {pageNumber: currentPage+1});
+		
+		Object.assign(requestParameters, {pageNumber: page});
+		let queryString = new URLSearchParams(requestParameters).toString();
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
 			.then(html => {
@@ -250,12 +242,10 @@ function bindAdminSystemEvent() {
 		let selectedAttr = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
-		deleteNullValue(paramters, extraValues);
-		const params = {};
-		Object.assign(params, paramters, extraValues, {switchPage: currentPage, attrOrderBy: selectedAttr});
+		deleteNullValue(requestParameters);
+		Object.assign(requestParameters, {pageNumber: currentPage, attrOrderBy: selectedAttr});
 		
-		let queryString = new URLSearchParams(params).toString();
+		let queryString = new URLSearchParams(requestParameters).toString();
 		
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())
@@ -274,12 +264,10 @@ function bindAdminSystemEvent() {
 		let selectedSort = e.target.selectedOptions[0].value;
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		let paramters = requestParameters.paramters, extraValues = requestParameters.extraValues;
-		deleteNullValue(paramters, extraValues);
-		const params = {};
-		Object.assign(params, paramters, extraValues, {switchPage: currentPage, selectedSort});
+		deleteNullValue(requestParameters);
+		Object.assign(requestParameters, {pageNumber: currentPage, selectedSort});
 		
-		let queryString = new URLSearchParams(params).toString();
+		let queryString = new URLSearchParams(requestParameters).toString();
 		
 		fetch(`/booking/management/${lastHref}/select?${queryString}`)
 			.then(res => res.text())

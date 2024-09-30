@@ -3,11 +3,15 @@ package com.booking.service.booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +20,9 @@ import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomtypeRepository;
+import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
+import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
 @Service
@@ -30,57 +36,65 @@ public class RoomtypeService {
 	
 	/**
 	 * 獲取所有房間類型
-	 * @param page
+	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Result<List<RoomtypeDTO>> getRoomtypeAll(Integer page) {
-		DaoResult<List<Roomtype>> getAllResult = roomtypeRepo.getRoomtypeAll(page);
-		DaoResult<Long> getTotalCountsResult = roomtypeRepo.getTotalCounts();
+	public Result<PageImpl<RoomtypeDTO>> findRoomtypeAll(RoomtypeDTO roomtypeDTO) {
+		Integer pageNumber = roomtypeDTO.getPageNumber();
+		String attrOrderBy = roomtypeDTO.getAttrOrderBy();
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, false, attrOrderBy);
+		Page<Roomtype> page = roomtypeRepo.findAll(pageable);
 		
-		List<Roomtype> roomtypes = getAllResult.getData();
-		Long totalCounts = getTotalCountsResult.getData();
+		List<RoomtypeDTO> roomtypeDTOs = new ArrayList<>();
+		List<Roomtype> roomtypes = page.getContent();
 		
-		if(getAllResult.isFailure()) {
-			return Result.failure("獲取全部數量失敗");
-		}
-		
-		if(getTotalCountsResult.isFailure()) {
-			return Result.failure("查詢所有房間類型失敗");
-		}
-		
-		List<RoomtypeDTO> list = new ArrayList<>();
 		for(Roomtype roomtype : roomtypes) {
-			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
-			roomtypeDTO.setTotalCounts(totalCounts); 
-			BeanUtils.copyProperties(roomtype, roomtypeDTO);
-			list.add(roomtypeDTO);
+			RoomtypeDTO responseRoomtypeDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, responseRoomtypeDTO);
+			roomtypeDTOs.add(responseRoomtypeDTO);
 		}
 	
-		return Result.success(list);
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		
+		return Result.success(new PageImpl<>(roomtypeDTOs, newPageable, page.getTotalElements()));
 	}
 	
 	/**
 	 * 根據多條選項模糊查詢得到多筆房間類型
-	 * @param roomtype
+	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Result<List<RoomtypeDTO>> getRoomtypes(Roomtype roomtype, Map<String, Object> extraValues) {
-		DaoResult<List<Roomtype>> daynamicQueryResult = roomtypeRepo.dynamicQuery(roomtype, extraValues);
-		List<Roomtype> roomtypes = daynamicQueryResult.getData();
-		Long totalCounts = (Long) daynamicQueryResult.getExtraData("totalCounts");
-		if(daynamicQueryResult.isFailure()) {
-			return Result.failure("模糊查詢房間類型失敗");
+	public Result<PageImpl<RoomtypeDTO>> findRoomtypes(RoomtypeDTO roomtypeDTO) {
+		
+		Specification<Roomtype> spec = Specification
+					 .where(RoomtypeSpecification.nameContains(roomtypeDTO.getRoomtypeName()))
+					 .and(RoomtypeSpecification.priceContains(roomtypeDTO.getRoomtypePrice()))
+					 .and(RoomtypeSpecification.quantityContains(roomtypeDTO.getRoomtypeQuantity()))
+					 .and(RoomtypeSpecification.capacityContains(roomtypeDTO.getRoomtypeCapacity()))
+					 .and(RoomtypeSpecification.cityContains(roomtypeDTO.getRoomtypeCity()))
+					 .and(RoomtypeSpecification.districtContains(roomtypeDTO.getRoomtypeDistrict()))
+					 .and(RoomtypeSpecification.descriptionContains(roomtypeDTO.getRoomtypeDescription()))
+					 .and(RoomtypeSpecification.moneyContains(roomtypeDTO.getMinMoney(), roomtypeDTO.getMaxMoney()));
+		
+		Pageable pageable = MyPageRequest.of(
+				roomtypeDTO.getPageNumber(), 
+				10, 
+				roomtypeDTO.getSelectedSort(), 
+				roomtypeDTO.getAttrOrderBy());
+		
+		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
+		
+		List<Roomtype> roomtypes = page.getContent();
+		List<RoomtypeDTO> roomtypeDTOs = new ArrayList<>();
+		for(Roomtype roomtype : roomtypes) {
+			RoomtypeDTO responseRoomtypeDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, responseRoomtypeDTO);		
+			roomtypeDTOs.add(responseRoomtypeDTO);
 		}
 		
-		List<RoomtypeDTO> list = new ArrayList<>();
-		for(Roomtype roomtypeEntity : roomtypes) {
-			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
-			roomtypeDTO.setTotalCounts(totalCounts);
-			BeanUtils.copyProperties(roomtypeEntity, roomtypeDTO);		
-			list.add(roomtypeDTO);
-		}
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 	
-		return Result.success(list);
+		return Result.success(new PageImpl<>(roomtypeDTOs, newPageable, page.getTotalElements()));
 	}
 
 	/**

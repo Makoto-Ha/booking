@@ -3,7 +3,6 @@ package com.booking.service.booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +21,7 @@ import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomRepository;
 import com.booking.dao.booking.RoomSpecification;
 import com.booking.utils.DaoResult;
+import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
 @Service
@@ -63,13 +62,13 @@ public class RoomService {
 	 * 
 	 * @return
 	 */
-	public Result<Page<RoomDTO>> findRoomAll(Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		Pageable pageable = null;
-		if(selectedSort) {
-			pageable = PageRequest.of(pageNumber-1, 10, Direction.DESC, attrOrderBy);
-		}else {
-			pageable = PageRequest.of(pageNumber-1, 10, Direction.ASC, attrOrderBy);
-		}
+	public Result<Page<RoomDTO>> findRoomAll(RoomDTO roomDTO) {
+		String attrOrderBy = roomDTO.getAttrOrderBy();
+		Boolean selectedSort = roomDTO.getSelectedSort();
+		Integer pageNumber = roomDTO.getPageNumber();
+		
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+		
 		Page<RoomDTO> page = roomRepo.findAllRoomDTO(pageable);
 		return Result.success(page);
 	}
@@ -222,32 +221,28 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public PageImpl<RoomDTO> findRooms(Room room, Map<String, Object> extraValues) {
-		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(room.getRoomNumber()))
-													.and(RoomSpecification.statusContains(room.getRoomStatus()))
-													.and(RoomSpecification.descriptionContains(room.getRoomDescription()));
+	public PageImpl<RoomDTO> findRooms(RoomDTO roomDTO) {
+		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
+													.and(RoomSpecification.statusContains(roomDTO.getRoomStatus()))
+													.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
 			
-		String attrOrderBy = (String) extraValues.get("attrOrderBy");
-		Boolean selectedSort = (Boolean) extraValues.get("selectedSort");
-		Integer pageNumber = (Integer) extraValues.get("pageNumber");
-		Pageable pageable = null;
-		
-		if(selectedSort) {
-			pageable = PageRequest.of(pageNumber-1, 10, Direction.DESC, attrOrderBy);
-		}else {
-			pageable = PageRequest.of(pageNumber-1, 10, Direction.ASC, attrOrderBy);
-		}
-		
+		String attrOrderBy = roomDTO.getAttrOrderBy();
+		Boolean selectedSort = roomDTO.getSelectedSort();
+		Integer pageNumber = roomDTO.getPageNumber();
+	
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+	
 		Page<Room> page = roomRepo.findAll(spec, pageable);
 		
 		List<Room> rooms = page.getContent();
+		
 		List<RoomDTO> roomDTOs = new ArrayList<>();
 		for(Room r : rooms) {
 			Roomtype roomtype = r.getRoomtype();
-			RoomDTO roomDTO = new RoomDTO();
-			BeanUtils.copyProperties(r, roomDTO);
-			roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
-			roomDTOs.add(roomDTO);
+			RoomDTO responseRoomDTO = new RoomDTO();
+			BeanUtils.copyProperties(r, responseRoomDTO);
+			responseRoomDTO.setRoomtypeName(roomtype.getRoomtypeName());	
+			roomDTOs.add(responseRoomDTO);
 		}
 		
 		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
