@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>create</title>
@@ -29,7 +29,7 @@
 						id="room-description" name="roomDescription" placeholder="輸入內容" th:value="${room.roomDescription}">
 				</div>
 
-				<div class="form-group roomtype-capacity-group room-status-group">
+				<div class="form-group room-status-group">
 					<div class="choose-room-status">
 						<label class="radio-label">閒置
 							<input type="radio" name="roomStatus" value="0" th:checked="${room.roomStatus} == '0'">
@@ -48,7 +48,7 @@
 				</div>
 
 				<div class="form-group">
-					<button type="submit" class="submit submit-edit" id="submit">保存</button>
+					<button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff">保存</button>
 					<button type="button" class="cancel">取消</button>
 				</div>
 			</form>
@@ -56,72 +56,6 @@
 	</div>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
 	<script>
-		// form用到的下拉式選單
-
-		function toggleDropdown() {
-			var menu = document.getElementById("menu");
-			menu.classList.toggle("show");
-		}
-
-		function selectOption(value) {
-			document.getElementById("dropdown").value = value;
-			document.getElementById("menu").classList.remove("show");
-		}
-
-		function filterOptions() {
-			var input = document.getElementById("dropdown").value.toLowerCase();
-			var menu = document.getElementById("menu");
-			var options = menu.getElementsByTagName("div");
-			var hasMatchingOption = false;
-
-			for (var i = 0; i < options.length; i++) {
-				var optionText = options[i].textContent.toLowerCase();
-				if (optionText.includes(input)) {
-					options[i].style.display = "block";
-					hasMatchingOption = true;
-				} else {
-					options[i].style.display = "none";
-				}
-			}
-
-			if (hasMatchingOption && input !== "") {
-				menu.classList.add("show");
-			} else {
-				menu.classList.remove("show");
-			}
-		}
-
-		// 點擊外面關閉
-		document.addEventListener('click', function(e) {
-			var dropdown = document.querySelector('.dropdown-input');
-			if (!dropdown.contains(e.target)) {
-				document.getElementById("menu").classList.remove("show");
-			}
-		});
-		
-		document.getElementById("dropdown").addEventListener('input', async function(e) {
-			let value = this.value;
-			
-			if(value === '{' || value === '}' || value === '[' || value === ']') {
-				return;
-			}
-			
-			let response = await fetch('/booking/json/roomtype?name='+value);
-			let roomtypes = await response.json();
-			const menu = document.getElementById('menu');
-			menu.innerHTML = '';
-			console.log(roomtypes);
-			roomtypes.forEach(roomtype => {
-				let roomtypeName = roomtype.roomtypeName;
-				let div = document.createElement('div');
-				div.textContent = roomtypeName;
-				let selectOptionValue = "\'" + roomtypeName + "\'";
-				div.setAttribute('onclick', 'selectOption(' + selectOptionValue + ')');
-				menu.appendChild(div);
-			});
-			filterOptions();
-		});
-		
 		const submitButton = document.getElementById('submit');
 		const requiredInputs = document.querySelectorAll('.form-group input[type="text"]');
 

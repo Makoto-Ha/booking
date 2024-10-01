@@ -1,5 +1,8 @@
 package com.booking.service.booking;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.Room;
@@ -24,6 +29,7 @@ import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
 
 @Service
 public class RoomtypeService {
@@ -42,7 +48,8 @@ public class RoomtypeService {
 	public Result<PageImpl<RoomtypeDTO>> findRoomtypeAll(RoomtypeDTO roomtypeDTO) {
 		Integer pageNumber = roomtypeDTO.getPageNumber();
 		String attrOrderBy = roomtypeDTO.getAttrOrderBy();
-		Pageable pageable = MyPageRequest.of(pageNumber, 10, false, attrOrderBy);
+		Boolean selectedSort = roomtypeDTO.getSelectedSort();
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
 		Page<Roomtype> page = roomtypeRepo.findAll(pageable);
 		
 		List<RoomtypeDTO> roomtypeDTOs = new ArrayList<>();
@@ -102,7 +109,7 @@ public class RoomtypeService {
 	 * @param name
 	 * @return
 	 */
-	public Result<List<RoomtypeDTO>> getRoomtypesByName(String roomtypeName) {
+	public Result<List<RoomtypeDTO>> findRoomtypesByName(String roomtypeName) {
 		DaoResult<List<Roomtype>> getRoomtypeByNameResult = roomtypeRepo.getRoomtypesByName(roomtypeName);
 		
 		if(getRoomtypeByNameResult.isFailure()) {
@@ -126,7 +133,7 @@ public class RoomtypeService {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public Result<RoomtypeDTO> getRoomtype(Integer roomtypeId) {
+	public Result<RoomtypeDTO> findRoomtypeById(Integer roomtypeId) {
 		Optional<Roomtype> optional = roomtypeRepo.findById(roomtypeId);
 	
 		if(optional.isEmpty()) {
@@ -146,19 +153,29 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<Integer> addRoomtype(Roomtype roomtype) {
-		DaoResult<?> addRoomtypeResult = roomtypeRepo.addRoomtype(roomtype);
-		if(addRoomtypeResult.isFailure()) {
+	public Result<String> saveRoomtype(MultipartFile imageFile, Roomtype roomtype) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			roomtype.setImagePath("uploads" + "/" + fileName);
+		}else {
+			roomtype.setImagePath("uploads/default.jpg");
+		}
+			
+		Roomtype saveRoomtype = roomtypeRepo.save(roomtype);
+
+		if(saveRoomtype == null) {
 			return Result.failure("新增房間類型失敗");
 		}
-		roomtype.setRoomtypeId(addRoomtypeResult.getGeneratedId());
-		Result<Integer> addRoomResult = roomService.addRoom(roomtype);
 		
-		if(addRoomResult.isFailure()) {
+		Result<String> roomServiceResult = roomService.saveRoomsByRoomtype(saveRoomtype);
+	
+		if(roomServiceResult.isFailure()) {
 			return Result.failure("新增空房失敗");
 		}
 		
-		return Result.success(addRoomtypeResult.getGeneratedId());	
+		return Result.success("新增房間類型成功");	
 	}
 
 	/**
@@ -167,7 +184,7 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> removeRoomtype(Integer roomtypeId) {
+	public Result<String> deleteRoomtypeById(Integer roomtypeId) {
 		List<Room> rooms = roomDao.getRoomsByRoomtypeId(roomtypeId).getData();
 		
 		for(Room room : rooms) {
@@ -176,17 +193,8 @@ public class RoomtypeService {
 			}
 		}
 		
-		DaoResult<?> removeRoomtypeByIdResult = roomtypeRepo.removeRoomtypeById(roomtypeId);
-	    DaoResult<?> removeRoomsByRoomtypeIdResult = roomDao.removeRoomsByRoomtypeId(roomtypeId);		
+		roomtypeRepo.deleteById(roomtypeId);	
 	    
-	    if(removeRoomsByRoomtypeIdResult.isFailure()) {
-	    	return Result.failure("根據房型刪除所有房間失敗");
-	    }
-		
-		if(removeRoomtypeByIdResult.isFailure()) {
-			return Result.failure("刪除房間類型失敗");
-		}
-
 		return Result.success("刪除房間類型成功");
 	}
 
@@ -196,14 +204,19 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> updateRoomtype(Roomtype roomtype) {
-		Integer oldRoomtypeId = roomtype.getRoomtypeId();
-		Optional<Roomtype> optional = roomtypeRepo.findById(oldRoomtypeId);
+	public Result<String> updateRoomtype(MultipartFile imageFile, Roomtype roomtype) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		
-		if(optional.isEmpty()) {
-			return Result.failure("找不到房間類型");
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			roomtype.setImagePath("uploads" + "/" + fileName);
+		}else {
+			roomtype.setImagePath("uploads/default.jpg");
 		}
-		Roomtype oldRoomtype = optional.get();		
+		
+		Integer oldRoomtypeId = roomtype.getRoomtypeId();
+		Roomtype oldRoomtype = roomtypeRepo.findById(oldRoomtypeId).get();
+			
 		String roomtypeName = roomtype.getRoomtypeName();
 		Integer roomtypeCapacity = roomtype.getRoomtypeCapacity();
 		Integer roomtypePrice = roomtype.getRoomtypePrice();
@@ -251,10 +264,64 @@ public class RoomtypeService {
 		
 		DaoResult<?> updateRoomtypeResult = roomtypeRepo.updateRoomtype(roomtype);
 		
+		
 		if(updateRoomtypeResult.isFailure()) {
 			return Result.failure("更新房間類型失敗");
 		}	
 		
 		return Result.success("更新房間類型成功");
+	}
+	
+	/**
+	 * 根據roomtypeId上傳圖片
+	 * @param imageFile
+	 * @param roomtypeId
+	 * @return
+	 */
+	public Result<String> uploadImageById(MultipartFile imageFile, Integer roomtypeId) {
+		Roomtype roomtype = roomtypeRepo.findById(roomtypeId).orElse(null);
+		if(roomtype == null) {
+			return Result.failure("根據roomtypeId查找不到房間類型");
+		}
+		Result<String> uploadImageResult = UploadImageFile.upload(imageFile);
+		
+		
+		if(uploadImageResult.isFailure()) {
+			return Result.failure(uploadImageResult.getMessage());
+		}
+		
+		Path path = (Path) uploadImageResult.getExtraData("path");
+		
+		roomtype.setImagePath(path.toString());
+		
+		return Result.success("上傳圖片成功");
+	}
+	
+	/**
+	 * 根據roomtypeId查找圖片
+	 * @param roomtypeId
+	 * @return
+	 */
+	public Result<UrlResource> findImageById(Integer roomtypeId) {
+		Roomtype roomtype = roomtypeRepo.findById(roomtypeId).orElse(null);
+		
+		if(roomtype == null) {
+			return Result.failure("根據roomtypeId查找不到房間類型");
+		}
+		
+		String imagePath = roomtype.getImagePath();
+		
+		Path path = Paths.get(imagePath);
+		try {
+			UrlResource urlResource = new UrlResource(path.toUri());
+			 if (urlResource.exists() || urlResource.isReadable()) {
+		    	return Result.success(urlResource).setExtraData("path", path);
+		    } 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+	   return Result.failure("獲取圖片失敗");
+		
 	}
 }

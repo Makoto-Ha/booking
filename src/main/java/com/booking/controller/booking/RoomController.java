@@ -42,12 +42,12 @@ public class RoomController {
 			Model model
 		) {
 		
-		Result<Page<RoomDTO>> roomServiceResult = roomService.findRoomAll(roomDTO);
+		Result<Page<RoomDTO>> findRoomAllResult = roomService.findRoomAll(roomDTO);
 		
-		if(roomServiceResult.isFailure()) {
+		if(findRoomAllResult.isFailure()) {
 			return "";
 		}
-		Page<RoomDTO> page = roomServiceResult.getData();
+		Page<RoomDTO> page = findRoomAllResult.getData();
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomDTO", roomDTO);
 		model.addAttribute("page", page);
@@ -81,12 +81,12 @@ public class RoomController {
 	 */
 	@GetMapping("/edit/page")
 	private String sendEditPage(@RequestParam Integer roomId, Model model, HttpSession session) {
-		Result<RoomDTO> roomServiceResult = roomService.getRoomById(roomId);
-		if(roomServiceResult.isFailure()) {
+		Result<RoomDTO> findRoomByIdResult = roomService.findRoomById(roomId);
+		if(findRoomByIdResult.isFailure()) {
 			return "";
 		}
 		
-		RoomDTO room = roomServiceResult.getData();
+		RoomDTO room = findRoomByIdResult.getData();
 		
 		session.setAttribute("roomId", room.getRoomId());
 		
@@ -124,14 +124,14 @@ public class RoomController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String createRoom(Room room, @RequestParam String roomtypeName) {
+	private String saveRoomByRoomtypeName(Room room, @RequestParam String roomtypeName) {
 		LocalDateTime updatedTime = LocalDateTime.now();
 		LocalDateTime createdTime = LocalDateTime.now();
 		room.setCreatedTime(createdTime);
 		room.setUpdatedTime(updatedTime);
 		
-		Result<Integer> roomServiceResult = roomService.addRoom(room, roomtypeName);
-		if(!roomServiceResult.isSuccess()) {
+		Result<Integer> saveRoomsByRoomtypeNameResult = roomService.saveRoomsByRoomtypeName(room, roomtypeName);
+		if(saveRoomsByRoomtypeNameResult.isFailure()) {
 			return "";
 		}
 		
@@ -145,9 +145,8 @@ public class RoomController {
 	 */
 	@PostMapping("/delete")
 	@ResponseBody
-	private String deleteById(@RequestParam Integer roomId) {
-		Result<String> removeRoomtypeResult = roomService.removeRoom(roomId);	
-		return removeRoomtypeResult.getMessage();
+	private void deleteById(@RequestParam Integer roomId) {
+		roomService.removeRoomById(roomId);	
 	}
 
 	/**
@@ -159,8 +158,8 @@ public class RoomController {
 	@PostMapping("/update")
 	private String updateById(Room room, @SessionAttribute Integer roomId) {
 		room.setRoomId(roomId);
-		Result<String> roomServiceResult = roomService.updateRoom(room);
-		if(roomServiceResult.isFailure()) {
+		Result<String> updateRoomResult = roomService.updateRoom(room);
+		if(updateRoomResult.isFailure()) {
 			return "";
 		}
 		

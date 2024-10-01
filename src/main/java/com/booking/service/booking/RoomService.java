@@ -37,7 +37,7 @@ public class RoomService {
 	 * 
 	 * @return
 	 */
-	public Result<RoomDTO> getRoomById(Integer roomId) {
+	public Result<RoomDTO> findRoomById(Integer roomId) {
 		DaoResult<Room> getRoomByIdResult = roomDao.getRoomById(roomId);
 	
 		if (getRoomByIdResult.isFailure()) {
@@ -78,7 +78,7 @@ public class RoomService {
 	 * @param name
 	 * @return
 	 */
-	public Result<List<Room>> getRoomsByName(String name) {
+	public Result<List<Room>> findRoomsByName(String name) {
 		DaoResult<List<Room>> getRoomByNameResult = roomDao.getRoomByName(name);
 		
 		if(getRoomByNameResult.isFailure()) {
@@ -105,7 +105,7 @@ public class RoomService {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public Result<List<Room>> getRooms(Integer roomtypeId) {
+	public Result<List<Room>> findRoomsByRoomtypeId(Integer roomtypeId) {
 		DaoResult<List<Room>> getRoomsByRoomtypeIdResult = roomDao.getRoomsByRoomtypeId(roomtypeId);
 		List<Room> rooms = getRoomsByRoomtypeIdResult.getData();
 		if (getRoomsByRoomtypeIdResult.isFailure()) {
@@ -121,7 +121,7 @@ public class RoomService {
 	 * @return
 	 */
 	@Transactional
-	public Result<Integer> addRoom(Room room, String roomtypeName) {
+	public Result<Integer> saveRoomsByRoomtypeName(Room room, String roomtypeName) {
 		DaoResult<?> addRoomResult = roomDao.addRoom(room, roomtypeName);
 		
 		if (addRoomResult.isFailure()) {
@@ -144,17 +144,19 @@ public class RoomService {
 	 * @return
 	 */
 	@Transactional
-	public Result<Integer> addRoom(Roomtype roomtype) {
+	public Result<String> saveRoomsByRoomtype(Roomtype roomtype) {
 		LocalDateTime updatedTime = roomtype.getUpdatedTime();
 		LocalDateTime createdTime = roomtype.getCreatedTime();
 		String roomtypeDescription = roomtype.getRoomtypeDescription();
 		Integer roomtypeQuanity = roomtype.getRoomtypeQuantity();
-
+		
 		for (int i = 0; i < roomtypeQuanity; i++) {
-			Room room = new Room("無", 0, roomtypeDescription, updatedTime, createdTime);
+			Room room = new Room("沒有", 0, roomtypeDescription, updatedTime, createdTime);
 			room.setRoomtype(roomtype);
-			DaoResult<?> addRoomResult = roomDao.addRoom(room);
-			if (addRoomResult.isFailure()) {
+			
+			Room saveRoom = roomRepo.save(room);
+			
+			if (saveRoom == null) {
 				return Result.failure("新增空房失敗");
 			}
 		}
@@ -162,7 +164,7 @@ public class RoomService {
 	}
 
 	@Transactional
-	public Result<String> removeRoom(Integer roomId) {
+	public Result<String> removeRoomById(Integer roomId) {
 		DaoResult<?> decrementRoomtypeQuantityResult = roomDao.decrementRoomtypeQuantity(roomId);
 		if (decrementRoomtypeQuantityResult.isFailure()) {
 			return Result.failure("房間類型數量減一失敗");

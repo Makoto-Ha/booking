@@ -14,10 +14,11 @@ public class RoomtypeDTO {
 	private String roomtypeDistrict;
 	private LocalDateTime updatedTime;
 	private LocalDateTime createdTime;
+	private String imageFile;
 	
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "roomtypePrice";
-	private Boolean selectedSort = false;
+	private String attrOrderBy = "createdTime";
+	private Boolean selectedSort = true;
 	private Integer minMoney = 0;
 	private Integer maxMoney = 0;
 
@@ -151,6 +152,24 @@ public class RoomtypeDTO {
 	public void setMaxMoney(Integer maxMoney) {
 		this.maxMoney = maxMoney;
 	}
-	
+
+	public String getImageFile() {
+		return imageFile;
+	}
+
+	public void setImageFile(String imageFile) {
+		this.imageFile = imageFile;
+	}
+
+	@Override
+	public String toString() {
+		return "RoomtypeDTO [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
+				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
+				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
+				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
+				+ updatedTime + ", createdTime=" + createdTime + ", imageFile=" + imageFile + ", pageNumber="
+				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + ", minMoney="
+				+ minMoney + ", maxMoney=" + maxMoney + "]";
+	}
 	
 }
