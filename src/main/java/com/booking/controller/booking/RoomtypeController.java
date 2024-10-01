@@ -1,18 +1,26 @@
 package com.booking.controller.booking;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.Roomtype;
@@ -50,13 +58,13 @@ public class RoomtypeController  {
 			Model model
 	) {
 
-		Result<PageImpl<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
+		Result<PageImpl<RoomtypeDTO>> findRoomtypeAllResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
 		
-		if (roomtypeServiceResult.isFailure()) {
+		if (findRoomtypeAllResult.isFailure()) {
 			return "";
 		}
 
-		Page<RoomtypeDTO> page = roomtypeServiceResult.getData();	
+		Page<RoomtypeDTO> page = findRoomtypeAllResult.getData();	
 		
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomtypeDTO", roomtypeDTO);
@@ -83,24 +91,20 @@ public class RoomtypeController  {
 	@GetMapping("/edit/page")
 	private String sendEditPage(@RequestParam Integer roomtypeId, HttpSession session, Model model) {
 		session.setAttribute("roomtypeId", roomtypeId);
-		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.getRoomtype(roomtypeId);
+		Result<RoomtypeDTO> findRoomtypeById = roomtypeService.findRoomtypeById(roomtypeId);
 
-		if (roomtypeServiceResult.isFailure()) {
+		if (findRoomtypeById.isFailure()) {
 			return "";
 		}
 
-		model.addAttribute("roomtype", roomtypeServiceResult.getData());
+		model.addAttribute("roomtype", findRoomtypeById.getData());
 		return "/management-system/booking/roomtype-edit";
 	}
 
 	/**
 	 * 多重模糊查詢
-	 * @param roomtype
-	 * @param switchPage
-	 * @param maxMoney
-	 * @param minMoney
-	 * @param attrOrderBy
-	 * @param selectedSort
+	 * @param requestParameters
+	 * @param roomtypeDTO
 	 * @param model
 	 * @return
 	 */
@@ -111,13 +115,13 @@ public class RoomtypeController  {
 			Model model
 	) {
 
-		Result<PageImpl<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypes(roomtypeDTO);
+		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO);
 		
-		if(roomtypeServiceResult.isFailure()) {
+		if(findRoomtypesResult.isFailure()) {
 			return "";
 		}
 		
-		Page<RoomtypeDTO> page = roomtypeServiceResult.getData();
+		Page<RoomtypeDTO> page = findRoomtypesResult.getData();
 		
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomtypeDTO", roomtypeDTO);
@@ -131,13 +135,13 @@ public class RoomtypeController  {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String createRoomtype(Roomtype roomtype) {
+	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype) {
 		LocalDateTime now = LocalDateTime.now();
 		roomtype.setCreatedTime(now);
 		roomtype.setUpdatedTime(now);
 
-		Result<Integer> result = roomtypeService.addRoomtype(roomtype);
-		if (result.isFailure()) {
+		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype);
+		if (saveRoomtypeResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/roomtype";
@@ -149,7 +153,7 @@ public class RoomtypeController  {
 	 */
 	@PostMapping("/delete")
 	private void deleteById(@RequestParam Integer roomtypeId) {
-		roomtypeService.removeRoomtype(roomtypeId);
+		roomtypeService.deleteRoomtypeById(roomtypeId);
 	}
 
 	/**
@@ -159,14 +163,57 @@ public class RoomtypeController  {
 	 * @return
 	 */
 	@PostMapping("/update")
-	private String updateById(Roomtype roomtype, @SessionAttribute Integer roomtypeId) {
+	private String updateById(
+			@RequestParam(required = false) MultipartFile imageFile, 
+			Roomtype roomtype, 
+			@SessionAttribute Integer roomtypeId
+	) {
 		roomtype.setRoomtypeId(roomtypeId);
-		Result<String> result = roomtypeService.updateRoomtype(roomtype);
+		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype);
 
-		if (result.isFailure()) {
+		if (updateRoomtypeResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/roomtype";
 	}
+	
+	/**
+	 * 根據RoomtypeId上傳圖片
+	 * @param imageFile
+	 * @param roomtypeId
+	 * @return
+	 */
+	@PostMapping("/upload")
+	public ResponseEntity<String> uploadImageById(@RequestParam MultipartFile imageFile, Integer roomtypeId) {
+		Result<String> uploadImageResult = roomtypeService.uploadImageById(imageFile, roomtypeId);
+		String message = uploadImageResult.getMessage();
+		if(uploadImageResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		return ResponseEntity.ok(message);
+	}
+	
+	/**
+	 * 根據roomtypeId獲取圖片
+	 * @param roomtypeId
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("/image/{roomtypeId}")
+	public ResponseEntity<?> findImageById(@PathVariable Integer roomtypeId) throws IOException {
+		Result<UrlResource> findImageByIdResult = roomtypeService.findImageById(roomtypeId);
+		
+		if(findImageByIdResult.isFailure()) {
+			return ResponseEntity.badRequest().body(findImageByIdResult.getMessage());
+		}
+		
+		Path path = (Path) findImageByIdResult.getExtraData("path");
+		UrlResource resource = findImageByIdResult.getData();
 
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path))
+				.body(resource);
+				
+	}
 }

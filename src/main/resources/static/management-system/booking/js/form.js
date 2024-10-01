@@ -72,3 +72,16 @@ function validateForm() {
     // 確認驗證是否全部通過
     submitButton.disabled = !allValid;
 }
+
+// 上傳檔案
+
+const fileInput = document.getElementById('file-upload');
+const fileNameDisplay = document.getElementById('file-name');
+
+fileInput.addEventListener('change', function() {
+   if (fileInput.files.length > 0) {
+       fileNameDisplay.textContent = fileInput.files[0].name;
+   } else {
+       fileNameDisplay.textContent = '尚未選擇檔案';
+   }
+});

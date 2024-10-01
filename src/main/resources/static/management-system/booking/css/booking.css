@@ -57,65 +57,6 @@
 	opacity: 0.9;
 }
 
-.money-range-label {
-	font-weight: bold;
-	margin-right: 10px;
-}
-
-.money-range {
-	-webkit-appearance: none;
-	width: 300px;
-	height: 8px;
-	background: #ddd;
-	border-radius: 5px;
-	outline: none;
-	transition: background 0.3s;
-}
-
-.money-range::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 20px;
-	height: 20px;
-	background-color: #FFD700; /* 金黃色 */
-	border-radius: 50%;
-	cursor: pointer;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-	transition: background-color 0.3s;
-}
-
-.money-range::-moz-range-thumb {
-	width: 20px;
-	height: 20px;
-	background-color: #FFD700; /* 金黃色 */
-	border-radius: 50%;
-	cursor: pointer;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-	transition: background-color 0.3s;
-}
-
-.show-range-money {
-	margin-top: 20px;
-	font-size: 18px;
-}
-
-.volumeValue {
-	font-weight: bold;
-	color: #2ecc71;
-}
-
-.form-group.roomtype-capacity-group, .form-group.room-status-group {
-	display: flex !important;
-}
-
-.form-group .choose-roomtype-capacity, choose-room-status {
-	margin: 10px;
-}
-
-.form-group .submit-edit {
-	background-color: #007bff;
-}
-
 .form-group .submit:disabled {
 	background-color: #cccccc;
 	/* 淡灰色顯示禁用狀態 */
@@ -149,15 +90,14 @@ input.invalid:-webkit-autofill {
 	border: 1px solid red;
 }
 
-/* room的下拉選單 */
-
-.form > .dropdown-input {
+/* 搜尋時出現下拉選單 */
+.form>.dropdown-input {
 	position: relative;
 	display: inline-block;
 	width: 100%;
 }
 
-.form > .dropdown-input input {
+.form>.dropdown-input input {
 	width: 100%;
 	padding: 10px;
 	box-sizing: border-box;
@@ -166,7 +106,7 @@ input.invalid:-webkit-autofill {
 	font-size: 16px;
 }
 
-.form > .dropdown-input a {
+.form>.dropdown-input a {
 	position: absolute;
 	right: 0;
 	bottom: 15px;
@@ -180,7 +120,7 @@ input.invalid:-webkit-autofill {
 	text-align: center;
 }
 
-.form > .dropdown-input a::after {
+.form>.dropdown-input a::after {
 	content: "▼";
 	font-size: 16px;
 	color: #333;
@@ -233,4 +173,44 @@ input.invalid:-webkit-autofill {
 
 .form .dropdown-menu div:hover {
 	background-color: #f1f1f1;
+}
+
+/* 檔案上傳樣式 */
+
+.upload-container {
+	background-color: white;
+	padding: 20px 10px 5px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	text-align: center;
+}
+
+.custom-file-upload {
+	display: inline-block !important;
+	padding: 12px 30px;
+	cursor: pointer;
+	color: white !important;
+	background-color: #007bff;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.custom-file-upload:hover {
+	background-color: #0056b3;
+}
+
+input[type="file"] {
+	display: none;
+	/* 隱藏默認的 file input */
+}
+
+.file-name {
+    color: #333;
+    font-size: 16px;
+}
+
+.upload-instruction {
+	margin-top: 10px;
+	color: #666;
+	font-size: 14px;
 }

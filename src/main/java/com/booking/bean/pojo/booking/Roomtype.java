@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "roomtype")
@@ -53,7 +52,9 @@ public class Roomtype {
 	@Column(name = "created_time")
 	private LocalDateTime createdTime;
 
-	@Transient
+	@Column(name = "image_path")
+	private String imagePath;
+	
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
 	private List<Room> rooms = new ArrayList<>();
 
@@ -156,12 +157,21 @@ public class Roomtype {
 		this.rooms = rooms;
 	}
 
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
 	@Override
 	public String toString() {
 		return "Roomtype [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
 				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", rooms=" + "rooms" + "]";
+				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms + "]";
 	}
+
 }

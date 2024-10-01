@@ -18,7 +18,7 @@
 			      <div class="pagination">
 				      <button id="prev-page">上一頁</button>
 				      <input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
-				       / <span id="total-pages" th:text="${page.totalPages}"></span>
+				       / <span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
 				      <button id="next-page">下一頁</button>
 				   </div>
 				   <div class="attr-order-by">
@@ -64,10 +64,6 @@
 			                     <label>房間說明</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
-			                 <div class="form-group">
-			                     <label>房間介紹</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
 			                 <button type="button" id="modal-cancel-btn">取消</button>
 			             </form>
 			         </div>
@@ -84,7 +80,7 @@
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
 			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}">
-			                <div>
+			                <div class="item-content">
 			                	<span class="item-title" th:text="${roomDTO.roomtypeName}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間號碼</span>
@@ -111,12 +107,11 @@
 			    	var requestParameters = [[${requestParameters}]];
 			    	var page = [[${page}]];
 			    	var totalPages = page.totalPages;
+			    	
 			 		console.log(totalPages);
 			    	console.log(requestParameters);
 			    </script>
-			  </section>
-			  
-			  
+			  </section>		  
 		  </div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>

@@ -18,7 +18,7 @@
 			      <div class="pagination">
 				      <button id="prev-page">上一頁</button>
 				      <input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
-				       / <span id="total-pages" th:text="${page.totalPages}"></span>
+				       / <span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
 				      <button id="next-page">下一頁</button>
 				   </div>
 				   <div class="attr-order-by">
@@ -108,7 +108,8 @@
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
 			            <li th:each="roomtypeDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomtypeDTO.roomtypeId}">
-			                <div>
+			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomtypeDTO.roomtypeId}}">
+			                <div class="item-content">     	
 			                	<span class="item-title" th:text="${roomtypeDTO.roomtypeName}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
@@ -117,8 +118,8 @@
 		                			<span class="item-info" style="color: darkred">房間類型數量</span>
 		                			<span th:text="${roomtypeDTO.roomtypeQuantity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型地址</span>
-		                			<span th:text="${roomtypeDTO.roomtypeAddress}"></span>
+		                			<span class="item-info" style="color: darkred">房間類型人數</span>
+		                			<span th:text="${roomtypeDTO.roomtypeCapacity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型城市</span>
 		                			<span th:text="${roomtypeDTO.roomtypeCity}"></span>
@@ -147,8 +148,6 @@
 					console.log(requestParameters);
 			    </script>
 			  </section>
-			  
-			  
 		  </div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>

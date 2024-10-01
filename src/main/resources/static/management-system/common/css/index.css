@@ -258,7 +258,6 @@ body, html {
 
 .list-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
     margin-bottom: 10px;
@@ -273,6 +272,10 @@ body, html {
     color: rgba(1, 14, 187);
 }
 
+.item-content {
+	margin-left: 12px;
+}
+
 .item-info {
 	font-size: 12px;
 }
@@ -283,6 +286,7 @@ body, html {
 
 .item-actions {
     display: flex;
+    margin-left: auto;
     gap: 15px;
 }
 

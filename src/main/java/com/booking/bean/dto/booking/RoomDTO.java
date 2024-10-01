@@ -7,8 +7,8 @@ public class RoomDTO {
 	private Integer roomStatus;
 	private String roomDescription;
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "roomNumber";
-	private Boolean selectedSort = false;
+	private String attrOrderBy = "createdTime";
+	private Boolean selectedSort = true;
 	
 	public RoomDTO() {}
 	
