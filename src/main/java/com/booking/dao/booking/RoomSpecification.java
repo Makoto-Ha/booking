@@ -3,9 +3,11 @@ package com.booking.dao.booking;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.booking.bean.pojo.booking.Room;
+import com.booking.bean.pojo.booking.Roomtype;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 
 public class RoomSpecification {
@@ -39,6 +41,20 @@ public class RoomSpecification {
 			}
 
 			return builder.like(root.get("roomDescription"), "%" + roomDescription + "%");
+		};
+	}
+	
+
+	// 根據roomtypeName進行模糊查詢
+	public static Specification<Room> hasRoomtypeName(String roomtypeName) {
+		return (root, query, builder) -> {
+			if(roomtypeName == null || roomtypeName.isEmpty()) {
+				return builder.conjunction();
+			}
+
+			Join<Room, Roomtype> roomtypeJoin = root.join("roomtype");
+			
+			return builder.like(roomtypeJoin.get("roomtypeName"), "%" + roomtypeName + "%");
 		};
 	}
 }

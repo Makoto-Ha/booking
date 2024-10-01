@@ -1,6 +1,7 @@
 package com.booking.controller.booking;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class RoomController {
 	 * 轉去room的編輯頁面
 	 * @param roomId
 	 * @param model
+	 * 
 	 * @param session
 	 * @return
 	 */
@@ -105,18 +107,21 @@ public class RoomController {
 	@GetMapping("/select")
 	private String findRooms(
 			@RequestParam Map<String, String> requestParameters,
+			// 因為index.js是看網址的類型，也就是/booking/management/room會發送roomName
+			@RequestParam(value = "roomName", defaultValue = "") String roomtypeName,
+			@RequestParam(value="roomStatus", required = false) List<Integer> roomStatusAll,
 			RoomDTO roomDTO,
 			Model model
 		) {
-		
-		PageImpl<RoomDTO> page = roomService.findRooms(roomDTO);
+		roomDTO.setRoomtypeName(roomtypeName);
+		PageImpl<RoomDTO> page = roomService.findRooms(roomDTO, roomStatusAll);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomDTO", roomDTO);
 		return "/management-system/booking/room-list";
 	}
-	
+	 
 	/**
 	 * 創建房間
 	 * @param room
