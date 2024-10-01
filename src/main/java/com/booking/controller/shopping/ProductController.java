@@ -19,15 +19,15 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
-	@GetMapping("/product")
-	public String index() {
-		return "/adminsystem/shopping/product-select"; // 返回視圖名稱
-	}
 	
+	@GetMapping("/management/product")
+	public String index() {
+		return "/management-system/shopping/product-select"; // 返回視圖名稱
+	}
+
 	@GetMapping("/product/sendCreate")
 	public String sendCreate() {
-		return "/adminsystem/shopping/product-create"; // 返回視圖名稱
+		return "/management-system/shopping/product-create"; // 返回視圖名稱
 	}
 
 	@PostMapping("/product/create")
@@ -46,7 +46,7 @@ public class ProductController {
 	public String selectName(@RequestParam(value = "searchName", required = false) String searchName,
 			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder,
 			Model model) {
-		
+
 		Result<List<Product>> productResult;
 
 		if (searchName == null || searchName.trim().isEmpty()) {
@@ -64,7 +64,7 @@ public class ProductController {
 		System.out.println("Search Name: " + searchName);
 		System.out.println("Sort By: " + sortBy);
 		System.out.println("Sort Order: " + sortOrder);
-		return "/adminsystem/shopping/product-select"; // 返回視圖名稱
+		return "/management-system/shopping/product-select"; // 返回視圖名稱
 	}
 
 	@GetMapping("/product/delete")
@@ -88,7 +88,7 @@ public class ProductController {
 		System.out.println("Search Name: " + searchName);
 		System.out.println("Sort By: " + sortBy);
 		System.out.println("Sort Order: " + sortOrder);
-		return "/adminsystem/shopping/product-update"; // 返回視圖名稱
+		return "/management-system/shopping/product-update"; // 返回視圖名稱
 	}
 
 	@PostMapping("/product/update")
