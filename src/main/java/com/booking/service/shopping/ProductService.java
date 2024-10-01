@@ -8,14 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.pojo.shopping.Product;
 import com.booking.dao.shopping.ProductDao;
+import com.booking.dao.shopping.ProductRepository;
 import com.booking.utils.DaoResult;
 import com.booking.utils.Result;
-
+@Transactional
 @Service
 public class ProductService {
 
 	@Autowired
 	private ProductDao productDao;
+	@Autowired
+	private ProductRepository productRepository;
 
 	public Result<Product> getProductById(Integer productId) {
 		DaoResult<Product> daoResult = productDao.getProductById(productId);
@@ -54,7 +57,7 @@ public class ProductService {
 		}
 		return Result.success(daoResult.getData());
 	}
-	@Transactional
+
 	public Result<Integer> addProduct(Product product) {
 		DaoResult<?> daoResult = productDao.addProduct(product);
 		if (!daoResult.isSuccess()) {
@@ -62,7 +65,7 @@ public class ProductService {
 		}
 		return Result.success(daoResult.getGeneratedId());
 	}
-	@Transactional
+
 	public Result<String> removeProduct(Integer productId) {
 		DaoResult<?> daoResult = productDao.removeProductById(productId);
 		if (!daoResult.isSuccess()) {
@@ -70,7 +73,7 @@ public class ProductService {
 		}
 		return Result.success("刪除成功");
 	}
-	@Transactional
+
 	public Result<String> updateProduct(Product product) {
 
 		DaoResult<Product> daoResult = productDao.getProductById(product.getProductId());
