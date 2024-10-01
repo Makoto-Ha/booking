@@ -223,10 +223,19 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public PageImpl<RoomDTO> findRooms(RoomDTO roomDTO) {
+	public PageImpl<RoomDTO> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
 		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
-													.and(RoomSpecification.statusContains(roomDTO.getRoomStatus()))
-													.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
+												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
+													
+		if(roomStatusAll != null) {
+			Specification<Room> statusSpec = Specification.where(null);
+			for(Integer status : roomStatusAll) {
+				statusSpec = statusSpec.or(RoomSpecification.statusContains(status));
+			}
+			spec = spec.and(statusSpec);
+		}
+													
+	    spec = spec.and(RoomSpecification.hasRoomtypeName(roomDTO.getRoomtypeName()));											
 			
 		String attrOrderBy = roomDTO.getAttrOrderBy();
 		Boolean selectedSort = roomDTO.getSelectedSort();
@@ -239,11 +248,13 @@ public class RoomService {
 		List<Room> rooms = page.getContent();
 		
 		List<RoomDTO> roomDTOs = new ArrayList<>();
+		
 		for(Room r : rooms) {
 			Roomtype roomtype = r.getRoomtype();
 			RoomDTO responseRoomDTO = new RoomDTO();
 			BeanUtils.copyProperties(r, responseRoomDTO);
 			responseRoomDTO.setRoomtypeName(roomtype.getRoomtypeName());	
+			responseRoomDTO.setRoomtypeId(roomtype.getRoomtypeId());
 			roomDTOs.add(responseRoomDTO);
 		}
 		
@@ -251,4 +262,5 @@ public class RoomService {
 		
 		return new PageImpl<>(roomDTOs, newPageable, page.getTotalElements());
 	}
+
 }

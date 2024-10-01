@@ -71,17 +71,24 @@ public class RoomtypeService {
 	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Result<PageImpl<RoomtypeDTO>> findRoomtypes(RoomtypeDTO roomtypeDTO) {
+	public Result<PageImpl<RoomtypeDTO>> findRoomtypes(RoomtypeDTO roomtypeDTO, List<Integer> roomtypeCapacityAll) {
 		
 		Specification<Roomtype> spec = Specification
 					 .where(RoomtypeSpecification.nameContains(roomtypeDTO.getRoomtypeName()))
 					 .and(RoomtypeSpecification.priceContains(roomtypeDTO.getRoomtypePrice()))
 					 .and(RoomtypeSpecification.quantityContains(roomtypeDTO.getRoomtypeQuantity()))
-					 .and(RoomtypeSpecification.capacityContains(roomtypeDTO.getRoomtypeCapacity()))
 					 .and(RoomtypeSpecification.cityContains(roomtypeDTO.getRoomtypeCity()))
 					 .and(RoomtypeSpecification.districtContains(roomtypeDTO.getRoomtypeDistrict()))
 					 .and(RoomtypeSpecification.descriptionContains(roomtypeDTO.getRoomtypeDescription()))
 					 .and(RoomtypeSpecification.moneyContains(roomtypeDTO.getMinMoney(), roomtypeDTO.getMaxMoney()));
+		
+		if(roomtypeCapacityAll != null) {
+			Specification<Roomtype> specCapacity = Specification.where(null);
+			for(Integer roomtypeCapacity : roomtypeCapacityAll) {
+				specCapacity = specCapacity.or(RoomtypeSpecification.capacityContains(roomtypeCapacity));
+			}
+			spec = spec.and(specCapacity);
+		}
 		
 		Pageable pageable = MyPageRequest.of(
 				roomtypeDTO.getPageNumber(), 

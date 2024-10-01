@@ -57,7 +57,11 @@
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間狀態</label>
+			                     <label>房間狀態(0: 閒置、1: 已預定、2: 已入住)</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間更新時間</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
@@ -80,6 +84,7 @@
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
 			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}">
+			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomDTO.roomtypeId}}">
 			                <div class="item-content">
 			                	<span class="item-title" th:text="${roomDTO.roomtypeName}"></span>
 			                	<div class="listInfo-group">

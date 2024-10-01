@@ -11,10 +11,11 @@ import com.booking.bean.dto.booking.RoomDTO;
 import com.booking.bean.pojo.booking.Room;
 
 public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecificationExecutor<Room> {
-	
-	@Query("SELECT (r.roomId, r.roomStatus, r.roomDescription, r.roomNumber) FROM Room r")
+	// 模糊查詢
+	@Query("SELECT (r.roomId, r.roomStatus, r.roomDescription, r.roomNumber) FROM Room r JOIN r.roomtype rt")
 	Page<Room> findAllRoomDTO(Specification<Room> spec, Pageable pageable);
 	
-	@Query("SELECT new com.booking.bean.dto.booking.RoomDTO(r.roomId, r.roomStatus, r.roomDescription, r.roomNumber, rt.roomtypeName) FROM Room r JOIN r.roomtype rt")
+	// 查全部
+	@Query("SELECT new com.booking.bean.dto.booking.RoomDTO(r.roomId, r.roomStatus, r.roomDescription, r.roomNumber, rt.roomtypeName, rt.roomtypeId) FROM Room r JOIN r.roomtype rt")
 	Page<RoomDTO> findAllRoomDTO(Pageable pageable);
 }

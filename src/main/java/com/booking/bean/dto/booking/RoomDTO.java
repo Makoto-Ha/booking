@@ -1,23 +1,29 @@
 package com.booking.bean.dto.booking;
 
+import java.time.LocalDateTime;
+
 public class RoomDTO {
 	private Integer roomId;
 	private String roomtypeName;
 	private String roomNumber;
 	private Integer roomStatus;
 	private String roomDescription;
+	private LocalDateTime updatedTime;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "createdTime";
 	private Boolean selectedSort = true;
+	private Integer roomtypeId;
+	
 	
 	public RoomDTO() {}
 	
-	public RoomDTO(Integer roomId, Integer roomStatus, String roomDescription, String roomNumber, String roomtypeName) {
+	public RoomDTO(Integer roomId, Integer roomStatus, String roomDescription, String roomNumber, String roomtypeName, Integer roomtypeId) {
 		this.roomId = roomId;
 		this.roomtypeName = roomtypeName;
 		this.roomNumber = roomNumber;
 		this.roomStatus = roomStatus;
 		this.roomDescription = roomDescription;
+		this.roomtypeId = roomtypeId;
 	}
 	
 	public String getRoomtypeName() {
@@ -83,11 +89,29 @@ public class RoomDTO {
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
+	
+	public Integer getRoomtypeId() {
+		return roomtypeId;
+	}
+
+	public void setRoomtypeId(Integer roomtypeId) {
+		this.roomtypeId = roomtypeId;
+	}
+
+	public LocalDateTime getUpdatedTime() {
+		return updatedTime;
+	}
+
+	public void setUpdatedTime(LocalDateTime updatedTime) {
+		this.updatedTime = updatedTime;
+	}
 
 	@Override
 	public String toString() {
 		return "RoomDTO [roomId=" + roomId + ", roomtypeName=" + roomtypeName + ", roomNumber=" + roomNumber
 				+ ", roomStatus=" + roomStatus + ", roomDescription=" + roomDescription + ", pageNumber=" + pageNumber
-				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
+				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + ", roomtypeId=" + roomtypeId
+				+ ", updatedTime=" + updatedTime + "]";
 	}
+
 }

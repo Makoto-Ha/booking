@@ -59,13 +59,13 @@ public class JsonUtil {
 		Boolean hasDateTime = hasSetDateTimePattern.get();
 
 		if (!hasDate) {
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 			javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
 			hasSetDatePattern.set(true);
 		}
 
 		if (!hasDateTime) {
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH時mm分ss秒");
 			javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
 			hasSetDateTimePattern.set(true);
 		}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,11 +112,12 @@ public class RoomtypeController  {
 	@GetMapping("/select")
 	private String findRoomtypes(
 			@RequestParam Map<String, String> requestParameters,
+			@RequestParam(value = "roomtypeCapacity", required = false) List<Integer> roomtypeCapacityAll,
 			RoomtypeDTO roomtypeDTO,
 			Model model
 	) {
 
-		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO);
+		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll);
 		
 		if(findRoomtypesResult.isFailure()) {
 			return "";
