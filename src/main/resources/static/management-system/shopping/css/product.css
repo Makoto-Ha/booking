@@ -66,3 +66,27 @@
 .form-group button:hover {
 	opacity: 0.9;
 }
+
+.form-group label {
+	font-size: 18px;
+	width: auto;
+	display: inline-block;
+	margin-bottom: 0;
+}
+
+.form-group input[type="text"], .form-group select, .form-group input[type="number"]
+	{
+	width: 200px;
+}
+
+.form-group button[type="submit"] {
+	padding-top: 8px;
+	padding-bottom: 8px;
+	margin-left: 5px;
+}
+
+.form-group .btn {
+	background-color: #6666CC;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
