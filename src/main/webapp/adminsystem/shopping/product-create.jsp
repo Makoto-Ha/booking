@@ -77,7 +77,6 @@
             </form>
         </div>
     </div>
-
     <script src="${pageContext.request.contextPath}/adminsystem/shopping/back.js"></script>
     <script src="${pageContext.request.contextPath}/adminsystem/shopping/CheckProduct.js"></script>
 </body>

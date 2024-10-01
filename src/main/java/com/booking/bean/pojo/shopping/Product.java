@@ -44,7 +44,6 @@ public class Product {
 
 	public Product(Integer categoryId, String productName, String productImage, String productDescription,
 			Integer productPrice, Integer productSales, Integer productInventorey, Integer productState) {
-		super();
 		this.categoryId = categoryId;
 		this.productName = productName;
 		this.productImage = productImage;
@@ -58,7 +57,6 @@ public class Product {
 	public Product(Integer productId, Integer categoryId, String productName, String productImage,
 			String productDescription, Integer productPrice, Integer productSales, Integer productInventorey,
 			Integer productState) {
-		super();
 		this.productId = productId;
 		this.categoryId = categoryId;
 		this.productName = productName;
