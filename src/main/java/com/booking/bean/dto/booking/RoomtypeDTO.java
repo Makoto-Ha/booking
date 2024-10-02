@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 public class RoomtypeDTO {
 	private Integer roomtypeId;
 	private String roomtypeName;
-	private Integer roomtypeCapacity;
 	private Integer roomtypePrice;
+	private Integer roomtypeCapacity;
 	private Integer roomtypeQuantity;
 	private String roomtypeDescription;
 	private String roomtypeAddress;

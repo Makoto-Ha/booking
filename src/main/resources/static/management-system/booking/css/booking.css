@@ -57,19 +57,6 @@
 	opacity: 0.9;
 }
 
-.form-group .submit:disabled {
-	background-color: #cccccc;
-	/* 淡灰色顯示禁用狀態 */
-	color: #666666;
-	/* 字體也調整為較暗的灰色 */
-	cursor: not-allowed;
-	/* 滑鼠指標顯示為禁止符號 */
-	opacity: 0.6;
-	/* 降低透明度，讓禁用狀態更明顯 */
-	box-shadow: none;
-	/* 移除陰影效果 */
-}
-
 .invalid {
 	border: 1px solid red;
 	/* 红色边框提示输入框无效 */

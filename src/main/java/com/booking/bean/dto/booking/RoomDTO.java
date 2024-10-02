@@ -10,11 +10,10 @@ public class RoomDTO {
 	private String roomDescription;
 	private LocalDateTime updatedTime;
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "createdTime";
+	private String attrOrderBy = "updatedTime";
 	private Boolean selectedSort = true;
 	private Integer roomtypeId;
-	
-	
+
 	public RoomDTO() {}
 	
 	public RoomDTO(Integer roomId, Integer roomStatus, String roomDescription, String roomNumber, String roomtypeName, Integer roomtypeId) {

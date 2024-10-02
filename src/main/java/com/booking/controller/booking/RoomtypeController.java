@@ -53,12 +53,9 @@ public class RoomtypeController  {
 	 * @return
 	 */
 	@GetMapping
-	private String sendRoomtypePage(
-			@RequestParam Map<String, String> requestParameters,
-			RoomtypeDTO roomtypeDTO,
-			Model model
-	) {
-
+	private String sendRoomtypePage(Model model) {
+		// DTO用於分頁所需數據
+		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 		Result<PageImpl<RoomtypeDTO>> findRoomtypeAllResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
 		
 		if (findRoomtypeAllResult.isFailure()) {
@@ -67,7 +64,6 @@ public class RoomtypeController  {
 
 		Page<RoomtypeDTO> page = findRoomtypeAllResult.getData();	
 		
-		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomtypeDTO", roomtypeDTO);
 		model.addAttribute("page", page);
 		return "management-system/booking/roomtype-list";
@@ -153,9 +149,16 @@ public class RoomtypeController  {
 	 * 刪除房間類型
 	 * @param roomtypeId
 	 */
+	
 	@PostMapping("/delete")
-	private void deleteById(@RequestParam Integer roomtypeId) {
-		roomtypeService.deleteRoomtypeById(roomtypeId);
+	private ResponseEntity<?> deleteById(@RequestParam Integer roomtypeId) {
+		Result<String> deleteRoomtypeResult = roomtypeService.deleteRoomtypeById(roomtypeId);
+		String message = deleteRoomtypeResult.getMessage();
+		if(deleteRoomtypeResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		return ResponseEntity.ok(message);
 	}
 
 	/**

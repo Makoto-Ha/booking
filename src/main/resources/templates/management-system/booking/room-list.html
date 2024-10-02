@@ -29,8 +29,8 @@
 			              <option value="createdTime" th:selected="createdTime == ${roomDTO.attrOrderBy}">創建時間</option>            
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${roomDTO.selectedSort} == false">升冪</option>
-				      		<option value="true" th:selected="${roomDTO.selectedSort} == true">降冪</option>
+			    			<option value="false" th:selected="${roomDTO.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${roomDTO.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -57,15 +57,15 @@
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間狀態(0: 閒置、1: 已預定、2: 已入住)</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>房間更新時間</label>
+			                     <label>房間狀態(0: 空房、1: 已預定、2: 已入住)</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
 			                     <label>房間說明</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>更新時間</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <button type="button" id="modal-cancel-btn">取消</button>
@@ -83,16 +83,16 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}">
+			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}" th:style="'border-color: ' + ${roomDTO.roomStatus == 1 ? 'red' : (roomDTO.roomStatus == 2 ? '#40E0D0' : '')}">
 			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomDTO.roomtypeId}}">
 			                <div class="item-content">
-			                	<span class="item-title" th:text="${roomDTO.roomtypeName}"></span>
+			                	<span class="item-title" th:text="${roomDTO.roomtypeName}" th:style="'color: ' + ${roomDTO.roomStatus == 1 ? 'red' : (roomDTO.roomStatus == 2 ? '#40E0D0' : '#000')}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間號碼</span>
 		                			<span th:text="${roomDTO.roomNumber}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間狀態</span>
-		                			<span th:text="${roomDTO.roomStatus}"></span>
+		                			<span th:text="${roomDTO.roomStatus == 1 ? '已預定' : (roomDTO.roomStatus == 2 ? '已入住' : '空房')}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間介紹</span>
 		                			<span th:text="${roomDTO.roomDescription}"></span>
@@ -102,14 +102,14 @@
 			                <div class="item-actions">
 			                	<button class="action-btn check-btn">查看</button>
 			                    <button class="action-btn edit-btn">編輯</button>
-			                    <button class="action-btn delete-btn">刪除</button>
+			                    <button class="action-btn delete-btn" th:disabled="${roomDTO.roomStatus != 0}">刪除</button>
 			                </div> 
 			            </li>
 			        </ul>
 			    </section>
 			    <script th:inline="javascript">
 			    	
-			    	var requestParameters = [[${requestParameters}]];
+			    	var requestParameters = [[${requestParameters}]] || {};
 			    	var page = [[${page}]];
 			    	var totalPages = page.totalPages;
 			    	
