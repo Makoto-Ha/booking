@@ -6,6 +6,7 @@ import java.util.Optional;
 
 
 
+
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +58,6 @@ public class AttractionService {
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
 
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> 95596f0 (鄭家霖.修改: SpringMvc移植成SpringBoot)
 	/**
 	 * 依模糊查詢得到多筆景點
 	 * 
