@@ -3,10 +3,10 @@ package com.booking.service.attraction;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
+
 import org.springframework.beans.BeanUtils;
-=======
->>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +38,9 @@ public class AttractionService {
 		
 		for(Attraction attraction : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
-<<<<<<< HEAD
+
 			BeanUtils.copyProperties(attraction, attractionDTO);
-=======
-			BeanUtil.copyProperties(attractionDTO, attraction);
->>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
+
 			lists.add(attractionDTO);
 		}
 		
@@ -64,14 +62,12 @@ public class AttractionService {
 		List<Listable> attractionsDTO = new ArrayList<>();
 		for(Attraction attractionOne : attractions) {
 			AttractionDTO attractionDTO = new AttractionDTO();
-<<<<<<< HEAD
+
 			BeanUtils.copyProperties(attractionOne, attractionDTO);
 			attractionsDTO.add(attractionDTO);
-=======
-			BeanUtil.copyProperties(attractionDTO, attractionOne);
-			attractionsDTO.add(attractionDTO);
 
->>>>>>> ef84a6d (鄭家霖.修改:Hibernate修改成Spring)
+
+
 		}
 		return Result.success(attractionsDTO);
 	}
