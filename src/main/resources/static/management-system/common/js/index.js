@@ -16,6 +16,7 @@ function bindAdminSystemEvent() {
 	};
 
 	const currentList = {
+		target: null,
 		id: null
 	};
 
@@ -92,6 +93,7 @@ function bindAdminSystemEvent() {
 	// 為所有刪除按鈕添加事件監聽
 	document.querySelectorAll('.delete-btn').forEach(button => {
 		button.addEventListener('click', function(e) {
+			currentList.target = e.target;
 			document.getElementById('delete-overlay').style.display = 'flex';
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
 			currentList.id = currentListId;
@@ -99,24 +101,28 @@ function bindAdminSystemEvent() {
 	});
 
 	// 為確認刪除按鈕添加事件監聽
-	document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+	document.getElementById('confirmDeleteBtn').addEventListener('click', async function(e) {
 		// 在這裡添加刪除項目的邏輯
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
-		fetch(`/booking/management/${lastHref}/delete`, {
+		
+		// 隱藏彈出視窗
+		document.getElementById('delete-overlay').style.display = 'none';
+		
+		let response = await fetch(`/booking/management/${lastHref}/delete`, {
 			method: 'POST',
 			body: new URLSearchParams({
 				[`${lastHref}Id`]: currentList.id
 			})
-		})
-			.then(res => {
-				location.reload();
-			});
+		});
+		
+		if(response.ok) {
+			currentList.target.parentElement.parentElement.remove();
+		}
+		
+		let message = await response.text();
 
-		alert('項目已刪除！');  // 示例提示，可根據需求替換
-
-		// 隱藏彈出視窗
-		document.getElementById('delete-overlay').style.display = 'none';
+		alert(message);
 	});
 
 	// 為取消按鈕添加事件監聽

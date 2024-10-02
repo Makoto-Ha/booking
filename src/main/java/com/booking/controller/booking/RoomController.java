@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,19 +38,15 @@ public class RoomController {
 	 * @return
 	 */
 	@GetMapping
-	private String sendRoomPage(
-			@RequestParam Map<String, String> requestParameters,
-			RoomDTO roomDTO,
-			Model model
-		) {
-		
+	private String sendRoomPage(Model model) {
+		// DTO用於分頁所需數據
+		RoomDTO roomDTO = new RoomDTO();
 		Result<Page<RoomDTO>> findRoomAllResult = roomService.findRoomAll(roomDTO);
 		
 		if(findRoomAllResult.isFailure()) {
 			return "";
 		}
 		Page<RoomDTO> page = findRoomAllResult.getData();
-		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomDTO", roomDTO);
 		model.addAttribute("page", page);
 		return "/management-system/booking/room-list";
@@ -114,7 +111,13 @@ public class RoomController {
 			Model model
 		) {
 		roomDTO.setRoomtypeName(roomtypeName);
-		PageImpl<RoomDTO> page = roomService.findRooms(roomDTO, roomStatusAll);
+		Result<PageImpl<RoomDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
+		
+		if(findRoomsResult.isFailure()) {
+			return "";
+		}
+		
+		PageImpl<RoomDTO> page = findRoomsResult.getData();
 		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);
@@ -150,8 +153,14 @@ public class RoomController {
 	 */
 	@PostMapping("/delete")
 	@ResponseBody
-	private void deleteById(@RequestParam Integer roomId) {
-		roomService.removeRoomById(roomId);	
+	private ResponseEntity<?> deleteById(@RequestParam Integer roomId) {
+		Result<String> removeRoomByIdResult = roomService.removeRoomById(roomId);	
+		String message = removeRoomByIdResult.getMessage();
+		if(removeRoomByIdResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		return ResponseEntity.ok(message);
 	}
 
 	/**

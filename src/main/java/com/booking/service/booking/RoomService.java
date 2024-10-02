@@ -69,7 +69,7 @@ public class RoomService {
 		
 		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
 		
-		Page<RoomDTO> page = roomRepo.findAllRoomDTO(pageable);
+		Page<RoomDTO> page = roomRepo.findRoomDTOAll(pageable);
 		return Result.success(page);
 	}
 	
@@ -153,12 +153,7 @@ public class RoomService {
 		for (int i = 0; i < roomtypeQuanity; i++) {
 			Room room = new Room("沒有", 0, roomtypeDescription, updatedTime, createdTime);
 			room.setRoomtype(roomtype);
-			
-			Room saveRoom = roomRepo.save(room);
-			
-			if (saveRoom == null) {
-				return Result.failure("新增空房失敗");
-			}
+			roomRepo.save(room);
 		}
 		return Result.success("新增空房成功");
 	}
@@ -172,7 +167,7 @@ public class RoomService {
 		DaoResult<?> removeRoomByIdResult = roomDao.removeRoomById(roomId);
 
 		if (removeRoomByIdResult.isFailure()) {
-			return Result.failure("刪除房間類型失敗");
+			return Result.failure("房間不是空房，刪除房間失敗");
 		}
 
 		return Result.success("刪除房間類型成功");
@@ -223,7 +218,7 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public PageImpl<RoomDTO> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
+	public Result<PageImpl<RoomDTO>> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
 		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
 												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
 													
@@ -260,7 +255,7 @@ public class RoomService {
 		
 		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		
-		return new PageImpl<>(roomDTOs, newPageable, page.getTotalElements());
+		return Result.success(new PageImpl<>(roomDTOs, newPageable, page.getTotalElements()));
 	}
 
 }

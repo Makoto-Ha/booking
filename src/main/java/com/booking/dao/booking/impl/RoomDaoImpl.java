@@ -96,7 +96,7 @@ public class RoomDaoImpl implements RoomDao {
 	@Override
 	public DaoResult<?> removeRoomById(Integer roomId) {
 		Room room = entityManager.find(Room.class, roomId);
-		if(room != null) {
+		if(room != null && room.getRoomStatus() == 0) {
 			entityManager.remove(room);
 			return DaoResult.create().setSuccess(true);
 		}

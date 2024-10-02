@@ -33,8 +33,8 @@
 			              <option value="createdTime" th:selected="createdTime == ${roomtypeDTO.attrOrderBy}">創建時間</option>
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${roomtypeDTO.selectedSort} == false">升冪</option>
-				      		<option value="true" th:selected="${roomtypeDTO.selectedSort} == true">降冪</option>
+			    			<option value="false" th:selected="${roomtypeDTO.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${roomtypeDTO.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -57,11 +57,11 @@
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間人數</label>
+			                     <label>房間價錢</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間價錢</label>
+			                     <label>房間人數</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
@@ -141,7 +141,7 @@
 			        </ul>
 			    </section>
 			    <script th:inline="javascript">  	
-					var requestParameters = [[${requestParameters}]];
+					var requestParameters = [[${requestParameters}]] || {};
 					var page = [[${page}]];
 			    	var totalPages = page.totalPages;
 			    	console.log(totalPages);

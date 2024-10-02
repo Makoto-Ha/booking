@@ -100,6 +100,7 @@ public class RoomtypeService {
 		
 		List<Roomtype> roomtypes = page.getContent();
 		List<RoomtypeDTO> roomtypeDTOs = new ArrayList<>();
+		
 		for(Roomtype roomtype : roomtypes) {
 			RoomtypeDTO responseRoomtypeDTO = new RoomtypeDTO();
 			BeanUtils.copyProperties(roomtype, responseRoomtypeDTO);		
@@ -171,10 +172,6 @@ public class RoomtypeService {
 		}
 			
 		Roomtype saveRoomtype = roomtypeRepo.save(roomtype);
-
-		if(saveRoomtype == null) {
-			return Result.failure("新增房間類型失敗");
-		}
 		
 		Result<String> roomServiceResult = roomService.saveRoomsByRoomtype(saveRoomtype);
 	
