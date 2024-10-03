@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.RoomDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
+import com.booking.service.booking.BookingService;
 import com.booking.service.booking.RoomService;
 import com.booking.service.booking.RoomtypeService;
 import com.booking.utils.JsonUtil;
@@ -28,6 +29,9 @@ public class JsonHandler {
 	@Autowired
 	private RoomService roomService;
 	
+	@Autowired
+	private BookingService bookingService;
+	
 	// ===== Roomtype =====
 	
 	/**
@@ -39,7 +43,7 @@ public class JsonHandler {
 	private String findRoomtypeById(@PathVariable Integer id) {
 		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.findRoomtypeById(id);
 		if (roomtypeServiceResult.isFailure()) {
-			return null;
+			return roomtypeServiceResult.getMessage();
 		}
 		
 		return JsonUtil.toJson(roomtypeServiceResult.getData());
@@ -56,7 +60,7 @@ public class JsonHandler {
 		Result<List<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypesByName(name);
 		
 		if(roomtypeServiceResult.isFailure()) {
-			return null;
+			return roomtypeServiceResult.getMessage();
 		}
 		
 		return JsonUtil.toJson(roomtypeServiceResult.getData());
@@ -70,14 +74,30 @@ public class JsonHandler {
 	 * @return
 	 */
 	@GetMapping("/room/{id}")
-	@ResponseBody
 	private String findRoomById(@PathVariable Integer id) {
 		Result<RoomDTO> roomServiceResult = roomService.findRoomById(id);
 		if(roomServiceResult.isFailure()) {
-			return "";
+			return roomServiceResult.getMessage();
 		}
 		
 		return JsonUtil.toJson(roomServiceResult.getData());	
+	}
+	
+	// ===== BookingOrder =====
+	
+	/**
+	 * 根據bookingId獲取預定訂單
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/booking/{id}")
+	private String findBookingOrderById(@PathVariable Integer id) {
+		Result<BookingOrderDTO> findBookingOrderByIdResult = bookingService.findBookingOrderById(id);
+		if(findBookingOrderByIdResult.isFailure()) {
+			return findBookingOrderByIdResult.getMessage();
+		}
+		
+		return JsonUtil.toJson(findBookingOrderByIdResult.getData());	
 	}
 
 }

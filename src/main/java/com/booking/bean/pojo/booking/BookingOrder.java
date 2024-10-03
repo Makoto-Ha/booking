@@ -3,6 +3,8 @@ package com.booking.bean.pojo.booking;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,12 +14,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "booking_order")
+@DynamicInsert
 public class BookingOrder {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "booking_id")
 	private Integer bookingId;
+	
+	@Column(name = "order_number")
+	private String orderNumber;
 	
 	@Column(name = "order_status")
 	private Integer orderStatus;
@@ -52,6 +58,14 @@ public class BookingOrder {
 
 	public void setBookingId(Integer bookingId) {
 		this.bookingId = bookingId;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public Integer getOrderStatus() {
@@ -122,10 +136,10 @@ public class BookingOrder {
 
 	@Override
 	public String toString() {
-		return "BookingOrder [bookingId=" + bookingId + ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice
-				+ ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate + ", checkInTime=" + checkInTime
-				+ ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime + ", createdTime=" + createdTime
-				+ "]";
+		return "BookingOrder [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus=" + orderStatus
+				+ ", totalPrice=" + totalPrice + ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate
+				+ ", checkInTime=" + checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime
+				+ ", createdTime=" + createdTime + "]";
 	}
-
+	
 }

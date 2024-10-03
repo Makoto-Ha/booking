@@ -2,6 +2,8 @@ package com.booking.bean.pojo.booking;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "room")
+@DynamicInsert
 public class Room {
 	
 	@Id

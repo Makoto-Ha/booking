@@ -1,6 +1,5 @@
 package com.booking.controller.booking;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.RoomDTO;
@@ -47,7 +45,7 @@ public class RoomController {
 			return "";
 		}
 		Page<RoomDTO> page = findRoomAllResult.getData();
-		model.addAttribute("roomDTO", roomDTO);
+		model.addAttribute("room", roomDTO);
 		model.addAttribute("page", page);
 		return "/management-system/booking/room-list";
 	}
@@ -109,7 +107,7 @@ public class RoomController {
 			@RequestParam(value="roomStatus", required = false) List<Integer> roomStatusAll,
 			RoomDTO roomDTO,
 			Model model
-		) {
+	) {
 		roomDTO.setRoomtypeName(roomtypeName);
 		Result<PageImpl<RoomDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
 		
@@ -121,7 +119,7 @@ public class RoomController {
 		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);
-		model.addAttribute("roomDTO", roomDTO);
+		model.addAttribute("room", roomDTO);
 		return "/management-system/booking/room-list";
 	}
 	 
@@ -133,11 +131,6 @@ public class RoomController {
 	 */
 	@PostMapping("/create")
 	private String saveRoomByRoomtypeName(Room room, @RequestParam String roomtypeName) {
-		LocalDateTime updatedTime = LocalDateTime.now();
-		LocalDateTime createdTime = LocalDateTime.now();
-		room.setCreatedTime(createdTime);
-		room.setUpdatedTime(updatedTime);
-		
 		Result<Integer> saveRoomsByRoomtypeNameResult = roomService.saveRoomsByRoomtypeName(room, roomtypeName);
 		if(saveRoomsByRoomtypeNameResult.isFailure()) {
 			return "";
@@ -152,7 +145,6 @@ public class RoomController {
 	 * @return
 	 */
 	@PostMapping("/delete")
-	@ResponseBody
 	private ResponseEntity<?> deleteById(@RequestParam Integer roomId) {
 		Result<String> removeRoomByIdResult = roomService.removeRoomById(roomId);	
 		String message = removeRoomByIdResult.getMessage();

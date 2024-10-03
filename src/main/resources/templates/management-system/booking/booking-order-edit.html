@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<form class="form" action="../update" method="post">
+				
+				<div class="form-group">
+					<label for="order-status">訂單狀態</label> 
+					<input type="text" name="orderStatus" id="order-status" th:value="${bookingOrder.orderStatus}" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="total-price">訂單總金額</label> 
+					<input type="text" name="totalPrice" id="total-price" th:value="${bookingOrder.totalPrice}" required>
+				</div>
+						
+				<div class="form-group">
+					<label for="check-in-date">入住日</label> 
+					<input type="date" name="checkInDate" id="check-in-date" th:value="${bookingOrder.checkInDate}" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="check-out-date">退房日</label> 
+					<input type="date" name="checkOutDate" id="check-out-date" th:value="${bookingOrder.checkOutDate}" required>
+				</div>
+
+				<div class="form-group">
+					<button type="submit" class="submit" id="submit" style="background-color: #007bff;">保存</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+	
+	</script>
+</body>
+</html>
