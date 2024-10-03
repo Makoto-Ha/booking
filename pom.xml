@@ -81,27 +81,12 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-hibernate6</artifactId>
 		</dependency>
-
-<!--		<dependency>-->
-<!--			<groupId>org.apache.tomcat.embed</groupId>-->
-<!--			<artifactId>tomcat-embed-jasper</artifactId>-->
-<!--			<scope>provided</scope>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>jakarta.servlet</groupId>-->
-<!--			<artifactId>jakarta.servlet-api</artifactId>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>org.glassfish.web</groupId>-->
-<!--			<artifactId>jakarta.servlet.jsp.jstl</artifactId>-->
-<!--		</dependency>-->
 		
-<!--		<dependency>-->
-<!--	    <groupId>jakarta.servlet.jsp.jstl</groupId>-->
-<!--	    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>-->
-<!--	</dependency>-->
+		<dependency>
+		    <groupId>org.modelmapper</groupId>
+		    <artifactId>modelmapper</artifactId>
+		    <version>3.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

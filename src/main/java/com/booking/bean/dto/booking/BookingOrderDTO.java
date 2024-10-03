@@ -7,6 +7,8 @@ public class BookingOrderDTO {
 	
 	private Integer bookingId;
 	
+	private String orderNumber;
+	
 	private Integer orderStatus;
 	
 	private Long totalPrice;
@@ -31,10 +33,11 @@ public class BookingOrderDTO {
 	
 	public BookingOrderDTO() {}
 	
-	public BookingOrderDTO(Integer bookingId, Integer orderStatus, Long totalPrice, LocalDate checkInDate,
+	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDate checkInDate,
 			LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime,
 			LocalDateTime createdTime) {
 		this.bookingId = bookingId;
+		this.orderNumber = orderNumber;
 		this.orderStatus = orderStatus;
 		this.totalPrice = totalPrice;
 		this.checkInDate = checkInDate;
@@ -51,6 +54,14 @@ public class BookingOrderDTO {
 
 	public void setBookingId(Integer bookingId) {
 		this.bookingId = bookingId;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public Integer getOrderStatus() {
@@ -143,11 +154,11 @@ public class BookingOrderDTO {
 
 	@Override
 	public String toString() {
-		return "BookingOrderDTO [bookingId=" + bookingId + ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice
-				+ ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate + ", checkInTime=" + checkInTime
-				+ ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime + ", createdTime=" + createdTime
-				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
-				+ "]";
+		return "BookingOrderDTO [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus="
+				+ orderStatus + ", totalPrice=" + totalPrice + ", checkInDate=" + checkInDate + ", checkOutDate="
+				+ checkOutDate + ", checkInTime=" + checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime="
+				+ updatedTime + ", createdTime=" + createdTime + ", pageNumber=" + pageNumber + ", attrOrderBy="
+				+ attrOrderBy + ", selectedSort=" + selectedSort + "]";
 	}
-	
+
 }

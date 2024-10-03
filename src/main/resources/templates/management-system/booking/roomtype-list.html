@@ -23,18 +23,18 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="roomtypePrice" th:selected="roomtypePrice == ${roomtypeDTO.attrOrderBy}">房間價錢</option>
-			              <option value="roomtypeName" th:selected="roomtypeName == ${roomtypeDTO.attrOrderBy}">房間名字</option>
-			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${roomtypeDTO.attrOrderBy}">房間人數</option>
-			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${roomtypeDTO.attrOrderBy}">房間數量</option>
-			              <option value="roomtypeCity" th:selected="roomtypeCity == ${roomtypeDTO.attrOrderBy}">所在城市</option>
-			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${roomtypeDTO.attrOrderBy}">所在區域</option>
-			              <option value="updatedTime" th:selected="updatedTime == ${roomtypeDTO.attrOrderBy}">更新時間</option>
-			              <option value="createdTime" th:selected="createdTime == ${roomtypeDTO.attrOrderBy}">創建時間</option>
+			              <option value="roomtypePrice" th:selected="roomtypePrice == ${roomtype.attrOrderBy}">房間價錢</option>
+			              <option value="roomtypeName" th:selected="roomtypeName == ${roomtype.attrOrderBy}">房間名字</option>
+			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${roomtype.attrOrderBy}">房間人數</option>
+			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${roomtype.attrOrderBy}">房間數量</option>
+			              <option value="roomtypeCity" th:selected="roomtypeCity == ${roomtype.attrOrderBy}">所在城市</option>
+			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${roomtype.attrOrderBy}">所在區域</option>
+			              <option value="updatedTime" th:selected="updatedTime == ${roomtype.attrOrderBy}">更新時間</option>
+			              <option value="createdTime" th:selected="createdTime == ${roomtype.attrOrderBy}">創建時間</option>
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${roomtypeDTO.selectedSort}">升冪</option>
-				      		<option value="true" th:selected="${roomtypeDTO.selectedSort}">降冪</option>
+			    			<option value="false" th:selected="${roomtype.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${roomtype.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -43,6 +43,7 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
+			  		<button class="content-area-page" data-url="/booking/management/booking">訂單</button>
 			  		<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
 			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
 			  </div>  
@@ -107,29 +108,28 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="roomtypeDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomtypeDTO.roomtypeId}">
-			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomtypeDTO.roomtypeId}}">
+			            <li th:each="roomtype : ${page.content}" class="list-item" th:data-current-list-id="${roomtype.roomtypeId}">
+			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomtype.roomtypeId}}">
 			                <div class="item-content">     	
-			                	<span class="item-title" th:text="${roomtypeDTO.roomtypeName}"></span>
+			                	<span class="item-title" th:text="${roomtype.roomtypeName}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
-		                			<span th:text="${roomtypeDTO.roomtypePrice}"></span>
+		                			<span th:text="${roomtype.roomtypePrice}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型數量</span>
-		                			<span th:text="${roomtypeDTO.roomtypeQuantity}"></span>
+		                			<span th:text="${roomtype.roomtypeQuantity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型人數</span>
-		                			<span th:text="${roomtypeDTO.roomtypeCapacity}"></span>
+		                			<span th:text="${roomtype.roomtypeCapacity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型城市</span>
-		                			<span th:text="${roomtypeDTO.roomtypeCity}"></span>
+		                			<span th:text="${roomtype.roomtypeCity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型區域</span>
-		                			<span th:text="${roomtypeDTO.roomtypeDistrict}"></span>
+		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間類型說明</span>
-		                			<span th:text="${roomtypeDTO.roomtypeDescription}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
+		                			<span th:text="${roomtype.roomtypeDescription}"></span>              		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">

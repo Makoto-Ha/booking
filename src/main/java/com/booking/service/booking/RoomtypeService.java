@@ -167,8 +167,6 @@ public class RoomtypeService {
 		if(uploadResult.isSuccess()) {
 			String fileName = imageFile.getOriginalFilename();
 			roomtype.setImagePath("uploads" + "/" + fileName);
-		}else {
-			roomtype.setImagePath("uploads/default.jpg");
 		}
 			
 		Roomtype saveRoomtype = roomtypeRepo.save(roomtype);

@@ -3,7 +3,6 @@ package com.booking.controller.booking;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +63,7 @@ public class RoomtypeController  {
 
 		Page<RoomtypeDTO> page = findRoomtypeAllResult.getData();	
 		
-		model.addAttribute("roomtypeDTO", roomtypeDTO);
+		model.addAttribute("roomtype", roomtypeDTO);
 		model.addAttribute("page", page);
 		return "management-system/booking/roomtype-list";
 	}
@@ -94,7 +93,9 @@ public class RoomtypeController  {
 			return "";
 		}
 
-		model.addAttribute("roomtype", findRoomtypeById.getData());
+		RoomtypeDTO roomtypeDTO = findRoomtypeById.getData();
+		
+		model.addAttribute("roomtype", roomtypeDTO);
 		return "/management-system/booking/roomtype-edit";
 	}
 
@@ -122,7 +123,7 @@ public class RoomtypeController  {
 		Page<RoomtypeDTO> page = findRoomtypesResult.getData();
 		
 		model.addAttribute("requestParameters", requestParameters);
-		model.addAttribute("roomtypeDTO", roomtypeDTO);
+		model.addAttribute("roomtype", roomtypeDTO);
 		model.addAttribute("page", page);
 		return "/management-system/booking/roomtype-list";
 	}
@@ -134,10 +135,6 @@ public class RoomtypeController  {
 	 */
 	@PostMapping("/create")
 	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype) {
-		LocalDateTime now = LocalDateTime.now();
-		roomtype.setCreatedTime(now);
-		roomtype.setUpdatedTime(now);
-
 		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype);
 		if (saveRoomtypeResult.isFailure()) {
 			return "";

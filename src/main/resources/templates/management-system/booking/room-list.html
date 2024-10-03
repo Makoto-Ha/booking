@@ -23,14 +23,14 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="roomNumber" th:selected="roomNumber == ${roomDTO.attrOrderBy}">房間號碼</option>
-			              <option value="roomStatus" th:selected="roomStatus == ${roomDTO.attrOrderBy}">房間狀態</option>
-			              <option value="updatedTime" th:selected="updatedTime == ${roomDTO.attrOrderBy}">更新時間</option>
-			              <option value="createdTime" th:selected="createdTime == ${roomDTO.attrOrderBy}">創建時間</option>            
+			              <option value="roomNumber" th:selected="roomNumber == ${room.attrOrderBy}">房間號碼</option>
+			              <option value="roomStatus" th:selected="roomStatus == ${room.attrOrderBy}">房間狀態</option>
+			              <option value="updatedTime" th:selected="updatedTime == ${room.attrOrderBy}">更新時間</option>
+			              <option value="createdTime" th:selected="createdTime == ${room.attrOrderBy}">創建時間</option>            
 				      </select>
 				      <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${roomDTO.selectedSort}">升冪</option>
-				      		<option value="true" th:selected="${roomDTO.selectedSort}">降冪</option>
+			    			<option value="false" th:selected="${room.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${room.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -39,6 +39,7 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
+			  		<button class="content-area-page" data-url="/booking/management/booking">訂單</button>
 			  		<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
 			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
 			  </div>  
@@ -83,26 +84,25 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="roomDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomDTO.roomId}" th:style="'border-color: ' + ${roomDTO.roomStatus == 1 ? 'red' : (roomDTO.roomStatus == 2 ? '#40E0D0' : '')}">
-			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomDTO.roomtypeId}}">
+			            <li th:each="room : ${page.content}" class="list-item" th:data-current-list-id="${room.roomId}" th:style="'border-color: ' + ${room.roomStatus == 1 ? 'red' : (room.roomStatus == 2 ? '#40E0D0' : '')}">
+			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${room.roomtypeId}}">
 			                <div class="item-content">
-			                	<span class="item-title" th:text="${roomDTO.roomtypeName}" th:style="'color: ' + ${roomDTO.roomStatus == 1 ? 'red' : (roomDTO.roomStatus == 2 ? '#40E0D0' : '#000')}"></span>
+			                	<span class="item-title" th:text="${room.roomtypeName}" th:style="'color: ' + ${room.roomStatus == 1 ? 'red' : (room.roomStatus == 2 ? '#40E0D0' : '#000')}"></span>
 			                	<div class="listInfo-group">
 		                			<span class="item-info" style="color: darkred">房間號碼</span>
-		                			<span th:text="${roomDTO.roomNumber}"></span>
+		                			<span th:text="${room.roomNumber}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間狀態</span>
-		                			<span th:text="${roomDTO.roomStatus == 1 ? '已預定' : (roomDTO.roomStatus == 2 ? '已入住' : '空房')}"></span>
+		                			<span th:text="${room.roomStatus == 1 ? '已預定' : (room.roomStatus == 2 ? '已入住' : '空房')}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間介紹</span>
-		                			<span th:text="${roomDTO.roomDescription}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
+		                			<span th:text="${room.roomDescription}"></span>              		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">
 			                	<button class="action-btn check-btn">查看</button>
 			                    <button class="action-btn edit-btn">編輯</button>
-			                    <button class="action-btn delete-btn" th:disabled="${roomDTO.roomStatus != 0}">刪除</button>
+			                    <button class="action-btn delete-btn" th:disabled="${room.roomStatus != 0}">刪除</button>
 			                </div> 
 			            </li>
 			        </ul>

@@ -1,8 +1,8 @@
 package com.booking.service.booking;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +11,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.dao.booking.BookingRepository;
+import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
@@ -29,11 +31,9 @@ public class BookingService {
 	 * @param bookingOrderDTO
 	 * @return
 	 */
+	@Transactional
 	public Result<String> saveBookingOrder(BookingOrderDTO bookingOrderDTO) {
 		BookingOrder bookingOrder = new BookingOrder();
-		LocalDateTime now = LocalDateTime.now();
-		bookingOrder.setUpdatedTime(now);
-		bookingOrder.setCreatedTime(now);
 		
 		BeanUtils.copyProperties(bookingOrderDTO, bookingOrder);
 
@@ -48,12 +48,18 @@ public class BookingService {
 	 * @return
 	 */
 	public Result<PageImpl<BookingOrderDTO>> findBookingOrderAll(BookingOrderDTO bookingOrderDTO) {
-		Integer pageNumber = bookingOrderDTO.getPageNumber();
-		String attrOrderBy = bookingOrderDTO.getAttrOrderBy();
-		Boolean selectedSort = bookingOrderDTO.getSelectedSort();
-		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+		// 獲取pageable
+		Pageable pageable = MyPageRequest.of(
+				bookingOrderDTO.getPageNumber(), 
+				10,
+				bookingOrderDTO.getSelectedSort(),
+				bookingOrderDTO.getAttrOrderBy()			
+		);
+		
+		// 查找全部booking
 		Page<BookingOrder> page = bookingRepo.findAll(pageable);
 		
+		// 根據bookingOrder轉DTO
 		List<BookingOrder> bookingOrders = page.getContent();
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bookingOrder : bookingOrders) {
@@ -62,9 +68,57 @@ public class BookingService {
 			boDTOs.add(responseBookingOrderDTO);
 		}
 		
+		// 創建新的Page返回
 		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		
 		return Result.success(new PageImpl<>(boDTOs, newPageable, page.getTotalElements()));
+	}
+
+	/**
+	 * 修改預定訂單資訊
+	 * @param bookingOrderDTO
+	 * @return
+	 */
+	public Result<String> updateBookingOrder(BookingOrderDTO bookingOrderDTO) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingOrderDTO.getBookingId()).orElse(null);
+		MyModelMapper.map(bookingOrderDTO, bookingOrder);
+		bookingRepo.save(bookingOrder);
+		return Result.success("更新預定訂單成功");
+	}
+	
+	/**
+	 * 根據bookingId查找預定訂單
+	 * @param bookingId
+	 * @return
+	 */
+	public Result<BookingOrderDTO> findBookingOrderById(Integer bookingId) {
+		Optional<BookingOrder> optional = bookingRepo.findById(bookingId);
+		
+		if(optional.isEmpty()) {
+			return Result.failure("找不到預定訂單");
+		}
+		
+		BookingOrder bookingOrder = optional.get();
+		BookingOrderDTO bookingOrderDTO = new BookingOrderDTO();
+		BeanUtils.copyProperties(bookingOrder, bookingOrderDTO);
+		
+		return Result.success(bookingOrderDTO);	
+	}
+	
+	/**
+	 * 根據bookingId刪除訂單
+	 * @param bookingId
+	 * @return
+	 */
+	public Result<String> deleteByBookingId(Integer bookingId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingId).orElse(null);
+		
+		if(bookingOrder.getOrderStatus() != 0) {
+			return Result.failure("預定訂單非預定狀態，無法刪除");
+		}
+		
+		bookingRepo.deleteById(bookingId);
+		return Result.success("預定訂單刪除成功");
 	}
 
 }
