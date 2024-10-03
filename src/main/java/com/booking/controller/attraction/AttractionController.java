@@ -27,7 +27,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/attraction")
+@RequestMapping("/management/attraction")
 public class AttractionController {
 	
 	@Autowired
