@@ -35,28 +35,10 @@ public class Attraction implements Serializable {
 	@Column(name = "attraction_description")
 	private String attractionDescription;
 	
-	public Attraction() {}
-
-	public Attraction(Integer attractionId, String attractionName, String attractionCity, String address,
-			String openingHour, String attractionType, String attractionDescription) {
-		this.attractionId = attractionId;
-		this.attractionName = attractionName;
-		this.attractionCity = attractionCity;
-		this.address = address;
-		this.openingHour = openingHour;
-		this.attractionType = attractionType;
-		this.attractionDescription = attractionDescription;
+	public Attraction() {
+		
 	}
 
-	public Attraction(String attractionName, String attractionCity, String address, String openingHour,
-			String attractionType, String attractionDescription) {
-		this.attractionName = attractionName;
-		this.attractionCity = attractionCity;
-		this.address = address;
-		this.openingHour = openingHour;
-		this.attractionType = attractionType;
-		this.attractionDescription = attractionDescription;
-	}
 
 	public Integer getAttractionId() {
 		return attractionId;
