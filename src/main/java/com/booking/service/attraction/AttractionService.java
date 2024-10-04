@@ -2,45 +2,60 @@ package com.booking.service.attraction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.pojo.attraction.Attraction;
-import com.booking.dao.attraction.AttractionDao;
+import com.booking.dao.attraction.AttractionRepository;
+import com.booking.dao.attraction.AttractionSpecification;
 import com.booking.utils.DaoResult;
-import com.booking.utils.Listable;
+import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
 
 @Service
-@Transactional
 public class AttractionService {
 	
 	@Autowired
-	private AttractionDao attractionDao;
+	private AttractionRepository attractionRepo;
 	
 
-	/**
-	 * 獲取所有景點
-	 * @return
-	 */
-	public Result<List<Listable>> getAttractionAll() {
-		DaoResult<List<Attraction>> getAllResult = attractionDao.getAttractionAll();
-		List<Attraction> attractions = getAllResult.getData();
-		List<Listable> lists = new ArrayList<>();
+   /**
+	* 獲取所有景點
+	* @param attractionDTO
+	* @return
+	*/
+	public Result<PageImpl<AttractionDTO>> findAttractionAll(AttractionDTO attractionDTO) {
+		
+		Integer pageNumber = attractionDTO.getPageNumber();
+		String attrOrderBy = attractionDTO.getAttrOrderBy();
+		Boolean selectedSort = attractionDTO.getSelectedSort();
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+		Page<Attraction> page = attractionRepo.findAll(pageable);
+		List<AttractionDTO> attractionDTOs = new ArrayList<>();
+		List<Attraction> attractions = page.getContent();
+		
+		
 		for(Attraction attraction : attractions) {
-			AttractionDTO attractionDTO = new AttractionDTO();
-			BeanUtils.copyProperties(attraction, attractionDTO);
-			lists.add(attractionDTO);
+			AttractionDTO responseAttractionDTO = new AttractionDTO();
+			BeanUtils.copyProperties(attraction, responseAttractionDTO);
+			attractionDTOs.add(responseAttractionDTO);
 		}
-		if(getAllResult.isFailure()) {
-			return Result.failure("查詢所有景點失敗");
-		}
-		return Result.success(lists);
+		
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
 	}
 	
 	/**
@@ -48,34 +63,73 @@ public class AttractionService {
 	 * @param attraction
 	 * @return
 	 */
-	public Result<List<Listable>> getAttractions(Attraction attraction) {
-		DaoResult<List<Attraction>> daynamicQueryDaoResult = attractionDao.dynamicQuery(attraction);
-		List<Attraction> attractions = daynamicQueryDaoResult.getData();
+	public Result<PageImpl<AttractionDTO>> findAttractions(AttractionDTO attractionDTO) {
+		Specification<Attraction> spec = Specification
+				 .where(AttractionSpecification.nameContains(attractionDTO.getAttractionName()))
+				 .and(AttractionSpecification.cityContains(attractionDTO.getAttractionCity()))
+				 .and(AttractionSpecification.addressContains(attractionDTO.getAddress()))
+				 .and(AttractionSpecification.openingHourContains(attractionDTO.getOpeningHour()))
+				 .and(AttractionSpecification.typeContains(attractionDTO.getAttractionType()))
+				 .and(AttractionSpecification.descriptionContains(attractionDTO.getAttractionDescription()));
+
 		
-		if(daynamicQueryDaoResult.isFailure()) {
-			return Result.failure("無法查詢");
+		Pageable pageable = MyPageRequest.of(
+				attractionDTO.getPageNumber(), 
+				10, 
+				attractionDTO.getSelectedSort(), 
+				attractionDTO.getAttrOrderBy());
+		
+		Page<Attraction> page = attractionRepo.findAll(spec, pageable);
+		List<Attraction> attractions = page.getContent();
+		List<AttractionDTO> attractionsDTOs = new ArrayList<>();
+		
+		for(Attraction attraction : attractions) {
+			AttractionDTO responseAttractionDTO = new AttractionDTO();
+
+			BeanUtils.copyProperties(attraction, responseAttractionDTO);
+			attractionsDTOs.add(responseAttractionDTO);
+
+
 		}
-		List<Listable> attractionsDTO = new ArrayList<>();
-		for(Attraction attractionOne : attractions) {
-			AttractionDTO attractionDTO = new AttractionDTO();
-			BeanUtils.copyProperties(attractionOne, attractionDTO);
-			attractionsDTO.add(attractionDTO);
-		}
-		return Result.success(attractionsDTO);
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		return Result.success(new PageImpl<>(attractionsDTOs, newPageable, page.getTotalElements()));
 	}
 	
+	/**
+	 * 依名稱獲取景點
+	 * @param attractionName
+	 * @return
+	 */
+	public Result<List<AttractionDTO>> findAttractionByName(String attractionName) {
+		DaoResult<List<Attraction>> getAttractionByNameResult = attractionRepo.getattractionByName(attractionName);
+		
+		if(getAttractionByNameResult.isFailure()) {
+			return Result.failure("根據景點名稱獲取景點失敗");
+		}
+		
+		List<AttractionDTO> list = new ArrayList<>();
+		List<Attraction> attractions = getAttractionByNameResult.getData();
+		
+		for(Attraction attraction : attractions) {
+			AttractionDTO attractionDTO = new AttractionDTO();
+			BeanUtils.copyProperties(attraction, attractionDTO);
+			list.add(attractionDTO);
+		}
+		
+		return Result.success(list);
+	}
 	
 	/**
 	 * 依id獲取景點
 	 * @param attractionId
 	 * @return
 	 */
-	public Result<AttractionDTO> getAttractionById(Integer attractionId) {
-		DaoResult<Attraction> daoResult = attractionDao.getAttractionById(attractionId);
-		Attraction attraction = daoResult.getData();
-		if(daoResult.isFailure()) {
+	public Result<AttractionDTO> findAttractionById(Integer attractionId) {
+		Optional<Attraction> optional = attractionRepo.findById(attractionId);
+		if(optional.isEmpty()) {
 			return Result.failure("沒有此景點");
 		}
+		Attraction attraction = optional.get();
 		AttractionDTO attractionDTO = new AttractionDTO();
 		BeanUtils.copyProperties(attraction, attractionDTO);
 		return Result.success(attractionDTO);
@@ -88,12 +142,11 @@ public class AttractionService {
 	 * @param attraction
 	 * @return
 	 */
-	public Result<Integer> addAttraction(Attraction attraction) {
-		DaoResult<?> addAttractionResult = attractionDao.addAttraction(attraction);
-		if(addAttractionResult.isFailure()) {
-			return Result.failure("新增失敗");
-		}
-		return Result.success(addAttractionResult.getGeneratedId());
+	@Transactional
+	public Result<String> saveAttraction(Attraction attraction) {
+		attractionRepo.save(attraction);
+
+		return Result.success("新增景點成功");
 	}
 	
 	
@@ -101,12 +154,12 @@ public class AttractionService {
 	 * 依id刪除景點
 	 * @param attractionId
 	 */
-	public Result<String> removeAttraction(Integer attractionId) {
-		DaoResult<?> removeAttractionResult = attractionDao.removeAddractionById(attractionId);
-		if(removeAttractionResult.isFailure()) {
-			return Result.failure("刪除失敗");
-		}
-		return Result.success("刪除成功");
+	@Transactional
+	public Result<String> deledeAttractionById(Integer attractionId) {
+		attractionRepo.deleteById(attractionId);
+		
+		return Result.success("刪除景點成功");
+
 	}
 	
 	/**
@@ -114,9 +167,10 @@ public class AttractionService {
 	 * @param attraction
 	 * @return
 	 */
+	@Transactional
 	public Result<String> updateAttraction(Attraction attraction) {
 		Integer oldAttractionId = attraction.getAttractionId();
-		Attraction oldAttraction = attractionDao.getAttractionById(oldAttractionId).getData();
+		Attraction oldAttraction = attractionRepo.findById(oldAttractionId).get();
 		String attractionName = attraction.getAttractionName();
 		String attractionCity = attraction.getAttractionCity();
 		String address = attraction.getAddress();
@@ -143,11 +197,11 @@ public class AttractionService {
 			attraction.setAttractionDescription(oldAttraction.getAttractionDescription());
 		}
 
-		DaoResult<?> updateAttractionResult = attractionDao.updateAttraction(attraction);
+		DaoResult<?> updateAttractionResult = attractionRepo.updateAttraction(attraction);
 		if(updateAttractionResult.isFailure()) {
 			return Result.failure("更新失敗");
 		}
-		return Result.success("更新成功");
+		return Result.success("更新景點成功");
 	}
 		
 }
