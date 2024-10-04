@@ -1,6 +1,7 @@
 package com.booking.dao.attraction;
 
 import java.util.List;
+import java.util.Map;
 
 import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.utils.DaoResult;
@@ -12,7 +13,7 @@ public interface AttractionDao {
 	 * 
 	 * @return
 	 */
-	DaoResult<List<Attraction>> getAttractionAll();
+	DaoResult<List<Attraction>> getAttractionAll(Integer page);
 
 	/**
 	 * 模糊查詢
@@ -20,8 +21,15 @@ public interface AttractionDao {
 	 * @param attraction
 	 * @return
 	 */
-	DaoResult<List<Attraction>> dynamicQuery(Attraction attraction);
+	DaoResult<List<Attraction>> dynamicQuery(Attraction attraction, Map<String, Object> extraValues);
 
+	/**
+	 * 依名稱獲取景點
+	 * @param attractionName
+	 * @return
+	 */
+	DaoResult<List<Attraction>> getattractionByName(String attractionName);
+	
 	/**
 	 * 依id獲取景點
 	 * 
@@ -43,7 +51,7 @@ public interface AttractionDao {
 	 * 
 	 * @param attractionId
 	 */
-	DaoResult<?> removeAddractionById(Integer attractionId);
+	DaoResult<?> removeAttractionById(Integer attractionId);
 
 	/**
 	 * 更新景點
@@ -51,5 +59,7 @@ public interface AttractionDao {
 	 * @param attraction
 	 */
 	DaoResult<?> updateAttraction(Attraction attraction);
+
+
 
 }

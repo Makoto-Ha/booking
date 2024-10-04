@@ -23,8 +23,15 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">縣市</option>
-						  <option value="address" th:selected="address == ${attractionDTO.attrOrderBy}">縣市</option>
+			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">城市</option>
+						  <option value="address" th:selected="address == ${attractionDTO.attrOrderBy}">地址</option>
+						  <option value="openingHour" th:selected="openingHour == ${attractionDTO.attrOrderBy}">開放時間</option>
+						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
+						  <option value="attractionDescription" th:selected="attractionDescription == ${attractionDTO.attrOrderBy}">景點介紹</option>
+				      </select>
+				     <select class="attr-select-order-by" id="select-sort">
+			    			<option value="false" th:selected="${attractionDTO.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${attractionDTO.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -33,8 +40,8 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
-			  		<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
-			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
+			  		<button class="content-area-page" data-url="/booking/management/attraction">景點</button>
+    
 			  </div>  
 			  <!-- 管理頁面內容 -->
 			  <section id="content" class="content-area">       
@@ -43,45 +50,30 @@
 			             <h2 id="modal-title">查看</h2>
 			             <form id="modal-form">      
 					         <div class="form-group">
-			                     <label>房間名稱</label>
+			                     <label>景點名稱</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間人數</label>
+			                     <label>城市</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間價錢</label>
+			                     <label>地址</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間數量</label>
+			                     <label>開放時間</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間介紹</label>
+			                     <label>景點類型</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>房間地址</label>
+			                     <label>景點介紹</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
-			                 <div class="form-group">
-			                     <label>房間所在城市</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>房間所在區域</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>更新時間</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>創建時間</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div> 
+
 			                 <button type="button" id="modal-cancel-btn">取消</button>
 			             </form>
 			         </div>
@@ -97,29 +89,26 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="roomtypeDTO : ${page.content}" class="list-item" th:data-current-list-id="${roomtypeDTO.roomtypeId}">
-			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomtypeDTO.roomtypeId}}">
+			            <li th:each="attractionDTO : ${page.content}" class="list-item" th:data-current-list-id="${attractionDTO.attractionId}">
+			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/attraction/image/' + ${attractionDTO.attractionId}}">
 			                <div class="item-content">     	
-			                	<span class="item-title" th:text="${roomtypeDTO.roomtypeName}"></span>
+			                	<span class="item-title" th:text="${attractionDTO.attractionName}"></span>
 			                	<div class="listInfo-group">
-		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
-		                			<span th:text="${roomtypeDTO.roomtypePrice}"></span>
+		                			<span class="item-info" style="color: darkred">城市</span>
+		                			<span th:text="${attractionDTO.attractionCity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型數量</span>
-		                			<span th:text="${roomtypeDTO.roomtypeQuantity}"></span>
+		                			<span class="item-info" style="color: darkred">地址</span>
+		                			<span th:text="${attractionDTO.address}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型人數</span>
-		                			<span th:text="${roomtypeDTO.roomtypeCapacity}"></span>
+		                			<span class="item-info" style="color: darkred">開放時間</span>
+		                			<span th:text="${attractionDTO.openingHour}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型城市</span>
-		                			<span th:text="${roomtypeDTO.roomtypeCity}"></span>
+		                			<span class="item-info" style="color: darkred">景點類型</span>
+		                			<span th:text="${attractionDTO.attractionType}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型區域</span>
-		                			<span th:text="${roomtypeDTO.roomtypeDistrict}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型說明</span>
-		                			<span th:text="${roomtypeDTO.roomtypeDescription}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>	              		   			
+		                			<span class="item-info" style="color: darkred">景點介紹</span>
+		                			<span th:text="${attractionDTO.attractionDescription}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>             		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">
@@ -131,7 +120,7 @@
 			        </ul>
 			    </section>
 			    <script th:inline="javascript">  	
-					var requestParameters = [[${requestParameters}]];
+					var requestParameters = [[${requestParameters}]] || {};
 					var page = [[${page}]];
 			    	var totalPages = page.totalPages;
 			    	console.log(totalPages);

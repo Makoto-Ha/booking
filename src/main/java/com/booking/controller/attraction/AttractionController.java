@@ -1,29 +1,24 @@
 package com.booking.controller.attraction;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.service.attraction.AttractionService;
-import com.booking.utils.JsonUtil;
-import com.booking.utils.Listable;
 import com.booking.utils.Result;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -34,82 +29,66 @@ public class AttractionController {
 	private AttractionService attractionService;
 
 
-	/**
-	 * 返回所有景點的數據
-	 * @param attractionid
-	 * return
-	 */
-	@GetMapping("/json/{id}")
-	@ResponseBody
-	private String getAttractionJSON(@PathVariable Integer id) {
-		Result<AttractionDTO> attractionServiceResult = attractionService.getAttractionById(id);
-		if(attractionServiceResult.isFailure()) {
-			return null;
-		}
-		return JsonUtil.toJson(attractionServiceResult.getData());
-	}
-	
 	
 	/**
 	 * 轉到景點首頁
 	 * @param model
 	 */
-	@GetMapping("")
+	@GetMapping
 	private String attraction(Model model) {
+		// DTO用於分頁所需數據
+		AttractionDTO attractionDTO = new AttractionDTO();
+		Result<PageImpl<AttractionDTO>> findAttractionAllResult = attractionService.findAttractionAll(attractionDTO);
 		
-		Result<List<Listable>> attractionServiceResult = attractionService.getAttractionAll();
-		if(attractionServiceResult.isFailure()) {
+		if(findAttractionAllResult.isFailure()) {
 			return "";
 		}
-		List<Listable> attractions = attractionServiceResult.getData();
 		
+		Page<AttractionDTO> page = findAttractionAllResult.getData();
 		
-		model.addAttribute("lists", attractions);
-		model.addAttribute("pageInfos", AttractionDTO.pageInfos);
-		model.addAttribute("listInfos", AttractionDTO.listInfos);
-		model.addAttribute("manageListName", AttractionDTO.manageListName);
-		return "/adminsystem/index";
+		model.addAttribute("attractionDTO", attractionDTO);
+		model.addAttribute("page", page);
+
+		return "management-system/attraction/attraction-list";
 	}
 	
 	/**
 	 * 轉到查詢
-	 * @throws ServletException
-	 * @throws IOException
+	 * return
 	 */
-	@GetMapping("/select/jsp")
-	private String sendSelectJsp() throws ServletException, IOException {	
-		return "/adminsystem/attraction/attraction-select";
+	@GetMapping("/select/page")
+	private String sendSelectPage() {	
+		return "/management-system/attraction/attraction-select";
 	}
 
 	
 	/**
-	 * 轉去create.jsp
-	 * @throws ServletExceptions
-	 * @throws IOException
+	 * 轉去create-page
+	 * return
 	 */
-	@GetMapping("/create/jsp")
-	private String sendCreateJsp() throws ServletException, IOException {
-		return "/adminsystem/attraction/attraction-create";
+	@GetMapping("/create/page")
+	private String sendCreatePage() {
+		return "management-system/attraction/attraction-create";
 	}
 	
 
 	/**
-	 * 轉去edit.jsp
+	 * 轉去edit-page
 	 * @param attractionId
 	 * @param session
 	 * @param model
 	 */
-	@GetMapping("/edit/jsp")
-	private String sendEditJsp(@RequestParam Integer attractionId, HttpSession session, Model model) {
+	@GetMapping("/edit/page")
+	private String sendEditPage(@RequestParam Integer attractionId, HttpSession session, Model model) {
 		session.setAttribute("attractionId", attractionId);
-		Result<AttractionDTO> attractionServiceResult = attractionService.getAttractionById(attractionId);
+		Result<AttractionDTO> attractionServiceResult = attractionService.findAttractionById(attractionId);
 		
 		if(attractionServiceResult.isFailure()) {
 			return "";
 		}
 		
 		model.addAttribute("attraction", attractionServiceResult.getData());
-		return "/adminsystem/attraction/attraction-edit";
+		return "/management-system/attraction/attraction-edit";
 	}
 	
 	/**
@@ -118,26 +97,21 @@ public class AttractionController {
 	 * @param 
 	 */
 	@GetMapping("/select")
-	private String select(Attraction attraction, Model model) {
+	private String select(@RequestParam Map<String, String> requestParameters, AttractionDTO attractionDTO, Model model) {
 		
-		Result<List<Listable>> attractionServiceResult = attractionService.getAttractions(attraction);
+		Result<PageImpl<AttractionDTO>> attractionServiceResult = attractionService.findAttractions(attractionDTO);
+		
 		if(attractionServiceResult.isFailure()) {
 			return "";
 		}
-		List<Listable> attractions = attractionServiceResult.getData();
 		
-		Map<String, Object> requestParameters = new HashMap<>();
-		requestParameters.put("paramters", attraction);
+		Page<AttractionDTO> page = attractionServiceResult.getData();
 		
-		JsonUtil.setNonNull();
-		String jsonData = JsonUtil.toJson(requestParameters);
-		
-		model.addAttribute("lists", attractions);
-		model.addAttribute("requestParameters", jsonData);
-		model.addAttribute("pageInfos", AttractionDTO.pageInfos);
-		model.addAttribute("listInfos", AttractionDTO.listInfos);
-		model.addAttribute("manageListName", AttractionDTO.manageListName);
-		return "/adminsystem/index";	
+		model.addAttribute("requestParameters", requestParameters);
+		model.addAttribute("attractionDTO", attractionDTO);
+		model.addAttribute("page", page);
+
+		return "/management-system/attraction/attraction-list";	
 	}
 	
 	/**
@@ -145,12 +119,12 @@ public class AttractionController {
 	 * @param attraction
 	 */
 	@PostMapping("/create")
-	private String create(Attraction attraction) {
-		Result<Integer> result = attractionService.addAttraction(attraction);
-		if (result.isFailure()) {
+	private String saveAttraction(Attraction attraction) {
+		Result<String> saveAttractionResult = attractionService.saveAttraction(attraction);
+		if (saveAttractionResult.isFailure()) {
 			return "";
 		}
-		return "redirect:/attraction";
+		return "redirect:/management/attraction";
 		
 	}
 
@@ -160,7 +134,7 @@ public class AttractionController {
 	 */
 	@PostMapping("/delete")
 	private void delete(@RequestParam Integer attractionId) {
-		attractionService.removeAttraction(attractionId);
+		attractionService.deledeAttractionById(attractionId);
 	}
 
 	/**
@@ -171,12 +145,12 @@ public class AttractionController {
 	@PostMapping("/update")
 	private String update(Attraction attraction, @SessionAttribute Integer attractionId) {
 		attraction.setAttractionId(attractionId);
-		Result<String> result = attractionService.updateAttraction(attraction);
+		Result<String> updateAttractionResult = attractionService.updateAttraction(attraction);
 		
-		if(result.isFailure()) {
+		if(updateAttractionResult.isFailure()) {
 			return "";
 		}
-		return "redirect:/attraction";
+		return "redirect:/management/attraction";
 	}
 
 }
