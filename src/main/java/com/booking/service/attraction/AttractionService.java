@@ -56,7 +56,6 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
-
 	}
 	/**
 	 * 依模糊查詢得到多筆景點
@@ -90,19 +89,6 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionsDTOs, newPageable, page.getTotalElements()));
-
-		List<Listable> attractionsDTO = new ArrayList<>();
-		for(Attraction attractionOne : attractions) {
-			AttractionDTO attractionDTO = new AttractionDTO();
-
-			BeanUtils.copyProperties(attractionOne, attractionDTO);
-			attractionsDTO.add(attractionDTO);
-
-
-
-		}
-		return Result.success(attractionsDTO);
-
 	}
 
 	/**
