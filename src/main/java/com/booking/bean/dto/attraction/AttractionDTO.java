@@ -9,7 +9,10 @@ public class AttractionDTO{
 	private String openingHour;
 	private String attractionType;
 	private String attractionDescription;
+<<<<<<< HEAD
 	private String imagesFile;
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "attractionId";
@@ -19,6 +22,7 @@ public class AttractionDTO{
 		
 	}
 
+<<<<<<< HEAD
 
 	
 	public AttractionDTO(Integer attractionId, String attractionName, String attractionCity, String address,
@@ -38,6 +42,8 @@ public class AttractionDTO{
 	}
 
 
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 
 	public Integer getAttractionId() {
 		return attractionId;
@@ -117,6 +123,7 @@ public class AttractionDTO{
 	public void setAttractionDescription(String attractionDescription) {
 		this.attractionDescription = attractionDescription;
 	}
+<<<<<<< HEAD
 	
 
 	public String getImagesFile() {
@@ -145,6 +152,25 @@ public class AttractionDTO{
 		this.attrOrderBy = attrOrderBy;
 	}
 
+=======
+
+	public Integer getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public String getAttrOrderBy() {
+		return attrOrderBy;
+	}
+
+	public void setAttrOrderBy(String attrOrderBy) {
+		this.attrOrderBy = attrOrderBy;
+	}
+
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	public Boolean getSelectedSort() {
 		return selectedSort;
 	}
@@ -154,15 +180,30 @@ public class AttractionDTO{
 	}
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	@Override
 	public String toString() {
 		return "AttractionDTO [attractionId=" + attractionId + ", attractionName=" + attractionName
 				+ ", attractionCity=" + attractionCity + ", address=" + address + ", openingHour=" + openingHour
 				+ ", attractionType=" + attractionType + ", attractionDescription=" + attractionDescription
+<<<<<<< HEAD
 				+ ", imagesFile=" + imagesFile + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
 				+ ", selectedSort=" + selectedSort + "]";
+=======
+				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
+				+ "]";
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	}
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 }

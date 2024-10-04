@@ -14,26 +14,43 @@
 			<form class="form" action="../update" method="post" enctype="multipart/form-data">
 		        <div class="form-group">
 		            <label for="name">景點名稱</label>
+<<<<<<< HEAD
 		            <input type="text" id="name" name="attractionName" placeholder="輸入內容" th:value="${attraction.attractionName}">
 		        </div>
 		
 		        <div class="form-group">
 		            <label for="select-city">縣市</label>
+=======
+		            <input type="text" id="name" name="attractionName" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="view">縣市</label>
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 		            <select id="select-city" name="attractionCity"></select>
 		        </div>
 		
 		        <div class="form-group">
 		            <label for="address">地址</label>
+<<<<<<< HEAD
 		            <input type="text" id="address" name="address" placeholder="輸入內容" th:value="${attraction.address}">
+=======
+		            <input type="text" id="address" name="address" placeholder="輸入內容">
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 		        </div>
 		        
     			<div class="form-group">
         			<label for="openinghour">開放時間</label>
+<<<<<<< HEAD
         			<textarea id="openinghour" name="openingHour" placeholder="輸入內容" rows="5" style="width: 100%;" th:text="${attraction.openingHour}"></textarea>
+=======
+        			<textarea id="openinghour" name="openingHour" placeholder="輸入內容" rows="5" style="width: 100%;"></textarea>
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
     			</div>
 		
 		        <div class="form-group">
     				<label for="type">景點類型</label>
+<<<<<<< HEAD
     					<select id="type" name="attractionType">
         					<option value="">選擇類型</option>
         					<option value="自然景點" th:selected="${attraction.attractionType == '自然景點'}">自然景點</option>
@@ -41,10 +58,20 @@
         					<option value="親子共遊" th:selected="${attraction.attractionType == '親子共遊'}">親子共遊</option>
         					<option value="休閒娛樂" th:selected="${attraction.attractionType == '休閒娛樂'}">休閒娛樂</option>
     					</select>
+=======
+    				<select id="type" name="attractionType">
+    					<option value="">選擇類型</option>
+        				<option value="自然景點">自然景點</option>
+        				<option value="歷史文化">歷史文化</option>
+        				<option value="親子共遊">親子共遊</option>
+        				<option value="休閒娛樂">休閒娛樂</option>
+    				</select>
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 				</div>
 		
 		        <div class="form-group">
         			<label for="description">景點介紹</label>
+<<<<<<< HEAD
         			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;" th:text="${attraction.attractionDescription}"></textarea>
     			</div>
 		
@@ -61,6 +88,11 @@
 					    <p class="upload-instruction">可上傳JPG, PNG</p>
 					</div>
 				</div>
+=======
+        			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;"></textarea>
+    			</div>
+		
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 
 		
 		        <div class="form-group">

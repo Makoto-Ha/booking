@@ -24,7 +24,14 @@
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
 			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">城市</option>
+<<<<<<< HEAD
 						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
+=======
+						  <option value="address" th:selected="address == ${attractionDTO.attrOrderBy}">地址</option>
+						  <option value="openingHour" th:selected="openingHour == ${attractionDTO.attrOrderBy}">開放時間</option>
+						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
+						  <option value="attractionDescription" th:selected="attractionDescription == ${attractionDTO.attrOrderBy}">景點介紹</option>
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 				      </select>
 				     <select class="attr-select-order-by" id="select-sort">
 			    			<option value="false" th:selected="${attractionDTO.selectedSort}">升冪</option>
@@ -37,9 +44,14 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
+<<<<<<< HEAD
 			  		<button class="content-area-page" data-url="/booking/management/attraction" style="height: 50px;">景點</button>
     				<button class="content-area-page" data-url="/booking/management/packageTour">套裝行程</button>
     				<button class="content-area-page" data-url="/booking/management/packageTourOrder">訂單</button>
+=======
+			  		<button class="content-area-page" data-url="/booking/management/attraction">景點</button>
+    
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 			  </div>  
 			  <!-- 管理頁面內容 -->
 			  <section id="content" class="content-area">       
@@ -69,7 +81,11 @@
 			                 </div>
 			                 <div class="form-group">
 			                     <label>景點介紹</label>
+<<<<<<< HEAD
 			                     <textarea class="input-show-value" disabled rows="8" style="width: 100%;"></textarea>
+=======
+			                     <input type="text" class="input-show-value" disabled>
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 			                 </div>
 
 			                 <button type="button" id="modal-cancel-btn">取消</button>
@@ -106,6 +122,10 @@
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">景點介紹</span>
 		                			<span th:text="${attractionDTO.attractionDescription}"></span>
+<<<<<<< HEAD
+=======
+		                			<span style="color: #e3e3e373"> ┃ </span>             		   			
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 			                	</div>
 			                </div>
 			                <div class="item-actions">

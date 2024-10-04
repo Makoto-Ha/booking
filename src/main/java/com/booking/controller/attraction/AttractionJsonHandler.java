@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
+<<<<<<< HEAD
 import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.service.attraction.AttractionService;
 import com.booking.service.attraction.PackageTourService;
+=======
+import com.booking.service.attraction.AttractionService;
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 
@@ -25,6 +29,7 @@ public class AttractionJsonHandler {
 	@Autowired
 	private AttractionService attractionService;
 	
+<<<<<<< HEAD
 	
 	@Autowired
 	private PackageTourService packageTourService;
@@ -34,6 +39,13 @@ public class AttractionJsonHandler {
 	/**
 	 * 返回景點類型
 	 * @param Id
+=======
+
+	
+	/**
+	 * 返回景點類型
+	 * @param roomtypeId
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	 * @return
 	 */
 	@GetMapping("/attraction/{id}")
@@ -63,6 +75,7 @@ public class AttractionJsonHandler {
 		return JsonUtil.toJson(attractionServiceResult.getData());
 	}
 	
+<<<<<<< HEAD
 	
 	/**
 	 * 根據行程id獲取套裝行程
@@ -79,6 +92,8 @@ public class AttractionJsonHandler {
 		return JsonUtil.toJson(packageTourServiceResult.getData());
 	}
 	
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 
 
 }

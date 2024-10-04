@@ -47,7 +47,10 @@ public class AttractionDaoImpl implements AttractionDao {
 	 * @param attractionName
 	 * @return
 	 */
+<<<<<<< HEAD
 	@Override
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	public DaoResult<List<Attraction>> getAttractionsByName(String attractionName) {
 		String jpql = "FROM Attraction WHERE attractionName LIKE :attractionName";
 		TypedQuery<Attraction> query = entityManager.createQuery(jpql, Attraction.class);
@@ -59,7 +62,11 @@ public class AttractionDaoImpl implements AttractionDao {
 	/**
 	 * 模糊查詢
 	 * 
+<<<<<<< HEAD
 	 * @param 
+=======
+	 * @param roomtype
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	 * @return
 	 */
 	@Override
@@ -75,7 +82,11 @@ public class AttractionDaoImpl implements AttractionDao {
 		String selectedSort = (String) extraValues.get("selectedSort");
 		// 透過session創建CriteriaBuilder
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+<<<<<<< HEAD
 		// 創建CriteriaQuery查詢，分兩個Attraction.class是因為root不能共用
+=======
+		// 創建CriteriaQuery查詢，分兩個Roomtype.class是因為root不能共用
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 		CriteriaQuery<Attraction> cq = cb.createQuery(Attraction.class);
 		Root<Attraction> root = cq.from(Attraction.class);
 		
@@ -207,8 +218,11 @@ public class AttractionDaoImpl implements AttractionDao {
 
 
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 }

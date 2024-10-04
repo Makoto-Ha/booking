@@ -60,6 +60,7 @@ public interface AttractionDao {
 	 */
 	DaoResult<?> updateAttraction(Attraction attraction);
 
+<<<<<<< HEAD
 	/**
 	 * 根據景點名稱獲取景點
 	 * @param attractionName
@@ -67,6 +68,8 @@ public interface AttractionDao {
 	 */
 	DaoResult<List<Attraction>> getAttractionsByName(String attractionName);
 
+=======
+>>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 
 
 }
