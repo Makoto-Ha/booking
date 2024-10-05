@@ -1,5 +1,7 @@
 package com.booking.controller.booking;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
+import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.service.booking.BookingService;
 import com.booking.utils.Result;
 
@@ -30,7 +33,7 @@ public class BookingController {
 	 * @return
 	 */
 	@GetMapping
-	private String sendBookingOrderPage(Model model) {
+	private String sendOrderPage(Model model) {
 		BookingOrderDTO bookingOrderDTO = new BookingOrderDTO();
 		Result<PageImpl<BookingOrderDTO>> findBookingOrderAllResult = bookingService.findBookingOrderAll(bookingOrderDTO);
 		
@@ -41,7 +44,7 @@ public class BookingController {
 		PageImpl<BookingOrderDTO> page = findBookingOrderAllResult.getData();
 		model.addAttribute("page", page);
 		model.addAttribute("bookingOrder", bookingOrderDTO);
-		return "management-system/booking/booking-order-list";
+		return "management-system/booking/order-list";
 	}
 	
 	/**
@@ -49,8 +52,8 @@ public class BookingController {
 	 * @return
 	 */
 	@GetMapping("/create/page")
-	private String sendBookingOrderCreatePage() {	
-		return "management-system/booking/booking-order-create";
+	private String sendOrderCreatePage() {	
+		return "management-system/booking/order-create";
 	}
 	
 	/**
@@ -58,7 +61,7 @@ public class BookingController {
 	 * @return
 	 */
 	@GetMapping("/edit/page")
-	private String sendBookingOrderEditPage(@RequestParam Integer bookingId, HttpSession session, Model model) {	
+	private String sendOrderEditPage(@RequestParam Integer bookingId, HttpSession session, Model model) {	
 		session.setAttribute("bookingId", bookingId);
 		Result<BookingOrderDTO> bookingOrderResult = bookingService.findBookingOrderById(bookingId);
 		
@@ -69,7 +72,44 @@ public class BookingController {
 		BookingOrderDTO bookingOrder = bookingOrderResult.getData();
 		
 		model.addAttribute("bookingOrder", bookingOrder);
-		return "management-system/booking/booking-order-edit";
+		return "management-system/booking/order-edit";
+	}
+	
+	/**
+	 * 轉送到查詢頁面
+	 * @param param
+	 * @return
+	 */
+	@GetMapping("/select/page")
+	public String sendOrderSearchPage() {
+		return "management-system/booking/order-select";
+	}
+	
+	
+	/**
+	 * 模糊查詢預定訂單
+	 * @param bookingOrderDTO
+	 * @return
+	 */
+	@GetMapping("/select")
+	private String findBookingOrders(
+			@RequestParam Map<String, String> requestParameters,
+			BookingOrderSearchDTO bookingOrderSearchDTO,
+			// 創建BookingOrderDTO主要用於分頁資訊
+			BookingOrderDTO bookingOrderDTO,
+			Model model
+	) {
+		Result<PageImpl<BookingOrderDTO>> findBookingOrdersResult = bookingService.findBookingOrders(bookingOrderSearchDTO, bookingOrderDTO);
+		if(findBookingOrdersResult.isFailure()) {
+			return "";
+		}
+		
+		PageImpl<BookingOrderDTO> page = findBookingOrdersResult.getData();
+		
+		model.addAttribute("requestParameters", requestParameters);
+		model.addAttribute("page", page);
+		model.addAttribute("bookingOrder", bookingOrderDTO);
+		return "management-system/booking/order-list";
 	}
 	
 	/**
@@ -81,8 +121,6 @@ public class BookingController {
 	 */
 	@PostMapping("/create")
 	private String saveBookingOrder(BookingOrderDTO bookingOrderDTO) {
-		System.out.println(bookingOrderDTO);
-		
 		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(bookingOrderDTO);
 		if(saveBookingOrderResult.isFailure()) {
 			return "";

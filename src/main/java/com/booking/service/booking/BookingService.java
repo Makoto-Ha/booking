@@ -10,12 +10,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
+import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.dao.booking.BookingRepository;
+import com.booking.dao.booking.BookingSpecification;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -119,6 +122,33 @@ public class BookingService {
 		
 		bookingRepo.deleteById(bookingId);
 		return Result.success("預定訂單刪除成功");
+	}
+
+	/**
+	 * 模糊查詢訂單資訊
+	 * @param bosDTO
+	 */
+	public Result<PageImpl<BookingOrderDTO>> findBookingOrders(BookingOrderSearchDTO bosDTO, BookingOrderDTO boDTO) {
+		Specification<BookingOrder> spec = Specification.where(BookingSpecification.checkInDateContains(bosDTO.getFromCheckInDate(), bosDTO.getToCheckInDate()))
+					.and(BookingSpecification.checkOutDateContains(bosDTO.getFromCheckOutDate(), bosDTO.getToCheckOutDate()))
+					.and(BookingSpecification.checkInTimeContains(bosDTO.getFromCheckInTime(), bosDTO.getToCheckInTime()))
+					.and(BookingSpecification.checkOutTimeContains(bosDTO.getFromCheckInTime(), bosDTO.getToCheckInTime()))
+					.and(BookingSpecification.orderNumberContains(bosDTO.getOrderNumber()))
+					.and(BookingSpecification.orderStatusContains(bosDTO.getOrderStatus()))
+					.and(BookingSpecification.totalPriceContains(bosDTO.getTotalPrice()));
+		
+		Pageable pageable = MyPageRequest.of(boDTO.getPageNumber(), 10, boDTO.getSelectedSort(), boDTO.getAttrOrderBy());
+		Page<BookingOrder> page = bookingRepo.findAll(spec, pageable);
+		List<BookingOrder> bookingOrders = page.getContent();
+		List<BookingOrderDTO> boDTOs = new ArrayList<>();
+		for(BookingOrder bo : bookingOrders) {
+			BookingOrderDTO responseBoDTO = new BookingOrderDTO();
+			BeanUtils.copyProperties(bo, responseBoDTO);
+			boDTOs.add(responseBoDTO);		
+		}
+		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		
+		return Result.success(new PageImpl<>(boDTOs, newPageable, page.getTotalElements()));
 	}
 
 }
