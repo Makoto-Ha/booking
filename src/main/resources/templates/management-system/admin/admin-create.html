@@ -2,23 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<<<<<<< HEAD
 <title>roomtype-create</title>
 <link rel="stylesheet"
 	th:href="@{/management-system/common/css/index.css}">
 <link rel="stylesheet"
 	th:href="@{/management-system/booking/css/booking.css}">
+=======
+<title>attraction-create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 </head>
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
+<<<<<<< HEAD
 			<form class="form" action="../create" method="post"
 				enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="admin-account">新增員工帳號</label> <input type="text"
 						id="admin-account" name="adminAccount" placeholder="輸入內容">
 				</div>
+=======
+			<form class="form" action="../create" method="post" enctype="multipart/form-data">
+		       <div class="form-group">
+					<label for="admin-account">新增員工帳號</label> <input type="text"
+						id="admin-account" name="adminAccount" placeholder="輸入內容">
+				</div>			
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 				<div class="form-group">
 					<label for="admin-password">新增員工密碼</label> <input type="text"
 						id="admin-password" name="adminPassword" placeholder="輸入內容">
@@ -46,6 +60,7 @@
 						<option value="0">離職</option>
 					</select>
 				</div>
+<<<<<<< HEAD
 				<div class="form-group">
 					<label>上傳圖片</label>
 					<div class="upload-container">
@@ -65,6 +80,14 @@
 		            <button type="submit" class="submit" id="submit" disabled>新增</button>
 		            <button type="button" class="cancel">取消</button>
 		        </div>
+=======
+
+
+				<div class="form-group">
+					<button type="submit">確定</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 		    </form>
 		</div>
 	</div>

@@ -38,6 +38,7 @@ public class Admin implements Serializable {
 	@Column(name = "admin_password", length = 100)
 	private String adminPassword;
 
+<<<<<<< HEAD
 	@Column(name = "verification_token", length = 100)
 	private String verificationToken;
 
@@ -48,11 +49,17 @@ public class Admin implements Serializable {
 	private Integer emailVerified;
 	@Column(name = "img_file")
 	private String imgFile;
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
 	public Admin() {
 		super();
 	}
 
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
 			Integer adminStatus) {
 		this.adminId = adminId;
@@ -176,6 +183,7 @@ public class Admin implements Serializable {
 		return emailVerified;
 	}
 
+<<<<<<< HEAD
 	public void setEmailVerified(Integer emailVerified) {
 		this.emailVerified = emailVerified;
 	}
@@ -250,4 +258,12 @@ public class Admin implements Serializable {
 		this.emailVerified = emailVerified;
 	}
 
+=======
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 }

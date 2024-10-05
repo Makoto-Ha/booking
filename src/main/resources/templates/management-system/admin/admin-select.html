@@ -2,13 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<<<<<<< HEAD
 <title>create</title>
+=======
+<title>attraction-select</title>
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 <link rel="stylesheet"
 	th:href="@{/management-system/common/css/index.css}">
 <link rel="stylesheet"
 	th:href="@{/management-system/booking/css/booking.css}">
+<<<<<<< HEAD
 <link rel="stylesheet"
 	th:href="@{/management-system/booking/css/roomtype-select.css}">
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 </head>
 <body>
 	<div class="container">
@@ -18,6 +25,7 @@
 			<form class="form" action="../select">
 				<div class="form-group">
 					<label for="adminId">管理員編號</label> <input type="text" id="adminId"
+<<<<<<< HEAD
 						name="adminId">
 				</div>
 				<div class="form-group">
@@ -35,12 +43,37 @@
 				<div class="form-group">
 					<label for="hiredate">到職日</label> <input type="date" id="hiredate"
 						name="hiredate">
+=======
+						name="adminId" th:value="${adminDTO.adminId}">
+				</div>
+				<div class="form-group">
+					<label for="adminAccount">管理員帳號</label> <input type="text"
+						id="adminAccount" name="adminAccount"
+						th:value="${adminDTO.adminAccount}">
+				</div>
+				<div class="form-group">
+					<label for="adminName">管理員姓名</label> <input type="text"
+						id="adminName" name="adminName" th:value="${adminDTO.adminName}">
+				</div>
+				<div class="form-group">
+					<label for="adminMail">管理員信箱</label> <input type="email"
+						id="adminMail" name="adminMail" th:value="${adminDTO.adminMail}">
+				</div>
+				<div class="form-group">
+					<label for="hiredate">到職日</label> <input type="date" id="hiredate"
+						name="hiredate" th:value="${adminDTO.hiredate}">
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 				</div>
 				<div class="form-group">
 					<label for="adminStatus">管理員狀態</label> <select id="adminStatus"
 						name="adminStatus">
+<<<<<<< HEAD
 						<option value="1" >在職</option>
 						<option value="0" >離職</option>
+=======
+						<option value="1" th:selected="${adminDTO.adminStatus == 1}">在職</option>
+						<option value="0" th:selected="${adminDTO.adminStatus == 0}">離職</option>
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 					</select>
 				</div>
 				<div class="form-group">

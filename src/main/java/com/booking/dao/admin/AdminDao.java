@@ -20,16 +20,24 @@ public interface AdminDao {
      * @param admin
      * @return DaoResult<List<Admin>>
      */
+<<<<<<< HEAD
   DaoResult<List<Admin>> dynamicQuery(Admin admin, Map<String, Object> extraValues);
+=======
+  DaoResult<List<Admin>> dynamicQuery(Admin admin);
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
     /**
      * 根據姓名查詢管理員
      * @param adminName
      * @return DaoResult<List<Admin>>
      */
+<<<<<<< HEAD
   DaoResult<List<Admin>> getAdminsByName(String adminName);
   
   
+=======
+  DaoResult<List<Admin>> getAdminByName(String adminName);
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
     /**
      * 根據ID獲取管理員
@@ -43,7 +51,11 @@ public interface AdminDao {
      * @param admin
      * @return DaoResult<Integer>
      */
+<<<<<<< HEAD
  DaoResult<?> addAdmin(Admin admin);
+=======
+ DaoResult<Integer> addAdmin(Admin admin);
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
     /**
      * 軟刪除管理員

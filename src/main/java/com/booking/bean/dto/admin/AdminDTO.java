@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 import jakarta.persistence.Column;
 
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 public class AdminDTO {
 	private Integer adminId;
 	private String adminAccount;
@@ -16,6 +19,7 @@ public class AdminDTO {
 	private String adminName;
 	private LocalDate hiredate;
 	private Integer adminStatus;
+<<<<<<< HEAD
 	private String adminPassword;
 	private String verificationToken;
 	private String resetPasswordToken;
@@ -68,6 +72,12 @@ public class AdminDTO {
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
+=======
+
+	private Integer pageNumber = 1;
+	private String attrOrderBy = "adminId";
+	private Boolean selectedSort = true;
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
 
 
@@ -145,6 +155,11 @@ public class AdminDTO {
 		this.adminStatus = adminStatus;
 	}
 
+<<<<<<< HEAD
+=======
+	
+
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	public Integer getPageNumber() {
 		return pageNumber;
 	}
@@ -169,6 +184,7 @@ public class AdminDTO {
 		this.selectedSort = selectedSort;
 	}
 
+<<<<<<< HEAD
 	public Integer getEmailVerified() {
 		return emailVerified;
 	}
@@ -212,21 +228,46 @@ public class AdminDTO {
 			Integer emailVerified, String imgFile, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.adminId = adminId;
+=======
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus,  Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
 		this.adminAccount = adminAccount;
 		this.adminMail = adminMail;
 		this.adminName = adminName;
 		this.hiredate = hiredate;
 		this.adminStatus = adminStatus;
-		this.adminPassword = adminPassword;
-		this.verificationToken = verificationToken;
-		this.resetPasswordToken = resetPasswordToken;
-		this.emailVerified = emailVerified;
-		this.imgFile = imgFile;
+	
 		this.pageNumber = pageNumber;
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
 
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus
+			, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+<<<<<<< HEAD
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.imgFile = imgFile;
+=======
+		
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+<<<<<<< HEAD
 
 
 
@@ -251,4 +292,6 @@ public class AdminDTO {
 
 
 	
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 }

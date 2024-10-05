@@ -6,24 +6,34 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
 import java.util.UUID;
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.core.io.UrlResource;
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+<<<<<<< HEAD
 import org.springframework.security.crypto.password.PasswordEncoder;
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.bean.dto.attraction.AttractionDTO;
+<<<<<<< HEAD
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.bean.pojo.attraction.Attraction;
@@ -34,6 +44,14 @@ import com.booking.dao.attraction.AttractionSpecification;
 import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyModelMapper;
+=======
+import com.booking.bean.pojo.admin.Admin;
+import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.dao.admin.AdminRepository;
+import com.booking.dao.admin.AdminSpecification;
+import com.booking.dao.attraction.AttractionSpecification;
+import com.booking.utils.DaoResult;
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 import com.booking.utils.UploadImageFile;
@@ -44,8 +62,11 @@ public class AdminService {
 
 	@Autowired
 	private AdminRepository adminRepo;
+<<<<<<< HEAD
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
 	public Admin register(Admin admin) {
 		// 加密密码
@@ -121,7 +142,11 @@ public class AdminService {
 	public Result<PageImpl<AdminDTO>> findAdmins(AdminDTO adminDTO) {
 		Specification<Admin> spec = Specification.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
 				.and(AdminSpecification.nameContains(adminDTO.getAdminName()))
+<<<<<<< HEAD
 				.and(AdminSpecification.mailContains(adminDTO.getAdminMail()))
+=======
+				.and(AdminSpecification.hiredateEquals(adminDTO.getHiredate()))
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 				.and(AdminSpecification.statusEquals(adminDTO.getAdminStatus()));
 
 		Pageable pageable = MyPageRequest.of(adminDTO.getPageNumber(), 10, adminDTO.getSelectedSort(),
@@ -136,6 +161,7 @@ public class AdminService {
 
 			BeanUtils.copyProperties(admin, responseAdminDTO);
 			adminsDTOs.add(responseAdminDTO);
+<<<<<<< HEAD
 
 		}
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
@@ -166,6 +192,12 @@ public class AdminService {
 		}
 
 		return Result.success(list);
+=======
+
+		}
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		return Result.success(new PageImpl<>(adminsDTOs, newPageable, page.getTotalElements()));
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	}
 
 	/**
@@ -188,6 +220,7 @@ public class AdminService {
 	/**
 	 *
 	 * 
+<<<<<<< HEAD
 	 * @param 
 	 * @return
 	 */
@@ -205,6 +238,13 @@ public class AdminService {
 		
 		BeanUtils.copyProperties(adminDTO, admin);
 		
+=======
+	 * @param
+	 * @return
+	 */
+	@Transactional
+	public Result<String> saveAdmin(Admin admin) {
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 		adminRepo.save(admin);
 
 		return Result.success("新增管理員成功");
@@ -216,16 +256,27 @@ public class AdminService {
 	 * @param adminId
 	 * @return
 	 */
+<<<<<<< HEAD
 	@Transactional
 	public Result<String> softRemoveAdmin(Integer adminId) {
 		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
 		if (!optionalAdmin.isPresent()) {
 			return Result.failure("管理員狀態更新失敗");
+=======
+	public Result<Integer> softRemoveAdmin(Integer adminId) {
+		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
+		if (!optionalAdmin.isPresent()) {
+			return Result.failure("軟刪除管理員失敗，找不到該管理員");
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 		}
 		Admin admin = optionalAdmin.get();
 		admin.setAdminStatus(0);
 		adminRepo.save(admin);
+<<<<<<< HEAD
 		return Result.success("管理員狀態更新成功");
+=======
+		return Result.success(adminId);
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	}
 
 
@@ -234,6 +285,7 @@ public class AdminService {
 	 * @param attractionDTO
 	 * @return
 	 */
+<<<<<<< HEAD
 	public Result<String> updateAdmin(AdminDTO adminDTO, MultipartFile imageFile) {
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		
@@ -294,6 +346,41 @@ public class AdminService {
 			e.printStackTrace();
 		}
 
+=======
+	public Result<String> updateAdmin(Admin admin) {
+		DaoResult<Admin> daoResult = adminRepo.getAdminById(admin.getAdminId());
+
+		if (daoResult.isFailure() || daoResult.getData() == null) {
+			return Result.failure("更新失敗，找不到該管理員");
+		}
+
+		Admin oldAdmin = daoResult.getData();
+
+		if (admin.getAdminAccount() == null || admin.getAdminAccount().isEmpty()) {
+			admin.setAdminAccount(oldAdmin.getAdminAccount());
+		}
+
+		if (admin.getAdminPassword() == null || admin.getAdminPassword().isEmpty()) {
+			admin.setAdminPassword(oldAdmin.getAdminPassword());
+		}
+
+		if (admin.getAdminName() == null || admin.getAdminName().isEmpty()) {
+			admin.setAdminName(oldAdmin.getAdminName());
+		}
+
+		if (admin.getAdminMail() == null || admin.getAdminMail().isEmpty()) {
+			admin.setAdminMail(oldAdmin.getAdminMail());
+		}
+
+		if (admin.getHiredate() == null) {
+			admin.setHiredate(oldAdmin.getHiredate());
+		}
+
+		if (admin.getAdminStatus() == null) {
+			admin.setAdminStatus(oldAdmin.getAdminStatus());
+		}
+
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 		DaoResult<?> updateAdminResult = adminRepo.updateAdmin(admin);
 		if (updateAdminResult.isFailure()) {
 			return Result.failure("更新失敗");
@@ -301,7 +388,11 @@ public class AdminService {
 		return Result.success("更新景點成功");
 	}
 
+<<<<<<< HEAD
 	/////////////////////////////////////////////////////////////
+=======
+	//////////////////////////////////////////////////////
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	public Result<AdminDTO> loginAdmin(String adminAccount, String adminPassword) {
 		return adminRepo
 				.findOne(AdminSpecification.accountContains(adminAccount)
@@ -330,6 +421,29 @@ public class AdminService {
 		AdminDTO dto = new AdminDTO();
 		BeanUtils.copyProperties(admin, dto);
 		return dto;
+<<<<<<< HEAD
+	}
+
+	private Admin convertToEntity(AdminDTO dto) {
+		Admin admin = new Admin();
+		BeanUtils.copyProperties(dto, admin);
+		return admin;
+	}
+
+	private void updateAdminFields(Admin admin, AdminDTO dto) {
+		if (dto.getAdminAccount() != null)
+			admin.setAdminAccount(dto.getAdminAccount());
+		if (dto.getAdminName() != null)
+			admin.setAdminName(dto.getAdminName());
+		if (dto.getAdminMail() != null)
+			admin.setAdminMail(dto.getAdminMail());
+		if (dto.getHiredate() != null)
+			admin.setHiredate(dto.getHiredate());
+		if (dto.getAdminStatus() != null)
+			admin.setAdminStatus(dto.getAdminStatus());
+		// Don't update password here for security reasons
+=======
+>>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	}
 
 	private Admin convertToEntity(AdminDTO dto) {
