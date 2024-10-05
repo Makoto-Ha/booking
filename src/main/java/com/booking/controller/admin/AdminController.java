@@ -2,8 +2,11 @@ package com.booking.controller.admin;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
 
 import com.booking.bean.pojo.admin.Admin;
+import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.bean.dto.admin.AdminDTO;
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.service.admin.AdminService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Listable;
@@ -27,136 +32,89 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/management/admin")
 public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
 
 	/**
-	 * 返回指定管理員的 JSON 數據
+	 * 轉到管理員首頁
+	 * 
+	 * @param model
 	 */
-	@GetMapping("/json/{id}")
-	@ResponseBody
-	public String getAdminJSON(@PathVariable("id") Integer adminId) {
-		Result<AdminDTO> adminServiceResult = adminService.getAdminById(adminId);
-		if (adminServiceResult.isFailure()) {
-			return null;
+	@GetMapping
+	private String admin(Model model) {
+
+		AdminDTO adminDTO = new AdminDTO();
+		Result<PageImpl<AdminDTO>> findAdminAllResult = adminService.findAdminAll(adminDTO);
+		if (findAdminAllResult.isFailure()) {
+			return "";
 		}
-		return JsonUtil.toJson(adminServiceResult.getData());
+		Page<AdminDTO> page = findAdminAllResult.getData();
+		model.addAttribute("adminDTO", adminDTO);
+		model.addAttribute("page", page);
+		return "management-system/admin/admin-list";
 	}
 
 	/**
 	 * 轉到查詢
-	 * 
-	 * @return
-	 * @throws ServletException
-	 * @throws IOException
 	 */
-	@GetMapping("/select/jsp")
-	private String sendSelectJsp() 
-			throws ServletException, IOException {
-		return "/adminsystem/admin/admin-select";
+	@GetMapping("/select/page")
+	private String sendSelectPage() {
+		return "/management-system/admin/admin-select";
+	}
+
+	
+	/**
+	 * 轉去create-page
+	 */
+	@GetMapping("/create/page")
+	private String sendCreatePage() {
+		return "management-system/admin/admin-create";
 	}
 
 	/**
+	 * 轉去edit-page
+	 * 
+	 * @param
 	 * @param model
-	 * @return
 	 */
-	@GetMapping("")
-	public String adminIndex(Model model) {
-		Result<List<Listable>> adminServiceResult = adminService.getAdminAll();
-		if (adminServiceResult.isFailure()) {
-			return "";
-		}
-		List<Listable> admins = adminServiceResult.getData();
-		model.addAttribute("lists", admins);
-		model.addAttribute("pageInfos", AdminDTO.pageInfos);
-		model.addAttribute("listInfos", AdminDTO.listInfos);
-		model.addAttribute("manageListName",AdminDTO.manageListName);
-		return "adminsystem/index";
-	}
-
-	/**
-	 * 轉去create.jsp
-	 * 
-	 * @return
-	 */
-	@GetMapping("/create/jsp")
-	private String sendCreateJsp() throws ServletException, IOException {
-		return "/adminsystem/admin/admin-create";
-	}
-
-	/**
-	 * 轉去edit.jsp
-	 * 
-	 * @param session
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("/edit/jsp")
-	private String sendEditJsp(@RequestParam Integer adminId, HttpSession session, Model model) {
+	@GetMapping("/edit/page")
+	private String sendEditPage(@RequestParam Integer adminId, HttpSession session, Model model) {
 		session.setAttribute("adminId", adminId);
-		Result<AdminDTO> adminServiceResult = adminService.getAdminById(adminId);
+		Result<AdminDTO> adminServiceResult = adminService.findAdminById(adminId);
 
 		if (adminServiceResult.isFailure()) {
 			return "";
 		}
 
 		model.addAttribute("admin", adminServiceResult.getData());
-		return "/adminsystem/admin/admin-edit";
+		return "/management-system/admin/admin-edit";
 	}
 
-//	/**
-//	 * 模糊查詢管理員
-//	 */
-//	@PostMapping("/select")
-//	public String selectAdmins(@RequestParam(value = "admin-capacity", required = false) Integer adminId,
-//			@RequestParam(value = "admin-account", required = false) String adminAccount,
-//			@RequestParam(value = "admin-name", required = false) String adminName,
-//			@RequestParam(value = "admin-mail", required = false) String adminMail,
-//			@RequestParam(value = "hiredate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate hireDate,
-//			@RequestParam(value = "admin-status", required = false) Integer adminStatus, Model model) {
-//
-//		Admin admin = new Admin(adminId, adminAccount, adminName, adminMail, hireDate, adminStatus);
-//		Result<List<Listable>> adminServiceResult = adminService.getAdmins(admin);
-//
-//		if (!adminServiceResult.isSuccess()) {
-//			model.addAttribute("errorMessage", adminServiceResult.getMessage());
-//			return "error";
-//		}
-//
-//		model.addAttribute("lists", adminServiceResult.getData());
-//		model.addAttribute("pageInfos", AdminDTO.pageInfos);
-//		model.addAttribute("listInfos", AdminDTO.listInfos);
-//		return "adminsystem/index";
-//	}
-
-	
 	/**
+	 * 模糊查詢
 	 * 
-	 * 新增
-	 * @param admin
-	 * @param model
-	 * @param request
-	 * @return
+	 * @param
+	 * @param
 	 */
-	@PostMapping("/create")
-	public String createAdmin(Admin admin, Model model, HttpRequestHandlerServlet request) {
-		// 檢查帳號是否已存在
-		Result<Admin> checkResult = adminService.checkAccountExists(admin.getAdminAccount());
-		if (checkResult.isFailure()) {
-			model.addAttribute("errorMessage", "此帳號已存在");
-			return "adminsystem/admin/admin-create";
-		}
-		// 添加新管理員
-		Result<Integer> adminServiceResult = adminService.addAdmin(admin);
-		if (!adminServiceResult.isSuccess()) {
-			model.addAttribute("errorMessage", adminServiceResult.getMessage());
-			return "adminsystem/admin/admin-create";
+	@GetMapping("/select")
+	private String select(@RequestParam Map<String, String> requestParameters, AdminDTO adminDTO, Model model) {
+
+		Result<PageImpl<AdminDTO>> adminServiceResult = adminService.findAdmins(adminDTO);
+
+		if (adminServiceResult.isFailure()) {
+			return "";
 		}
 
-		return "redirect:/admin";
+		Page<AdminDTO> page = adminServiceResult.getData();
+
+		model.addAttribute("requestParameters", requestParameters);
+		model.addAttribute("adminDTO", adminDTO);
+		model.addAttribute("page", page);
+
+		return "/management-system/admin/admin-list";
 	}
 
 	/**
@@ -172,6 +130,23 @@ public class AdminController {
 		return "redirect:/admin";
 	}
 
+	/**
+	 * 新增管理員
+	 * 
+	 * @param 
+	 */
+	   @PostMapping("/create")
+	    public String createAdmin(@ModelAttribute Admin admin, Model model) {
+	        if (adminService.checkAccountExists(admin.getAdminAccount()) != null) {
+	            model.addAttribute("errorMessage", "此帳號已存在");
+	            return "management-system/admin/admin-create";
+	        }
+	        adminService.saveAdmin(admin);
+	        return "redirect:/management/admin";
+	    }
+	
+	
+
 	@PostMapping("/update")
 	private String update(Admin admin, @SessionAttribute Integer adminId) {
 		admin.setAdminId(adminId);
@@ -180,62 +155,62 @@ public class AdminController {
 		if (result.isFailure()) {
 			return "";
 		}
-		return "redirect:/admin";
+		return "redirect:/management/admin";
 	}
 
-	////////////////////////////////////////////////////
-
-	/**
-	 * 顯示登入表單
-	 */
-	@GetMapping("/login")
-	public String showLoginForm() {
-		return "adminsystem/admin/login";
-	}
-
-	/**
-	 * 處理登入請求
-	 */
-	@PostMapping("/login")
-	public String loginAdmin(@RequestParam("admin-account") String adminAccount,
-			@RequestParam("admin-password") String adminPassword, Model model, HttpSession session) {
-		Result<Admin> loginResult = adminService.loginAdmin(adminAccount, adminPassword);
-		if (!loginResult.isSuccess()) {
-			model.addAttribute("errorMessage", loginResult.getMessage());
-			return "adminsystem/admin/login";
-		}
-		// 登入成功，將管理員信息存入 Session
-		session.setAttribute("admin", loginResult.getData());
-		return "redirect:/admin";
-	}
-
-	/**
-	 * 顯示註冊表單
-	 */
-	@GetMapping("/register")
-	public String showRegisterForm(Model model) {
-		model.addAttribute("admin", new Admin());
-		return "adminsystem/admin/register";
-	}
-
-	/**
-	 * 處理註冊請求
-	 */
-	@PostMapping("/register")
-	public String registerAdmin(@ModelAttribute Admin admin, Model model) {
-		Result<Admin> checkResult = adminService.checkAccountExists(admin.getAdminAccount());
-		if (!checkResult.isSuccess()) {
-			model.addAttribute("errorMessage", checkResult.getMessage());
-			return "adminsystem/admin/register";
-		}
-
-		Result<Integer> addResult = adminService.addNewAdmin(admin);
-		if (!addResult.isSuccess()) {
-			model.addAttribute("errorMessage", "註冊失敗");
-			return "adminsystem/admin/register";
-		}
-
-		return "redirect:/admin/login";
-	}
+	//////////////////////////////////////////////////////////////////////////////
+//
+//	/**
+//	 * 顯示登入表單
+//	 */
+//	@GetMapping("/login")
+//	public String showLoginForm() {
+//		return "adminsystem/admin/login";
+//	}
+//
+//	/**
+//	 * 處理登入請求
+//	 */
+//	@PostMapping("/login")
+//	public String loginAdmin(@RequestParam("admin-account") String adminAccount,
+//			@RequestParam("admin-password") String adminPassword, Model model, HttpSession session) {
+//		Result<Admin> loginResult = adminService.loginAdmin(adminAccount, adminPassword);
+//		if (!loginResult.isSuccess()) {
+//			model.addAttribute("errorMessage", loginResult.getMessage());
+//			return "adminsystem/admin/login";
+//		}
+//		// 登入成功，將管理員信息存入 Session
+//		session.setAttribute("admin", loginResult.getData());
+//		return "redirect:/admin";
+//	}
+//
+//	/**
+//	 * 顯示註冊表單
+//	 */
+//	@GetMapping("/register")
+//	public String showRegisterForm(Model model) {
+//		model.addAttribute("admin", new Admin());
+//		return "adminsystem/admin/register";
+//	}
+//
+//	/**
+//	 * 處理註冊請求
+//	 */
+//	@PostMapping("/register")
+//	public String registerAdmin(@ModelAttribute Admin admin, Model model) {
+//		Result<Admin> checkResult = adminService.checkAccountExists(admin.getAdminAccount());
+//		if (!checkResult.isSuccess()) {
+//			model.addAttribute("errorMessage", checkResult.getMessage());
+//			return "adminsystem/admin/register";
+//		}
+//
+//		Result<Integer> addResult = adminService.addNewAdmin(admin);
+//		if (!addResult.isSuccess()) {
+//			model.addAttribute("errorMessage", "註冊失敗");
+//			return "adminsystem/admin/register";
+//		}
+//
+//		return "redirect:/admin/login";
+//	}
 
 }

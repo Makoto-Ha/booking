@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>attraction-create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<form class="form" action="../create" method="post" enctype="multipart/form-data">
+		       <div class="form-group">
+					<label for="admin-account">新增員工帳號</label> <input type="text"
+						id="admin-account" name="adminAccount" placeholder="輸入內容">
+				</div>			
+				<div class="form-group">
+					<label for="admin-password">新增員工密碼</label> <input type="text"
+						id="admin-password" name="adminPassword" placeholder="輸入內容">
+				</div>
+
+				<div class="form-group">
+					<label for="admin-name">新增員工姓名</label> <input type="text"
+						id="admin-name" name="adminName" placeholder="輸入內容">
+				</div>
+
+				<div class="form-group">
+					<label for="admin-mail">新增員工信箱</label> <input type="text"
+						id="admin-mail" name="adminMail" placeholder="輸入內容">
+				</div>
+
+				<div class="form-group">
+					<label for="hiredate">新增到職日期</label> <input type="date"
+						id="hiredate" name="hiredate" placeholder="選擇日期">
+				</div>
+
+				<div class="form-group">
+					<label for="adminStatus">新增員工狀態</label> <select id="adminStatus"
+						name="adminStatus">
+						<option value="1">在職</option>
+						<option value="0">離職</option>
+					</select>
+				</div>
+
+
+				<div class="form-group">
+					<button type="submit">確定</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+		    </form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
+	<script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+</body>
+</html>
