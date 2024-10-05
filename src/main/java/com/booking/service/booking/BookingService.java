@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
+<<<<<<< HEAD
 import com.booking.bean.dto.booking.BookingOrderItemDTO;
+=======
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
@@ -28,7 +31,10 @@ import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.BookingOrderItemRespository;
 import com.booking.dao.booking.BookingRepository;
 import com.booking.dao.booking.BookingSpecification;
+<<<<<<< HEAD
 import com.booking.dao.booking.RoomtypeRepository;
+=======
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -228,7 +234,11 @@ public class BookingService {
 					.and(BookingSpecification.checkOutDateContains(bosDTO.getFromCheckOutDate(), bosDTO.getToCheckOutDate()))
 					.and(BookingSpecification.checkInTimeContains(bosDTO.getFromCheckInTime(), bosDTO.getToCheckInTime()))
 					.and(BookingSpecification.checkOutTimeContains(bosDTO.getFromCheckInTime(), bosDTO.getToCheckInTime()))
+<<<<<<< HEAD
 					.and(BookingSpecification.orderNumberContains(bosDTO.getOrderNumber(), bosDTO.getBookingName()))
+=======
+					.and(BookingSpecification.orderNumberContains(bosDTO.getOrderNumber()))
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 					.and(BookingSpecification.orderStatusContains(bosDTO.getOrderStatus()))
 					.and(BookingSpecification.totalPriceContains(bosDTO.getTotalPrice()));
 		
@@ -238,15 +248,20 @@ public class BookingService {
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bo : bookingOrders) {
 			BookingOrderDTO responseBoDTO = new BookingOrderDTO();
+<<<<<<< HEAD
 			List<BookingOrderItem> bois = bo.getBookingOrderItems();
 			BeanUtils.copyProperties(bo, responseBoDTO);
 			responseBoDTO.setTotalPrice(calcTotalPrice(bois));
+=======
+			BeanUtils.copyProperties(bo, responseBoDTO);
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 			boDTOs.add(responseBoDTO);		
 		}
 		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		
 		return Result.success(new PageImpl<>(boDTOs, newPageable, page.getTotalElements()));
 	}
+<<<<<<< HEAD
 	
 	// 計算訂單總金額
 	private Long calcTotalPrice(List<BookingOrderItem> bois) {
@@ -256,5 +271,7 @@ public class BookingService {
 		}
 		return totalPrice;
 	}
+=======
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 
 }

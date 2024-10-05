@@ -104,6 +104,42 @@ public class BookingController {
 			return "";
 		}
 		
+<<<<<<< HEAD
+=======
+		model.addAttribute("bookingOrder", bookingOrder);
+		return "management-system/booking/order-edit";
+	}
+	
+	/**
+	 * 轉送到查詢頁面
+	 * @param param
+	 * @return
+	 */
+	@GetMapping("/select/page")
+	public String sendOrderSearchPage() {
+		return "management-system/booking/order-select";
+	}
+	
+	
+	/**
+	 * 模糊查詢預定訂單
+	 * @param bookingOrderDTO
+	 * @return
+	 */
+	@GetMapping("/select")
+	private String findBookingOrders(
+			@RequestParam Map<String, String> requestParameters,
+			BookingOrderSearchDTO bookingOrderSearchDTO,
+			// 創建BookingOrderDTO主要用於分頁資訊
+			BookingOrderDTO bookingOrderDTO,
+			Model model
+	) {
+		Result<PageImpl<BookingOrderDTO>> findBookingOrdersResult = bookingService.findBookingOrders(bookingOrderSearchDTO, bookingOrderDTO);
+		if(findBookingOrdersResult.isFailure()) {
+			return "";
+		}
+		
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		PageImpl<BookingOrderDTO> page = findBookingOrdersResult.getData();
 		
 		model.addAttribute("requestParameters", requestParameters);
@@ -120,12 +156,22 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/create")
+<<<<<<< HEAD
 	@ResponseBody
 	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO) {
 		
 		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
 	
 		return saveBookingOrderResult.getMessage();
+=======
+	private String saveBookingOrder(BookingOrderDTO bookingOrderDTO) {
+		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(bookingOrderDTO);
+		if(saveBookingOrderResult.isFailure()) {
+			return "";
+		}
+		
+		return "redirect:/management/booking";
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	}
 	
 	/**

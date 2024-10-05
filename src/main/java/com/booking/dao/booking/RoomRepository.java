@@ -10,7 +10,10 @@ import com.booking.bean.dto.booking.RoomDTO;
 import com.booking.bean.pojo.booking.Room;
 
 public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecificationExecutor<Room> {
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	// 查全部
 	@Query("SELECT new com.booking.bean.dto.booking.RoomDTO(r.roomId, r.roomStatus, r.roomDescription, r.roomNumber, rt.roomtypeName, rt.roomtypeId) FROM Room r JOIN r.roomtype rt")
 	Page<RoomDTO> findRoomDTOAll(Pageable pageable);

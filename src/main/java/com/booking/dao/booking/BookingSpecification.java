@@ -85,6 +85,7 @@ public class BookingSpecification {
 	}
 
 	// 根據訂單編號進行模糊查詢
+<<<<<<< HEAD
 	public static Specification<BookingOrder> orderNumberContains(String orderNumber, String bookingName) {
 		return (Root<BookingOrder> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(orderNumber != null && !orderNumber.isEmpty()) {
@@ -94,6 +95,15 @@ public class BookingSpecification {
 			}
 
 			return builder.conjunction();
+=======
+	public static Specification<BookingOrder> orderNumberContains(String orderNumber) {
+		return (Root<BookingOrder> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if (orderNumber == null || orderNumber.isEmpty()) {
+				return builder.conjunction();
+			}
+
+			return builder.like(root.get("orderNumber"), "%" + orderNumber + "%");
+>>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		};
 	}
 	
