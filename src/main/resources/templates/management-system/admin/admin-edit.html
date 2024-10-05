@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>attraction-edit</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<form class="form" action="../update" method="post" enctype="multipart/form-data">
+		         <div class="form-group">
+		            <label for="adminId">管理員編號</label>
+		            <input type="text" id="adminId" name="admin-id" placeholder="輸入管理員編號" >
+		        </div> 
+		
+		        <div class="form-group">
+		            <label for="adminAccount">管理員帳號</label>
+		            <input type="text" id="adminAccount" name="adminAccount" placeholder="輸入管理員帳號" >
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="adminPassword">管理員密碼</label>
+		            <input type="password" id="adminPassword" name="adminPassword" placeholder="輸入管理員密碼" >
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="adminName">管理員姓名</label>
+		            <input type="text" id="adminName" name="adminName" placeholder="輸入管理員姓名" >
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="adminMail"> 管理員信箱</label>
+		            <input type="email" id="adminMail" name="adminMail" placeholder="輸入管理員信箱" >
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="hiredate">到職日期</label>
+		            <input type="date" id="hiredate" name="hiredate" placeholder="選擇日期" >
+		        </div>
+		
+		        <div class="form-group">
+		            <button type="submit" style="background-color: #007bff;">保存</button>
+		            <button type="button" class="cancel">取消</button>
+		    </div>
+		    </form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
+	<script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+</body>
+</html>
+		    

@@ -7,66 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.booking.utils.Listable;
-
-
-
-public class AdminDTO implements Listable {
+public class AdminDTO {
 	private Integer adminId;
 	private String adminAccount;
 	private String adminMail;
 	private String adminName;
 	private LocalDate hiredate;
 	private Integer adminStatus;
-	private Long totalCounts;
 
-	private static String[] attrs = { "adminAccount", "adminName", "adminMail", "hiredate", "adminStatus" };
-	private static String[] attrsChinese = { "管理員帳號", "管理員姓名", "管理員信箱", "到職日期", "管理員狀態" };
-	public static List<Map<String, String>> listInfos = new ArrayList<>();
-
-	private static String[] pages = { "管理員" };
-	private static String[] pageURL = {"/booking/admin"};
-public static List<Map<String, String>> pageInfos = new ArrayList<>();
-	public static String manageListName = "管理員列表";
-
-	static {
-		for (int i = 0; i < attrs.length; i++) {
-			Map<String, String> map = new HashMap<>();
-			map.put("attr", attrs[i]);
-			map.put("attrChinese", attrsChinese[i]);
-			listInfos.add(map);
-		}
-		
-		for(int i=0; i<pages.length; i++) {
-			Map<String, String> map = new HashMap<>();
-			map.put("page", pages[i]);
-			map.put("url", pageURL[i]);
-			pageInfos.add(map);
-		}
-	}
-
-	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
-			Integer adminStatus, Long totalCounts) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-		this.totalCounts = totalCounts;
-	}
-
-	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
-			Long totalCounts) {
-		super();
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-		this.totalCounts = totalCounts;
-	}
+	private Integer pageNumber = 1;
+	private String attrOrderBy = "adminId";
+	private Boolean selectedSort = true;
 
 	public AdminDTO() {
 	}
@@ -119,59 +70,59 @@ public static List<Map<String, String>> pageInfos = new ArrayList<>();
 		this.adminStatus = adminStatus;
 	}
 
-	public String[] getAttrs() {
-		return attrs;
+	
+
+	public Integer getPageNumber() {
+		return pageNumber;
 	}
 
-	public String[] getAttrsChinese() {
-		return attrsChinese;
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 
-	public void setTotalCounts(Long totalCounts) {
-		this.totalCounts = totalCounts;
+	public String getAttrOrderBy() {
+		return attrOrderBy;
 	}
 
-	@Override
-	public String getName() {
-		return adminName;
+	public void setAttrOrderBy(String attrOrderBy) {
+		this.attrOrderBy = attrOrderBy;
 	}
 
-	@Override
-	public Long getTotalCounts() {
-		return totalCounts;
+	public Boolean getSelectedSort() {
+		return selectedSort;
 	}
 
-	@Override
-	public Integer getId() {
-		return adminId;
+	public void setSelectedSort(Boolean selectedSort) {
+		this.selectedSort = selectedSort;
 	}
 
-	@Override
-	public String toString() {
-		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" + adminName
-				+ ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus + ", attrs="
-				+ Arrays.toString(attrs) + ", attrsChinese=" + Arrays.toString(attrsChinese) + "]";
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus,  Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+	
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
 	}
 
-	@Override
-	public Map<String, Object> getAdditionProperties() {
-		Map<String, Object> properties = new HashMap<>();
-		List<String> strs = new ArrayList<>();
-		int maxLength = 5;
-		String comma = "...";
-		strs.add(adminAccount);
-		strs.add(adminName);
-		strs.add(adminMail);
-
-		Object[] subLists = strs.stream().map(s -> s.length() >= maxLength ? s.substring(0, maxLength) + comma : s)
-				.toArray();
-
-		properties.put("管理員帳號", subLists[0]);
-		properties.put("管理員姓名", subLists[1]);
-		properties.put("管理員信箱", subLists[2]);
-		properties.put("到職日期", hiredate);
-		properties.put("管理員狀態", adminStatus);
-
-		return properties;
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus
+			, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
 	}
+
 }
