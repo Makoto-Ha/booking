@@ -33,9 +33,7 @@ public class BookingOrderDTO {
 	
 	public BookingOrderDTO() {}
 	
-	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDate checkInDate,
-			LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime,
-			LocalDateTime createdTime) {
+	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDate checkInDate, LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime, LocalDateTime createdTime) {
 		this.bookingId = bookingId;
 		this.orderNumber = orderNumber;
 		this.orderStatus = orderStatus;

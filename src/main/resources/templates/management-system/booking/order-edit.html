@@ -12,7 +12,6 @@
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
 			<form class="form" action="../update" method="post">
-				
 				<div class="form-group">
 					<label for="order-status">訂單狀態</label> 
 					<input type="text" name="orderStatus" id="order-status" th:value="${bookingOrder.orderStatus}" required>
@@ -41,8 +40,5 @@
 		</div>
 	</div>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
-	<script>
-	
-	</script>
 </body>
 </html>
