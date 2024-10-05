@@ -11,8 +11,7 @@
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../create" method="post">
-						
+			<form class="form" action="../create" method="post">	
 				<div class="form-group">
 					<label for="roomtype-name">房間名稱</label>
 					<input name="roomtypeName" type="text" id="roomtype-name">
@@ -35,10 +34,6 @@
 			</form>
 		</div>
 	</div>
-	<script
-		th:src="@{/management-system/booking/js/booking.js}"></script>
-	<script>
-	
-	</script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
 </body>
 </html>

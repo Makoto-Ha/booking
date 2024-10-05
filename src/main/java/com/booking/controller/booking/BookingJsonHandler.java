@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(path = "/api",  produces = "application/json")
-public class JsonHandler {
+public class BookingJsonHandler {
 	@Autowired
 	private RoomtypeService roomtypeService;
 	

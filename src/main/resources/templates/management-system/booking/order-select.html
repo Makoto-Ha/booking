@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<form class="form" action="../select">	
+				<div class="form-group">
+					<label for="roomtype-name">房間名稱</label>
+					<input name="roomtypeName" type="text" id="roomtype-name">
+				</div>
+				
+				<div class="form-group">
+					<label for="order-number">訂單編號</label>
+					<input name="orderNumber" type="text" id="order-number">
+				</div>
+				
+				<div class="form-group">
+					<label for="total-price">訂單總金額</label>
+					<input name="totalPrice" type="text" id="total-price">
+				</div>
+				
+				<div class="form-group">
+					<label for="order-status">訂單狀態</label>
+					<input name="orderStatus" type="text" id="order-status">
+				</div>
+
+				<div class="form-group">
+					<label for="from-check-in-date">入住日期之後</label> 
+					<input type="date" name="fromCheckInDate" id="from-check-in-date">
+					<label for="to-check-in-date">入住日期之前</label>
+					<input type="date" name="toCheckInDate" id="to-check-in-date">
+				</div>
+				
+				<div class="form-group">
+					<label for="from-check-out-date">退房日期之後</label> 
+					<input type="date" name="fromCheckOutDate" id="from-check-out-date">
+					<label for="to-check-out-date">退房日期之前</label> 
+					<input type="date" name="toCheckOutDate" id="to-check-out-date">
+				</div>
+				
+				<div class="form-group">
+					<label for="from-check-in-time">退房確切時間之後</label> 
+					<input type="date" name="fromCheckInTime" id="from-check-in-time">
+					<label for="to-check-in-time">退房確切時間之前</label> 
+					<input type="date" name="toCheckInTime" id="to-check-in-time">
+				</div>
+				
+				<div class="form-group">
+					<label for="from-check-out-time">退房確切時間之後</label> 
+					<input type="date" name="fromCheckOutTime" id="from-check-out-time">
+					<label for="to-check-out-time">退房確切時間之前</label> 
+					<input type="date" name="toCheckOutTime" id="to-check-out-time">
+				</div>
+
+				<div class="form-group">
+					<button type="submit" class="submit" id="submit">新增</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+</body>
+</html>
