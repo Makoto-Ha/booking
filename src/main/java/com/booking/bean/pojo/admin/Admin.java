@@ -38,12 +38,12 @@ public class Admin implements Serializable {
 	@Column(name = "admin_password", nullable = false, length = 100)
 	private String adminPassword;
 
-	// 默认构造函数
+
 	public Admin() {
 		super();
 	}
 
-	// 构造函数
+	
 	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
 			Integer adminStatus) {
 		this.adminId = adminId;
@@ -139,7 +139,10 @@ public class Admin implements Serializable {
 				+ adminStatus + "]";
 	}
 
-	public boolean isEmpty() {
-		return false;
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
+
+	
 }
