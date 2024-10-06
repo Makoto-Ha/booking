@@ -20,30 +20,28 @@ public class Admin implements Serializable {
 	@Column(name = "admin_id")
 	private Integer adminId;
 
-	@Column(name = "admin_account", nullable = false, length = 30)
+	@Column(name = "admin_account", length = 30)
 	private String adminAccount;
 
-	@Column(name = "admin_name", nullable = false, length = 50)
+	@Column(name = "admin_name", length = 50)
 	private String adminName;
 
-	@Column(name = "admin_mail", nullable = false, length = 100)
+	@Column(name = "admin_mail", length = 100)
 	private String adminMail;
 
-	@Column(name = "hiredate", nullable = false)
+	@Column(name = "hiredate")
 	private LocalDate hiredate;
 
-	@Column(name = "admin_status", nullable = false)
+	@Column(name = "admin_status")
 	private Integer adminStatus;
 
-	@Column(name = "admin_password", nullable = false, length = 100)
+	@Column(name = "admin_password", length = 100)
 	private String adminPassword;
-
 
 	public Admin() {
 		super();
 	}
 
-	
 	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
 			Integer adminStatus) {
 		this.adminId = adminId;
@@ -139,10 +137,8 @@ public class Admin implements Serializable {
 				+ adminStatus + "]";
 	}
 
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	
 }

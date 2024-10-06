@@ -1,6 +1,8 @@
 package com.booking.dao.admin;
 
 import java.util.List;
+import java.util.Map;
+
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.utils.DaoResult;
 
@@ -18,14 +20,14 @@ public interface AdminDao {
      * @param admin
      * @return DaoResult<List<Admin>>
      */
-  DaoResult<List<Admin>> dynamicQuery(Admin admin);
+  DaoResult<List<Admin>> dynamicQuery(Admin admin, Map<String, Object> extraValues);
 
     /**
      * 根據姓名查詢管理員
      * @param adminName
      * @return DaoResult<List<Admin>>
      */
-  DaoResult<List<Admin>> getAdminByName(String adminName);
+  DaoResult<List<Admin>> getAdminsByName(String adminName);
 
     /**
      * 根據ID獲取管理員
@@ -39,7 +41,7 @@ public interface AdminDao {
      * @param admin
      * @return DaoResult<Integer>
      */
- DaoResult<Integer> addAdmin(Admin admin);
+ DaoResult<?> addAdmin(Admin admin);
 
     /**
      * 軟刪除管理員

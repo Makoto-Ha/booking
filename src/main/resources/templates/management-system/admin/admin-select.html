@@ -2,11 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>attraction-select</title>
+<title>create</title>
 <link rel="stylesheet"
 	th:href="@{/management-system/common/css/index.css}">
 <link rel="stylesheet"
 	th:href="@{/management-system/booking/css/booking.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/booking/css/roomtype-select.css}">
 </head>
 <body>
 	<div class="container">
@@ -16,24 +18,23 @@
 			<form class="form" action="../select">
 				<div class="form-group">
 					<label for="adminId">管理員編號</label> <input type="text" id="adminId"
-						name="adminId" th:value="${adminDTO.adminId}">
+						name="adminId">
 				</div>
 				<div class="form-group">
 					<label for="adminAccount">管理員帳號</label> <input type="text"
-						id="adminAccount" name="adminAccount"
-						th:value="${adminDTO.adminAccount}">
+						id="adminAccount" name="adminAccount">
 				</div>
 				<div class="form-group">
 					<label for="adminName">管理員姓名</label> <input type="text"
-						id="adminName" name="adminName" th:value="${adminDTO.adminName}">
+						id="adminName" name="adminName">
 				</div>
 				<div class="form-group">
 					<label for="adminMail">管理員信箱</label> <input type="email"
-						id="adminMail" name="adminMail" th:value="${adminDTO.adminMail}">
+						id="adminMail" name="adminMail">
 				</div>
 				<div class="form-group">
 					<label for="hiredate">到職日</label> <input type="date" id="hiredate"
-						name="hiredate" th:value="${adminDTO.hiredate}">
+						name="hiredate">
 				</div>
 				<div class="form-group">
 					<label for="adminStatus">管理員狀態</label> <select id="adminStatus"

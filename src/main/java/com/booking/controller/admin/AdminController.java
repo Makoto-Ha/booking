@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,14 @@ public class AdminController {
 	private AdminService adminService;
 
 	/**
+	 * 轉到查詢
+	 */
+	@GetMapping("/select/page")
+	private String sendSelectPage() {
+		return "/management-system/admin/admin-select";
+	}
+
+	/**
 	 * 轉到管理員首頁
 	 * 
 	 * @param model
@@ -57,15 +66,6 @@ public class AdminController {
 		return "management-system/admin/admin-list";
 	}
 
-	/**
-	 * 轉到查詢
-	 */
-	@GetMapping("/select/page")
-	private String sendSelectPage() {
-		return "/management-system/admin/admin-select";
-	}
-
-	
 	/**
 	 * 轉去create-page
 	 */
@@ -121,38 +121,38 @@ public class AdminController {
 	 * 刪除管理員
 	 */
 	@PostMapping("/delete")
-	public String deleteAdmin(@RequestParam Integer adminId, Model model) {
-		Result<Integer> adminServiceResult = adminService.softRemoveAdmin(adminId);
+	public ResponseEntity<?> deleteAdmin(@RequestParam Integer adminId) {
+		Result<String> adminServiceResult = adminService.softRemoveAdmin(adminId);
+		String message = adminServiceResult.getMessage();
 		if (adminServiceResult.isFailure()) {
-			model.addAttribute("errorMessage", adminServiceResult.getMessage());
-			return "";
+			return ResponseEntity.badRequest().body(message);
 		}
-		return "redirect:/admin";
+
+		return ResponseEntity.ok(message);
 	}
 
 	/**
 	 * 新增管理員
 	 * 
-	 * @param 
+	 * @param
 	 */
-	   @PostMapping("/create")
-	    public String createAdmin(@ModelAttribute Admin admin, Model model) {
-	        if (adminService.checkAccountExists(admin.getAdminAccount()) != null) {
-	            model.addAttribute("errorMessage", "此帳號已存在");
-	            return "management-system/admin/admin-create";
-	        }
-	        adminService.saveAdmin(admin);
-	        return "redirect:/management/admin";
-	    }
-	
-	
+	@PostMapping("/create")
+	public String saveAdmin(Admin admin) {
+		Result<String> saveAdminResult = adminService.saveAdmin(admin);
+		if (saveAdminResult.isFailure()) {
+			return "";
+		}
+		return "redirect:/management/admin";
+	}
 
+	
+	//更新
 	@PostMapping("/update")
 	private String update(Admin admin, @SessionAttribute Integer adminId) {
 		admin.setAdminId(adminId);
-		Result<String> result = adminService.updateAdmin(admin);
+		Result<String> updateAdminResult = adminService.updateAdmin(admin);
 
-		if (result.isFailure()) {
+		if (updateAdminResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/admin";
