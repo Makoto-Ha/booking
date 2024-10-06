@@ -21,10 +21,14 @@ public interface AdminDao {
      * @return DaoResult<List<Admin>>
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
   DaoResult<List<Admin>> dynamicQuery(Admin admin, Map<String, Object> extraValues);
 =======
   DaoResult<List<Admin>> dynamicQuery(Admin admin);
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+  DaoResult<List<Admin>> dynamicQuery(Admin admin, Map<String, Object> extraValues);
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
     /**
      * 根據姓名查詢管理員
@@ -32,12 +36,16 @@ public interface AdminDao {
      * @return DaoResult<List<Admin>>
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
   DaoResult<List<Admin>> getAdminsByName(String adminName);
   
   
 =======
   DaoResult<List<Admin>> getAdminByName(String adminName);
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+  DaoResult<List<Admin>> getAdminsByName(String adminName);
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
     /**
      * 根據ID獲取管理員
@@ -52,10 +60,14 @@ public interface AdminDao {
      * @return DaoResult<Integer>
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
  DaoResult<?> addAdmin(Admin admin);
 =======
  DaoResult<Integer> addAdmin(Admin admin);
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+ DaoResult<?> addAdmin(Admin admin);
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
     /**
      * 軟刪除管理員

@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.bean.dto.attraction.AttractionDTO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.bean.pojo.attraction.Attraction;
@@ -45,11 +46,16 @@ import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyModelMapper;
 =======
+=======
+import com.booking.bean.dto.booking.RoomtypeDTO;
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.admin.AdminRepository;
 import com.booking.dao.admin.AdminSpecification;
 import com.booking.dao.attraction.AttractionSpecification;
+import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import com.booking.utils.MyPageRequest;
@@ -140,13 +146,18 @@ public class AdminService {
 	 * @return
 	 */
 	public Result<PageImpl<AdminDTO>> findAdmins(AdminDTO adminDTO) {
-		Specification<Admin> spec = Specification.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
+		Specification<Admin> spec = Specification
+				.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
 				.and(AdminSpecification.nameContains(adminDTO.getAdminName()))
+<<<<<<< HEAD
 <<<<<<< HEAD
 				.and(AdminSpecification.mailContains(adminDTO.getAdminMail()))
 =======
 				.and(AdminSpecification.hiredateEquals(adminDTO.getHiredate()))
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+				.and(AdminSpecification.mailContains(adminDTO.getAdminMail()))
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 				.and(AdminSpecification.statusEquals(adminDTO.getAdminStatus()));
 
 		Pageable pageable = MyPageRequest.of(adminDTO.getPageNumber(), 10, adminDTO.getSelectedSort(),
@@ -257,6 +268,7 @@ public class AdminService {
 	 * @return
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	@Transactional
 	public Result<String> softRemoveAdmin(Integer adminId) {
 		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
@@ -264,6 +276,10 @@ public class AdminService {
 			return Result.failure("管理員狀態更新失敗");
 =======
 	public Result<Integer> softRemoveAdmin(Integer adminId) {
+=======
+	@Transactional
+	public Result<String> softRemoveAdmin(Integer adminId) {
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
 		if (!optionalAdmin.isPresent()) {
 			return Result.failure("軟刪除管理員失敗，找不到該管理員");
@@ -273,10 +289,14 @@ public class AdminService {
 		admin.setAdminStatus(0);
 		adminRepo.save(admin);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return Result.success("管理員狀態更新成功");
 =======
 		return Result.success(adminId);
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+		return Result.success("刪除房間類型成功");
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	}
 
 

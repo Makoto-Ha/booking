@@ -21,7 +21,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+<<<<<<< HEAD
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
+=======
+import org.springframework.http.ResponseEntity;
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -182,6 +186,14 @@ public class AdminController {
 	}
 
 	/**
+	 * 轉到查詢
+	 */
+	@GetMapping("/select/page")
+	private String sendSelectPage() {
+		return "/management-system/admin/admin-select";
+	}
+
+	/**
 	 * 轉到管理員首頁
 	 * 
 	 * @param model
@@ -201,6 +213,7 @@ public class AdminController {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * 轉去create-page
 	 */
 	@GetMapping("/create/page")
@@ -219,6 +232,8 @@ public class AdminController {
 
 	
 	/**
+=======
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	 * 轉去create-page
 	 */
 	@GetMapping("/create/page")
@@ -294,6 +309,7 @@ public class AdminController {
 	 * 新增管理員
 	 * 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * @param
 	 */
 	@PostMapping("/create")
@@ -314,19 +330,20 @@ public class AdminController {
 	 */
 =======
 	 * @param 
+=======
+	 * @param
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	 */
-	   @PostMapping("/create")
-	    public String createAdmin(@ModelAttribute Admin admin, Model model) {
-	        if (adminService.checkAccountExists(admin.getAdminAccount()) != null) {
-	            model.addAttribute("errorMessage", "此帳號已存在");
-	            return "management-system/admin/admin-create";
-	        }
-	        adminService.saveAdmin(admin);
-	        return "redirect:/management/admin";
-	    }
-	
-	
+	@PostMapping("/create")
+	public String saveAdmin(Admin admin) {
+		Result<String> saveAdminResult = adminService.saveAdmin(admin);
+		if (saveAdminResult.isFailure()) {
+			return "";
+		}
+		return "redirect:/management/admin";
+	}
 
+<<<<<<< HEAD
 >>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	@PostMapping("/update")
 	private String updateAdminById(AdminDTO adminDTO, @SessionAttribute Integer adminId,
@@ -335,6 +352,16 @@ public class AdminController {
 		Result<String> updateAdminResult = adminService.updateAdmin(adminDTO, imageFile);
 		
 		if(updateAdminResult.isFailure()) {
+=======
+	
+	//更新
+	@PostMapping("/update")
+	private String update(Admin admin, @SessionAttribute Integer adminId) {
+		admin.setAdminId(adminId);
+		Result<String> updateAdminResult = adminService.updateAdmin(admin);
+
+		if (updateAdminResult.isFailure()) {
+>>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 			return "";
 		}
 		return "redirect:/management/admin";
