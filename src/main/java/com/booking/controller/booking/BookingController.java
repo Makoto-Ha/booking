@@ -153,11 +153,12 @@ public class BookingController {
 	 * @param bookingId
 	 * @return
 	 */
-	@PostMapping("delete")
+	@PostMapping("/delete")
 	private ResponseEntity<String> deleteById(Integer bookingId) {
 		Result<String> deleteByBookingIdResult = bookingService.deleteByBookingId(bookingId);
 		
 		String message = deleteByBookingIdResult.getMessage();
+		
 		if(deleteByBookingIdResult.isFailure()) {
 			return ResponseEntity.badRequest().body(message);
 		}

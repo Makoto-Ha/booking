@@ -1,6 +1,8 @@
 package com.booking.bean.pojo.booking;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -42,6 +45,9 @@ public class Room {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "roomtype_id")
 	private Roomtype roomtype;
+	
+	@OneToMany(mappedBy = "room")
+	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
 
 	public Room() {}
 
@@ -110,10 +116,19 @@ public class Room {
 		this.roomtype = roomtype;
 	}
 
+	public List<BookingOrderItem> getBookingOrderItems() {
+		return bookingOrderItems;
+	}
+
+	public void setBookingOrderItems(List<BookingOrderItem> bookingOrderItems) {
+		this.bookingOrderItems = bookingOrderItems;
+	}
+
 	@Override
 	public String toString() {
-		return "Room [roomId=" + roomId + ", roomtypeId=, roomNumber=" + roomNumber + ", roomStatus="
+		return "Room [roomId=" + roomId + ", roomNumber=" + roomNumber + ", roomStatus="
 				+ roomStatus + ", roomDescription=" + roomDescription + ", updatedTime=" + updatedTime
 				+ ", createdTime=" + createdTime + "]";
 	}
+	
 }
