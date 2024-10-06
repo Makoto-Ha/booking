@@ -14,6 +14,7 @@ public class AdminDTO {
 	private String adminName;
 	private LocalDate hiredate;
 	private Integer adminStatus;
+	private String adminPassword;
 
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "adminId";
@@ -21,6 +22,17 @@ public class AdminDTO {
 
 	public AdminDTO() {
 	}
+
+	
+	public String getAdminPassword() {
+		return adminPassword;
+	}
+
+
+	public void setAdminPassword(String adminPassword) {
+		this.adminPassword = adminPassword;
+	}
+
 
 	public Integer getAdminId() {
 		return adminId;
@@ -120,6 +132,22 @@ public class AdminDTO {
 		this.hiredate = hiredate;
 		this.adminStatus = adminStatus;
 		
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
 		this.pageNumber = pageNumber;
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;

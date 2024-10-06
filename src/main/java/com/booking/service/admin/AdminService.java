@@ -17,11 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.bean.dto.attraction.AttractionDTO;
+import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.admin.AdminRepository;
 import com.booking.dao.admin.AdminSpecification;
 import com.booking.dao.attraction.AttractionSpecification;
+import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -66,9 +69,10 @@ public class AdminService {
 	 * @return
 	 */
 	public Result<PageImpl<AdminDTO>> findAdmins(AdminDTO adminDTO) {
-		Specification<Admin> spec = Specification.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
+		Specification<Admin> spec = Specification
+				.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
 				.and(AdminSpecification.nameContains(adminDTO.getAdminName()))
-				.and(AdminSpecification.hiredateEquals(adminDTO.getHiredate()))
+				.and(AdminSpecification.mailContains(adminDTO.getAdminMail()))
 				.and(AdminSpecification.statusEquals(adminDTO.getAdminStatus()));
 
 		Pageable pageable = MyPageRequest.of(adminDTO.getPageNumber(), 10, adminDTO.getSelectedSort(),
@@ -125,7 +129,8 @@ public class AdminService {
 	 * @param adminId
 	 * @return
 	 */
-	public Result<Integer> softRemoveAdmin(Integer adminId) {
+	@Transactional
+	public Result<String> softRemoveAdmin(Integer adminId) {
 		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
 		if (!optionalAdmin.isPresent()) {
 			return Result.failure("軟刪除管理員失敗，找不到該管理員");
@@ -133,7 +138,7 @@ public class AdminService {
 		Admin admin = optionalAdmin.get();
 		admin.setAdminStatus(0);
 		adminRepo.save(admin);
-		return Result.success(adminId);
+		return Result.success("刪除房間類型成功");
 	}
 
 	/**

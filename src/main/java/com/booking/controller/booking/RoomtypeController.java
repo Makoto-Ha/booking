@@ -31,13 +31,14 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/management/roomtype")
-public class RoomtypeController  {
-	
+public class RoomtypeController {
+
 	@Autowired
 	private RoomtypeService roomtypeService;
-	
+
 	/**
 	 * 轉到查詢
+	 * 
 	 * @return
 	 */
 	@GetMapping("/select/page")
@@ -47,6 +48,7 @@ public class RoomtypeController  {
 
 	/**
 	 * 房間類型管理首頁
+	 * 
 	 * @param switchPage
 	 * @param model
 	 * @return
@@ -56,13 +58,13 @@ public class RoomtypeController  {
 		// DTO用於分頁所需數據
 		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
 		Result<PageImpl<RoomtypeDTO>> findRoomtypeAllResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
-		
+
 		if (findRoomtypeAllResult.isFailure()) {
 			return "";
 		}
 
-		Page<RoomtypeDTO> page = findRoomtypeAllResult.getData();	
-		
+		Page<RoomtypeDTO> page = findRoomtypeAllResult.getData();
+
 		model.addAttribute("roomtype", roomtypeDTO);
 		model.addAttribute("page", page);
 		return "management-system/booking/roomtype-list";
@@ -70,6 +72,7 @@ public class RoomtypeController  {
 
 	/**
 	 * 轉去create.jsp
+	 * 
 	 * @return
 	 */
 	@GetMapping("/create/page")
@@ -79,6 +82,7 @@ public class RoomtypeController  {
 
 	/**
 	 * 轉去edit.jsp
+	 * 
 	 * @param roomtypeId
 	 * @param session
 	 * @param model
@@ -94,34 +98,33 @@ public class RoomtypeController  {
 		}
 
 		RoomtypeDTO roomtypeDTO = findRoomtypeById.getData();
-		
+
 		model.addAttribute("roomtype", roomtypeDTO);
 		return "/management-system/booking/roomtype-edit";
 	}
 
 	/**
 	 * 多重模糊查詢
+	 * 
 	 * @param requestParameters
 	 * @param roomtypeDTO
 	 * @param model
 	 * @return
 	 */
 	@GetMapping("/select")
-	private String findRoomtypes(
-			@RequestParam Map<String, String> requestParameters,
+	private String findRoomtypes(@RequestParam Map<String, String> requestParameters,
 			@RequestParam(value = "roomtypeCapacity", required = false) List<Integer> roomtypeCapacityAll,
-			RoomtypeDTO roomtypeDTO,
-			Model model
-	) {
+			RoomtypeDTO roomtypeDTO, Model model) {
 
-		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll);
-		
-		if(findRoomtypesResult.isFailure()) {
+		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO,
+				roomtypeCapacityAll);
+
+		if (findRoomtypesResult.isFailure()) {
 			return "";
 		}
-		
+
 		Page<RoomtypeDTO> page = findRoomtypesResult.getData();
-		
+
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("roomtype", roomtypeDTO);
 		model.addAttribute("page", page);
@@ -130,6 +133,7 @@ public class RoomtypeController  {
 
 	/**
 	 * 新建單筆房間類型
+	 * 
 	 * @param roomtype
 	 * @return
 	 */
@@ -144,32 +148,31 @@ public class RoomtypeController  {
 
 	/**
 	 * 刪除房間類型
+	 * 
 	 * @param roomtypeId
 	 */
-	
+
 	@PostMapping("/delete")
 	private ResponseEntity<?> deleteById(@RequestParam Integer roomtypeId) {
 		Result<String> deleteRoomtypeResult = roomtypeService.deleteRoomtypeById(roomtypeId);
 		String message = deleteRoomtypeResult.getMessage();
-		if(deleteRoomtypeResult.isFailure()) {
+		if (deleteRoomtypeResult.isFailure()) {
 			return ResponseEntity.badRequest().body(message);
 		}
-		
+
 		return ResponseEntity.ok(message);
 	}
 
 	/**
 	 * 更新房間類型
+	 * 
 	 * @param roomtype
 	 * @param roomtypeId
 	 * @return
 	 */
 	@PostMapping("/update")
-	private String updateById(
-			@RequestParam(required = false) MultipartFile imageFile, 
-			Roomtype roomtype, 
-			@SessionAttribute Integer roomtypeId
-	) {
+	private String updateById(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype,
+			@SessionAttribute Integer roomtypeId) {
 		roomtype.setRoomtypeId(roomtypeId);
 		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype);
 
@@ -178,9 +181,10 @@ public class RoomtypeController  {
 		}
 		return "redirect:/management/roomtype";
 	}
-	
+
 	/**
 	 * 根據RoomtypeId上傳圖片
+	 * 
 	 * @param imageFile
 	 * @param roomtypeId
 	 * @return
@@ -189,15 +193,16 @@ public class RoomtypeController  {
 	public ResponseEntity<String> uploadImageById(@RequestParam MultipartFile imageFile, Integer roomtypeId) {
 		Result<String> uploadImageResult = roomtypeService.uploadImageById(imageFile, roomtypeId);
 		String message = uploadImageResult.getMessage();
-		if(uploadImageResult.isFailure()) {
+		if (uploadImageResult.isFailure()) {
 			return ResponseEntity.badRequest().body(message);
 		}
-		
+
 		return ResponseEntity.ok(message);
 	}
-	
+
 	/**
 	 * 根據roomtypeId獲取圖片
+	 * 
 	 * @param roomtypeId
 	 * @return
 	 * @throws IOException
@@ -205,17 +210,15 @@ public class RoomtypeController  {
 	@GetMapping("/image/{roomtypeId}")
 	public ResponseEntity<?> findImageById(@PathVariable Integer roomtypeId) throws IOException {
 		Result<UrlResource> findImageByIdResult = roomtypeService.findImageById(roomtypeId);
-		
-		if(findImageByIdResult.isFailure()) {
+
+		if (findImageByIdResult.isFailure()) {
 			return ResponseEntity.badRequest().body(findImageByIdResult.getMessage());
 		}
-		
+
 		Path path = (Path) findImageByIdResult.getExtraData("path");
 		UrlResource resource = findImageByIdResult.getData();
 
-		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path))
-				.body(resource);
-				
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
+
 	}
 }
