@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>attraction-list</title>
+<title>roomtype-list</title>
 <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
 </head>
 <body>
@@ -53,12 +53,13 @@
 			                     <label>帳號名稱</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
-			                 <div class="form-group">
-			                     <label>帳號</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
+		                
 			                 <div class="form-group">
 			                     <label>電子郵件信箱</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                  <div class="form-group">
+			                     <label>帳號</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
@@ -68,14 +69,12 @@
 			                 <div class="form-group">
 			                     <label>狀態</label>
 			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 
-
+			                 </div>			                 
 			                 <button type="button" id="modal-cancel-btn">取消</button>
 			             </form>
 			         </div>
 			     </div>
-			     <!-- 刪除確認視窗 -->
+			    <!-- 刪除確認視窗 -->
 			     <div id="delete-overlay" class="overlay">
 			         <div class="delete-modal">
 			             <h2>確認刪除</h2>
