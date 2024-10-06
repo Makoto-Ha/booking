@@ -2,6 +2,8 @@ package com.booking.bean.pojo.booking;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -10,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -48,6 +51,9 @@ public class BookingOrder {
 	
 	@Column(name = "created_time")
 	private LocalDateTime createdTime;
+	
+	@OneToMany(mappedBy = "bookingOrder")
+	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
 
 	public BookingOrder() {
 	}
@@ -115,8 +121,6 @@ public class BookingOrder {
 	public void setCheckOutTime(LocalDateTime checkOutTime) {
 		this.checkOutTime = checkOutTime;
 	}
-	
-	
 
 	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
@@ -132,6 +136,14 @@ public class BookingOrder {
 
 	public void setCreatedTime(LocalDateTime createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public List<BookingOrderItem> getBookingOrderItems() {
+		return bookingOrderItems;
+	}
+
+	public void setBookingOrderItems(List<BookingOrderItem> bookingOrderItems) {
+		this.bookingOrderItems = bookingOrderItems;
 	}
 
 	@Override

@@ -60,6 +60,9 @@ public class Roomtype {
 	
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
 	private List<Room> rooms = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
+	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
 
 	public Roomtype() {
 	}
@@ -168,13 +171,22 @@ public class Roomtype {
 		this.imagePath = imagePath;
 	}
 
+	public List<BookingOrderItem> getBookingOrderItems() {
+		return bookingOrderItems;
+	}
+
+	public void setBookingOrderItems(List<BookingOrderItem> bookingOrderItems) {
+		this.bookingOrderItems = bookingOrderItems;
+	}
+
 	@Override
 	public String toString() {
 		return "Roomtype [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
 				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms + "]";
+				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms
+				+ ", bookingOrderItems=" + bookingOrderItems + "]";
 	}
 
 }
