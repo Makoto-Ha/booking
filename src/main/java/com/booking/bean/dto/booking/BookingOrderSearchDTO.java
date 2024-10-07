@@ -15,8 +15,12 @@ public class BookingOrderSearchDTO {
 	private LocalDateTime toCheckOutTime;
 	
 	private String orderNumber;
+	private String bookingName;
 	private Integer orderStatus;
 	private Long totalPrice;
+	
+	public BookingOrderSearchDTO() {
+	}
 	
 	public LocalDate getFromCheckInDate() {
 		return fromCheckInDate;
@@ -84,13 +88,22 @@ public class BookingOrderSearchDTO {
 	public void setTotalPrice(Long totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	
+	public String getBookingName() {
+		return bookingName;
+	}
+
+	public void setBookingName(String bookingName) {
+		this.bookingName = bookingName;
+	}
+
 	@Override
 	public String toString() {
 		return "BookingOrderSearchDTO [fromCheckInDate=" + fromCheckInDate + ", toCheckInDate=" + toCheckInDate
 				+ ", fromCheckOutDate=" + fromCheckOutDate + ", toCheckOutDate=" + toCheckOutDate + ", fromCheckInTime="
 				+ fromCheckInTime + ", toCheckInTime=" + toCheckInTime + ", fromCheckOutTime=" + fromCheckOutTime
-				+ ", toCheckOutTime=" + toCheckOutTime + ", orderNumber=" + orderNumber + ", orderStatus=" + orderStatus
-				+ ", totalPrice=" + totalPrice + "]";
+				+ ", toCheckOutTime=" + toCheckOutTime + ", orderNumber=" + orderNumber + ", bookingName=" + bookingName
+				+ ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice + "]";
 	}
 	
 }

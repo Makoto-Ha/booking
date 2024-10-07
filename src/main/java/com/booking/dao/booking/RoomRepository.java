@@ -13,4 +13,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
 	// 查全部
 	@Query("SELECT new com.booking.bean.dto.booking.RoomDTO(r.roomId, r.roomStatus, r.roomDescription, r.roomNumber, rt.roomtypeName, rt.roomtypeId) FROM Room r JOIN r.roomtype rt")
 	Page<RoomDTO> findRoomDTOAll(Pageable pageable);
+	
+	@Query("SELECT new com.booking.bean.dto.booking.RoomDTO(r.roomId, r.roomStatus, r.roomDescription, r.roomNumber, rt.roomtypeName, rt.roomtypeId) FROM Room r JOIN r.roomtype rt WHERE rt.roomtypeName = :roomtypeName")
+	Page<RoomDTO> findRoomsByRoomtypeName(Pageable pageable, String roomtypeName);
 }

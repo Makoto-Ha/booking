@@ -11,6 +11,6 @@ import com.booking.bean.pojo.booking.BookingOrder;
 
 public interface BookingRepository extends JpaRepository<BookingOrder, Integer>, JpaSpecificationExecutor<BookingOrder> {
 	// 獲取所有訂單數據
-	@Query("SELECT new com.booking.bean.dto.booking.BookingOrderDTO(bo.bookingId, bo.orderNumber, bo.orderStatus, bo.totalPrice, bo.checkInDate, bo.checkOutDate, bo.checkInTime, bo.checkOutTime, bo.updatedTime, bo.createdTime) FROM BookingOrder bo")
+	@Query("SELECT new com.booking.bean.dto.booking.BookingOrderDTO(bo.bookingId, bo.orderNumber, bo.orderStatus, bo.totalPrice, bo.updatedTime, bo.createdTime) FROM BookingOrder bo")
 	Page<BookingOrderDTO> findAllBookingOrderDTO(Pageable pageable);
 }

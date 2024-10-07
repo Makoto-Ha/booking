@@ -1,11 +1,11 @@
 package com.booking.bean.pojo.booking;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "booking_order")
 @DynamicInsert
+@DynamicUpdate
 public class BookingOrder {
 	
 	@Id
@@ -33,18 +34,6 @@ public class BookingOrder {
 	
 	@Column(name = "total_price")
 	private Long totalPrice;
-	
-	@Column(name = "check_in_date")
-	private LocalDate checkInDate;
-	
-	@Column(name = "check_out_date")
-	private LocalDate checkOutDate;
-	
-	@Column(name = "check_in_time")
-	private LocalDateTime checkInTime;
-	
-	@Column(name = "check_out_time")
-	private LocalDateTime checkOutTime;
 	
 	@Column(name = "updated_time")
 	private LocalDateTime updatedTime;
@@ -90,38 +79,6 @@ public class BookingOrder {
 		this.totalPrice = totalPrice;
 	}
 
-	public LocalDate getCheckInDate() {
-		return checkInDate;
-	}
-
-	public void setCheckInDate(LocalDate checkInDate) {
-		this.checkInDate = checkInDate;
-	}
-
-	public LocalDate getCheckOutDate() {
-		return checkOutDate;
-	}
-
-	public void setCheckOutDate(LocalDate checkOutDate) {
-		this.checkOutDate = checkOutDate;
-	}
-
-	public LocalDateTime getCheckInTime() {
-		return checkInTime;
-	}
-
-	public void setCheckInTime(LocalDateTime checkInTime) {
-		this.checkInTime = checkInTime;
-	}
-
-	public LocalDateTime getCheckOutTime() {
-		return checkOutTime;
-	}
-
-	public void setCheckOutTime(LocalDateTime checkOutTime) {
-		this.checkOutTime = checkOutTime;
-	}
-
 	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
@@ -149,9 +106,7 @@ public class BookingOrder {
 	@Override
 	public String toString() {
 		return "BookingOrder [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus=" + orderStatus
-				+ ", totalPrice=" + totalPrice + ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate
-				+ ", checkInTime=" + checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime
-				+ ", createdTime=" + createdTime + "]";
+				+ ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime + ", createdTime=" + createdTime + "]";
 	}
 	
 }

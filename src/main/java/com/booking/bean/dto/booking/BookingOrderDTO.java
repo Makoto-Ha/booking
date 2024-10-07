@@ -1,7 +1,7 @@
 package com.booking.bean.dto.booking;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BookingOrderDTO {
 	
@@ -13,17 +13,13 @@ public class BookingOrderDTO {
 	
 	private Long totalPrice;
 	
-	private LocalDate checkInDate;
-	
-	private LocalDate checkOutDate;
-	
-	private LocalDateTime checkInTime;
-	
-	private LocalDateTime checkOutTime;
-	
 	private LocalDateTime updatedTime;
 	
 	private LocalDateTime createdTime;
+
+	private Integer roomtypeId;
+	
+	private List<BookingOrderItemDTO> bookingOrderItems;
 	
 	private Integer pageNumber = 1;
 	
@@ -33,15 +29,11 @@ public class BookingOrderDTO {
 	
 	public BookingOrderDTO() {}
 	
-	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDate checkInDate, LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime, LocalDateTime createdTime) {
+	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDateTime updatedTime, LocalDateTime createdTime) {
 		this.bookingId = bookingId;
 		this.orderNumber = orderNumber;
 		this.orderStatus = orderStatus;
 		this.totalPrice = totalPrice;
-		this.checkInDate = checkInDate;
-		this.checkOutDate = checkOutDate;
-		this.checkInTime = checkInTime;
-		this.checkOutTime = checkOutTime;
 		this.updatedTime = updatedTime;
 		this.createdTime = createdTime;
 	}
@@ -52,6 +44,14 @@ public class BookingOrderDTO {
 
 	public void setBookingId(Integer bookingId) {
 		this.bookingId = bookingId;
+	}
+	
+	public Integer getRoomtypeId() {
+		return roomtypeId;
+	}
+
+	public void setRoomtypeId(Integer roomtypeId) {
+		this.roomtypeId = roomtypeId;
 	}
 
 	public String getOrderNumber() {
@@ -76,38 +76,6 @@ public class BookingOrderDTO {
 
 	public void setTotalPrice(Long totalPrice) {
 		this.totalPrice = totalPrice;
-	}
-
-	public LocalDate getCheckInDate() {
-		return checkInDate;
-	}
-
-	public void setCheckInDate(LocalDate checkInDate) {
-		this.checkInDate = checkInDate;
-	}
-
-	public LocalDate getCheckOutDate() {
-		return checkOutDate;
-	}
-
-	public void setCheckOutDate(LocalDate checkOutDate) {
-		this.checkOutDate = checkOutDate;
-	}
-
-	public LocalDateTime getCheckInTime() {
-		return checkInTime;
-	}
-
-	public void setCheckInTime(LocalDateTime checkInTime) {
-		this.checkInTime = checkInTime;
-	}
-
-	public LocalDateTime getCheckOutTime() {
-		return checkOutTime;
-	}
-
-	public void setCheckOutTime(LocalDateTime checkOutTime) {
-		this.checkOutTime = checkOutTime;
 	}
 	
 	public LocalDateTime getUpdatedTime() {
@@ -150,13 +118,20 @@ public class BookingOrderDTO {
 		this.selectedSort = selectedSort;
 	}
 
+	public List<BookingOrderItemDTO> getBookingOrderItems() {
+		return bookingOrderItems;
+	}
+
+	public void setBookingOrderItems(List<BookingOrderItemDTO> bookingOrderItems) {
+		this.bookingOrderItems = bookingOrderItems;
+	}
+
 	@Override
 	public String toString() {
 		return "BookingOrderDTO [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus="
-				+ orderStatus + ", totalPrice=" + totalPrice + ", checkInDate=" + checkInDate + ", checkOutDate="
-				+ checkOutDate + ", checkInTime=" + checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", pageNumber=" + pageNumber + ", attrOrderBy="
-				+ attrOrderBy + ", selectedSort=" + selectedSort + "]";
+				+ orderStatus + ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime + ", createdTime="
+				+ createdTime + ", roomtypeId=" + roomtypeId + ", pageNumber="
+				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
 	}
 
 }

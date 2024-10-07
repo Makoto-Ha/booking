@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
@@ -69,9 +71,8 @@ public class BookingController {
 			return "";
 		}
 		
-		BookingOrderDTO bookingOrder = bookingOrderResult.getData();
-		
-		model.addAttribute("bookingOrder", bookingOrder);
+		BookingOrderDTO bookingOrderDTO = bookingOrderResult.getData();
+		model.addAttribute("bookingOrder", bookingOrderDTO);
 		return "management-system/booking/order-edit";
 	}
 	
@@ -120,10 +121,11 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String saveBookingOrder(BookingOrderDTO bookingOrderDTO) {
-		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(bookingOrderDTO);
+	@ResponseBody
+	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO) {
+		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
 		if(saveBookingOrderResult.isFailure()) {
-			return "";
+			return saveBookingOrderResult.getMessage();
 		}
 		
 		return "redirect:/management/booking";
@@ -136,8 +138,7 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/update")
-	private String updateBookingOrder(@SessionAttribute Integer bookingId, BookingOrderDTO bookingOrderDTO) {
-		
+	private String updateBookingOrder(@RequestBody BookingOrderDTO bookingOrderDTO, @SessionAttribute Integer bookingId) {
 		bookingOrderDTO.setBookingId(bookingId);
 		Result<String> updateBookingOrderResult = bookingService.updateBookingOrder(bookingOrderDTO);
 		if(updateBookingOrderResult.isFailure()) {

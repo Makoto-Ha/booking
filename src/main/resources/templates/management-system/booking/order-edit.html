@@ -11,7 +11,7 @@
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../update" method="post">
+			<form class="form" id="form" action="../update" method="post">
 				<div class="form-group">
 					<label for="order-status">訂單狀態</label> 
 					<input type="text" name="orderStatus" id="order-status" th:value="${bookingOrder.orderStatus}" required>
@@ -19,17 +19,19 @@
 				
 				<div class="form-group">
 					<label for="total-price">訂單總金額</label> 
-					<input type="text" name="totalPrice" id="total-price" th:value="${bookingOrder.totalPrice}" required>
+					<input type="text" name="totalPrice" id="total-price" th:value="${bookingOrder.totalPrice}" disabled>
 				</div>
 						
-				<div class="form-group">
-					<label for="check-in-date">入住日</label> 
-					<input type="date" name="checkInDate" id="check-in-date" th:value="${bookingOrder.checkInDate}" required>
-				</div>
-				
-				<div class="form-group">
-					<label for="check-out-date">退房日</label> 
-					<input type="date" name="checkOutDate" id="check-out-date" th:value="${bookingOrder.checkOutDate}" required>
+				<div th:each="bookingOrderItem : ${bookingOrder.bookingOrderItems}">
+					<div class="form-group">
+						<label for="check-in-date">入住日</label> 
+						<input type="date" name="checkInDate" id="check-in-date" th:value="${bookingOrderItem.checkInDate}" required>
+					</div>
+					
+					<div class="form-group">
+						<label for="check-out-date">退房日</label> 
+						<input type="date" name="checkOutDate" id="check-out-date" th:value="${bookingOrderItem.checkOutDate}" required>
+					</div>
 				</div>
 
 				<div class="form-group">
@@ -40,5 +42,35 @@
 		</div>
 	</div>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+		const form = document.getElementById('form');
+		form.addEventListener('submit', async function(e) {
+			e.preventDefault();
+
+			let formData = new FormData(e.target);
+			let data = {};
+			let bookingOrderItems = [], index = 0;
+			let formParams = {};
+			for(let [k, v] of formData.entries()) {
+				formParams[k] = v;
+				if(index % 2 == 0) {
+					bookingOrderItems.push(formParams);
+					formParams = {};
+				}
+				index++;
+			}
+			bookingOrderItems.shift();
+			data.bookingOrderItems = bookingOrderItems;
+			let response = await fetch('/booking/management/booking/update', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			location.href = "/booking/management/booking";
+		});
+	</script>
 </body>
 </html>

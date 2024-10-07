@@ -116,8 +116,7 @@ public class RoomtypeController {
 			@RequestParam(value = "roomtypeCapacity", required = false) List<Integer> roomtypeCapacityAll,
 			RoomtypeDTO roomtypeDTO, Model model) {
 
-		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO,
-				roomtypeCapacityAll);
+		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll);
 
 		if (findRoomtypesResult.isFailure()) {
 			return "";

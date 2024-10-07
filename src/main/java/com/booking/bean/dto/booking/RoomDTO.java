@@ -24,7 +24,7 @@ public class RoomDTO {
 		this.roomDescription = roomDescription;
 		this.roomtypeId = roomtypeId;
 	}
-	
+
 	public String getRoomtypeName() {
 		return roomtypeName;
 	}
