@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +48,20 @@ public class RoomController {
 		Page<RoomDTO> page = findRoomAllResult.getData();
 		model.addAttribute("room", roomDTO);
 		model.addAttribute("page", page);
+		return "/management-system/booking/room-list";
+	}
+	
+	@GetMapping("/roomtype/{roomtypeId}")
+	private String sendRoomPageByRoomtypeId(@PathVariable Integer roomtypeId, Model model) {
+		RoomDTO roomDTO = new RoomDTO();
+		Result<Page<RoomDTO>> findRoomsByRoomtypeId = roomService.findRoomsByRoomtypeId(roomtypeId, roomDTO);
+		if(findRoomsByRoomtypeId.isFailure()) {
+			return "";
+		}
+		
+		Page<RoomDTO> page = findRoomsByRoomtypeId.getData();
+		model.addAttribute("page", page);
+		model.addAttribute("room", roomDTO);
 		return "/management-system/booking/room-list";
 	}
 	
@@ -103,7 +118,7 @@ public class RoomController {
 	private String findRooms(
 			@RequestParam Map<String, String> requestParameters,
 			// 因為index.js是看網址的類型，也就是/booking/management/room會發送roomName
-			@RequestParam(value = "roomName", defaultValue = "") String roomtypeName,
+			@RequestParam(defaultValue = "") String roomtypeName,
 			@RequestParam(value="roomStatus", required = false) List<Integer> roomStatusAll,
 			RoomDTO roomDTO,
 			Model model

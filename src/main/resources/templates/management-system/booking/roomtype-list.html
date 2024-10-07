@@ -44,7 +44,7 @@
 				  
 			  <div class="content-area-pages">
 			  		<button class="content-area-page" data-url="/booking/management/booking">訂單</button>
-			  		<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
+			  		<button class="content-area-page" data-url="/booking/management/roomtype" style="height: 50px;">房間類型</button>
 			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
 			  </div>  
 			  <!-- 管理頁面內容 -->
@@ -107,7 +107,7 @@
 			         </div>
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
-			        <ul class="item-list">
+			        <ul class="item-list" id="item-list">
 			            <li th:each="roomtype : ${page.content}" class="list-item" th:data-current-list-id="${roomtype.roomtypeId}">
 			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${roomtype.roomtypeId}}">
 			                <div class="item-content">     	
@@ -151,5 +151,13 @@
 		  </div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
+	<script>
+		let itemList = document.getElementById("item-list");
+		itemList.addEventListener('click', function(e) {
+			let li = e.target.closest('li');
+			let roomtypeId = li.dataset.currentListId;
+			location.href = "/booking/management/room/roomtype/" + roomtypeId;
+		});
+	</script>
 </body>
 </html>

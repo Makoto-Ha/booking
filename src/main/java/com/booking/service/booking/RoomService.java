@@ -105,13 +105,24 @@ public class RoomService {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public Result<List<Room>> findRoomsByRoomtypeId(Integer roomtypeId) {
+	public Result<Page<RoomDTO>> findRoomsByRoomtypeId(Integer roomtypeId, RoomDTO roomDTO) {
 		DaoResult<List<Room>> getRoomsByRoomtypeIdResult = roomDao.getRoomsByRoomtypeId(roomtypeId);
-		List<Room> rooms = getRoomsByRoomtypeIdResult.getData();
 		if (getRoomsByRoomtypeIdResult.isFailure()) {
 			return Result.failure("獲取房間失敗");
 		}
-		return Result.success(rooms);
+		
+		List<Room> rooms = getRoomsByRoomtypeIdResult.getData();
+		List<RoomDTO> roomDTOs = new ArrayList<>();
+		for(Room room : rooms) {
+			RoomDTO responseRoomDTO = new RoomDTO();
+			BeanUtils.copyProperties(room, responseRoomDTO);
+			responseRoomDTO.setRoomtypeId(roomtypeId);
+			roomDTOs.add(responseRoomDTO);
+		}
+		
+		Pageable pageable = MyPageRequest.of(1, 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
+
+		return Result.success(new PageImpl<>(roomDTOs, pageable, roomDTOs.size()));
 	}
 
 	/**

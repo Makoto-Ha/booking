@@ -45,6 +45,7 @@ function bindAdminSystemEvent() {
 	// 轉送到編輯
 	document.querySelectorAll('.edit-btn').forEach(editButton => {
 		editButton.addEventListener('click', function(e) {
+			e.stopPropagation();
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
 			let hrefSplit = location.pathname.split('/');
 			let lastHref = hrefSplit[3];
@@ -62,6 +63,7 @@ function bindAdminSystemEvent() {
 	// 開啟檢查視窗
 	document.querySelectorAll('.check-btn').forEach(button => {
 		button.addEventListener('click', function(e) {
+			e.stopPropagation();
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
 			currentList.id = currentListId;
 			let hrefSplit = location.pathname.split('/');
@@ -93,6 +95,7 @@ function bindAdminSystemEvent() {
 	// 為所有刪除按鈕添加事件監聽
 	document.querySelectorAll('.delete-btn').forEach(button => {
 		button.addEventListener('click', function(e) {
+			e.stopPropagation();
 			currentList.target = e.target;
 			document.getElementById('delete-overlay').style.display = 'flex';
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
