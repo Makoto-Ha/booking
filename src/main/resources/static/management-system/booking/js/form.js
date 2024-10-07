@@ -11,7 +11,7 @@ let selectDistrict = document.getElementById("select-district");
 data[0].districts.forEach(area => {
 	let option = document.createElement("option");
 	option.textContent = area.name;
-	selectDistrict.appendChild(option);
+	selectDistrict?.appendChild(option);
 });
 
 selectCity.addEventListener("change", e => {

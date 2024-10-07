@@ -1,5 +1,8 @@
 package com.booking.service.attraction;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +13,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,14 +21,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.dao.attraction.AttractionRepository;
 import com.booking.dao.attraction.AttractionSpecification;
 import com.booking.utils.DaoResult;
+import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
 
 @Service
 public class AttractionService {
@@ -140,7 +147,19 @@ public class AttractionService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> saveAttraction(Attraction attraction) {
+	public Result<String> saveAttraction(AttractionDTO attractionDTO, MultipartFile imageFile) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			attractionDTO.setImagesFile("uploads" + "/" + fileName);
+		}else {
+			attractionDTO.setImagesFile("uploads/default.jpg");
+		}
+		Attraction attraction = new Attraction();
+		
+		BeanUtils.copyProperties(attractionDTO, attraction);
+		
 		attractionRepo.save(attraction);
 
 		return Result.success("新增景點成功");
@@ -161,38 +180,68 @@ public class AttractionService {
 
 	/**
 	 * 更新景點
-	 * 
-	 * @param attraction
+	 * @param attractionDTO
 	 * @return
 	 */
-	@Transactional
-	public Result<String> updateAttraction(Attraction attraction) {
-		Integer oldAttractionId = attraction.getAttractionId();
-		Attraction oldAttraction = attractionRepo.findById(oldAttractionId).get();
-		String attractionName = attraction.getAttractionName();
-		String attractionCity = attraction.getAttractionCity();
-		String address = attraction.getAddress();
-		String openingHour = attraction.getOpeningHour();
-		String attractionType = attraction.getAttractionType();
-		String attractionDescription = attraction.getAttractionDescription();
-
-		if (attractionName == null || attractionName.isEmpty()) {
-			attraction.setAttractionName(oldAttraction.getAttractionName());
+	public Result<String> updateAttraction(AttractionDTO attractionDTO, MultipartFile imageFile) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			attractionDTO.setImagesFile("uploads" + "/" + fileName);
+		}else {
+			attractionDTO.setImagesFile("uploads/default.jpg");
 		}
-		if (attractionCity == null || attractionCity.isEmpty()) {
-			attraction.setAddress(oldAttraction.getAddress());
+		
+		Attraction updateAttraction = attractionRepo.findById(attractionDTO.getAttractionId()).orElse(null);
+		MyModelMapper.map(attractionDTO, updateAttraction);
+		attractionRepo.save(updateAttraction);
+		return Result.success("更新景點成功");
+	}
+	
+	
+	/**
+	 * 根據id上傳圖片
+	 * @param imageFile
+	 * @param attractionId
+	 * @return
+	 */
+	public Result<String> uploadImageById(MultipartFile imageFile, Integer attractionId){
+		Attraction attraction = attractionRepo.findById(attractionId).orElse(null);
+		if(attraction == null) {
+			return Result.failure("沒有此景點");
 		}
-		if (address == null || address.isEmpty()) {
-			attraction.setAddress(oldAttraction.getAddress());
+		
+		Result<String> uploadImageResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadImageResult.isFailure()) {
+			return Result.failure(uploadImageResult.getMessage());
 		}
-		if (openingHour == null || openingHour.isEmpty()) {
-			attraction.setOpeningHour(oldAttraction.getOpeningHour());
+		
+		Path path = (Path) uploadImageResult.getExtraData("path");
+		attraction.setImagesFile(path.toString());
+		
+		return Result.success("上傳圖片成功");
+	}
+		
+	
+	public Result<UrlResource> findImageById(Integer attractionId) {
+		Attraction attraction = attractionRepo.findById(attractionId).orElse(null);
+		
+		if(attraction == null) {
+			return Result.failure("根據ID查找不到房間類型");
 		}
-		if (attractionType == null || attractionType.isEmpty()) {
-			attraction.setAttractionType(oldAttraction.getAttractionType());
-		}
-		if (attractionDescription == null || attractionDescription.isEmpty()) {
-			attraction.setAttractionDescription(oldAttraction.getAttractionDescription());
+		
+		String imagesFile = attraction.getImagesFile();
+		
+		Path path = Paths.get(imagesFile);
+		try {
+			UrlResource urlResource = new UrlResource(path.toUri());
+			 if (urlResource.exists() || urlResource.isReadable()) {
+		    	return Result.success(urlResource).setExtraData("path", path);
+		    } 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 
 		DaoResult<?> updateAttractionResult = attractionRepo.updateAttraction(attraction);
@@ -201,10 +250,5 @@ public class AttractionService {
 		}
 		return Result.success("更新景點成功");
 	}
-<<<<<<< HEAD
 
 }
-=======
-		
-}
->>>>>>> 95596f0 (鄭家霖.修改: SpringMvc移植成SpringBoot)

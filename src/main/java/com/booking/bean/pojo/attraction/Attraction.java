@@ -35,6 +35,9 @@ public class Attraction implements Serializable {
 	@Column(name = "attraction_description")
 	private String attractionDescription;
 	
+	@Column(name = "images_file")
+	private String imagesFile;
+	
 	public Attraction() {
 		
 	}
@@ -96,11 +99,25 @@ public class Attraction implements Serializable {
 		this.attractionDescription = attractionDescription;
 	}
 
+
+	public String getImagesFile() {
+		return imagesFile;
+	}
+
+
+	public void setImagesFile(String imagesFile) {
+		this.imagesFile = imagesFile;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Attraction [attractionId=" + attractionId + ", attractionName=" + attractionName + ", attractionCity="
 				+ attractionCity + ", address=" + address + ", openingHour=" + openingHour + ", attractionType="
-				+ attractionType + ", attractionDescription=" + attractionDescription + "]";
+				+ attractionType + ", attractionDescription=" + attractionDescription + ", imagesFile=" + imagesFile
+				+ "]";
 	}
+
+
 
 }
