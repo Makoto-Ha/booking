@@ -9,6 +9,7 @@ public class AttractionDTO{
 	private String openingHour;
 	private String attractionType;
 	private String attractionDescription;
+	private String imagesFile;
 	
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "attractionId";
@@ -97,6 +98,17 @@ public class AttractionDTO{
 	public void setAttractionDescription(String attractionDescription) {
 		this.attractionDescription = attractionDescription;
 	}
+	
+
+	public String getImagesFile() {
+		return imagesFile;
+	}
+
+
+	public void setImagesFile(String imagesFile) {
+		this.imagesFile = imagesFile;
+	}
+
 
 	public Integer getPageNumber() {
 		return pageNumber;
@@ -123,18 +135,14 @@ public class AttractionDTO{
 	}
 
 
-
 	@Override
 	public String toString() {
 		return "AttractionDTO [attractionId=" + attractionId + ", attractionName=" + attractionName
 				+ ", attractionCity=" + attractionCity + ", address=" + address + ", openingHour=" + openingHour
 				+ ", attractionType=" + attractionType + ", attractionDescription=" + attractionDescription
-				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
-				+ "]";
+				+ ", imagesFile=" + imagesFile + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
+				+ ", selectedSort=" + selectedSort + "]";
 	}
-
-
-
 
 
 

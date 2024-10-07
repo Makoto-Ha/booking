@@ -58,7 +58,7 @@ public class AttractionDaoImpl implements AttractionDao {
 	/**
 	 * 模糊查詢
 	 * 
-	 * @param roomtype
+	 * @param 
 	 * @return
 	 */
 	@Override
@@ -74,7 +74,7 @@ public class AttractionDaoImpl implements AttractionDao {
 		String selectedSort = (String) extraValues.get("selectedSort");
 		// 透過session創建CriteriaBuilder
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		// 創建CriteriaQuery查詢，分兩個Roomtype.class是因為root不能共用
+		// 創建CriteriaQuery查詢，分兩個Attraction.class是因為root不能共用
 		CriteriaQuery<Attraction> cq = cb.createQuery(Attraction.class);
 		Root<Attraction> root = cq.from(Attraction.class);
 		
@@ -203,6 +203,7 @@ public class AttractionDaoImpl implements AttractionDao {
 		
 		return null;
 	}
+
 
 
 
