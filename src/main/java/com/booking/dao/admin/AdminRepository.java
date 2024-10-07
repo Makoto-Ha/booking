@@ -8,4 +8,9 @@ import java.util.Optional;
 
 public interface AdminRepository extends JpaRepository<Admin, Integer>, JpaSpecificationExecutor<Admin>,AdminDao {
   
+	
+	Optional<Admin> findByAdminAccount(String adminAccount);
+    Optional<Admin> findByAdminMail(String adminMail);
+    Optional<Admin> findByResetPasswordToken(String resetPasswordToken);
+    boolean existsByAdminAccount(String adminAccount);
 }

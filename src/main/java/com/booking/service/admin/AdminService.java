@@ -3,6 +3,7 @@ package com.booking.service.admin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,48 @@ public class AdminService {
 
 	@Autowired
 	private AdminRepository adminRepo;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
+	public Admin register(Admin admin) {
+		// 加密密码
+		admin.setAdminPassword(passwordEncoder.encode(admin.getAdminPassword()));
+		return adminRepo.save(admin);
+	}
+
+	public Admin login(String adminAccount, String rawPassword) throws Exception {
+		Optional<Admin> optional = adminRepo.findByAdminAccount(adminAccount);
+		if (optional.isPresent() && passwordEncoder.matches(rawPassword, optional.get().getAdminPassword())) {
+			return optional.get();
+		}
+		throw new Exception("Invalid credentials");
+	}
+
+	public void resetPassword(String token, String newPassword) throws Exception {
+		Optional<Admin> optional = adminRepo.findByResetPasswordToken(token);
+		if (optional.isPresent()) {
+			Admin foundAdmin = optional.get();
+			foundAdmin.setAdminPassword(passwordEncoder.encode(newPassword));
+			foundAdmin.setResetPasswordToken(null);
+			adminRepo.save(foundAdmin);
+		} else {
+			throw new Exception("Invalid token");
+		}
+	}
+
+	public String createResetToken(String email) throws Exception {
+		Optional<Admin> optional = adminRepo.findByAdminMail(email);
+		if (optional.isEmpty()) {
+			throw new Exception("Email not found");
+		}
+		Admin foundAdmin = optional.get();
+		String token = UUID.randomUUID().toString();
+		foundAdmin.setResetPasswordToken(token);
+		adminRepo.save(foundAdmin);
+		return token;
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * 獲得所有管理員
 	 * 
@@ -69,8 +112,7 @@ public class AdminService {
 	 * @return
 	 */
 	public Result<PageImpl<AdminDTO>> findAdmins(AdminDTO adminDTO) {
-		Specification<Admin> spec = Specification
-				.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
+		Specification<Admin> spec = Specification.where(AdminSpecification.accountContains(adminDTO.getAdminAccount()))
 				.and(AdminSpecification.nameContains(adminDTO.getAdminName()))
 				.and(AdminSpecification.mailContains(adminDTO.getAdminMail()))
 				.and(AdminSpecification.statusEquals(adminDTO.getAdminStatus()));
@@ -133,12 +175,12 @@ public class AdminService {
 	public Result<String> softRemoveAdmin(Integer adminId) {
 		Optional<Admin> optionalAdmin = adminRepo.findById(adminId);
 		if (!optionalAdmin.isPresent()) {
-			return Result.failure("軟刪除管理員失敗，找不到該管理員");
+			return Result.failure("管理員狀態更新失敗");
 		}
 		Admin admin = optionalAdmin.get();
 		admin.setAdminStatus(0);
 		adminRepo.save(admin);
-		return Result.success("刪除房間類型成功");
+		return Result.success("管理員狀態更新成功");
 	}
 
 	/**

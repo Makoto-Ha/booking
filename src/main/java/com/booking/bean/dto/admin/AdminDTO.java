@@ -17,17 +17,54 @@ public class AdminDTO {
 	private LocalDate hiredate;
 	private Integer adminStatus;
 	private String adminPassword;
-
 	private String verificationToken;
-
 	private String resetPasswordToken;
-
+	private Integer emailVerified;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "adminId";
 	private Boolean selectedSort = true;
 
 	public AdminDTO() {
 	}
+
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
+			Integer emailVerified, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
+			String adminPassword, String verificationToken, String resetPasswordToken, Integer emailVerified,
+			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+
 
 	public String getVerificationToken() {
 		return verificationToken;
@@ -125,66 +162,12 @@ public class AdminDTO {
 		this.selectedSort = selectedSort;
 	}
 
-	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
-			Integer adminStatus, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-
-		this.pageNumber = pageNumber;
-		this.attrOrderBy = attrOrderBy;
-		this.selectedSort = selectedSort;
+	public Integer getEmailVerified() {
+		return emailVerified;
 	}
 
-	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
-			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		super();
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-
-		this.pageNumber = pageNumber;
-		this.attrOrderBy = attrOrderBy;
-		this.selectedSort = selectedSort;
-	}
-
-	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
-			Integer adminStatus, String adminPassword, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-		this.adminPassword = adminPassword;
-		this.pageNumber = pageNumber;
-		this.attrOrderBy = attrOrderBy;
-		this.selectedSort = selectedSort;
-	}
-
-	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
-			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
-			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		super();
-		this.adminId = adminId;
-		this.adminAccount = adminAccount;
-		this.adminMail = adminMail;
-		this.adminName = adminName;
-		this.hiredate = hiredate;
-		this.adminStatus = adminStatus;
-		this.adminPassword = adminPassword;
-		this.verificationToken = verificationToken;
-		this.resetPasswordToken = resetPasswordToken;
-		this.pageNumber = pageNumber;
-		this.attrOrderBy = attrOrderBy;
-		this.selectedSort = selectedSort;
+	public void setEmailVerified(Integer emailVerified) {
+		this.emailVerified = emailVerified;
 	}
 
 	@Override
@@ -192,8 +175,8 @@ public class AdminDTO {
 		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminMail=" + adminMail
 				+ ", adminName=" + adminName + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
 				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
-				+ ", resetPasswordToken=" + resetPasswordToken + ", pageNumber=" + pageNumber + ", attrOrderBy="
-				+ attrOrderBy + ", selectedSort=" + selectedSort + "]";
+				+ ", resetPasswordToken=" + resetPasswordToken + ", emailVerified=" + emailVerified + ", pageNumber="
+				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
 	}
 	
 	
