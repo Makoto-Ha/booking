@@ -26,10 +26,6 @@
 			              <option value="orderNumber" th:selected="orderNumber == ${bookingOrder.attrOrderBy}">訂單編號</option>
 			              <option value="orderStatus" th:selected="orderStatus == ${bookingOrder.attrOrderBy}">訂單狀態</option>
 			              <option value="totalPrice" th:selected="totalPrice == ${bookingOrder.attrOrderBy}">總金額</option>
-			              <option value="checkInDate" th:selected="checkInDate == ${bookingOrder.attrOrderBy}">入住日期</option>
-			              <option value="checkOutDate" th:selected="checkOutDate == ${bookingOrder.attrOrderBy}">退房日期</option>
-			              <option value="checkInTime" th:selected="checkInTime == ${bookingOrder.attrOrderBy}">確切入住時間</option>
-			              <option value="checkOutTime" th:selected="checkOutTime == ${bookingOrder.attrOrderBy}">確切退房時間</option>
 			              <option value="updatedTime" th:selected="updatedTime == ${bookingOrder.attrOrderBy}">更新時間</option>
 			              <option value="createdTime" th:selected="createdTime == ${bookingOrder.attrOrderBy}">創建時間</option>
 				      </select>
@@ -66,22 +62,17 @@
 			                     <label>訂單總金額</label>
 			                     <input type="text" class="input-show-value" disabled>    
 			                 </div>
+			                 
 			                 <div class="form-group">
-			                     <label>入住日期</label>
+			                     <label>更新時間</label>
 			                     <input type="text" class="input-show-value" disabled>    
 			                 </div>
+			                 
 			                 <div class="form-group">
-			                     <label>退房日期</label>
+			                     <label>創建時間</label>
 			                     <input type="text" class="input-show-value" disabled>    
 			                 </div>
-			                 <div class="form-group">
-			                     <label>入住確切時間</label>
-			                     <input type="text" class="input-show-value" disabled>    
-			                 </div>
-			                 <div class="form-group">
-			                     <label>退房確切時間</label>
-			                     <input type="text" class="input-show-value" disabled>    
-			                 </div>
+			                 
 			                 <button type="button" id="modal-cancel-btn">取消</button>
 			             </form>
 			         </div>
@@ -108,13 +99,7 @@
 		                			<span>Default</span>              		   			
 			                		<span style="color: #e3e3e373"> ┃ </span> 
 			                		<span class="item-info" style="color: darkred">訂單狀態</span>
-		                			<span th:text="${bookingOrder.orderStatus}"></span>      
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">預計入住日</span>
-		                			<span th:text="${bookingOrder.checkInDate}"></span>    
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">預計退房日</span>
-		                			<span th:text="${bookingOrder.checkOutDate}"></span>                  		   			
+		                			<span th:text="${bookingOrder.orderStatus}"></span>                    		   			
 			                	</div>			              		   			
 			                </div>
 			                <div class="item-actions">

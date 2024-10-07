@@ -118,12 +118,12 @@ public class RoomController {
 	private String findRooms(
 			@RequestParam Map<String, String> requestParameters,
 			// 因為index.js是看網址的類型，也就是/booking/management/room會發送roomName
-			@RequestParam(defaultValue = "") String roomtypeName,
+			@RequestParam(defaultValue = "") String roomName,
 			@RequestParam(value="roomStatus", required = false) List<Integer> roomStatusAll,
 			RoomDTO roomDTO,
 			Model model
 	) {
-		roomDTO.setRoomtypeName(roomtypeName);
+		roomDTO.setRoomtypeName(roomName);
 		Result<PageImpl<RoomDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
 		
 		if(findRoomsResult.isFailure()) {

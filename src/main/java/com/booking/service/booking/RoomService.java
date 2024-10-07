@@ -110,13 +110,17 @@ public class RoomService {
 		if (getRoomsByRoomtypeIdResult.isFailure()) {
 			return Result.failure("獲取房間失敗");
 		}
-		
 		List<Room> rooms = getRoomsByRoomtypeIdResult.getData();
+		
+		// 這邊rooms的roomtype都是一樣的，所以不用放在迴圈裡面
+		String roomtypeName = rooms.size() > 0 ? rooms.get(0).getRoomtype().getRoomtypeName() : null;
 		List<RoomDTO> roomDTOs = new ArrayList<>();
+		
 		for(Room room : rooms) {
 			RoomDTO responseRoomDTO = new RoomDTO();
 			BeanUtils.copyProperties(room, responseRoomDTO);
 			responseRoomDTO.setRoomtypeId(roomtypeId);
+			responseRoomDTO.setRoomtypeName(roomtypeName);
 			roomDTOs.add(responseRoomDTO);
 		}
 		
@@ -267,6 +271,17 @@ public class RoomService {
 		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		
 		return Result.success(new PageImpl<>(roomDTOs, newPageable, page.getTotalElements()));
+	}
+
+	/**
+	 * 根據房型名稱搜尋房間
+	 * 還沒用到
+	 * @param roomtypeName
+	 * @return
+	 */
+	public Result<Page<RoomDTO>> findRoomsByRoomtypeName(String roomtypeName, RoomDTO roomDTO) {
+		Pageable pageable = MyPageRequest.of(roomDTO.getPageNumber(), 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
+		return Result.success(roomRepo.findRoomsByRoomtypeName(pageable, roomtypeName));
 	}
 
 }

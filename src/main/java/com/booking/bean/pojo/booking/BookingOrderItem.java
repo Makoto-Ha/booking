@@ -3,6 +3,8 @@ package com.booking.bean.pojo.booking;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "booking_order_item")
+@DynamicUpdate
 public class BookingOrderItem {
 	
 	@EmbeddedId
@@ -78,8 +81,8 @@ public class BookingOrderItem {
 		return id;
 	}
 
-	public void setId(BookingOrderItemId id) {
-		this.id = id;
+	public void setId(Integer BookingId, Integer RoomId) {
+		this.id = new BookingOrderItemId(BookingId, RoomId);
 	}
 	
 	public BookingOrder getBookingOrder() {

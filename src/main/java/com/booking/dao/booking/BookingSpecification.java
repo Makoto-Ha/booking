@@ -85,13 +85,15 @@ public class BookingSpecification {
 	}
 
 	// 根據訂單編號進行模糊查詢
-	public static Specification<BookingOrder> orderNumberContains(String orderNumber) {
+	public static Specification<BookingOrder> orderNumberContains(String orderNumber, String bookingName) {
 		return (Root<BookingOrder> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if (orderNumber == null || orderNumber.isEmpty()) {
-				return builder.conjunction();
+			if(orderNumber != null && !orderNumber.isEmpty()) {
+				return builder.like(root.get("orderNumber"), "%" + orderNumber + "%");
+			}else if(bookingName != null && !bookingName.isEmpty()) {
+				return builder.like(root.get("orderNumber"), "%" + bookingName + "%");
 			}
 
-			return builder.like(root.get("orderNumber"), "%" + orderNumber + "%");
+			return builder.conjunction();
 		};
 	}
 	
