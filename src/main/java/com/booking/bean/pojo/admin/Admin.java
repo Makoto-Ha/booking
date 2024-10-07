@@ -37,6 +37,13 @@ public class Admin implements Serializable {
 
 	@Column(name = "admin_password", length = 100)
 	private String adminPassword;
+	
+	@Column(name = "verification_token", length = 100)
+	private String verificationToken;
+	
+	@Column(name = "reset_password_token", length = 100)
+	private String resetPasswordToken;
+
 
 	public Admin() {
 		super();
@@ -74,8 +81,40 @@ public class Admin implements Serializable {
 	}
 
 	// Getters 和 Setters
+	
+	
 	public Integer getAdminId() {
 		return adminId;
+	}
+
+	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminName = adminName;
+		this.adminMail = adminMail;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+	}
+
+	public String getVerificationToken() {
+		return verificationToken;
+	}
+
+	public void setVerificationToken(String verificationToken) {
+		this.verificationToken = verificationToken;
+	}
+
+	public String getResetPasswordToken() {
+		return resetPasswordToken;
+	}
+
+	public void setResetPasswordToken(String resetPasswordToken) {
+		this.resetPasswordToken = resetPasswordToken;
 	}
 
 	public void setAdminId(Integer adminId) {
@@ -130,11 +169,14 @@ public class Admin implements Serializable {
 		this.adminStatus = adminStatus;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminPassword=" + adminPassword
-				+ ", adminName=" + adminName + ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus="
-				+ adminStatus + "]";
+		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" + adminName
+				+ ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
+				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
+				+ ", resetPasswordToken=" + resetPasswordToken + "]";
 	}
 
 	public static long getSerialversionuid() {

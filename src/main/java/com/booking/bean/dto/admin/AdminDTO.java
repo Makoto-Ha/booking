@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.persistence.Column;
+
 public class AdminDTO {
 	private Integer adminId;
 	private String adminAccount;
@@ -16,6 +18,10 @@ public class AdminDTO {
 	private Integer adminStatus;
 	private String adminPassword;
 
+	private String verificationToken;
+
+	private String resetPasswordToken;
+
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "adminId";
 	private Boolean selectedSort = true;
@@ -23,16 +29,29 @@ public class AdminDTO {
 	public AdminDTO() {
 	}
 
-	
+	public String getVerificationToken() {
+		return verificationToken;
+	}
+
+	public void setVerificationToken(String verificationToken) {
+		this.verificationToken = verificationToken;
+	}
+
+	public String getResetPasswordToken() {
+		return resetPasswordToken;
+	}
+
+	public void setResetPasswordToken(String resetPasswordToken) {
+		this.resetPasswordToken = resetPasswordToken;
+	}
+
 	public String getAdminPassword() {
 		return adminPassword;
 	}
 
-
 	public void setAdminPassword(String adminPassword) {
 		this.adminPassword = adminPassword;
 	}
-
 
 	public Integer getAdminId() {
 		return adminId;
@@ -82,8 +101,6 @@ public class AdminDTO {
 		this.adminStatus = adminStatus;
 	}
 
-	
-
 	public Integer getPageNumber() {
 		return pageNumber;
 	}
@@ -109,7 +126,7 @@ public class AdminDTO {
 	}
 
 	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
-			Integer adminStatus,  Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+			Integer adminStatus, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.adminId = adminId;
 		this.adminAccount = adminAccount;
@@ -117,26 +134,25 @@ public class AdminDTO {
 		this.adminName = adminName;
 		this.hiredate = hiredate;
 		this.adminStatus = adminStatus;
-	
+
 		this.pageNumber = pageNumber;
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
 
-	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus
-			, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
+			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.adminAccount = adminAccount;
 		this.adminMail = adminMail;
 		this.adminName = adminName;
 		this.hiredate = hiredate;
 		this.adminStatus = adminStatus;
-		
+
 		this.pageNumber = pageNumber;
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
-
 
 	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
 			Integer adminStatus, String adminPassword, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
@@ -152,5 +168,34 @@ public class AdminDTO {
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
+
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
+			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+	@Override
+	public String toString() {
+		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminMail=" + adminMail
+				+ ", adminName=" + adminName + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
+				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
+				+ ", resetPasswordToken=" + resetPasswordToken + ", pageNumber=" + pageNumber + ", attrOrderBy="
+				+ attrOrderBy + ", selectedSort=" + selectedSort + "]";
+	}
+	
+	
 
 }
