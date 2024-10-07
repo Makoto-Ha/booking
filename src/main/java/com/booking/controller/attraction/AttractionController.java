@@ -1,7 +1,6 @@
 package com.booking.controller.attraction;
 
 
-<<<<<<< HEAD
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,16 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-=======
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -137,13 +130,8 @@ public class AttractionController {
 	 * @param attraction
 	 */
 	@PostMapping("/create")
-<<<<<<< HEAD
 	private String saveAttraction(AttractionDTO attractionDTO,@RequestParam(required = false) MultipartFile imageFile) {
 		Result<String> saveAttractionResult = attractionService.saveAttraction(attractionDTO, imageFile);
-=======
-	private String saveAttraction(Attraction attraction) {
-		Result<String> saveAttractionResult = attractionService.saveAttraction(attraction);
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 		if (saveAttractionResult.isFailure()) {
 			return "";
 		}
@@ -156,7 +144,6 @@ public class AttractionController {
 	 * @param attractionId
 	 */
 	@PostMapping("/delete")
-<<<<<<< HEAD
 	private ResponseEntity<?> deleteAttractionById(@RequestParam Integer attractionId) {
 		Result<String> deleteAttractionResult = attractionService.deledeAttractionById(attractionId);
 		String message = deleteAttractionResult.getMessage();
@@ -165,10 +152,6 @@ public class AttractionController {
 		}
 		
 		return ResponseEntity.ok(message);
-=======
-	private void delete(@RequestParam Integer attractionId) {
-		attractionService.deledeAttractionById(attractionId);
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	}
 
 	/**
@@ -177,22 +160,15 @@ public class AttractionController {
 	 * @param attractionId
 	 */
 	@PostMapping("/update")
-<<<<<<< HEAD
 	private String updateAttractionById(AttractionDTO attractionDTO, @SessionAttribute Integer attractionId,
 			@RequestParam(required = false) MultipartFile imageFile ) {
 		attractionDTO.setAttractionId(attractionId);
 		Result<String> updateAttractionResult = attractionService.updateAttraction(attractionDTO, imageFile);
-=======
-	private String update(Attraction attraction, @SessionAttribute Integer attractionId) {
-		attraction.setAttractionId(attractionId);
-		Result<String> updateAttractionResult = attractionService.updateAttraction(attraction);
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 		
 		if(updateAttractionResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/attraction";
-<<<<<<< HEAD
 	}
 	
 	
@@ -237,8 +213,6 @@ public class AttractionController {
 				.header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path))
 				.body(resource);
 				
-=======
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	}
 
 }

@@ -29,11 +29,7 @@ public class BookingOrderDTO {
 	
 	public BookingOrderDTO() {}
 	
-<<<<<<< HEAD
 	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDateTime updatedTime, LocalDateTime createdTime) {
-=======
-	public BookingOrderDTO(Integer bookingId, String orderNumber, Integer orderStatus, Long totalPrice, LocalDate checkInDate, LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime, LocalDateTime createdTime) {
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		this.bookingId = bookingId;
 		this.orderNumber = orderNumber;
 		this.orderStatus = orderStatus;

@@ -38,8 +38,6 @@ public class Admin implements Serializable {
 	@Column(name = "admin_password", length = 100)
 	private String adminPassword;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	@Column(name = "verification_token", length = 100)
 	private String verificationToken;
 
@@ -50,22 +48,11 @@ public class Admin implements Serializable {
 	private Integer emailVerified;
 	@Column(name = "img_file")
 	private String imgFile;
-=======
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	public Admin() {
 		super();
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-	
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
 			Integer adminStatus) {
 		this.adminId = adminId;
@@ -189,8 +176,6 @@ public class Admin implements Serializable {
 		return emailVerified;
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	public void setEmailVerified(Integer emailVerified) {
 		this.emailVerified = emailVerified;
 	}
@@ -265,17 +250,4 @@ public class Admin implements Serializable {
 		this.emailVerified = emailVerified;
 	}
 
-=======
-
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-<<<<<<< HEAD
-	
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 }

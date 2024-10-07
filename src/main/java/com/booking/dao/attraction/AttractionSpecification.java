@@ -42,24 +42,8 @@ public class AttractionSpecification {
 			return builder.like(root.get("addresss"), "%" + address + "%");
 		};
 	}
-<<<<<<< HEAD
 
 		
-=======
-	
-	// 根據開放時間進行模糊查詢
-	public static Specification<Attraction> openingHourContains (String openingHour) {
-		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(openingHour == null || openingHour.isEmpty()) {
-				return builder.conjunction();
-			}
-			
-			return builder.like(root.get("openingHour"), "%" + openingHour + "%");
-		};
-	}
-	
-	
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	// 根據景點類型進行模糊查詢
 	public static Specification<Attraction> typeContains (String attractionType) {
 		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
@@ -71,19 +55,6 @@ public class AttractionSpecification {
 		};
 	}
 	
-<<<<<<< HEAD
-=======
-	// 根據景點描述進行模糊查詢
-	public static Specification<Attraction> descriptionContains (String attractionDescription) {
-		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(attractionDescription == null || attractionDescription.isEmpty()) {
-				return builder.conjunction();
-			}
-			
-			return builder.like(root.get("attractionDescription"), "%" + attractionDescription + "%");
-		};
-	}
->>>>>>> 38e5de9 (鄭家霖.修改: Attraction的SpringMVC移植成SpringBoot)
 	
 
 	}

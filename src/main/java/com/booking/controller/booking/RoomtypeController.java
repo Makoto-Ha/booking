@@ -38,12 +38,9 @@ public class RoomtypeController {
 
 	@Autowired
 	private RoomtypeService roomtypeService;
-<<<<<<< HEAD
 	
 	@Autowired
 	private AmenityService amenityService;
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
 	/**
 	 * 轉到查詢
@@ -109,10 +106,7 @@ public class RoomtypeController {
 		}
 
 		RoomtypeDTO roomtypeDTO = findRoomtypeById.getData();
-<<<<<<< HEAD
 		Object allAmenities = findRoomtypeById.getExtraData("allAmenities");
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
 		model.addAttribute("roomtype", roomtypeDTO);
 		model.addAttribute("allAmenities", allAmenities);
@@ -132,12 +126,7 @@ public class RoomtypeController {
 			@RequestParam(value = "roomtypeCapacity", required = false) List<Integer> roomtypeCapacityAll,
 			RoomtypeDTO roomtypeDTO, Model model) {
 
-<<<<<<< HEAD
 		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll);
-=======
-		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO,
-				roomtypeCapacityAll);
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 
 		if (findRoomtypesResult.isFailure()) {
 			return "";
@@ -171,10 +160,6 @@ public class RoomtypeController {
 	 * 
 	 * @param roomtypeId
 	 */
-<<<<<<< HEAD
-=======
-
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	@PostMapping("/delete")
 	private ResponseEntity<?> deleteById(@RequestParam Integer roomtypeId) {
 		Result<String> deleteRoomtypeResult = roomtypeService.deleteRoomtypeById(roomtypeId);
@@ -194,17 +179,12 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@PostMapping("/update")
-<<<<<<< HEAD
 	private String updateById(
 			@RequestParam(required = false) MultipartFile imageFile, 
 			Roomtype roomtype,
 			@RequestParam List<Integer> amenitiesId,
 			@SessionAttribute Integer roomtypeId
 	) {
-=======
-	private String updateById(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype,
-			@SessionAttribute Integer roomtypeId) {
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 		roomtype.setRoomtypeId(roomtypeId);
 		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype, amenitiesId);
 
@@ -251,7 +231,6 @@ public class RoomtypeController {
 		UrlResource resource = findImageByIdResult.getData();
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
-<<<<<<< HEAD
 	}
 	
 	/**
@@ -277,8 +256,5 @@ public class RoomtypeController {
 	@ResponseBody
 	private List<String> getImageListByAWS(@PathVariable Integer roomtypeId) {
 		return roomtypeService.getImageListByAWS(roomtypeId);
-=======
-
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 	}
 }

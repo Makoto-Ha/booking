@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,16 +15,6 @@ import com.booking.bean.dto.booking.RoomDTO;
 import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.service.booking.BookingService;
-=======
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.booking.bean.dto.booking.RoomDTO;
-import com.booking.bean.dto.booking.RoomtypeDTO;
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 import com.booking.service.booking.RoomService;
 import com.booking.service.booking.RoomtypeService;
 import com.booking.utils.JsonUtil;
@@ -42,12 +31,9 @@ public class BookingJsonHandler {
 	@Autowired
 	private RoomService roomService;
 	
-<<<<<<< HEAD
 	@Autowired
 	private BookingService bookingService;
 	
-=======
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	// ===== Roomtype =====
 	
 	/**
@@ -59,11 +45,7 @@ public class BookingJsonHandler {
 	private String findRoomtypeById(@PathVariable Integer id) {
 		Result<RoomtypeDTO> roomtypeServiceResult = roomtypeService.findRoomtypeById(id);
 		if (roomtypeServiceResult.isFailure()) {
-<<<<<<< HEAD
 			return roomtypeServiceResult.getMessage();
-=======
-			return null;
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		}
 		
 		return JsonUtil.toJson(roomtypeServiceResult.getData());
@@ -80,11 +62,7 @@ public class BookingJsonHandler {
 		Result<List<RoomtypeDTO>> roomtypeServiceResult = roomtypeService.findRoomtypesByName(name);
 		
 		if(roomtypeServiceResult.isFailure()) {
-<<<<<<< HEAD
 			return roomtypeServiceResult.getMessage();
-=======
-			return null;
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		}
 		
 		return JsonUtil.toJson(roomtypeServiceResult.getData());
@@ -98,23 +76,14 @@ public class BookingJsonHandler {
 	 * @return
 	 */
 	@GetMapping("/room/{id}")
-<<<<<<< HEAD
 	private String findRoomById(@PathVariable Integer id, @ModelAttribute RoomDTO roomDTO) {
 		Result<RoomDetailDTO> roomServiceResult = roomService.findRoomById(id, roomDTO);
 		if(roomServiceResult.isFailure()) {
 			return roomServiceResult.getMessage();
-=======
-	@ResponseBody
-	private String findRoomById(@PathVariable Integer id) {
-		Result<RoomDTO> roomServiceResult = roomService.findRoomById(id);
-		if(roomServiceResult.isFailure()) {
-			return "";
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 		}
 		
 		return JsonUtil.toJson(roomServiceResult.getData());	
 	}
-<<<<<<< HEAD
 	
 	// ===== BookingOrder =====
 	
@@ -132,7 +101,5 @@ public class BookingJsonHandler {
 		
 		return JsonUtil.toJson(findBookingOrderByIdResult.getData());	
 	}
-=======
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 
 }

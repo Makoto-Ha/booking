@@ -15,7 +15,6 @@ public class BookingOrderSearchDTO {
 	private LocalDateTime toCheckOutTime;
 	
 	private String orderNumber;
-<<<<<<< HEAD
 	private String bookingName;
 	private Integer orderStatus;
 	private Long totalPrice;
@@ -23,11 +22,6 @@ public class BookingOrderSearchDTO {
 	public BookingOrderSearchDTO() {
 	}
 	
-=======
-	private Integer orderStatus;
-	private Long totalPrice;
-	
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	public LocalDate getFromCheckInDate() {
 		return fromCheckInDate;
 	}
@@ -94,7 +88,6 @@ public class BookingOrderSearchDTO {
 	public void setTotalPrice(Long totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-<<<<<<< HEAD
 	
 	public String getBookingName() {
 		return bookingName;
@@ -104,20 +97,13 @@ public class BookingOrderSearchDTO {
 		this.bookingName = bookingName;
 	}
 
-=======
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	@Override
 	public String toString() {
 		return "BookingOrderSearchDTO [fromCheckInDate=" + fromCheckInDate + ", toCheckInDate=" + toCheckInDate
 				+ ", fromCheckOutDate=" + fromCheckOutDate + ", toCheckOutDate=" + toCheckOutDate + ", fromCheckInTime="
 				+ fromCheckInTime + ", toCheckInTime=" + toCheckInTime + ", fromCheckOutTime=" + fromCheckOutTime
-<<<<<<< HEAD
 				+ ", toCheckOutTime=" + toCheckOutTime + ", orderNumber=" + orderNumber + ", bookingName=" + bookingName
 				+ ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice + "]";
-=======
-				+ ", toCheckOutTime=" + toCheckOutTime + ", orderNumber=" + orderNumber + ", orderStatus=" + orderStatus
-				+ ", totalPrice=" + totalPrice + "]";
->>>>>>> 82764d2 (黃威誠.新增: BookingOrder的模糊查詢功能)
 	}
 	
 }

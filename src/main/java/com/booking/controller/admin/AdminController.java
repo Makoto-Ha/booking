@@ -1,7 +1,6 @@
 package com.booking.controller.admin;
 
 import java.io.IOException;
-<<<<<<< HEAD
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -14,18 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-=======
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-<<<<<<< HEAD
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
-=======
-import org.springframework.http.ResponseEntity;
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,16 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
-<<<<<<< HEAD
 import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.pojo.admin.Admin;
-=======
-import com.booking.bean.pojo.admin.Admin;
-import com.booking.bean.pojo.attraction.Attraction;
-import com.booking.bean.dto.admin.AdminDTO;
-import com.booking.bean.dto.attraction.AttractionDTO;
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 import com.booking.service.admin.AdminService;
 import com.booking.utils.Result;
 
@@ -59,7 +39,6 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-<<<<<<< HEAD
     @Autowired
     private JavaMailSender mailSender;
 
@@ -155,35 +134,6 @@ public class AdminController {
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////
-=======
-	/**
-	 * 轉到管理員首頁
-	 * 
-	 * @param model
-	 */
-	@GetMapping
-	private String admin(Model model) {
-
-		AdminDTO adminDTO = new AdminDTO();
-		Result<PageImpl<AdminDTO>> findAdminAllResult = adminService.findAdminAll(adminDTO);
-		if (findAdminAllResult.isFailure()) {
-			return "";
-		}
-		Page<AdminDTO> page = findAdminAllResult.getData();
-		model.addAttribute("adminDTO", adminDTO);
-		model.addAttribute("page", page);
-		return "management-system/admin/admin-list";
-	}
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
-
-	/**
-	 * 轉到查詢
-	 */
-	@GetMapping("/select/page")
-	private String sendSelectPage() {
-		return "/management-system/admin/admin-select";
-<<<<<<< HEAD
-	}
 
 	/**
 	 * 轉到查詢
@@ -213,7 +163,6 @@ public class AdminController {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * 轉去create-page
 	 */
 	@GetMapping("/create/page")
@@ -227,27 +176,6 @@ public class AdminController {
 	 * @param
 	 * @param model
 	 */
-=======
-	}
-
-	
-	/**
-=======
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
-	 * 轉去create-page
-	 */
-	@GetMapping("/create/page")
-	private String sendCreatePage() {
-		return "management-system/admin/admin-create";
-	}
-
-	/**
-	 * 轉去edit-page
-	 * 
-	 * @param
-	 * @param model
-	 */
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	@GetMapping("/edit/page")
 	private String sendEditPage(@RequestParam Integer adminId, HttpSession session, Model model) {
 		session.setAttribute("adminId", adminId);
@@ -279,13 +207,9 @@ public class AdminController {
 		Page<AdminDTO> page = adminServiceResult.getData();
 
 		model.addAttribute("requestParameters", requestParameters);
-<<<<<<< HEAD
 		
 		model.addAttribute("adminDTO", adminDTO);
 	
-=======
-		model.addAttribute("adminDTO", adminDTO);
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 		model.addAttribute("page", page);
 
 		return "/management-system/admin/admin-list";
@@ -308,8 +232,6 @@ public class AdminController {
 	/**
 	 * 新增管理員
 	 * 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	 * @param
 	 */
 	@PostMapping("/create")
@@ -328,23 +250,6 @@ public class AdminController {
 	 * @param attraction
 	 * @param attractionId
 	 */
-=======
-	 * @param 
-=======
-	 * @param
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
-	 */
-	@PostMapping("/create")
-	public String saveAdmin(Admin admin) {
-		Result<String> saveAdminResult = adminService.saveAdmin(admin);
-		if (saveAdminResult.isFailure()) {
-			return "";
-		}
-		return "redirect:/management/admin";
-	}
-
-<<<<<<< HEAD
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	@PostMapping("/update")
 	private String updateAdminById(AdminDTO adminDTO, @SessionAttribute Integer adminId,
 			@RequestParam(required = false) MultipartFile imageFile ) {
@@ -352,21 +257,10 @@ public class AdminController {
 		Result<String> updateAdminResult = adminService.updateAdmin(adminDTO, imageFile);
 		
 		if(updateAdminResult.isFailure()) {
-=======
-	
-	//更新
-	@PostMapping("/update")
-	private String update(Admin admin, @SessionAttribute Integer adminId) {
-		admin.setAdminId(adminId);
-		Result<String> updateAdminResult = adminService.updateAdmin(admin);
-
-		if (updateAdminResult.isFailure()) {
->>>>>>> c80c8df (黃振瑋.修改:properties跟controller (#40))
 			return "";
 		}
 		return "redirect:/management/admin";
 	}
-<<<<<<< HEAD
 	
 	
 	/**
@@ -410,9 +304,6 @@ public class AdminController {
 				.body(resource);
 				
 	}
-=======
-
->>>>>>> 1bfb762 (黃振瑋.修改:admin-changeto-springboot (#39))
 	//////////////////////////////////////////////////////////////////////////////
 //
 //	/**
