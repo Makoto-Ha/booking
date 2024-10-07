@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +30,102 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    // 显示注册页面
+    @GetMapping("/register")
+    public String showRegisterPage() {
+        return "management-system/admin/register"; // register.html
+    }
+
+    // 处理注册请求
+    @PostMapping("/register")
+    public String register(@ModelAttribute Admin admin, Model model) {
+    	System.out.println(admin);
+        try {
+            adminService.register(admin);
+            model.addAttribute("message", "Registration successful");
+            return "management-system/admin/login"; // 注册成功后跳转到登录页面
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "management-system/admin/register";
+        }
+    }
+
+    // 显示登录页面
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "management-system/admin/login"; // login.html
+    }
+
+    // 处理登录请求
+    @PostMapping("/login")
+    public String login(@RequestParam String adminAccount, @RequestParam String adminPassword, Model model) {
+        try {
+            adminService.login(adminAccount, adminPassword);
+            model.addAttribute("message", "Login successful");
+            return "redirect:/management/admin"; // 登录成功跳转主页
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "management-system/admin/login";
+        }
+    }
+
+    // 显示忘记密码页面
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage() {
+        return "management-system/admin/forgot-password"; // forgot-password.html
+    }
+
+    // 处理忘记密码请求
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestParam String email, Model model) {
+        try {
+            String resetToken = adminService.createResetToken(email);
+            String resetLink = "http://localhost:8080/auth/reset-password?token=" + resetToken;
+            sendResetEmail(email, resetLink);
+            model.addAttribute("message", "Password reset link sent to your email.");
+            return "forgot-password";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "forgot-password";
+        }
+    }
+
+    // 显示重置密码页面
+    @GetMapping("/reset-password")
+    public String showResetPasswordPage(@RequestParam String token, Model model) {
+        model.addAttribute("token", token);
+        return "reset-password"; // reset-password.html
+    }
+
+    // 处理重置密码请求
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @RequestParam String newPassword, Model model) {
+        try {
+            adminService.resetPassword(token, newPassword);
+            model.addAttribute("message", "Password reset successful.");
+            return "login"; // 重置成功跳转登录页面
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "reset-password";
+        }
+    }
+
+    // 发送密码重置邮件
+    private void sendResetEmail(String to, String resetLink) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Password Reset Request");
+        message.setText("Click the link below to reset your password:\n" + resetLink);
+        mailSender.send(message);
+    }
+	
+
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * 轉到查詢
@@ -100,7 +199,10 @@ public class AdminController {
 		Page<AdminDTO> page = adminServiceResult.getData();
 
 		model.addAttribute("requestParameters", requestParameters);
+		
 		model.addAttribute("adminDTO", adminDTO);
+		System.out.println("touch"+adminDTO.getAdminStatus());
+		System.out.println("dto"+adminDTO);
 		model.addAttribute("page", page);
 
 		return "/management-system/admin/admin-list";
