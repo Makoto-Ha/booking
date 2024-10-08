@@ -113,22 +113,22 @@
 			                <div class="item-content">     	
 			                	<span class="item-title" th:text="${roomtype.roomtypeName}"></span>
 			                	<div class="listInfo-group">
-		                			<span class="item-info" style="color: darkred">房間類型價錢</span>
+		                			<span class="item-info" style="color: darkred">房間價錢</span>
 		                			<span th:text="${roomtype.roomtypePrice}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型數量</span>
+		                			<span class="item-info" style="color: darkred">房間數量</span>
 		                			<span th:text="${roomtype.roomtypeQuantity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型人數</span>
+		                			<span class="item-info" style="color: darkred">房間人數</span>
 		                			<span th:text="${roomtype.roomtypeCapacity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型城市</span>
+		                			<span class="item-info" style="color: darkred">所在城市</span>
 		                			<span th:text="${roomtype.roomtypeCity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型區域</span>
+		                			<span class="item-info" style="color: darkred">所在區域</span>
 		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">房間類型說明</span>
+		                			<span class="item-info" style="color: darkred">房間說明</span>
 		                			<span th:text="${roomtype.roomtypeDescription}"></span>              		   			
 			                	</div>
 			                </div>
@@ -145,19 +145,24 @@
 					var page = [[${page}]];
 			    	var totalPages = page.totalPages;
 			    	console.log(totalPages);
-					console.log(requestParameters);
+					console.log(requestParameters);		
+					
+					
+					function bindItemListEvent() {
+						let itemList = document.getElementById("item-list");
+						itemList.addEventListener('click', function(e) {
+							console.log('touch');
+							let li = e.target.closest('li');
+							let roomtypeId = li.dataset.currentListId;
+							location.href = "/booking/management/room/roomtype/" + roomtypeId;
+						});
+					}	
+						
+					bindItemListEvent();	
 			    </script>
 			  </section>
 		  </div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
-	<script>
-		let itemList = document.getElementById("item-list");
-		itemList.addEventListener('click', function(e) {
-			let li = e.target.closest('li');
-			let roomtypeId = li.dataset.currentListId;
-			location.href = "/booking/management/room/roomtype/" + roomtypeId;
-		});
-	</script>
 </body>
 </html>

@@ -207,17 +207,22 @@ public class RoomtypeService {
 	 */
 	@Transactional
 	public Result<String> updateRoomtype(MultipartFile imageFile, Roomtype roomtype) {
+		Roomtype oldRoomtype = roomtypeRepo.findById(roomtype.getRoomtypeId()).get();
+		
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		
 		if(uploadResult.isSuccess()) {
 			String fileName = imageFile.getOriginalFilename();
 			roomtype.setImagePath("uploads" + "/" + fileName);
 		}else {
-			roomtype.setImagePath("uploads/default.jpg");
+			String oldImagePath = oldRoomtype.getImagePath();
+			
+			if(oldImagePath.equals("uploads/default.jpg")) {
+				roomtype.setImagePath("uploads/default.jpg");
+			}else {
+				roomtype.setImagePath(oldImagePath);
+			}
 		}
-		
-		Integer oldRoomtypeId = roomtype.getRoomtypeId();
-		Roomtype oldRoomtype = roomtypeRepo.findById(oldRoomtypeId).get();
 			
 		String roomtypeName = roomtype.getRoomtypeName();
 		Integer roomtypeCapacity = roomtype.getRoomtypeCapacity();
@@ -285,11 +290,11 @@ public class RoomtypeService {
 		if(roomtype == null) {
 			return Result.failure("根據roomtypeId查找不到房間類型");
 		}
+		
 		Result<String> uploadImageResult = UploadImageFile.upload(imageFile);
-		
-		
+
 		if(uploadImageResult.isFailure()) {
-			return Result.failure(uploadImageResult.getMessage());
+			return uploadImageResult;
 		}
 		
 		Path path = (Path) uploadImageResult.getExtraData("path");

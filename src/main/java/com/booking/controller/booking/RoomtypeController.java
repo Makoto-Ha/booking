@@ -218,6 +218,5 @@ public class RoomtypeController {
 		UrlResource resource = findImageByIdResult.getData();
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
-
 	}
 }
