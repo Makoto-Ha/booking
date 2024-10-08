@@ -14,7 +14,7 @@
 			<form class="form" action="../update" method="post" enctype="multipart/form-data">
 		        <div class="form-group">
 		            <label for="name">景點名稱</label>
-		            <input type="text" id="name" name="attractionName" placeholder="輸入內容">
+		            <input type="text" id="name" name="attractionName" placeholder="輸入內容" th:value="${attraction.attractionName}">
 		        </div>
 		
 		        <div class="form-group">
@@ -24,12 +24,12 @@
 		
 		        <div class="form-group">
 		            <label for="address">地址</label>
-		            <input type="text" id="address" name="address" placeholder="輸入內容">
+		            <input type="text" id="address" name="address" placeholder="輸入內容" th:value="${attraction.address}">
 		        </div>
 		        
     			<div class="form-group">
         			<label for="openinghour">開放時間</label>
-        			<textarea id="openinghour" name="openingHour" placeholder="輸入內容" rows="5" style="width: 100%;"></textarea>
+        			<textarea id="openinghour" name="openingHour" placeholder="輸入內容" rows="5" style="width: 100%;" th:value="${attraction.openingHour}"></textarea>
     			</div>
 		
 		        <div class="form-group">
@@ -45,7 +45,7 @@
 		
 		        <div class="form-group">
         			<label for="description">景點介紹</label>
-        			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;"></textarea>
+        			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;" th:value="${attraction.attractionDescription}"></textarea>
     			</div>
 		
 		    	<div class="form-group">
