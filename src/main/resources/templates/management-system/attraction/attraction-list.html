@@ -24,10 +24,7 @@
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
 			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">城市</option>
-						  <option value="address" th:selected="address == ${attractionDTO.attrOrderBy}">地址</option>
-						  <option value="openingHour" th:selected="openingHour == ${attractionDTO.attrOrderBy}">開放時間</option>
 						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
-						  <option value="attractionDescription" th:selected="attractionDescription == ${attractionDTO.attrOrderBy}">景點介紹</option>
 				      </select>
 				     <select class="attr-select-order-by" id="select-sort">
 			    			<option value="false" th:selected="${attractionDTO.selectedSort}">升冪</option>
