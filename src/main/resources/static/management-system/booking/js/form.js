@@ -3,7 +3,7 @@ const selectCity = document.getElementById("select-city");
 data.forEach(location => {
 	let optionCity = document.createElement("option");
 	optionCity.textContent = location.name;
-	selectCity.appendChild(optionCity);
+	selectCity?.appendChild(optionCity);
 });
 
 let selectDistrict = document.getElementById("select-district");
@@ -14,14 +14,14 @@ data[0].districts.forEach(area => {
 	selectDistrict?.appendChild(option);
 });
 
-selectCity.addEventListener("change", e => {
+selectCity?.addEventListener("change", e => {
 	selectDistrict.innerHTML = "";
 	let selectCityName = e.target.value;
 
 	data.find(location => location.name === selectCityName).districts.forEach(area => {
 		let option = document.createElement("option");
 		option.textContent = area.name;
-		selectDistrict.appendChild(option);
+		selectDistrict?.appendChild(option);
 	});
 });
 

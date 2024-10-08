@@ -19,13 +19,18 @@ public class AdminDTO {
 	private String adminPassword;
 	private String verificationToken;
 	private String resetPasswordToken;
-	private Integer emailVerified;
+	private Integer emailVerified;	
+	
+	private String imgFile;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "adminId";
 	private Boolean selectedSort = true;
 
 	public AdminDTO() {
 	}
+	
+
+
 
 	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
 			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
@@ -63,6 +68,8 @@ public class AdminDTO {
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
 	}
+
+
 
 
 
@@ -170,15 +177,78 @@ public class AdminDTO {
 		this.emailVerified = emailVerified;
 	}
 
+
+
+
+	public String getImgFile() {
+		return imgFile;
+	}
+
+
+
+
+	public void setImgFile(String imgFile) {
+		this.imgFile = imgFile;
+	}
+
+
+
+
 	@Override
 	public String toString() {
 		return "AdminDTO [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminMail=" + adminMail
 				+ ", adminName=" + adminName + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
 				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
-				+ ", resetPasswordToken=" + resetPasswordToken + ", emailVerified=" + emailVerified + ", pageNumber="
-				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
+				+ ", resetPasswordToken=" + resetPasswordToken + ", emailVerified=" + emailVerified + ", imgFile="
+				+ imgFile + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
+				+ selectedSort + "]";
 	}
-	
-	
 
+
+
+
+	public AdminDTO(Integer adminId, String adminAccount, String adminMail, String adminName, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
+			Integer emailVerified, String imgFile, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.imgFile = imgFile;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+
+
+
+	public AdminDTO(String adminAccount, String adminMail, String adminName, LocalDate hiredate, Integer adminStatus,
+			String adminPassword, String verificationToken, String resetPasswordToken, Integer emailVerified,
+			String imgFile, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.adminAccount = adminAccount;
+		this.adminMail = adminMail;
+		this.adminName = adminName;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.imgFile = imgFile;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+
+	
 }

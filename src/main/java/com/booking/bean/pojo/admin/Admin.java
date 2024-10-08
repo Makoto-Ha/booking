@@ -43,9 +43,11 @@ public class Admin implements Serializable {
 
 	@Column(name = "reset_password_token", length = 100)
 	private String resetPasswordToken;
-	
+
 	@Column(name = "email_verified", length = 100)
 	private Integer emailVerified;
+	@Column(name = "img_file")
+	private String imgFile;
 
 	public Admin() {
 		super();
@@ -170,14 +172,62 @@ public class Admin implements Serializable {
 		this.adminStatus = adminStatus;
 	}
 
-
-
 	public Integer getEmailVerified() {
 		return emailVerified;
 	}
 
 	public void setEmailVerified(Integer emailVerified) {
 		this.emailVerified = emailVerified;
+	}
+
+	@Override
+	public String toString() {
+		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" + adminName
+				+ ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
+				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
+				+ ", resetPasswordToken=" + resetPasswordToken + ", emailVerified=" + emailVerified + ", imgFile="
+				+ imgFile + "]";
+	}
+
+	public Admin(String adminAccount, String adminName, String adminMail, LocalDate hiredate, Integer adminStatus,
+			String adminPassword, String verificationToken, String resetPasswordToken, Integer emailVerified,
+			String imgFile) {
+		super();
+		this.adminAccount = adminAccount;
+		this.adminName = adminName;
+		this.adminMail = adminMail;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.imgFile = imgFile;
+	}
+
+	public Admin(Integer adminId, String adminAccount, String adminName, String adminMail, LocalDate hiredate,
+			Integer adminStatus, String adminPassword, String verificationToken, String resetPasswordToken,
+			Integer emailVerified, String imgFile) {
+		super();
+		this.adminId = adminId;
+		this.adminAccount = adminAccount;
+		this.adminName = adminName;
+		this.adminMail = adminMail;
+		this.hiredate = hiredate;
+		this.adminStatus = adminStatus;
+		this.adminPassword = adminPassword;
+		this.verificationToken = verificationToken;
+		this.resetPasswordToken = resetPasswordToken;
+		this.emailVerified = emailVerified;
+		this.imgFile = imgFile;
+	}
+
+	public String getImgFile() {
+		return imgFile;
+	}
+
+	public void setImgFile(String imgFile) {
+		this.imgFile = imgFile;
 	}
 
 	public static long getSerialversionuid() {
@@ -198,14 +248,6 @@ public class Admin implements Serializable {
 		this.verificationToken = verificationToken;
 		this.resetPasswordToken = resetPasswordToken;
 		this.emailVerified = emailVerified;
-	}
-
-	@Override
-	public String toString() {
-		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminName=" + adminName
-				+ ", adminMail=" + adminMail + ", hiredate=" + hiredate + ", adminStatus=" + adminStatus
-				+ ", adminPassword=" + adminPassword + ", verificationToken=" + verificationToken
-				+ ", resetPasswordToken=" + resetPasswordToken + ", emailVerified=" + emailVerified + "]";
 	}
 
 }
