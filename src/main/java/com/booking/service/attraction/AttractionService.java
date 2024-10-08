@@ -96,6 +96,8 @@ public class AttractionService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionsDTOs, newPageable, page.getTotalElements()));
+
+
 	}
 
 	/**
