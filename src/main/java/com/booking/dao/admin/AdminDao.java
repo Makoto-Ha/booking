@@ -28,6 +28,8 @@ public interface AdminDao {
      * @return DaoResult<List<Admin>>
      */
   DaoResult<List<Admin>> getAdminsByName(String adminName);
+  
+  
 
     /**
      * 根據ID獲取管理員

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信箱驗證</title>
+<style>
+/* 使用和登入頁面相同的樣式 */
+* {
+	text-decoration: none;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-size: 100%;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	color: #333;
+	background-color: #f2edf3;
+}
+
+.login-container {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width: 320px;
+	text-align: center;
+}
+
+.login-container h2 {
+	margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	background: linear-gradient(to right, #da8cff, #9a55ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.login-button {
+	width: 100%;
+	padding: 10px;
+	background: linear-gradient(to right, #da8cff, #9a55ff);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	margin-top: 10px;
+	transition: all .2s;
+}
+
+.login-button:hover {
+	opacity: .8;
+}
+</style>
+</head>
+<body>
+	<div class="login-container">
+		<h2>驗證信箱</h2>
+		<form id="verify-email-form" th:action="@{/management/admin/verify-email}" method="get">
+			<input type="hidden" name="token" th:value="${token}">
+			<p>請點擊下方按鈕以驗證您的信箱。</p>
+			<button type="submit" class="login-button">驗證信箱</button>
+		</form>
+	</div>
+</body>
+</html>

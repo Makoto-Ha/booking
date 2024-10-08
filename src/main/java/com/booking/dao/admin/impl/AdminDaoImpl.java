@@ -44,6 +44,7 @@ public class AdminDaoImpl implements AdminDao {
 	 * @param adminName
 	 * @return
 	 */
+    @Override
 	public DaoResult<List<Admin>> getAdminsByName(String adminName) {
 		String jpql = "FROM Admin WHERE adminName LIKE :adminName";
 		TypedQuery<Admin> query = entityManager.createQuery(jpql, Admin.class);

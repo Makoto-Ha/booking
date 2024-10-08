@@ -20,6 +20,26 @@ public class AttractionDTO{
 	}
 
 
+	
+	public AttractionDTO(Integer attractionId, String attractionName, String attractionCity, String address,
+			String openingHour, String attractionType, String attractionDescription, String imagesFile,
+			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+		super();
+		this.attractionId = attractionId;
+		this.attractionName = attractionName;
+		this.attractionCity = attractionCity;
+		this.address = address;
+		this.openingHour = openingHour;
+		this.attractionType = attractionType;
+		this.attractionDescription = attractionDescription;
+		this.imagesFile = imagesFile;
+		this.pageNumber = pageNumber;
+		this.attrOrderBy = attrOrderBy;
+		this.selectedSort = selectedSort;
+	}
+
+
+
 	public Integer getAttractionId() {
 		return attractionId;
 	}

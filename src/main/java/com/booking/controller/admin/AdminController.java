@@ -1,10 +1,15 @@
 package com.booking.controller.admin;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,12 +17,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.admin.AdminDTO;
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.pojo.admin.Admin;
 import com.booking.service.admin.AdminService;
 import com.booking.utils.Result;
@@ -201,8 +209,7 @@ public class AdminController {
 		model.addAttribute("requestParameters", requestParameters);
 		
 		model.addAttribute("adminDTO", adminDTO);
-		System.out.println("touch"+adminDTO.getAdminStatus());
-		System.out.println("dto"+adminDTO);
+	
 		model.addAttribute("page", page);
 
 		return "/management-system/admin/admin-list";
@@ -228,27 +235,75 @@ public class AdminController {
 	 * @param
 	 */
 	@PostMapping("/create")
-	public String saveAdmin(Admin admin) {
-		Result<String> saveAdminResult = adminService.saveAdmin(admin);
+	private String saveAdmin(AdminDTO adminDTO,@RequestParam(required = false) MultipartFile imageFile) {
+		Result<String> saveAdminResult = adminService.saveAdmin(adminDTO, imageFile);
 		if (saveAdminResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/admin";
+		
 	}
 
 	
-	//更新
+	/**
+	 * 更新
+	 * @param attraction
+	 * @param attractionId
+	 */
 	@PostMapping("/update")
-	private String update(Admin admin, @SessionAttribute Integer adminId) {
-		admin.setAdminId(adminId);
-		Result<String> updateAdminResult = adminService.updateAdmin(admin);
-
-		if (updateAdminResult.isFailure()) {
+	private String updateAdminById(AdminDTO adminDTO, @SessionAttribute Integer adminId,
+			@RequestParam(required = false) MultipartFile imageFile ) {
+		adminDTO.setAdminId(adminId);
+		Result<String> updateAdminResult = adminService.updateAdmin(adminDTO, imageFile);
+		
+		if(updateAdminResult.isFailure()) {
 			return "";
 		}
 		return "redirect:/management/admin";
 	}
+	
+	
+	/**
+	 * 根據ID上傳圖片
+	 * @param imageFile
+	 * @param attractionId
+	 * @return
+	 */
+	@PostMapping("/upload")
+	public ResponseEntity<String> uploadImageById(@RequestParam MultipartFile imageFile, Integer adminId) {
+		Result<String> uploadImageResult = adminService.uploadImageById(imageFile, adminId);
+		String message = uploadImageResult.getMessage();
+		if(uploadImageResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		return ResponseEntity.ok(message);
+	}
+	
+	
+	
+	/**
+	 * 根據ID取得圖片
+	 * @param attractionId
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("/image/{adminId}")
+	public ResponseEntity<?> findImageById(@PathVariable Integer adminId) throws IOException {
+		Result<UrlResource> findImageByIdResult = adminService.findImageById(adminId);
+		
+		if(findImageByIdResult.isFailure()) {
+			return ResponseEntity.badRequest().body(findImageByIdResult.getMessage());
+		}
+		
+		Path path = (Path) findImageByIdResult.getExtraData("path");
+		UrlResource resource = findImageByIdResult.getData();
 
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path))
+				.body(resource);
+				
+	}
 	//////////////////////////////////////////////////////////////////////////////
 //
 //	/**
