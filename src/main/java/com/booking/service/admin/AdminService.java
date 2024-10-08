@@ -1,5 +1,8 @@
 package com.booking.service.admin;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.admin.AdminDTO;
 import com.booking.bean.dto.attraction.AttractionDTO;
@@ -28,8 +33,10 @@ import com.booking.dao.admin.AdminSpecification;
 import com.booking.dao.attraction.AttractionSpecification;
 import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.DaoResult;
+import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
 
 @Service
 @Transactional
@@ -134,6 +141,32 @@ public class AdminService {
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(adminsDTOs, newPageable, page.getTotalElements()));
 	}
+	
+	
+	/**
+	 * 依名稱獲取景點
+	 * 
+	 * @param attractionName
+	 * @return
+	 */
+	public Result<List<AdminDTO>> findAdminByName(String adminName) {
+		DaoResult<List<Admin>> getAdminsByNameResult = adminRepo.getAdminsByName(adminName);
+
+		if (getAdminsByNameResult.isFailure()) {
+			return Result.failure("根據管理員名稱獲取景點失敗");
+		}
+
+		List<AdminDTO> list = new ArrayList<>();
+		List<Admin> admins = getAdminsByNameResult.getData();
+
+		for (Admin admin : admins) {
+			AdminDTO adminDTO = new AdminDTO();
+			BeanUtils.copyProperties(admin, adminDTO);
+			list.add(adminDTO);
+		}
+
+		return Result.success(list);
+	}
 
 	/**
 	 * 依id獲得管理員
@@ -153,13 +186,25 @@ public class AdminService {
 	}
 
 	/**
-	 * 新增管理員
+	 *
 	 * 
-	 * @param
+	 * @param 
 	 * @return
 	 */
 	@Transactional
-	public Result<String> saveAdmin(Admin admin) {
+	public Result<String> saveAdmin(AdminDTO adminDTO, MultipartFile imageFile) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			adminDTO.setImgFile("uploads" + "/" + fileName);
+		}else {
+			adminDTO.setImgFile("uploads/default.jpg");
+		}
+		Admin admin = new Admin();
+		
+		BeanUtils.copyProperties(adminDTO, admin);
+		
 		adminRepo.save(admin);
 
 		return Result.success("新增管理員成功");
@@ -183,53 +228,80 @@ public class AdminService {
 		return Result.success("管理員狀態更新成功");
 	}
 
+
 	/**
-	 * 更新
-	 * 
-	 * @param admin
+	 * 更新管理員
+	 * @param attractionDTO
 	 * @return
 	 */
-	public Result<String> updateAdmin(Admin admin) {
-		DaoResult<Admin> daoResult = adminRepo.getAdminById(admin.getAdminId());
-
-		if (daoResult.isFailure() || daoResult.getData() == null) {
-			return Result.failure("更新失敗，找不到該管理員");
+	public Result<String> updateAdmin(AdminDTO adminDTO, MultipartFile imageFile) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			adminDTO.setImgFile("uploads" + "/" + fileName);
+		}else {
+			adminDTO.setImgFile("uploads/default.jpg");
 		}
-
-		Admin oldAdmin = daoResult.getData();
-
-		if (admin.getAdminAccount() == null || admin.getAdminAccount().isEmpty()) {
-			admin.setAdminAccount(oldAdmin.getAdminAccount());
+		
+		Admin updateAdmin = adminRepo.findById(adminDTO.getAdminId()).orElse(null);
+		MyModelMapper.map(adminDTO, updateAdmin);
+		adminRepo.save(updateAdmin);
+		return Result.success("更新管理員成功");
+	}
+	
+	/**
+	 * 根據id上傳圖片
+	 * @param imageFile
+	 * @param attractionId
+	 * @return
+	 */
+	public Result<String> uploadImageById(MultipartFile imageFile, Integer adminId){
+		Admin admin = adminRepo.findById(adminId).orElse(null);
+		if(admin == null) {
+			return Result.failure("沒有此管理員");
 		}
-
-		if (admin.getAdminPassword() == null || admin.getAdminPassword().isEmpty()) {
-			admin.setAdminPassword(oldAdmin.getAdminPassword());
+		
+		Result<String> uploadImageResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadImageResult.isFailure()) {
+			return Result.failure(uploadImageResult.getMessage());
 		}
-
-		if (admin.getAdminName() == null || admin.getAdminName().isEmpty()) {
-			admin.setAdminName(oldAdmin.getAdminName());
+		
+		Path path = (Path) uploadImageResult.getExtraData("path");
+		admin.setImgFile(path.toString());
+		
+		return Result.success("上傳圖片成功");
+	}
+		
+	
+	public Result<UrlResource> findImageById(Integer adminId) {
+		Admin admin = adminRepo.findById(adminId).orElse(null);
+		
+		if(admin == null) {
+			return Result.failure("根據ID查找不到管理員");
 		}
-
-		if (admin.getAdminMail() == null || admin.getAdminMail().isEmpty()) {
-			admin.setAdminMail(oldAdmin.getAdminMail());
-		}
-
-		if (admin.getHiredate() == null) {
-			admin.setHiredate(oldAdmin.getHiredate());
-		}
-
-		if (admin.getAdminStatus() == null) {
-			admin.setAdminStatus(oldAdmin.getAdminStatus());
+		
+		String imagesFile = admin.getImgFile();
+		
+		Path path = Paths.get(imagesFile);
+		try {
+			UrlResource urlResource = new UrlResource(path.toUri());
+			 if (urlResource.exists() || urlResource.isReadable()) {
+		    	return Result.success(urlResource).setExtraData("path", path);
+		    } 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 
 		DaoResult<?> updateAdminResult = adminRepo.updateAdmin(admin);
 		if (updateAdminResult.isFailure()) {
 			return Result.failure("更新失敗");
 		}
-		return Result.success("更新成功");
+		return Result.success("更新景點成功");
 	}
 
-	//////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
 	public Result<AdminDTO> loginAdmin(String adminAccount, String adminPassword) {
 		return adminRepo
 				.findOne(AdminSpecification.accountContains(adminAccount)

@@ -3,49 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <title>create</title>
-<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/booking/css/booking.css}">
 </head>
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../update" method="post" enctype="multipart/form-data">
-		         <div class="form-group">
-		            <label for="adminId">管理員編號</label>
-		            <input type="text" id="adminId" name="adminId" placeholder="輸入管理員編號" th:value="${admin.adminId}" disabled>
-		        </div> 
+			<form class="form" action="../update" method="post"
+				enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="adminId">管理員編號</label> <input type="text" id="adminId"
+						name="adminId" placeholder="輸入管理員編號" th:value="${admin.adminId}"
+						disabled>
+				</div>
+
+				<div class="form-group">
+					<label for="adminAccount">管理員帳號</label> <input type="text"
+						id="adminAccount" name="adminAccount" placeholder="輸入管理員帳號"
+						th:value="${admin.adminAccount}">
+				</div>
+
+				<div class="form-group">
+					<label for="adminPassword">管理員密碼</label> <input type="password"
+						id="adminPassword" name="adminPassword" placeholder="輸入管理員密碼"
+						th:value="${admin.adminPassword}">
+				</div>
+
+				<div class="form-group">
+					<label for="adminName">管理員姓名</label> <input type="text"
+						id="adminName" name="adminName" placeholder="輸入管理員姓名"
+						th:value="${admin.adminName}">
+				</div>
+
+				<div class="form-group">
+					<label for="adminMail"> 管理員信箱</label> <input type="email"
+						id="adminMail" name="adminMail" placeholder="輸入管理員信箱"
+						th:value="${admin.adminMail}">
+				</div>
+
+				<div class="form-group">
+					<label for="hiredate">到職日期</label> <input type="date" id="hiredate"
+						name="hiredate" placeholder="選擇日期" th:value="${admin.hiredate}">
+				</div>
+
+
+			<div class="form-group">
+					<label>上傳圖片</label>
+					<div class="upload-container">
+					    <label for="file-upload" class="custom-file-upload">
+					    <!-- 上傳圖示 -->
+					      <i class="fas fa-cloud-upload-alt"></i> 
+					      選擇檔案
+					    </label>
+					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
+					    <p id="file-name" class="file-name">尚未選擇檔案</p>
+					    <p class="upload-instruction">可上傳JPG, PNG</p>
+					</div>
+				</div>
+
 		
 		        <div class="form-group">
-		            <label for="adminAccount">管理員帳號</label>
-		            <input type="text" id="adminAccount" name="adminAccount" placeholder="輸入管理員帳號" th:value="${admin.adminAccount}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="adminPassword">管理員密碼</label>
-		            <input type="password" id="adminPassword" name="adminPassword" placeholder="輸入管理員密碼" th:value="${admin.adminPassword}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="adminName">管理員姓名</label>
-		            <input type="text" id="adminName" name="adminName" placeholder="輸入管理員姓名" th:value="${admin.adminName}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="adminMail"> 管理員信箱</label>
-		            <input type="email" id="adminMail" name="adminMail" placeholder="輸入管理員信箱" th:value="${admin.adminMail}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="hiredate">到職日期</label>
-		            <input type="date" id="hiredate" name="hiredate" placeholder="選擇日期" th:value="${admin.hiredate}">
-		        </div>
-		
-		        <div class="form-group">
-		            <button type="submit" style="background-color: #007bff;">保存</button>
+		            <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
 		            <button type="button" class="cancel">取消</button>
-		    </div>
+		        </div>
 		    </form>
 		</div>
 	</div>

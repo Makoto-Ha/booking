@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <title>roomtype-create</title>
-<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/booking/css/booking.css}">
 </head>
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../create" method="post" enctype="multipart/form-data">
-		       <div class="form-group">
+			<form class="form" action="../create" method="post"
+				enctype="multipart/form-data">
+				<div class="form-group">
 					<label for="admin-account">新增員工帳號</label> <input type="text"
 						id="admin-account" name="adminAccount" placeholder="輸入內容">
-				</div>			
+				</div>
 				<div class="form-group">
 					<label for="admin-password">新增員工密碼</label> <input type="text"
 						id="admin-password" name="adminPassword" placeholder="輸入內容">
@@ -43,13 +46,26 @@
 						<option value="0">離職</option>
 					</select>
 				</div>
-
-
 				<div class="form-group">
-					<button type="submit">確定</button>
-					<button type="button" class="cancel">取消</button>
+					<label>上傳圖片</label>
+					<div class="upload-container">
+					    <label for="file-upload" class="custom-file-upload">
+					    <!-- 上傳圖示 -->
+					      <i class="fas fa-cloud-upload-alt"></i> 
+					      選擇檔案
+					    </label>
+					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
+					    <p id="file-name" class="file-name">尚未選擇檔案</p>
+					    <p class="upload-instruction">可上傳JPG, PNG</p>
+					</div>
 				</div>
-		      </form>
+		
+
+		        <div class="form-group">
+		            <button type="submit" class="submit" id="submit" disabled>新增</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+		    </form>
 		</div>
 	</div>
 	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
