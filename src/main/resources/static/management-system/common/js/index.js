@@ -22,7 +22,7 @@ function bindAdminSystemEvent() {
 
 	// 導航按鈕點擊事件處理
 	sidebarLinks.forEach(link => {
-		link.addEventListener('click', (event) => {
+		link.addEventListener('click', () => {
 			// 移除之前的活躍狀態
 			sidebarLinks.forEach(link => link.classList.remove('active'));
 
@@ -68,8 +68,10 @@ function bindAdminSystemEvent() {
 			currentList.id = currentListId;
 			let hrefSplit = location.pathname.split('/');
 			let lastHref = hrefSplit[3];
-				
-			fetch(`/booking/api/${lastHref}/${currentListId}`)
+			
+			deleteNullValue(requestParameters);
+			let queryString = new URLSearchParams(requestParameters).toString();	
+			fetch(`/booking/api/${lastHref}/${currentListId}?${queryString}`)
 				.then(res => res.json())
 				.then(data => {
 					let values = [];
@@ -243,7 +245,7 @@ function bindAdminSystemEvent() {
 				document.body.innerHTML = doc.body.innerHTML;
 				bindAdminSystemEvent();
 				enableScript('.main-list');
-			})
+			});
 	});
 
 	// 選擇排序種類
@@ -292,11 +294,16 @@ function bindAdminSystemEvent() {
 
 function enableScript(dom) {
 	const scripts = document.querySelector(dom).getElementsByTagName('script');
-	for (let script of scripts) {
+	for (let script of scripts) {	
 		const newScript = document.createElement('script');
 		newScript.textContent = script.textContent; // 将脚本内容复制到新创建的脚本标签中
+		
+		if(script.src != "") {
+			newScript.src = script.src;
+		}
+
 		document.head.appendChild(newScript); // 将脚本添加到页面中执行
-		document.head.removeChild(newScript); // 执行后移除脚本标签
+		document.head.removeChild(newScript); // 执行后移除脚本标签	
 	}
 }
 

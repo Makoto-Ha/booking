@@ -61,7 +61,7 @@
 			}
 			bookingOrderItems.shift();
 			data.bookingOrderItems = bookingOrderItems;
-			let response = await fetch('/booking/management/booking/update', {
+			await fetch('/booking/management/booking/update', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

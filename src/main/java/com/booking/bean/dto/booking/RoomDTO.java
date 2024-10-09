@@ -1,5 +1,6 @@
 package com.booking.bean.dto.booking;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class RoomDTO {
@@ -9,6 +10,7 @@ public class RoomDTO {
 	private Integer roomStatus;
 	private String roomDescription;
 	private LocalDateTime updatedTime;
+	private LocalDate bookingDate = LocalDate.now();
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "updatedTime";
 	private Boolean selectedSort = true;
@@ -104,13 +106,21 @@ public class RoomDTO {
 	public void setUpdatedTime(LocalDateTime updatedTime) {
 		this.updatedTime = updatedTime;
 	}
+	
+	public LocalDate getBookingDate() {
+		return bookingDate;
+	}
+
+	public void setBookingDate(LocalDate bookingDate) {
+		this.bookingDate = bookingDate;
+	}
 
 	@Override
 	public String toString() {
 		return "RoomDTO [roomId=" + roomId + ", roomtypeName=" + roomtypeName + ", roomNumber=" + roomNumber
-				+ ", roomStatus=" + roomStatus + ", roomDescription=" + roomDescription + ", pageNumber=" + pageNumber
-				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + ", roomtypeId=" + roomtypeId
-				+ ", updatedTime=" + updatedTime + "]";
+				+ ", roomStatus=" + roomStatus + ", roomDescription=" + roomDescription + ", updatedTime=" + updatedTime
+				+ ", bookingDate=" + bookingDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
+				+ ", selectedSort=" + selectedSort + ", roomtypeId=" + roomtypeId + "]";
 	}
 
 }

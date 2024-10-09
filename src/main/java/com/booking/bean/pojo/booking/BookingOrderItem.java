@@ -3,6 +3,7 @@ package com.booking.bean.pojo.booking;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "booking_order_item")
+@DynamicInsert
 @DynamicUpdate
 public class BookingOrderItem {
 	
@@ -53,6 +55,9 @@ public class BookingOrderItem {
 	
 	@Column(name = "price")
 	private Long price;
+	
+	@Column(name = "booking_status")
+	private Integer bookingStatus;
 	
 	public BookingOrderItem() {
 	}
@@ -157,12 +162,20 @@ public class BookingOrderItem {
 		this.price = price;
 	}
 
+	public Integer getBookingStatus() {
+		return bookingStatus;
+	}
+
+	public void setBookingStatus(Integer bookingStatus) {
+		this.bookingStatus = bookingStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "BookingOrderItem [id=" + id + ", bookingOrder=" + bookingOrder + ", room=" + room + ", roomtype="
 				+ roomtype + ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate + ", checkInTime="
 				+ checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime + ", price=" + price
-				+ ", quantity=" + "]";
+				+ ", bookingStatus=" + bookingStatus + "]";
 	}
 
 }

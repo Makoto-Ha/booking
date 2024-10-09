@@ -1,5 +1,6 @@
 package com.booking.service.booking;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +9,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.booking.RoomDTO;
+import com.booking.bean.dto.booking.RoomDetailDTO;
+import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.dao.booking.BookingOrderItemRespository;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomRepository;
 import com.booking.dao.booking.RoomSpecification;
@@ -32,12 +35,15 @@ public class RoomService {
 	@Autowired
 	private RoomRepository roomRepo;
 
+	@Autowired
+	private BookingOrderItemRespository boiRepo;
+	
 	/**
 	 * 獲取單筆房間
 	 * 
 	 * @return
 	 */
-	public Result<RoomDTO> findRoomById(Integer roomId) {
+	public Result<RoomDetailDTO> findRoomById(Integer roomId, RoomDTO roomDTO) {
 		DaoResult<Room> getRoomByIdResult = roomDao.getRoomById(roomId);
 	
 		if (getRoomByIdResult.isFailure()) {
@@ -48,13 +54,11 @@ public class RoomService {
 		
 		Roomtype roomtype = (Roomtype) getRoomByIdResult.getExtraData("roomtype");
 		
-		RoomDTO roomDTO = new RoomDTO();
+		RoomDetailDTO rdDTO = getRoomDetailDTO(room, roomDTO.getBookingDate());
 		
-		BeanUtils.copyProperties(room, roomDTO);
+		rdDTO.setRoomtypeName(roomtype.getRoomtypeName());
 		
-		roomDTO.setRoomtypeName(roomtype.getRoomtypeName());
-		
-		return Result.success(roomDTO);
+		return Result.success(rdDTO);
 	}
 
 	/**
@@ -62,23 +66,28 @@ public class RoomService {
 	 * 
 	 * @return
 	 */
-	public Result<Page<RoomDTO>> findRoomAll(RoomDTO roomDTO) {
-		String attrOrderBy = roomDTO.getAttrOrderBy();
-		Boolean selectedSort = roomDTO.getSelectedSort();
-		Integer pageNumber = roomDTO.getPageNumber();
-		
-		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
-		
+	public Result<Page<RoomDetailDTO>> findRoomAll(RoomDTO roomDTO) {
+		// 獲取pageable
+		Pageable pageable = MyPageRequest.of(roomDTO.getPageNumber(), 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
+
+		// 根據pageable獲取page
 		Page<RoomDTO> page = roomRepo.findRoomDTOAll(pageable);
-		return Result.success(page);
+		
+		// 因為是單純獲取所有，直接篩選當天的所有房間狀態
+		LocalDate currentDate = LocalDate.now();
+		
+		// RoomDTO的Page轉換成RoomDetailDTO的Page
+		Page<RoomDetailDTO> roomDetailDTOPage = MyPageRequest.convert(page, rDTO -> getRoomDetailDTO(rDTO, currentDate));
+		
+		return Result.success(roomDetailDTOPage);
 	}
-	
+
 	/**
 	 * 根據房間名稱獲得房間
 	 * @param name
 	 * @return
 	 */
-	public Result<List<Room>> findRoomsByName(String name) {
+	public Result<List<RoomDetailDTO>> findRoomsByName(String name) {
 		DaoResult<List<Room>> getRoomByNameResult = roomDao.getRoomByName(name);
 		
 		if(getRoomByNameResult.isFailure()) {
@@ -87,16 +96,16 @@ public class RoomService {
 		
 		List<Room> rooms = getRoomByNameResult.getData();
 		
-		RoomDTO roomDTO = new RoomDTO();
+		List<RoomDetailDTO> rdDTOs = new ArrayList<>();
 		
-		List<RoomDTO> list = new ArrayList<>();
+		LocalDate now = LocalDate.now();
 		
 		for(Room room : rooms) {
-			BeanUtils.copyProperties(room, roomDTO);
-			list.add(roomDTO);
+			RoomDetailDTO rdDTO = getRoomDetailDTO(room, now);
+			rdDTOs.add(rdDTO);
 		}
 		
-		return Result.success(rooms);
+		return Result.success(rdDTOs);
 	}
 
 	/**
@@ -105,7 +114,7 @@ public class RoomService {
 	 * @param roomtypeId
 	 * @return
 	 */
-	public Result<Page<RoomDTO>> findRoomsByRoomtypeId(Integer roomtypeId, RoomDTO roomDTO) {
+	public Result<Page<RoomDetailDTO>> findRoomsByRoomtypeId(Integer roomtypeId, RoomDTO roomDTO) {
 		DaoResult<List<Room>> getRoomsByRoomtypeIdResult = roomDao.getRoomsByRoomtypeId(roomtypeId);
 		if (getRoomsByRoomtypeIdResult.isFailure()) {
 			return Result.failure("獲取房間失敗");
@@ -114,90 +123,146 @@ public class RoomService {
 		
 		// 這邊rooms的roomtype都是一樣的，所以不用放在迴圈裡面
 		String roomtypeName = rooms.size() > 0 ? rooms.get(0).getRoomtype().getRoomtypeName() : null;
-		List<RoomDTO> roomDTOs = new ArrayList<>();
+		List<RoomDetailDTO> rdDTOs = new ArrayList<>();
+		
+		LocalDate now = LocalDate.now();
 		
 		for(Room room : rooms) {
-			RoomDTO responseRoomDTO = new RoomDTO();
-			BeanUtils.copyProperties(room, responseRoomDTO);
-			responseRoomDTO.setRoomtypeId(roomtypeId);
-			responseRoomDTO.setRoomtypeName(roomtypeName);
-			roomDTOs.add(responseRoomDTO);
+			RoomDetailDTO rdDTO = getRoomDetailDTO(room, now);	
+			rdDTO.setRoomtypeId(roomtypeId);
+			rdDTO.setRoomtypeName(roomtypeName);
+			rdDTOs.add(rdDTO);
 		}
 		
 		Pageable pageable = MyPageRequest.of(1, 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
 
-		return Result.success(new PageImpl<>(roomDTOs, pageable, roomDTOs.size()));
+		return Result.success(new PageImpl<>(rdDTOs, pageable, rdDTOs.size()));
 	}
-
+	
 	/**
-	 * 創建房間
-	 * 
+	 * 模糊查詢
 	 * @param room
+	 * @param extraValues
 	 * @return
 	 */
-	@Transactional
-	public Result<Integer> saveRoomsByRoomtypeName(Room room, String roomtypeName) {
-		DaoResult<?> addRoomResult = roomDao.addRoom(room, roomtypeName);
+	public Result<Page<RoomDetailDTO>> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
+		// =========================== 多條件查詢 ===========================
+ 
+		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
+												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
 		
-		if (addRoomResult.isFailure()) {
-			return Result.failure("新增房間失敗");
+		if(roomStatusAll != null) {
+			Specification<Room> statusSpec = Specification.where(null);
+			for(Integer status : roomStatusAll) {
+				statusSpec = statusSpec.or(RoomSpecification.statusContains(status));
+			}
+			spec = spec.and(statusSpec);
 		}
+													
+	    spec = spec.and(RoomSpecification.hasRoomtypeName(roomDTO.getRoomtypeName()));
+	    
+	    // ================================================================
+	
+	    // 獲取pageable
+		Pageable pageable = MyPageRequest.of(roomDTO.getPageNumber(), 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
 		
-		DaoResult<?> incrementRoomtypeQuantityResult = roomDao.incrementRoomtypeQuantity(room.getRoomtype().getRoomtypeId());
-
-		if (incrementRoomtypeQuantityResult.isFailure()) {
-			return Result.failure("房型數量加一失敗");
-		}
-
-		return Result.success("新增空房成功");
+		// 根據spec條件和pageable獲取page
+		Page<Room> page = roomRepo.findAll(spec, pageable);
+		
+		// 選取的日期，查該日期的房間狀態
+		LocalDate bookingDate = roomDTO.getBookingDate();
+		
+		// Room的Page轉換成RoomDTO的Page
+		Page<RoomDetailDTO> rdPage = MyPageRequest.convert(page, room -> {
+			Roomtype roomtype = room.getRoomtype();
+			RoomDetailDTO rdDTO = getRoomDetailDTO(room, bookingDate);
+			rdDTO.setRoomtypeName(roomtype.getRoomtypeName());	
+			rdDTO.setRoomtypeId(roomtype.getRoomtypeId());
+			return rdDTO;
+		});
+		
+		return Result.success(rdPage);
 	}
 
 	/**
-	 * 根據roomtype添加房間
-	 * 
-	 * @param roomtype
+	 * 根據房型名稱搜尋房間
+	 * 還沒用到
+	 * @param roomtypeName
 	 * @return
 	 */
-	@Transactional
-	public Result<String> saveRoomsByRoomtype(Roomtype roomtype) {
-		LocalDateTime updatedTime = roomtype.getUpdatedTime();
-		LocalDateTime createdTime = roomtype.getCreatedTime();
-		String roomtypeDescription = roomtype.getRoomtypeDescription();
-		Integer roomtypeQuanity = roomtype.getRoomtypeQuantity();
+	public Result<Page<RoomDTO>> findRoomsByRoomtypeName(String roomtypeName, RoomDTO roomDTO) {
+		Pageable pageable = MyPageRequest.of(roomDTO.getPageNumber(), 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
+		return Result.success(roomRepo.findRoomsByRoomtypeName(pageable, roomtypeName));
+	}
+	
+	// 根據RoomDTO獲取RoomDetails
+	private RoomDetailDTO getRoomDetailDTO(RoomDTO roomDTO, LocalDate date) {
+		// 先獲取roomId
+		Integer roomId = roomDTO.getRoomId();
+		// 根據roomId和當天日期，查找當天的所有訂單項目
+		List<BookingOrderItem> bois = boiRepo.findByRoomIdAndDate(roomId, date);
+		// 根據所有訂單項目，確定當天是哪個狀態
+		int currentDateStatus = getCurrentDateStatus(date, bois);
+		// 創建要返回的RoomDetailDTO
+		RoomDetailDTO roomDetailDTO = new RoomDetailDTO();
+		// 拷貝屬性
+		BeanUtils.copyProperties(roomDTO, roomDetailDTO);
+		// 設置狀態
+		roomDetailDTO.setBookingStatus(currentDateStatus);
+		return roomDetailDTO;
+	}
+	
+	// 根據Room獲取RoomDetails
+	private RoomDetailDTO getRoomDetailDTO(Room room, LocalDate date) {
+		// 先獲取roomId
+		Integer roomId = room.getRoomId();
+		// 根據roomId和當天日期，查找當天的所有訂單項目
+		List<BookingOrderItem> bois = boiRepo.findByRoomIdAndDate(roomId, date);
+		// 根據所有訂單項目，確定當天是哪個狀態
+		int currentDateStatus = getCurrentDateStatus(date, bois);
+		// 創建要返回的RoomDetailDTO
+		RoomDetailDTO roomDetailDTO = new RoomDetailDTO();
+		// 拷貝屬性
+		BeanUtils.copyProperties(room, roomDetailDTO);
+		// 設置狀態
+		roomDetailDTO.setBookingStatus(currentDateStatus);
+		return roomDetailDTO;
+	}
+	
+	// 獲取Room在該日期的狀態
+	private int getCurrentDateStatus(LocalDate date, List<BookingOrderItem> bois) {
+		for(BookingOrderItem boi : bois) {
+			LocalDate checkInDate = boi.getCheckInDate();
+	    	LocalDate checkOutDate = boi.getCheckOutDate();
+	    	if((checkInDate.isBefore(date) || checkInDate.isEqual(date)) && (checkOutDate.isAfter(date) || checkOutDate.isEqual(date))) {
+	    		return 1;
+	    	}
+		}
 		
-		for (int i = 0; i < roomtypeQuanity; i++) {
-			Room room = new Room("沒有", 0, roomtypeDescription, updatedTime, createdTime);
-			room.setRoomtype(roomtype);
-			roomRepo.save(room);
-		}
-		return Result.success("新增空房成功");
+		return 0;
 	}
-
-	@Transactional
-	public Result<String> removeRoomById(Integer roomId) {
-		DaoResult<?> decrementRoomtypeQuantityResult = roomDao.decrementRoomtypeQuantity(roomId);
-		if (decrementRoomtypeQuantityResult.isFailure()) {
-			return Result.failure("房間類型數量減一失敗");
-		}
-		DaoResult<?> removeRoomByIdResult = roomDao.removeRoomById(roomId);
-
-		if (removeRoomByIdResult.isFailure()) {
-			return Result.failure("房間不是空房，刪除房間失敗");
-		}
-
-		return Result.success("刪除房間類型成功");
+	
+	// 檢查請求日期是否在訂單項目的每個日期之間 **還沒用到
+	public boolean checkReqDateWithinDate(LocalDate reqDate, List<BookingOrderItem> bois) {
+	    for(BookingOrderItem boi : bois) {
+	    	LocalDate checkInDate = boi.getCheckInDate();
+	    	LocalDate checkOutDate = boi.getCheckOutDate();
+	    	if(checkInDate.isAfter(reqDate) && checkOutDate.isBefore(reqDate) ) {
+	    		return true;
+	    	}
+	    }
+	    
+	    return false;
 	}
-
+	
 	/**
 	 * 更新房間
-	 * 
 	 * @param room
 	 * @return
 	 */
 	@Transactional
 	public Result<String> updateRoom(Room room) {
 		Room oldRoom = roomDao.getRoomById(room.getRoomId()).getData();
-
 		String roomNumber = room.getRoomNumber();
 		String roomDescription = room.getRoomDescription();
 		Integer roomStatus = room.getRoomStatus();
@@ -228,60 +293,67 @@ public class RoomService {
 	}
 	
 	/**
-	 * 模糊查詢
-	 * @param room
-	 * @param extraValues
+	 * 根據roomtype添加房間
+	 * 
+	 * @param roomtype
 	 * @return
 	 */
-	public Result<PageImpl<RoomDTO>> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
-		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
-												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
-													
-		if(roomStatusAll != null) {
-			Specification<Room> statusSpec = Specification.where(null);
-			for(Integer status : roomStatusAll) {
-				statusSpec = statusSpec.or(RoomSpecification.statusContains(status));
-			}
-			spec = spec.and(statusSpec);
+	@Transactional
+	public Result<String> saveRoomsByRoomtype(Roomtype roomtype) {
+		LocalDateTime updatedTime = roomtype.getUpdatedTime();
+		LocalDateTime createdTime = roomtype.getCreatedTime();
+		String roomtypeDescription = roomtype.getRoomtypeDescription();
+		Integer roomtypeQuanity = roomtype.getRoomtypeQuantity();
+		
+		for (int i = 0; i < roomtypeQuanity; i++) {
+			Room room = new Room("沒有", 0, roomtypeDescription, updatedTime, createdTime);
+			room.setRoomtype(roomtype);
+			roomRepo.save(room);
 		}
-													
-	    spec = spec.and(RoomSpecification.hasRoomtypeName(roomDTO.getRoomtypeName()));											
-			
-		String attrOrderBy = roomDTO.getAttrOrderBy();
-		Boolean selectedSort = roomDTO.getSelectedSort();
-		Integer pageNumber = roomDTO.getPageNumber();
-	
-		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
-	
-		Page<Room> page = roomRepo.findAll(spec, pageable);
-		
-		List<Room> rooms = page.getContent();
-		
-		List<RoomDTO> roomDTOs = new ArrayList<>();
-		
-		for(Room r : rooms) {
-			Roomtype roomtype = r.getRoomtype();
-			RoomDTO responseRoomDTO = new RoomDTO();
-			BeanUtils.copyProperties(r, responseRoomDTO);
-			responseRoomDTO.setRoomtypeName(roomtype.getRoomtypeName());	
-			responseRoomDTO.setRoomtypeId(roomtype.getRoomtypeId());
-			roomDTOs.add(responseRoomDTO);
-		}
-		
-		Pageable newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
-		
-		return Result.success(new PageImpl<>(roomDTOs, newPageable, page.getTotalElements()));
+		return Result.success("新增空房成功");
 	}
-
+	
 	/**
-	 * 根據房型名稱搜尋房間
-	 * 還沒用到
-	 * @param roomtypeName
+	 * 根據roomId刪除房間
+	 * @param roomId
 	 * @return
 	 */
-	public Result<Page<RoomDTO>> findRoomsByRoomtypeName(String roomtypeName, RoomDTO roomDTO) {
-		Pageable pageable = MyPageRequest.of(roomDTO.getPageNumber(), 10, roomDTO.getSelectedSort(), roomDTO.getAttrOrderBy());
-		return Result.success(roomRepo.findRoomsByRoomtypeName(pageable, roomtypeName));
+	@Transactional
+	public Result<String> removeRoomById(Integer roomId) {
+		DaoResult<?> decrementRoomtypeQuantityResult = roomDao.decrementRoomtypeQuantity(roomId);
+		if (decrementRoomtypeQuantityResult.isFailure()) {
+			return Result.failure("房間類型數量減一失敗");
+		}
+		DaoResult<?> removeRoomByIdResult = roomDao.removeRoomById(roomId);
+
+		if (removeRoomByIdResult.isFailure()) {
+			return Result.failure("房間不是空房，刪除房間失敗");
+		}
+
+		return Result.success("刪除房間類型成功");
+	}
+	
+	/**
+	 * 創建房間
+	 * 
+	 * @param room
+	 * @return
+	 */
+	@Transactional
+	public Result<Integer> saveRoomsByRoomtypeName(Room room, String roomtypeName) {
+		DaoResult<?> addRoomResult = roomDao.addRoom(room, roomtypeName);
+		
+		if (addRoomResult.isFailure()) {
+			return Result.failure("新增房間失敗");
+		}
+		
+		DaoResult<?> incrementRoomtypeQuantityResult = roomDao.incrementRoomtypeQuantity(room.getRoomtype().getRoomtypeId());
+
+		if (incrementRoomtypeQuantityResult.isFailure()) {
+			return Result.failure("房型數量加一失敗");
+		}
+
+		return Result.success("新增空房成功");
 	}
 
 }

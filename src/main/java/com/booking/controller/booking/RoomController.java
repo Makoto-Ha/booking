@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.RoomDTO;
+import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.service.booking.RoomService;
 import com.booking.utils.Result;
@@ -40,26 +40,33 @@ public class RoomController {
 	private String sendRoomPage(Model model) {
 		// DTO用於分頁所需數據
 		RoomDTO roomDTO = new RoomDTO();
-		Result<Page<RoomDTO>> findRoomAllResult = roomService.findRoomAll(roomDTO);
+		Result<Page<RoomDetailDTO>> findRoomAllResult = roomService.findRoomAll(roomDTO);
 		
 		if(findRoomAllResult.isFailure()) {
 			return "";
 		}
-		Page<RoomDTO> page = findRoomAllResult.getData();
+		Page<RoomDetailDTO> page = findRoomAllResult.getData();
 		model.addAttribute("room", roomDTO);
 		model.addAttribute("page", page);
 		return "/management-system/booking/room-list";
 	}
 	
+	/**
+	 * 根據roomtypeId獲得Room
+	 * @param roomtypeId
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/roomtype/{roomtypeId}")
 	private String sendRoomPageByRoomtypeId(@PathVariable Integer roomtypeId, Model model) {
+		// DTO用於分頁所需數據
 		RoomDTO roomDTO = new RoomDTO();
-		Result<Page<RoomDTO>> findRoomsByRoomtypeId = roomService.findRoomsByRoomtypeId(roomtypeId, roomDTO);
+		Result<Page<RoomDetailDTO>> findRoomsByRoomtypeId = roomService.findRoomsByRoomtypeId(roomtypeId, roomDTO);
 		if(findRoomsByRoomtypeId.isFailure()) {
 			return "";
 		}
 		
-		Page<RoomDTO> page = findRoomsByRoomtypeId.getData();
+		Page<RoomDetailDTO> page = findRoomsByRoomtypeId.getData();
 		model.addAttribute("page", page);
 		model.addAttribute("room", roomDTO);
 		return "/management-system/booking/room-list";
@@ -92,13 +99,13 @@ public class RoomController {
 	 * @return
 	 */
 	@GetMapping("/edit/page")
-	private String sendEditPage(@RequestParam Integer roomId, Model model, HttpSession session) {
-		Result<RoomDTO> findRoomByIdResult = roomService.findRoomById(roomId);
+	private String sendEditPage(@RequestParam Integer roomId, Model model, HttpSession session, RoomDTO roomDTO) {
+		Result<RoomDetailDTO> findRoomByIdResult = roomService.findRoomById(roomId,roomDTO);
 		if(findRoomByIdResult.isFailure()) {
 			return "";
 		}
 		
-		RoomDTO room = findRoomByIdResult.getData();
+		RoomDetailDTO room = findRoomByIdResult.getData();
 		
 		session.setAttribute("roomId", room.getRoomId());
 		
@@ -124,13 +131,13 @@ public class RoomController {
 			Model model
 	) {
 		roomDTO.setRoomtypeName(roomName);
-		Result<PageImpl<RoomDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
+		Result<Page<RoomDetailDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
 		
 		if(findRoomsResult.isFailure()) {
 			return "";
 		}
 		
-		PageImpl<RoomDTO> page = findRoomsResult.getData();
+		Page<RoomDetailDTO> page = findRoomsResult.getData();
 		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);

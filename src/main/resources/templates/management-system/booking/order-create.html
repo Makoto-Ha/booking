@@ -11,10 +11,10 @@
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../create" method="post">	
+			<form class="form" id="form" action="../create" method="post">	
 				<div class="form-group">
-					<label for="roomtype-name">房間名稱</label>
-					<input name="roomtypeName" type="text" id="roomtype-name">
+					<label for="roomtype-id">房型</label>
+					<input name="roomtypeId" type="text" id="roomtype-id">
 				</div>
 
 				<div class="form-group">
@@ -26,7 +26,8 @@
 					<label for="check-out-date">退房日</label> 
 					<input type="date" name="checkOutDate" id="check-out-date" required>
 				</div>
-
+		
+				<div id="date-container"></div>
 				<div class="form-group">
 					<button type="submit" class="submit" id="submit">新增</button>
 					<button type="button" class="cancel">取消</button>
@@ -35,5 +36,6 @@
 		</div>
 	</div>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script th:src="@{/management-system/booking/js/order-create.js}"></script>
 </body>
 </html>
