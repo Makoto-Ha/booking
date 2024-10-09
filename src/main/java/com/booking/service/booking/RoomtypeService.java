@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
+import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomDao;
@@ -190,8 +191,11 @@ public class RoomtypeService {
 		List<Room> rooms = roomDao.getRoomsByRoomtypeId(roomtypeId).getData();
 		
 		for(Room room : rooms) {
-			if(room.getRoomStatus() != 0) {
-				return Result.failure("目前房間已使用，請勿刪除房間類型");
+			List<BookingOrderItem> bois = room.getBookingOrderItems();
+			for(BookingOrderItem boi : bois) {
+				if(boi.getBookingStatus() != 0) {
+					return Result.failure("目前房間已使用，請勿刪除房間類型");
+				}
 			}
 		}
 		
@@ -201,7 +205,7 @@ public class RoomtypeService {
 	}
 
 	/**
-	 * 更新房間類型、更新需要確認房間是否狀態為0
+	 * 更新房間類型
 	 * @param roomtype
 	 * @return
 	 */

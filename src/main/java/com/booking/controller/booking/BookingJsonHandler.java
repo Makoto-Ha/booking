@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.RoomDTO;
+import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.service.booking.BookingService;
 import com.booking.service.booking.RoomService;
@@ -74,8 +76,8 @@ public class BookingJsonHandler {
 	 * @return
 	 */
 	@GetMapping("/room/{id}")
-	private String findRoomById(@PathVariable Integer id) {
-		Result<RoomDTO> roomServiceResult = roomService.findRoomById(id);
+	private String findRoomById(@PathVariable Integer id, @ModelAttribute RoomDTO roomDTO) {
+		Result<RoomDetailDTO> roomServiceResult = roomService.findRoomById(id, roomDTO);
 		if(roomServiceResult.isFailure()) {
 			return roomServiceResult.getMessage();
 		}
