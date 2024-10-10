@@ -2,7 +2,7 @@
 	let currentDate = new Date();
 	let selectedDate = null;
 	const calendar = document.getElementById('calendar');
-	const dateInput = document.getElementById('dateInput');
+	const dateInput = document.getElementById('date-input');
 
 	// 點擊 input 顯示日曆
 	dateInput.addEventListener('click', function () {
@@ -15,26 +15,14 @@
 	});
 	
 	// 點擊日期填充 input 並關閉日曆
-	function selectDate(date) {
+	function selectDate(date, callback) {
 	    selectedDate = date;
-	    dateInput.value = formatDate(selectedDate);
+		date = formatDate(selectedDate);
+		dateInput.setAttribute('value', date);
+	    dateInput.value = date;
 	    calendar.style.display = 'none'; // 選擇日期後關閉日曆
 		
-		let bookingDate = document.getElementById('dateInput').value;
-		
-		deleteNullValue(requestParameters);
-		Object.assign(requestParameters, {bookingDate});
-		let queryString = new URLSearchParams(requestParameters).toString();
-		
-		fetch(`/booking/management/room/select?${queryString}`)
-			.then(res => res.text())
-			.then(html => {
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(html, 'text/html');
-				document.body.innerHTML = doc.body.innerHTML;
-				bindAdminSystemEvent();
-				enableScript('.main-list');
-			});
+		callback();
 	}
 	
 	// 切換月份
@@ -45,8 +33,8 @@
 
 	// 渲染日曆
 	function renderCalendar() {
-	    const calendarGrid = document.getElementById('calendarGrid');
-	    const monthYearEl = document.getElementById('monthYear');
+	    const calendarGrid = document.getElementById('calendar-grid');
+	    const monthYearEl = document.getElementById('month-year');
 	    
 	    // 顯示年份和月份
 	    monthYearEl.innerHTML = `
@@ -77,7 +65,7 @@
             
             // 點選日期
             dayCell.onclick = function () {
-                selectDate(date, dayCell);
+                selectDate(date, dateCallback);
             };
 
             // 檢查是否選中日期
@@ -86,7 +74,8 @@
             }
 
             calendarGrid.appendChild(dayCell);
-        }
+        }	
+		
     }
 
     // 格式化日期 YYYY-MM-DD

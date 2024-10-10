@@ -34,9 +34,6 @@
 				      		<option value="true" th:selected="${bookingOrder.selectedSort}">降冪</option>
 				      </select>
 				   </div>
-			      <div class="search-bar-addbtn">
-			          <button class="action-btn add-btn">新增</button>
-			      </div>
 			  </div> 
 				  
 			  <div class="content-area-pages">
@@ -104,7 +101,6 @@
 			                </div>
 			                <div class="item-actions">
 			                	<button class="action-btn check-btn">查看</button>
-			                    <button class="action-btn edit-btn">編輯</button>
 			                    <button class="action-btn delete-btn">刪除</button>
 			                </div> 
 			            </li>
@@ -114,7 +110,6 @@
 					var requestParameters = [[${requestParameters}]] || {};
 					var page = [[${page}]];
 			    	var totalPages = page.totalPages;
-			    	console.log(totalPages);
 					console.log(requestParameters);
 			    </script>
 			  </section>

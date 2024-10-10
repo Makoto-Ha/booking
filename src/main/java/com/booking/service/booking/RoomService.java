@@ -145,16 +145,20 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public Result<Page<RoomDetailDTO>> findRooms(RoomDTO roomDTO, List<Integer> roomStatusAll) {
+	public Result<Page<RoomDetailDTO>> findRooms(RoomDTO roomDTO, List<Integer> bookingStatusAll) {
+		
+		// 選取的日期，查該日期的房間狀態
+		LocalDate bookingDate = roomDTO.getBookingDate();
+		
 		// =========================== 多條件查詢 ===========================
  
 		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
 												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
 		
-		if(roomStatusAll != null) {
+		if(bookingStatusAll != null) {
 			Specification<Room> statusSpec = Specification.where(null);
-			for(Integer status : roomStatusAll) {
-				statusSpec = statusSpec.or(RoomSpecification.statusContains(status));
+			for(Integer status : bookingStatusAll) {
+				statusSpec = statusSpec.or(RoomSpecification.hasBookingStatus(status, bookingDate));
 			}
 			spec = spec.and(statusSpec);
 		}
@@ -168,10 +172,7 @@ public class RoomService {
 		
 		// 根據spec條件和pageable獲取page
 		Page<Room> page = roomRepo.findAll(spec, pageable);
-		
-		// 選取的日期，查該日期的房間狀態
-		LocalDate bookingDate = roomDTO.getBookingDate();
-		
+			
 		// Room的Page轉換成RoomDTO的Page
 		Page<RoomDetailDTO> rdPage = MyPageRequest.convert(page, room -> {
 			Roomtype roomtype = room.getRoomtype();
