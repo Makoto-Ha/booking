@@ -36,14 +36,14 @@ function bindAdminSystemEvent() {
 	});
 
 	// 轉送到新增
-	document.querySelector('.add-btn').addEventListener('click', function() {
+	document.querySelector('.add-btn')?.addEventListener('click', function() {
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
 		location.href = `/booking/management/${lastHref}/create/page`;
 	});
 
 	// 轉送到編輯
-	document.querySelectorAll('.edit-btn').forEach(editButton => {
+	document.querySelectorAll('.edit-btn')?.forEach(editButton => {
 		editButton.addEventListener('click', function(e) {
 			e.stopPropagation();
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;

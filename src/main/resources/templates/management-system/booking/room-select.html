@@ -21,32 +21,36 @@
 		            <label for="room-number">房間號碼</label>
 		            <input type="text" id="room-number" name="roomNumber" placeholder="輸入內容">
 		        </div>
+		        
+		        <div class="form-group">
+		            <label for="room-description">房間說明</label>
+		            <input type="text" id="room-description" name="roomDescription" placeholder="輸入內容">
+		        </div>
+		        
+		        <div class="form-group">
+		        	<label for="dateInput">請選擇日期</label>
+		        	<div th:replace="~{/management-system/component/date-input}"></div>
+		        </div>
 		
 		        <div class="form-group"> 	
 		           	<div class="check-room-status">
 			           	<label for="room-status-0" style="display: flex; align-items: center; margin-top: 10px;">
 			            	空房
-			            	<input type="checkbox" id="room-status-0" name="roomStatus" value="0">
+			            	<input type="checkbox" id="room-status-0" name="bookingStatus" value="0">
 			            </label>
 			             
 			            <label for="room-status-1" style="display: flex; align-items: center; margin-top: 10px;">
 				            已預定
-				            <input type="checkbox" id="room-status-1" name="roomStatus" value="1"> 
+				            <input type="checkbox" id="room-status-1" name="bookingStatus" value="1"> 
 			            </label>
 			            
 			            <label for="room-status-2" style="display: flex; align-items: center; margin-top: 10px;">
 			            	已入住
-			            	<input type="checkbox" id="room-status-2" name="roomStatus" value="2"> 
+			            	<input type="checkbox" id="room-status-2" name="bookingStatus" value="2"> 
 			            </label>
-		           	</div>
-		            
+		           	</div>         
 		        </div>
-		
-		        <div class="form-group">
-		            <label for="room-description">房間說明</label>
-		            <input type="text" id="room-description" name="roomDescription" placeholder="輸入內容">
-		        </div>
-		
+      
 		        <div class="form-group">
 		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
 		            <button type="button" class="cancel">取消</button>
@@ -54,10 +58,12 @@
 		    </form>
 		</div>
 	</div>
-	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
-	<script th:src="@{/management-system/booking/js/booking.js}"></script>
 	<script>
-		
+		function dateCallback() {}
+	
+		document.querySelector('.cancel').addEventListener('click', function() {
+			history.back();
+		});
 	</script>
 </body>
 </html>

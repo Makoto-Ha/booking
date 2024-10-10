@@ -1,5 +1,6 @@
 package com.booking.controller.booking;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +78,13 @@ public class RoomController {
 	 * @return
 	 */
 	@GetMapping("/select/page")
-	private String sendSelectPage() {
+	private String sendSelectPage(Model model) {
+		RoomDTO roomDTO = new RoomDTO();
+		
+		roomDTO.setBookingDate(LocalDate.now());
+		
+		model.addAttribute("room", roomDTO);
+		
 		return "/management-system/booking/room-select";
 	}
 	
@@ -126,12 +133,12 @@ public class RoomController {
 			@RequestParam Map<String, String> requestParameters,
 			// 因為index.js是看網址的類型，也就是/booking/management/room會發送roomName
 			@RequestParam(defaultValue = "") String roomName,
-			@RequestParam(value="roomStatus", required = false) List<Integer> roomStatusAll,
+			@RequestParam(value="bookingStatus", required = false) List<Integer> bookingStatusAll,
 			RoomDTO roomDTO,
 			Model model
 	) {
 		roomDTO.setRoomtypeName(roomName);
-		Result<Page<RoomDetailDTO>> findRoomsResult = roomService.findRooms(roomDTO, roomStatusAll);
+		Result<Page<RoomDetailDTO>> findRoomsResult = roomService.findRooms(roomDTO, bookingStatusAll);
 		
 		if(findRoomsResult.isFailure()) {
 			return "";

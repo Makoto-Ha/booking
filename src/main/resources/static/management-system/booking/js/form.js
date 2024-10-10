@@ -85,3 +85,8 @@ fileInput.addEventListener('change', function() {
        fileNameDisplay.textContent = '尚未選擇檔案';
    }
 });
+
+// 返回上一頁
+document.querySelector('.cancel')?.addEventListener('click', function() {
+	history.back();
+});

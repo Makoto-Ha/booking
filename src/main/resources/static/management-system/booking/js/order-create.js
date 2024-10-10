@@ -88,3 +88,7 @@ function addNewDateFields() {
 		location.href = "/booking/management/booking";
 	});
 }
+
+document.querySelector('.cancel').addEventListener('click', function() {
+	history.back();
+});
