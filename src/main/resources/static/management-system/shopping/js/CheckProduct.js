@@ -1,4 +1,22 @@
+
+
+// 上傳檔案
+
+const fileInput = document.getElementById('file-upload');
+const fileNameDisplay = document.getElementById('file-name');
+
+fileInput.addEventListener('change', function() {
+   if (fileInput.files.length > 0) {
+       fileNameDisplay.textContent = fileInput.files[0].name;
+   } else {
+       fileNameDisplay.textContent = '尚未選擇檔案';
+   }
+});
+
+
+
 // 加載頁面時，檢查所有 input 欄位
+
 document.addEventListener("DOMContentLoaded", function() {
 	let allEmpty = Array.from(document.querySelectorAll('input')).every(input => input.value.trim() === "");
 	if (allEmpty) {
@@ -90,9 +108,9 @@ document.getElementById("productForm").addEventListener("submit", function(event
 		document.getElementById("productSales").value = "0";
 	}
 
-	let productInventorey = document.getElementById("productInventorey").value.trim();
-	if (productInventorey === "") {
-		document.getElementById("productInventorey").value = "0";
+	let productInventory = document.getElementById("productInventory").value.trim();
+	if (productInventory === "") {
+		document.getElementById("productInventory").value = "0";
 	}
 
 });

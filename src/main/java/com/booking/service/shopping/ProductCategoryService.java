@@ -14,14 +14,16 @@ public class ProductCategoryService {
 
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-	
-	public Result<ProductCategory> findProductCategoryById(Integer productCategoryId){
+
+	public Result<ProductCategory> findProductCategoryById(Integer productCategoryId) {
 		Optional<ProductCategory> optional = productCategoryRepository.findById(productCategoryId);
 		if (optional.isPresent()) {
 			return Result.success(optional.get());
 		}
-		return Result.failure("Category Is Not Found");
+		return Result.failure("無此分類");
 	}
+
+	
 	
 	
 }
