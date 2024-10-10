@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+    <link rel="stylesheet" th:href="@{/management-system/shopping/css/product.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+
+            <form class="form" th:action="@{/management/product/select}" id="searchForm" method="get">
+                <div class="form-group">
+                    <label for="selectName">搜尋名稱:</label>
+                    <input type="text" id="searchName" name="productName" placeholder="輸入內容"
+                        th:value="${param.productName != null ? param.productName : ''}">
+
+                    <label for="sortBy">排序依據:</label>
+                    <select id="sortBy" name="sortBy">
+                        <option th:value="'productId'" th:selected="${param.sortBy == 'productId'}">編號</option>
+                        <option th:value="'category.categoryId'" th:selected="${param.sortBy == 'category.categoryId'}">分類</option>
+                        <option th:value="'productName'" th:selected="${param.sortBy == 'productName'}">名稱</option>
+                        <option th:value="'productPrice'" th:selected="${param.sortBy == 'productPrice'}">價格</option>
+                        <option th:value="'productSales'" th:selected="${param.sortBy == 'productSales'}">銷量</option>
+                        <option th:value="'productInventory'" th:selected="${param.sortBy == 'productInventory'}">庫存</option>
+                    </select>
+
+                    <label for="sortOrder">順序:</label>
+                    <select id="sortOrder" name="sortOrder">
+                        <option th:value="true" th:selected="${param.sortOrder == true}">降冪</option>
+                        <option th:value="false" th:selected="${param.sortOrder == false}">升冪</option>
+                    </select>
+                    <button type="submit" style="width: 60px">查詢</button><br>
+
+                    <a th:href="@{/management/product/sendCreate}">
+                        <button type="button" class="btn" style="width: 100px;">新增商品</button></a>
+                    <a th:href="@{/management/product/select}">
+                        <button type="button" class="btn" style="width: 100px;">列出全部</button></a>
+                </div>
+            </form>
+
+            <!-- 表格展示产品列表 -->
+            <div class="table">
+                <!-- 检查 page.content 是否存在，并且至少包含一个元素 -->
+                <th:block th:if="${page != null and #lists.size(page.content) > 0}">
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>商品ID</th>
+                                <th>商品名稱</th>
+                                <th>商品分類</th>
+                                <th>商品描述</th>
+                                <th>商品價格</th>
+                                <th>商品銷售</th>
+                                <th>商品庫存</th>
+                                <th>商品狀態</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 遍历 page.content 来展示产品信息 -->
+                            <tr th:each="product : ${page.content}">
+                                <td th:text="${product.productId}"></td>
+                                <td th:text="${product.productName}"></td>
+                                <td th:text="${product.categoryName}"></td> <!-- 这里使用的是 categoryName -->
+                                <td th:text="${product.productDescription}"></td>
+                                <td th:text="${product.productPrice}"></td>
+                                <td th:text="${product.productSales}"></td>
+                                <td th:text="${product.productInventory}"></td>
+                                <td th:text="${product.productState}"></td>
+                                <td>
+                                    <a th:href="@{/management/product/selectUpdate(productId=${product.productId})}">
+                                        <button>修改</button>
+                                    </a>
+                                    <button type="button" th:onclick="'deleteProduct(' + ${product.productId} + ')'">刪除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </th:block>
+
+                <!-- 如果 page.content 为空时显示提示信息 -->
+                <p th:if="${page == null or #lists.size(page.content) == 0}"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var url = "http://localhost:8080/booking/product/delete";
+        // 确认删除并刷新
+        function deleteProduct(productId) {
+            if (confirm("確定要刪除這個產品嗎？")) {
+                fetch(url + '?productId=' + productId, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload(); // 刪除成功，重新加載頁面
+                        } else {
+                            alert("刪除失敗");
+                        }
+                    })
+                    .catch(error => {
+                        alert("發生錯誤: " + error.message);
+                    });
+            }
+        }
+
+        // 检查按下查询时是否有输入
+        document.getElementById("searchForm").addEventListener("submit", function (event) {
+            let productName = document.getElementById("searchName").value.trim();
+            if (productName === "") {
+                alert("商品名稱不可為空");
+                event.preventDefault(); // 阻止表單提交
+            }
+        });
+
+        // 当排序变更时，立即提交表单
+        document.getElementById("sortBy").addEventListener("change", function () {
+            document.getElementById("searchForm").submit();
+        });
+
+        document.getElementById("sortOrder").addEventListener("change", function () {
+            document.getElementById("searchForm").submit();
+        });
+    </script>
+</body>
+</html>

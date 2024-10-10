@@ -1,136 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<title>create</title>
-	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
-	<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
-	<link rel="stylesheet" th:href="@{/management-system/shopping/css/product.css}">
+<meta charset="UTF-8">
+<title>create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
 </head>
-
 <body>
 	<div class="container">
-		<div th:replace="~{/management-system/common/sidebar}"></div>
-		<div class="main-content">
-			<div th:replace="~{/management-system/common/navbar}"></div>
-			
-			
-			<form class="form" th:action="@{/product/select}" id="searchForm">
+	<div th:replace="~{/management-system/common/sidebar}"></div>
+	<div class="main-content">
+		<div th:replace="~{/management-system/common/navbar}"></div>
+		
+			<form class="form" action="../select">
 				<div class="form-group">
-					<label for="selectName">搜尋名稱:</label>
-					<input type="text" id="searchName" name="searchName" placeholder="輸入內容"
-						th:value="${param.searchName != null ? param.searchName : ''}">
-
-					<label for="sortBy">排序依據:</label>
-					<select id="sortBy" name="sortBy">
-						<option th:value="'productId'" th:selected="${param.sortBy == 'productId'}">編號</option>
-						<option th:value="'categoryId'" th:selected="${param.sortBy == 'categoryId'}">分類</option>
-						<option th:value="'productName'" th:selected="${param.sortBy == 'productName'}">名稱</option>
-						<option th:value="'productPrice'" th:selected="${param.sortBy == 'productPrice'}">價格</option>
-						<option th:value="'productSales'" th:selected="${param.sortBy == 'productSales'}">銷量</option>
-						<option th:value="'productInventorey'" th:selected="${param.sortBy == 'productInventorey'}">庫存
-						</option>
-					</select>
-
-					<label for="sortOrder">順序:</label>
-					<select id="sortOrder" name="sortOrder">
-						<option th:value="'DESC'" th:selected="${param.sortOrder == 'DESC'}">降冪</option>
-						<option th:value="'ASC'" th:selected="${param.sortOrder == 'ASC'}">升冪</option>
-					</select>
-					<button type="submit" style="width: 60px">查詢</button><br>
-
-					<a th:href="@{/product/sendCreate}">
-						<button type="button" class="btn" style="width: 100px;">新增商品</button></a>
-					<a th:href="@{/product/select}">
-						<button type="button" class="btn" style="width: 100px;">列出全部</button></a>
-				</div>
-			</form>
-
-			<div class="table">
-				<th:block th:if="${products != null and #lists.size(products) > 0}">
-					<table border="1">
-						<thead>
-							<tr>
-								<th>商品ID</th>
-								<th>商品名稱</th>
-								<th>商品分類</th>
-								<th>商品描述</th>
-								<th>商品價格</th>
-								<th>商品銷售</th>
-								<th>商品庫存</th>
-								<th>商品狀態</th>
-								<th>操作</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="product : ${products}">
-								<td th:text="${product.productId}"></td>
-								<td th:text="${product.productName}"></td>
-								<td th:text="${product.categoryId}"></td>
-								<td th:text="${product.productDescription}"></td>
-								<td th:text="${product.productPrice}"></td>
-								<td th:text="${product.productSales}"></td>
-								<td th:text="${product.productInventorey}"></td>
-								<td th:text="${product.productState}"></td>
-								<td>
-									<a th:href="@{/product/selectUpdate(productId=${product.productId}, searchName=${searchName}, sortBy=${sortBy}, sortOrder=${sortOrder})}">
-										<button>修改</button> </a>
-										
-									<button type="button" th:onclick="'deleteProduct(' + ${product.productId} + ')'">刪除</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</th:block>
-				<p th:if="${searchName != null and searchName != '' and #lists.size(products) == 0}">找不到符合條件的商品。</p>
-			</div>
+		            <label for="product-name">商品名稱</label>
+		            <input type="text" id="product-name" name="productName" placeholder="輸入內容">
+		        </div>
+			
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-categoryId" name="categoryId" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-price" name="productPrice" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-inventory" name="productInventory" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-description">商品描述</label>
+		            <input type="text" id="product-description" name="productDescription" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+		    </form>
 		</div>
 	</div>
-
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
 	<script>
-		var url = "http://localhost:8080/booking/product/delete";
-		// 確認刪除並刷新
-		function deleteProduct(productId) {
-			if (confirm("確定要刪除這個產品嗎？")) {
-				fetch(url + '?productId=' + productId, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				})
-					.then(response => {
-						if (response.ok) {
-							location.reload();// 刪除成功，重新加載頁面
-						} else {
-							alert("刪除失敗");
-						}
-					})
-					.catch(error => {
-						alert("發生錯誤: " + error.message);
-					});
-			}
-		}
-
-		// 檢查按下搜尋時是否有輸入
-		document.getElementById("searchForm").addEventListener("submit", function (event) {
-			let productName = document.getElementById("searchName").value.trim();
-			if (productName === "") {
-				alert("商品名稱不可為空");
-				event.preventDefault(); // 阻止表單提交
-			}
-		});
-
-		// 當排序變更時，立即提交表單 --------------------------------------------------------------
-		document.getElementById("sortBy").addEventListener("change", function () {
-			document.getElementById("searchForm").submit();
-		});
-
-		document.getElementById("sortOrder").addEventListener("change", function () {
-			document.getElementById("searchForm").submit();
-		});
-
+		
 	</script>
 </body>
-
 </html>
