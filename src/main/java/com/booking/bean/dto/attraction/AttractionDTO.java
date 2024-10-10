@@ -24,7 +24,6 @@ public class AttractionDTO{
 	public AttractionDTO(Integer attractionId, String attractionName, String attractionCity, String address,
 			String openingHour, String attractionType, String attractionDescription, String imagesFile,
 			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
-		super();
 		this.attractionId = attractionId;
 		this.attractionName = attractionName;
 		this.attractionCity = attractionCity;

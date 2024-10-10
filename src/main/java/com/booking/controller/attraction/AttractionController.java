@@ -98,10 +98,13 @@ public class AttractionController {
 		return "/management-system/attraction/attraction-edit";
 	}
 	
+
 	/**
 	 * 模糊查詢
-	 * @param 
-	 * @param 
+	 * @param requestParameters
+	 * @param attractionDTO
+	 * @param model
+	 * @return
 	 */
 	@GetMapping("/select")
 	private String select(@RequestParam Map<String, String> requestParameters, AttractionDTO attractionDTO, Model model) {
@@ -120,6 +123,7 @@ public class AttractionController {
 
 		return "/management-system/attraction/attraction-list";	
 	}
+	
 	
 	/**
 	 * 新增景點

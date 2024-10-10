@@ -60,6 +60,13 @@ public interface AttractionDao {
 	 */
 	DaoResult<?> updateAttraction(Attraction attraction);
 
+	/**
+	 * 根據景點名稱獲取景點
+	 * @param attractionName
+	 * @return
+	 */
+	DaoResult<List<Attraction>> getAttractionsByName(String attractionName);
+
 
 
 }
