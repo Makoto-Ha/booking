@@ -19,7 +19,7 @@ public class ProductDaoImpl implements ProductDao {
 	
 	@Override
 	public DaoResult<Product> getProductById(Integer productId) {
-		String hql = "FROM Product WHERE productId = :id";
+		String hql = "FROM Product p JOIN FETCH p.category WHERE productId = :id";
 		Product product = entityManager.createQuery(hql, Product.class).setParameter("id", productId).getSingleResult();
 		return DaoResult.create(product).setSuccess(product != null);
 	}

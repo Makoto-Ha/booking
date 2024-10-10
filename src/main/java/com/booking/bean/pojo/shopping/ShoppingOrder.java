@@ -2,6 +2,7 @@ package com.booking.bean.pojo.shopping;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@DynamicInsert
 public class ShoppingOrder {
 
 	@Id
