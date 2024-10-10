@@ -47,6 +47,7 @@ public class AttractionDaoImpl implements AttractionDao {
 	 * @param attractionName
 	 * @return
 	 */
+	@Override
 	public DaoResult<List<Attraction>> getAttractionsByName(String attractionName) {
 		String jpql = "FROM Attraction WHERE attractionName LIKE :attractionName";
 		TypedQuery<Attraction> query = entityManager.createQuery(jpql, Attraction.class);
@@ -203,6 +204,9 @@ public class AttractionDaoImpl implements AttractionDao {
 		
 		return null;
 	}
+
+
+
 
 
 

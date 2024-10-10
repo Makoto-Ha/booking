@@ -64,10 +64,12 @@ public class AttractionService {
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
 	}
+	
+	
 	/**
 	 * 依模糊查詢得到多筆景點
 	 * 
-	 * @param attraction
+	 * @param attractionDTO
 	 * @return
 	 */
 	public Result<PageImpl<AttractionDTO>> findAttractions(AttractionDTO attractionDTO) {
@@ -75,7 +77,6 @@ public class AttractionService {
 				.where(AttractionSpecification.nameContains(attractionDTO.getAttractionName()))
 				.and(AttractionSpecification.cityContains(attractionDTO.getAttractionCity()))
 				.and(AttractionSpecification.addressContains(attractionDTO.getAddress()))
-				.and(AttractionSpecification.openingHourContains(attractionDTO.getOpeningHour()))
 				.and(AttractionSpecification.typeContains(attractionDTO.getAttractionType()))
 				.and(AttractionSpecification.descriptionContains(attractionDTO.getAttractionDescription()));
 

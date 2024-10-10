@@ -42,19 +42,8 @@ public class AttractionSpecification {
 			return builder.like(root.get("addresss"), "%" + address + "%");
 		};
 	}
-	
-	// 根據開放時間進行模糊查詢
-	public static Specification<Attraction> openingHourContains (String openingHour) {
-		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(openingHour == null || openingHour.isEmpty()) {
-				return builder.conjunction();
-			}
-			
-			return builder.like(root.get("openingHour"), "%" + openingHour + "%");
-		};
-	}
-	
-	
+
+		
 	// 根據景點類型進行模糊查詢
 	public static Specification<Attraction> typeContains (String attractionType) {
 		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
