@@ -64,35 +64,39 @@ public class RoomSpecification {
 	}
 	
 	// 根據bookingStatus進行模糊查詢
-	public static Specification<Room> hasBookingStatus(Integer bookingStatus, LocalDate date) {
+	public static Specification<Room> hasBookingStatus(Integer bookingStatus, LocalDate bookingDate) {
 		return (root, query, builder) -> {
-	        if (bookingStatus == null || date == null) {
-	            return builder.conjunction(); // 没有传递参数时，返回所有房间
+			// 都沒傳遞直接返回所有狀態的房間
+	        if (bookingStatus == null || bookingDate == null) {
+	            return builder.conjunction(); 
 	        }
 
-	        // 使用 LEFT JOIN 连接 Room 和 BookingOrderItem
+	        // 使用 LEFT JOIN 關聯 Room 和 BookingOrderItem
 	        Join<Room, BookingOrderItem> boiJoin = root.join("bookingOrderItems", JoinType.LEFT);
 
-	        // 日期范围条件
+	        // 查找該日期範圍
 	        Predicate datePredicate = builder.and(
-	            builder.lessThanOrEqualTo(boiJoin.get("checkInDate"), date), // checkInDate <= date
-	            builder.greaterThanOrEqualTo(boiJoin.get("checkOutDate"), date) // checkOutDate >= date
+	            builder.lessThanOrEqualTo(boiJoin.get("checkInDate"), bookingDate), // checkInDate <= date
+	            builder.greaterThanOrEqualTo(boiJoin.get("checkOutDate"), bookingDate) // checkOutDate >= date
 	        );
 
 	        if (bookingStatus == 1) {
-	            // 查询已预定的房间：有匹配的 BookingOrderItem
+	        	// 查詢已預定的房間，有匹配的BookingOrderItem
 	            return datePredicate;
 	        } else if (bookingStatus == 0) {
-	            // 查询空房：
-	            // 1. 没有关联的 BookingOrderItem（通过 room_id 或 booking_id 检查）
-	            // 2. 关联的 BookingOrderItem 不符合日期范围
+	            // 空房情況：
+	            // 1. 沒有關聯的BookingOrderItem（通过 room_id 或 booking_id 检查）
+	            // 2. 有關聯的BookingOrderItem但不符合日期范围
 	            return builder.or(
-	                builder.isNull(boiJoin.get("room").get("roomId")), // 没有任何关联的房间
-	                builder.not(datePredicate) // 有订单项，但不在指定日期范围内
+	            	// 沒有任何關聯的房間
+	                builder.isNull(boiJoin.get("room").get("roomId")),
+	                // 有預定項目但沒有在範圍之內
+	                builder.not(datePredicate) 
 	            );
 	        }
 
-	        return builder.conjunction(); // 默认返回所有房间
+	        // 默認返回所有狀態的房間
+	        return builder.conjunction(); 
 	    };
 	}
 
