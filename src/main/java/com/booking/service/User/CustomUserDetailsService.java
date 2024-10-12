@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.booking.bean.pojo.user.User;
-import com.booking.dao.User.UserRepository;
+import com.booking.dao.user.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

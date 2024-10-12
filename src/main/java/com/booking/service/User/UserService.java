@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.booking.bean.pojo.user.User;
-import com.booking.dao.User.UserRepository;
+import com.booking.dao.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

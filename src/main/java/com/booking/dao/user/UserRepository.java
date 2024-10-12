@@ -1,4 +1,4 @@
-package com.booking.dao.User;
+package com.booking.dao.user;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
