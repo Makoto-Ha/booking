@@ -201,3 +201,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+## image
+uploads/

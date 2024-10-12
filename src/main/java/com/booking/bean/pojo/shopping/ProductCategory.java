@@ -31,4 +31,12 @@ public class ProductCategory {
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
 	private List<Product> products = new ArrayList<>();
 
+	@Override
+	public String toString() {
+		return "ProductCategory [categoryId=" + categoryId + ", categoryName=" + categoryName + ", categoryDescription="
+				+ categoryDescription + "]";
+	}
+
+	
+	
 }
