@@ -47,6 +47,7 @@ public class ProductService {
 	public Result<ProductDTO> findProductDTOById(Integer productId) {
 
 		ProductDTO productDTO = productRepository.findProductDTOById(productId);
+		System.out.println(productDTO);
 		return Result.success(productDTO);
 
 	}
@@ -95,9 +96,12 @@ public class ProductService {
 		Page<Product> page = productRepository.findAll(spec,pageable);
 		List<Product> products = page.getContent();
 		List<ProductDTO> productDTOs = new ArrayList<>();
-		
+	
 		for (Product product : products) {
 			ProductDTO productDTO2 = new ProductDTO();
+			productDTO2.setCategoryId(product.getCategory().getCategoryId());
+			productDTO2.setCategoryName(product.getCategory().getCategoryName());
+			
 			BeanUtils.copyProperties(product, productDTO2);
 			productDTOs.add(productDTO2);
 		}
