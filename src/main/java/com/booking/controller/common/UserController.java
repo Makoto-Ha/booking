@@ -9,4 +9,9 @@ public class UserController {
 	private String sendIndex() {
 		return "frontend/index";
 	}
+	
+	@GetMapping("/search")
+	private String sendUserSearch() {
+		return "/frontend/booking/user-search";
+	}
 }

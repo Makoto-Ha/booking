@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
     }
 
     #banner {
-      background-image: url(./img/waterfall_1920x861.jpg);
+      background-image: url(frontend/common/image/waterfall_1920x861.jpg);
       background-size: cover;
       min-height: 80vh;
       width: 100%;
@@ -66,6 +66,10 @@
 
     .theme-instastay {
       background-color: hsla(0,0%,100%,.8);
+    }
+    
+    .border-radius-22px {
+      border-radius: 22px;
     }
     
     .w-90 {
@@ -157,7 +161,7 @@
               <a class="nav-link" href="#">商城</a>
             </li>    
             <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary mx-2">我是新朋友</button>
+              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
               <a class="nav-link" href="#">登入</a>
             </li>
           </ul>
@@ -257,7 +261,7 @@
       const picker = new Litepicker({
         element: document.getElementById('datepicker'),
         singleMode: false,           // 启用范围选择
-        format: 'YYYY-MM-DD',        // 日期格式
+        format: 'YYYY年MM月DD日',        // 日期格式
         autoApply: true,             // 自动应用选择
         numberOfMonths: 2,           // 显示2个月视图
         numberOfColumns: 2,          // 以2列显示
