@@ -39,12 +39,12 @@ public class PackageTourDaoImpl implements PackageTourDao{
 	/**
 	 * 根據ID取得套裝行程
 	 * 
-	 * @param tourId
+	 * @param packageTourId
 	 * @return
 	 */
 	@Override
-	public DaoResult<PackageTour> getPackageTourById(Integer tourId) {
-		PackageTour packageTour = entityManager.find(PackageTour.class, tourId);
+	public DaoResult<PackageTour> getPackageTourById(Integer packageTourId) {
+		PackageTour packageTour = entityManager.find(PackageTour.class, packageTourId);
 		return DaoResult.create(packageTour).setSuccess(packageTour != null);
 	}
 
@@ -57,19 +57,19 @@ public class PackageTourDaoImpl implements PackageTourDao{
 	@Override
 	public DaoResult<?> addPackageTour(PackageTour packageTour) {
 		entityManager.persist(packageTour);
-		Integer packageTourId = packageTour.gettourId();
+		Integer packageTourId = packageTour.getPackageTourId();
 		return DaoResult.create().setGeneratedId(packageTourId).setSuccess(packageTourId != null);
 	}
 
 	/**
 	 * 根據ID移除套裝行程
 	 * 
-	 * @param tourId
+	 * @param packageTourId
 	 * @return
 	 */
 	@Override
-	public DaoResult<?> removePackageTourById(Integer tourId) {
-		PackageTour packageTour = entityManager.find(PackageTour.class, tourId);
+	public DaoResult<?> removePackageTourById(Integer packageTourId) {
+		PackageTour packageTour = entityManager.find(PackageTour.class, packageTourId);
 		if (packageTour != null) {
 			entityManager.remove(packageTour);
 			return DaoResult.create().setSuccess(true);

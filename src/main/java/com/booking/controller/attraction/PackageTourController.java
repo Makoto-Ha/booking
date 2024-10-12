@@ -137,13 +137,13 @@ public class PackageTourController {
     
     /**
      * 刪除套裝行程中的景點
-     * @param tourId
+     * @param packageTourId
      * @param attractionId
      * @return
      */
     @PostMapping("/deleteAttraction")
-    public ResponseEntity<?> deleteAttractionFromPackage(@RequestParam Integer tourId, @RequestParam Integer attractionId) {
-        Result<String> deleteAttractionFromPackageResult = packageTourService.removeAttractionFromPackage(tourId, attractionId);
+    public ResponseEntity<?> deleteAttractionFromPackage(@RequestParam Integer packageTourId, @RequestParam Integer attractionId) {
+        Result<String> deleteAttractionFromPackageResult = packageTourService.removeAttractionFromPackage(packageTourId, attractionId);
         String message = deleteAttractionFromPackageResult.getMessage();
         if (deleteAttractionFromPackageResult.isFailure()) {
         	return ResponseEntity.badRequest().body(message);
@@ -154,12 +154,12 @@ public class PackageTourController {
     
     /**
      * 刪除整個套裝行程
-     * @param tourId
+     * @param packageTourId
      * @return
      */
     @PostMapping("/delete")
-    public ResponseEntity<?> deletePackageTour(@RequestParam Integer tourId) {
-        Result<String> deletePackageTourResult = packageTourService.deletePackageTourById(tourId);
+    public ResponseEntity<?> deletePackageTour(@RequestParam Integer packageTourId) {
+        Result<String> deletePackageTourResult = packageTourService.deletePackageTourById(packageTourId);
         String message = deletePackageTourResult.getMessage();
         if (deletePackageTourResult.isFailure()) {
         	return ResponseEntity.badRequest().body(message);
@@ -170,14 +170,14 @@ public class PackageTourController {
     
     /**
      * 更新套裝行程中的景點
-     * @param tourId
+     * @param packageTourId
      * @param attractionId
      * @param updatedAttraction
      * @return
      */
     @PostMapping("/updateAttraction")
-    public String updateAttractionInPackage(@RequestParam Integer tourId, @RequestParam Integer attractionId, Attraction updatedAttraction) {
-        PackageTourAttractionId packageTourAttractionId = new PackageTourAttractionId(attractionId, tourId);
+    public String updateAttractionInPackage(@RequestParam Integer packageTourId, @RequestParam Integer attractionId, Attraction updatedAttraction) {
+        PackageTourAttractionId packageTourAttractionId = new PackageTourAttractionId(attractionId, packageTourId);
         Result<String> result = packageTourService.updateAttractionInPackage(packageTourAttractionId, updatedAttraction);
         if (result.isFailure()) {
             return ""; 
