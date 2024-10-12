@@ -7,10 +7,10 @@ import com.booking.bean.pojo.attraction.Attraction;
 public class PackageTourDTO {
 
 
-	private Integer tourId;
-	private String tourName;
-	private Integer tourPrice;
-	private String tourDescription;
+	private Integer packageTourId;
+	private String packageTourName;
+	private Integer packageTourPrice;
+	private String packageTourDescription;
 	private List<Attraction> attractions;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "attractionId";
@@ -21,37 +21,55 @@ public class PackageTourDTO {
 		
 	}
 
-	public Integer gettourId() {
-		return tourId;
+
+
+	public Integer getPackageTourId() {
+		return packageTourId;
 	}
 
-	public void settourId(Integer tourId) {
-		this.tourId = tourId;
+
+
+	public void setPackageTourId(Integer packageTourId) {
+		this.packageTourId = packageTourId;
 	}
 
-	public String gettourName() {
-		return tourName;
+
+
+	public String getPackageTourName() {
+		return packageTourName;
 	}
 
-	public void settourName(String tourName) {
-		this.tourName = tourName;
+
+
+	public void setPackageTourName(String packageTourName) {
+		this.packageTourName = packageTourName;
 	}
 
-	public Integer gettourPrice() {
-		return tourPrice;
+
+
+	public Integer getPackageTourPrice() {
+		return packageTourPrice;
 	}
 
-	public void settourPrice(Integer tourPrice) {
-		this.tourPrice = tourPrice;
+
+
+	public void setPackageTourPrice(Integer packageTourPrice) {
+		this.packageTourPrice = packageTourPrice;
 	}
 
-	public String gettourDescription() {
-		return tourDescription;
+
+
+	public String getPackageTourDescription() {
+		return packageTourDescription;
 	}
 
-	public void settourDescription(String tourDescription) {
-		this.tourDescription = tourDescription;
+
+
+	public void setPackageTourDescription(String packageTourDescription) {
+		this.packageTourDescription = packageTourDescription;
 	}
+
+
 
 	public List<Attraction> getAttractions() {
 		return attractions;
@@ -86,12 +104,16 @@ public class PackageTourDTO {
 		this.selectedSort = selectedSort;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "PackageTourDTO [tourId=" + tourId + ", tourName=" + tourName + ", tourPrice=" + tourPrice
-				+ ", tourDescription=" + tourDescription + ", attractions=" + attractions + ", pageNumber=" + pageNumber
-				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
+		return "PackageTourDTO [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
+				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription
+				+ ", attractions=" + attractions + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
+				+ ", selectedSort=" + selectedSort + "]";
 	}
+
 
 
 	

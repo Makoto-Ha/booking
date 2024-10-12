@@ -70,9 +70,9 @@ public class PackageTourService {
 	 */
 	public Result<PageImpl<PackageTourDTO>> findPackagesTours(PackageTourDTO packageTourDTO) {
 		Specification<PackageTour> spec = Specification
-				.where(PackageTourSpecification.nameContains(packageTourDTO.gettourName()))
-				.and(PackageTourSpecification.priceContains(packageTourDTO.gettourPrice()))
-				.and(PackageTourSpecification.descriptionContains(packageTourDTO.gettourDescription()));
+				.where(PackageTourSpecification.nameContains(packageTourDTO.getPackageTourName()))
+				.and(PackageTourSpecification.priceContains(packageTourDTO.getPackageTourPrice()))
+				.and(PackageTourSpecification.descriptionContains(packageTourDTO.getPackageTourDescription()));
 				
 		Pageable pageable = MyPageRequest.of(packageTourDTO.getPageNumber(), 10, packageTourDTO.getSelectedSort(),
 				packageTourDTO.getAttrOrderBy());
@@ -99,17 +99,17 @@ public class PackageTourService {
 	
 	/**
 	 * 根據ID取得套裝行程及其景點
-	 * @param tourId
+	 * @param packageTourId
 	 * @return
 	 */
-    public Result<PackageTourDTO> findPackageTourById(Integer tourId) {
-        Optional<PackageTour> optional = packageTourRepo.findById(tourId);
+    public Result<PackageTourDTO> findPackageTourById(Integer packageTourId) {
+        Optional<PackageTour> optional = packageTourRepo.findById(packageTourId);
         if (optional.isEmpty()) {
             return Result.failure("無法找到該套裝行程");
         }
 
         // 取得行程相關的景點
-        DaoResult<List<Attraction>> attractionResult = packageTourAttractionRepo.getAttractionsByPackageTourId(tourId);
+        DaoResult<List<Attraction>> attractionResult = packageTourAttractionRepo.getAttractionsByPackageTourId(packageTourId);
 
         if (attractionResult.isFailure()) {
             return Result.failure("無法取得景點");
@@ -143,7 +143,7 @@ public class PackageTourService {
 
 		// 新增景點至套裝行程
 		for (Integer attractionId : attractionIds) {
-			PackageTourAttractionId id = new PackageTourAttractionId(attractionId, packageTour.gettourId());
+			PackageTourAttractionId id = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
 			PackageTourAttraction packagetourAttraction = new PackageTourAttraction(id, new Attraction(),packageTour);
 			packageTourAttractionRepo.save(packagetourAttraction);
 		}
@@ -155,13 +155,13 @@ public class PackageTourService {
 	
 	/**
 	 * 刪除套裝行程中的景點
-	 * @param tourId
+	 * @param packageTourId
 	 * @param attractionId
 	 * @return
 	 */
     @Transactional
-    public Result<String> removeAttractionFromPackage(Integer tourId, Integer attractionId) {
-        packageTourAttractionRepo.removeAttractionFromPackage(tourId, attractionId);
+    public Result<String> removeAttractionFromPackage(Integer packageTourId, Integer attractionId) {
+        packageTourAttractionRepo.removeAttractionFromPackage(packageTourId, attractionId);
         return Result.success("刪除景點成功");
     }
     
@@ -169,12 +169,12 @@ public class PackageTourService {
     
     /**
      * 刪除整個套裝行程
-     * @param tourId
+     * @param packageTourId
      * @return
      */
     @Transactional
-    public Result<String> deletePackageTourById(Integer tourId) {
-        packageTourRepo.deleteById(tourId); 
+    public Result<String> deletePackageTourById(Integer packageTourId) {
+        packageTourRepo.deleteById(packageTourId); 
         return Result.success("刪除套裝行程成功");
     }
     

@@ -11,61 +11,80 @@ import jakarta.persistence.Table;
 @Table(name = "package_tour")
 public class PackageTour {
 
-	@Id @Column(name = "tour_id")
+	@Id @Column(name = "pacakgetour_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer tourId;
+	private Integer packageTourId;
 	
-	@Column(name = "tour_name")
-	private String tourName;
+	@Column(name = "packagetour_name")
+	private String packageTourName;
 	
-	@Column(name = "tour_price")
-	private Integer tourPrice;
+	@Column(name = "packagetour_price")
+	private Integer packageTourPrice;
 	
-	@Column(name = "tour_description")
-	private String tourDescription;
+	@Column(name = "packagetour_description")
+	private String packageTourDescription;
 	
 	
 
 	public PackageTour() {
 	}
 
-	public Integer gettourId() {
-		return tourId;
+
+
+	public Integer getPackageTourId() {
+		return packageTourId;
 	}
 
-	public void settourId(Integer tourId) {
-		this.tourId = tourId;
+
+
+	public void setPackageTourId(Integer packageTourId) {
+		this.packageTourId = packageTourId;
 	}
 
-	public String gettourName() {
-		return tourName;
+
+
+	public String getPackageTourName() {
+		return packageTourName;
 	}
 
-	public void settourName(String tourName) {
-		this.tourName = tourName;
+
+
+	public void setPackageTourName(String packageTourName) {
+		this.packageTourName = packageTourName;
 	}
 
-	public Integer gettourPrice() {
-		return tourPrice;
+
+
+	public Integer getPackageTourPrice() {
+		return packageTourPrice;
 	}
 
-	public void settourPrice(Integer tourPrice) {
-		this.tourPrice = tourPrice;
+
+
+	public void setPackageTourPrice(Integer packageTourPrice) {
+		this.packageTourPrice = packageTourPrice;
 	}
 
-	public String gettourDescription() {
-		return tourDescription;
+
+
+	public String getPackageTourDescription() {
+		return packageTourDescription;
 	}
 
-	public void settourDescription(String tourDescription) {
-		this.tourDescription = tourDescription;
+
+
+	public void setPackageTourDescription(String packageTourDescription) {
+		this.packageTourDescription = packageTourDescription;
 	}
+
+
 
 	@Override
 	public String toString() {
-		return "PackageTour [tourId=" + tourId + ", tourName=" + tourName + ", tourPrice=" + tourPrice
-				+ ", tourDescription=" + tourDescription + "]";
+		return "PackageTour [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
+				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription + "]";
 	}
+
 
 
 	
