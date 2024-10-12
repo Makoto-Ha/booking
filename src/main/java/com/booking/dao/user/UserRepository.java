@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>,JpaSpecificationExecutor<User>{
     Optional<User> findByUserAccount(String userAccount);
+    
     Optional<User> findByUserMail(String userMail);
     Optional<User> findByVerificationToken(String token);
     Optional<User> findByResetToken(String token);
