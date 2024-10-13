@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet">
   
-  <title>roomdetail</title>
+  <title>usersearch</title>
 
   <style>
     html, body {
@@ -61,6 +61,10 @@
       border-bottom: 2px solid #ccc !important;
     }
 
+    .max-w-90 {
+      max-width: 90%;
+    }
+
     .w-90 {
       width: 90%;
     }
@@ -107,6 +111,10 @@
 
     .w-40px {
       width: 40px;
+    }
+
+    .h-80 {
+      height: 80%;
     }
 
     .h-12d5px {
@@ -210,8 +218,8 @@
       background-color: white;
     }
 
-    .h-80 {
-      height: 80%;
+    .cursor-pointer {
+      cursor: pointer;
     }
 
     #banner {
@@ -275,6 +283,10 @@
     .customer-col-md-3 {
       flex: 0 0 auto;
       width: calc(25% - 1rem);
+    }
+
+    .custom-box-shadow {
+      box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -346,7 +358,7 @@
       </div> 
     </header>
     <section class="container-fluid p-0 max-width-1200px w-100 mb-3">
-      <div class="row m-0">
+      <div class="row m-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <div class="col-md-5 p-0">
           <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 object-fit-cover room-detail-largeimg-radius" alt="room">
         </div>
@@ -360,7 +372,53 @@
             <div class="col-md-4 pe-0 ps-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius2" alt=""></div>        
           </div>
         </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog max-w-90">
+            <div class="modal-content">
+              <div class="modal-header custom-box-shadow">
+                <span class="d-block text-primary link-underline link-underline-opacity-0"
+                  style="font-size: 13px; font-weight: bold;">所有照片 ( 9張 )</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                  <div class="col-md-4 p-2">
+                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer custom-box-shadow">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
     </section>
     <section class="container-fluid p-0 max-width-1200px w-100">
       <header class="mb-3">
@@ -390,7 +448,7 @@
             <div><a href="#" class="small link-underline link-underline-opacity-0">苓雅區, 高雄市, 台灣 - 查看地圖&週邊景點</a></div>
             <hr>
             <p class="small mb-0">住宿位於苓雅區的絕佳位置，讓您輕鬆探索周遭景點。 離開前，別忘了探訪知名的光之穹頂。 這間3星級飯店的設施十分完善，可大大提升您的住宿品質，為旅程增添歡樂。</p>
-          </div> 
+          </div>
           <!-- 重點服務 -->
           <div class="mb-3 p-3 border rounded">
             <div class="mb-2"><img th:src="@{/frontend/booking/image/service-logo.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
@@ -493,7 +551,7 @@
       <div class="row text-white-50 pt-4">
         <div class="col text-center small">hk-pc-2i-webnapp-essentials-user-5cdcfc5b9f-hpnkw</div>
       </div>
-    </section>
+  </section>
   </footer>
   <!-- 遮罩層 -->
   <div id="overlay"></div>

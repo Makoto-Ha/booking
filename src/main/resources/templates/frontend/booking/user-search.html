@@ -31,27 +31,6 @@
       /* 初始狀態隱藏 */
     }
 
-    #banner {
-      width: 100%;
-    }
-
-    #search-room {
-      position: relative;
-      z-index: 999;
-    }
-
-    #search {
-      cursor: pointer;
-
-      label {
-        cursor: pointer
-      }
-
-      input {
-        cursor: pointer;
-      }
-    }
-
     #date {
       label {
         cursor: pointer;
@@ -82,10 +61,10 @@
       border-bottom: 2px solid #ccc !important;
     }
 
-    .theme-instastay {
-      background-color: #20274d;
+    .max-w-90 {
+      max-width: 90%;
     }
-    
+
     .w-90 {
       width: 90%;
     }
@@ -118,6 +97,10 @@
       max-width: 1200px;
     }
 
+    .w-240px {
+      width: 240px;
+    }
+
     .w-100px {
       width: 100px;
     }
@@ -128,6 +111,10 @@
 
     .w-40px {
       width: 40px;
+    }
+
+    .h-80 {
+      height: 80%;
     }
 
     .h-12d5px {
@@ -150,32 +137,28 @@
       height: 50px;
     }
 
+    .h-60px {
+      height: 60px;
+    }
+
+    .h-70px {
+      height: 70px;
+    }
+
     .h-80px {
       height: 80px;
     }
 
-    .w-search-input {
-      width: calc(171.428571428% + 8px);
+    .font-size-12px {
+      font-size: 12px;
     }
-    .w-search-date-input {
-      width: calc(50% + 16px)
+
+    .font-size-25px {
+      font-size: 25px;
     }
 
     .border-left-gray {
       border-left: 1px solid #ccc;
-    }
-
-    .search-btn-bgc {
-      background-color: #5392f9;
-      transition: .2s;
-    }
-
-    .search-btn-bgc:hover {
-      background-color: #5393f9ba;
-    }
-
-    .search-key-bgc {
-      background-color: #eff4fc !important;
     }
 
     /* 取消默認的外框 */
@@ -229,6 +212,81 @@
 
     .card-bgc {
       background-color: #f5f8ff;
+    }
+
+    .card-bgc:hover {
+      background-color: white;
+    }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    #banner {
+      width: 100%;
+    }
+
+    #search-room {
+      position: relative;
+      z-index: 999;
+    }
+
+    #search {
+      cursor: pointer;
+
+      label {
+        cursor: pointer
+      }
+
+      input {
+        cursor: pointer;
+      }
+    }
+
+    /* 專屬於某個標籤的特定class */
+    .theme-instastay {
+      background-color: #20274d;
+    }
+
+    .room-detail-largeimg-radius {
+      border-radius: 22px 0.375rem 0.375rem 22px;
+    }
+
+    .room-detail-littleimg-radius1 {
+      border-radius: 0.375rem 22px 0.375rem 0.375rem;
+    }
+
+    .room-detail-littleimg-radius2 {
+      border-radius: 0.375rem 0.375rem 22px 0.375rem;
+    }
+
+    .w-search-input {
+      width: calc(171.428571428% + 8px);
+    }
+    .w-search-date-input {
+      width: calc(50% + 16px)
+    }
+
+    .search-btn-bgc {
+      background-color: #5392f9;
+      transition: .2s;
+    }
+
+    .search-btn-bgc:hover {
+      background-color: #5393f9ba;
+    }
+
+    .search-key-bgc {
+      background-color: #eff4fc !important;
+    }
+
+    .customer-col-md-3 {
+      flex: 0 0 auto;
+      width: calc(25% - 1rem);
+    }
+
+    .custom-box-shadow {
+      box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -683,6 +741,10 @@
 
       overlay.addEventListener('click', function () {
         overlay.style.display = 'none';
+      });
+      
+      document.querySelector('.card-list').addEventListener('click', function() {
+      	location.href = '/booking/room/detail';
       });
     });
 </script>
