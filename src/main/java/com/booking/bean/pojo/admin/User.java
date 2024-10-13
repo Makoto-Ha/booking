@@ -63,17 +63,17 @@ public class User {
     @Column(name = "permission")
     private Byte permission;
 
-    @OneToMany(mappedBy = "users")
-    private List<PackageTourOrder> packageTourOrder;
+//    @OneToMany(mappedBy = "users")
+//    private List<PackageTourOrder> packageTourOrder;
 
-    @OneToMany(mappedBy = "users")
-    private List<ShoppingOrder> shoppingOrder;
+//    @OneToMany(mappedBy = "users")
+//    private List<ShoppingOrder> shoppingOrder;
 
-    @OneToMany(mappedBy = "users")
-    private List<BookingOrder> bookingOrder;
+//    @OneToMany(mappedBy = "users")
+//    private List<BookingOrder> bookingOrder;
 
-    @OneToOne(mappedBy = "users")
-    private AdminPermission adminPermission;
+//    @OneToOne(mappedBy = "users")
+//    private AdminPermission adminPermission;
 
 	public Integer getUserId() {
 		return userId;
@@ -179,13 +179,13 @@ public class User {
 		this.permission = permission;
 	}
 
-	public List<PackageTourOrder> getPackageTourOrder() {
-		return packageTourOrder;
-	}
-
-	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
-		this.packageTourOrder = packageTourOrder;
-	}
+//	public List<PackageTourOrder> getPackageTourOrder() {
+//		return packageTourOrder;
+//	}
+//
+//	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
+//		this.packageTourOrder = packageTourOrder;
+//	}
 
 	public List<ShoppingOrder> getShoppingOrder() {
 		return shoppingOrder;
@@ -203,70 +203,70 @@ public class User {
 		this.bookingOrder = bookingOrder;
 	}
 
-	public AdminPermission getAdminPermission() {
-		return adminPermission;
-	}
+//	public AdminPermission getAdminPermission() {
+//		return adminPermission;
+//	}
+//
+//	public void setAdminPermission(AdminPermission adminPermission) {
+//		this.adminPermission = adminPermission;
+//	}
+//
+//	public User(Integer userId, String userName, String userAccount, String userPassword, String userMail,
+//			String userPhone, LocalDate userBirthday, String userAddress, String userImg, String creditCard,
+//			LocalDateTime createdTime, LocalDateTime updatedTime, Byte permission,
+//			List<PackageTourOrder> packageTourOrder, List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder,
+//			AdminPermission adminPermission) {
+//		super();
+//		this.userId = userId;
+//		this.userName = userName;
+//		this.userAccount = userAccount;
+//		this.userPassword = userPassword;
+//		this.userMail = userMail;
+//		this.userPhone = userPhone;
+//		this.userBirthday = userBirthday;
+//		this.userAddress = userAddress;
+//		this.userImg = userImg;
+//		this.creditCard = creditCard;
+//		this.createdTime = createdTime;
+//		this.updatedTime = updatedTime;
+//		this.permission = permission;
+//		this.packageTourOrder = packageTourOrder;
+//		this.shoppingOrder = shoppingOrder;
+//		this.bookingOrder = bookingOrder;
+//		this.adminPermission = adminPermission;
+//	}
 
-	public void setAdminPermission(AdminPermission adminPermission) {
-		this.adminPermission = adminPermission;
-	}
-
-	public User(Integer userId, String userName, String userAccount, String userPassword, String userMail,
-			String userPhone, LocalDate userBirthday, String userAddress, String userImg, String creditCard,
-			LocalDateTime createdTime, LocalDateTime updatedTime, Byte permission,
-			List<PackageTourOrder> packageTourOrder, List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder,
-			AdminPermission adminPermission) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-		this.userImg = userImg;
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.permission = permission;
-		this.packageTourOrder = packageTourOrder;
-		this.shoppingOrder = shoppingOrder;
-		this.bookingOrder = bookingOrder;
-		this.adminPermission = adminPermission;
-	}
-
-	public User(String userName, String userAccount, String userPassword, String userMail, String userPhone,
-			LocalDate userBirthday, String userAddress, String userImg, String creditCard, LocalDateTime createdTime,
-			LocalDateTime updatedTime, Byte permission, List<PackageTourOrder> packageTourOrder,
-			List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder, AdminPermission adminPermission) {
-		super();
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-		this.userImg = userImg;
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.permission = permission;
-		this.packageTourOrder = packageTourOrder;
-		this.shoppingOrder = shoppingOrder;
-		this.bookingOrder = bookingOrder;
-		this.adminPermission = adminPermission;
-	}
-
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", userAccount=" + userAccount + ", userPassword="
-				+ userPassword + ", userMail=" + userMail + ", userPhone=" + userPhone + ", userBirthday="
-				+ userBirthday + ", userAddress=" + userAddress + ", userImg=" + userImg + ", creditCard=" + creditCard
-				+ ", createdTime=" + createdTime + ", updatedTime=" + updatedTime + ", permission=" + permission
-				+ ", shoppingOrder=" + shoppingOrder + ", bookingOrder=" + bookingOrder + "]";
-	}
+//	public User(String userName, String userAccount, String userPassword, String userMail, String userPhone,
+//			LocalDate userBirthday, String userAddress, String userImg, String creditCard, LocalDateTime createdTime,
+//			LocalDateTime updatedTime, Byte permission, List<PackageTourOrder> packageTourOrder,
+//			List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder, AdminPermission adminPermission) {
+//		super();
+//		this.userName = userName;
+//		this.userAccount = userAccount;
+//		this.userPassword = userPassword;
+//		this.userMail = userMail;
+//		this.userPhone = userPhone;
+//		this.userBirthday = userBirthday;
+//		this.userAddress = userAddress;
+//		this.userImg = userImg;
+//		this.creditCard = creditCard;
+//		this.createdTime = createdTime;
+//		this.updatedTime = updatedTime;
+//		this.permission = permission;
+//		this.packageTourOrder = packageTourOrder;
+//		this.shoppingOrder = shoppingOrder;
+//		this.bookingOrder = bookingOrder;
+//		this.adminPermission = adminPermission;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "User [userId=" + userId + ", userName=" + userName + ", userAccount=" + userAccount + ", userPassword="
+//				+ userPassword + ", userMail=" + userMail + ", userPhone=" + userPhone + ", userBirthday="
+//				+ userBirthday + ", userAddress=" + userAddress + ", userImg=" + userImg + ", creditCard=" + creditCard
+//				+ ", createdTime=" + createdTime + ", updatedTime=" + updatedTime + ", permission=" + permission
+//				+ ", shoppingOrder=" + shoppingOrder + ", bookingOrder=" + bookingOrder + "]";
+//	}
 
 	
     
