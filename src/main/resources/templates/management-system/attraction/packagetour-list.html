@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>attraction-list</title>
+<title>packagetour-list</title>
 <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
 </head>
 <body>
@@ -23,12 +23,11 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">城市</option>
-						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
+			              <option value="packageTourPrice" th:selected="packageTourPrice == ${packageTourDTO.attrOrderBy}">價錢</option>
 				      </select>
 				     <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${attractionDTO.selectedSort}">升冪</option>
-				      		<option value="true" th:selected="${attractionDTO.selectedSort}">降冪</option>
+			    			<option value="false" th:selected="${packageTourDTO.selectedSort}">升冪</option>
+				      		<option value="true" th:selected="${packageTourDTO.selectedSort}">降冪</option>
 				      </select>
 				   </div>
 			      <div class="search-bar-addbtn">
@@ -37,8 +36,8 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
-			  		<button class="content-area-page" data-url="/booking/management/attraction" style="height: 50px;">景點</button>
-    				<button class="content-area-page" data-url="/booking/management/packageTour">套裝行程</button>
+			  		<button class="content-area-page" data-url="/booking/management/attraction">景點</button>
+			  		<button class="content-area-page" data-url="/booking/management/packageTour" style="height: 50px;">套裝行程</button>    
 			  </div>  
 			  <!-- 管理頁面內容 -->
 			  <section id="content" class="content-area">       
@@ -47,27 +46,19 @@
 			             <h2 id="modal-title">查看</h2>
 			             <form id="modal-form">      
 					         <div class="form-group">
-			                     <label>景點名稱</label>
+			                     <label>行程名稱</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>城市</label>
+			                     <label>價錢</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>地址</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
+                				 <label>景點名稱</label>
+                				 <input type="text" id="modal-attractionNames" class="input-show-value" disabled>
+            				 </div>
 			                 <div class="form-group">
-			                     <label>開放時間</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>景點類型</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>景點介紹</label>
+			                     <label>行程介紹</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 
@@ -86,25 +77,15 @@
 			     </div>
 			     <!-- 這裡是管理頁面的動態內容 -->
 			        <ul class="item-list">
-			            <li th:each="attractionDTO : ${page.content}" class="list-item" th:data-current-list-id="${attractionDTO.attractionId}">
-			            	<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/attraction/image/' + ${attractionDTO.attractionId}}">
+			            <li th:each="packageTourDTO : ${page.content}" class="list-item" th:data-current-list-id="${packageTourDTO.packageTourId}">
 			                <div class="item-content">     	
-			                	<span class="item-title" th:text="${attractionDTO.attractionName}"></span>
+			                	<span class="item-title" th:text="${packageTourDTO.packageTourName}"></span>
 			                	<div class="listInfo-group">
-		                			<span class="item-info" style="color: darkred">城市</span>
-		                			<span th:text="${attractionDTO.attractionCity}"></span>
+		                			<span class="item-info" style="color: darkred">價錢</span>
+		                			<span th:text="${packageTourDTO.packageTourPrice}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">地址</span>
-		                			<span th:text="${attractionDTO.address}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">開放時間</span>
-		                			<span th:text="${attractionDTO.openingHour}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">景點類型</span>
-		                			<span th:text="${attractionDTO.attractionType}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">景點介紹</span>
-		                			<span th:text="${attractionDTO.attractionDescription}"></span>
+		                			<span class="item-info" style="color: darkred">行程介紹</span>
+		                			<span th:text="${packageTourDTO.packageTourDescription}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>             		   			
 			                	</div>
 			                </div>
@@ -127,5 +108,47 @@
 		  </div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
+	<script th:inline="javascript">
+    function viewPackageTourDetails(button) {
+        var packageTourId = button.getAttribute("data-id");
+        
+        // 發送 AJAX 請求以獲取詳細信息
+        $.ajax({
+            url: '/management/packageTour/details',
+            method: 'GET',
+            data: { packageTourId: packageTourId },
+            success: function(response) {
+                if (response.success) {
+                    var packageTour = response.data;
+                    
+                    // 填充模態框中的數據
+                    $('#modal-packageTourName').val(packageTour.packageTourName);
+                    $('#modal-packageTourPrice').val(packageTour.packageTourPrice);
+                    $('#modal-packageTourDescription').val(packageTour.packageTourDescription);
+                    
+                    // 將所有景點名稱顯示在一行，用逗號分隔
+                    var attractionNames = packageTour.attractions.map(function(attraction) {
+                        return attraction.attractionName;
+                    }).join(', ');
+                    $('#modal-attractionNames').val(attractionNames);
+
+                    // 顯示模態框
+                    $('#modal-overlay').show();
+                } else {
+                    alert('無法加載行程詳細資料');
+                }
+            },
+            error: function(err) {
+                console.error('Error loading package tour details', err);
+                alert('發生錯誤，無法加載行程詳細資料');
+            }
+        });
+    }
+
+    // 關閉模態框
+    $('#modal-cancel-btn').click(function() {
+        $('#modal-overlay').hide();
+    });
+</script>
 </body>
 </html>

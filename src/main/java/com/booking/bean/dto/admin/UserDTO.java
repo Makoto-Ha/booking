@@ -34,10 +34,10 @@ public class UserDTO {
     private LocalDateTime createdTime; 
     private LocalDateTime updatedTime;   
     private Byte permission;
-    private List<PackageTourOrder> packageTourOrder;
+   // private List<PackageTourOrder> packageTourOrder;
     private List<ShoppingOrder> shoppingOrder; 
     private List<BookingOrder> bookingOrder;   
-    private AdminPermission adminPermission;
+    //private AdminPermission adminPermission;
 	public Integer getUserId() {
 		return userId;
 	}
@@ -116,12 +116,12 @@ public class UserDTO {
 	public void setPermission(Byte permission) {
 		this.permission = permission;
 	}
-	public List<PackageTourOrder> getPackageTourOrder() {
-		return packageTourOrder;
-	}
-	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
-		this.packageTourOrder = packageTourOrder;
-	}
+//	public List<PackageTourOrder> getPackageTourOrder() {
+//		return packageTourOrder;
+//	}
+//	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
+//		this.packageTourOrder = packageTourOrder;
+//	}
 	public List<ShoppingOrder> getShoppingOrder() {
 		return shoppingOrder;
 	}
@@ -134,58 +134,58 @@ public class UserDTO {
 	public void setBookingOrder(List<BookingOrder> bookingOrder) {
 		this.bookingOrder = bookingOrder;
 	}
-	public AdminPermission getAdminPermission() {
-		return adminPermission;
-	}
-	public void setAdminPermission(AdminPermission adminPermission) {
-		this.adminPermission = adminPermission;
-	}
-	public UserDTO(Integer userId, String userName, String userAccount, String userPassword, String userMail,
-			String userPhone, LocalDate userBirthday, String userAddress, String userImg, String creditCard,
-			LocalDateTime createdTime, LocalDateTime updatedTime, Byte permission,
-			List<PackageTourOrder> packageTourOrder, List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder,
-			AdminPermission adminPermission) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-		this.userImg = userImg;
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.permission = permission;
-		this.packageTourOrder = packageTourOrder;
-		this.shoppingOrder = shoppingOrder;
-		this.bookingOrder = bookingOrder;
-		this.adminPermission = adminPermission;
-	}
-	public UserDTO(String userName, String userAccount, String userPassword, String userMail, String userPhone,
-			LocalDate userBirthday, String userAddress, String userImg, String creditCard, LocalDateTime createdTime,
-			LocalDateTime updatedTime, Byte permission, List<PackageTourOrder> packageTourOrder,
-			List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder, AdminPermission adminPermission) {
-		super();
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-		this.userImg = userImg;
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.permission = permission;
-		this.packageTourOrder = packageTourOrder;
-		this.shoppingOrder = shoppingOrder;
-		this.bookingOrder = bookingOrder;
-		this.adminPermission = adminPermission;
-	}
+//	public AdminPermission getAdminPermission() {
+//		return adminPermission;
+//	}
+//	public void setAdminPermission(AdminPermission adminPermission) {
+//		this.adminPermission = adminPermission;
+//	}
+//	public UserDTO(Integer userId, String userName, String userAccount, String userPassword, String userMail,
+//			String userPhone, LocalDate userBirthday, String userAddress, String userImg, String creditCard,
+//			LocalDateTime createdTime, LocalDateTime updatedTime, Byte permission,
+//			List<PackageTourOrder> packageTourOrder, List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder,
+//			AdminPermission adminPermission) {
+//		super();
+//		this.userId = userId;
+//		this.userName = userName;
+//		this.userAccount = userAccount;
+//		this.userPassword = userPassword;
+//		this.userMail = userMail;
+//		this.userPhone = userPhone;
+//		this.userBirthday = userBirthday;
+//		this.userAddress = userAddress;
+//		this.userImg = userImg;
+//		this.creditCard = creditCard;
+//		this.createdTime = createdTime;
+//		this.updatedTime = updatedTime;
+//		this.permission = permission;
+//		this.packageTourOrder = packageTourOrder;
+//		this.shoppingOrder = shoppingOrder;
+//		this.bookingOrder = bookingOrder;
+//		this.adminPermission = adminPermission;
+//	}
+//	public UserDTO(String userName, String userAccount, String userPassword, String userMail, String userPhone,
+//			LocalDate userBirthday, String userAddress, String userImg, String creditCard, LocalDateTime createdTime,
+//			LocalDateTime updatedTime, Byte permission, List<PackageTourOrder> packageTourOrder,
+//			List<ShoppingOrder> shoppingOrder, List<BookingOrder> bookingOrder, AdminPermission adminPermission) {
+//		super();
+//		this.userName = userName;
+//		this.userAccount = userAccount;
+//		this.userPassword = userPassword;
+//		this.userMail = userMail;
+//		this.userPhone = userPhone;
+//		this.userBirthday = userBirthday;
+//		this.userAddress = userAddress;
+//		this.userImg = userImg;
+//		this.creditCard = creditCard;
+//		this.createdTime = createdTime;
+//		this.updatedTime = updatedTime;
+//		this.permission = permission;
+//		this.packageTourOrder = packageTourOrder;
+//		this.shoppingOrder = shoppingOrder;
+//		this.bookingOrder = bookingOrder;
+//		this.adminPermission = adminPermission;
+//	}
 	@Override
 	public String toString() {
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", userAccount=" + userAccount

@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourAttractionId;
+import com.booking.service.attraction.AttractionService;
 import com.booking.service.attraction.PackageTourService;
 import com.booking.utils.Result;
 
@@ -31,7 +34,8 @@ public class PackageTourController {
     @Autowired
     private PackageTourService packageTourService;
     
-    
+    @Autowired
+    private AttractionService attractionService;
     
 	/**
 	 * 轉到景點首頁
@@ -40,8 +44,8 @@ public class PackageTourController {
 	@GetMapping
 	private String packageTour(Model model) {
 		// DTO用於分頁所需數據
-		PackageTourDTO PackageTourDTO = new PackageTourDTO();
-		Result<PageImpl<PackageTourDTO>> findPackageTourAllResult = packageTourService.findAllPackageTour(PackageTourDTO);
+		PackageTourDTO packageTourDTO = new PackageTourDTO();
+		Result<PageImpl<PackageTourDTO>> findPackageTourAllResult = packageTourService.findAllPackageTour(packageTourDTO);
 		
 		if(findPackageTourAllResult.isFailure()) {
 			return "";
@@ -49,12 +53,23 @@ public class PackageTourController {
 		
 		Page<PackageTourDTO> page = findPackageTourAllResult.getData();
 		
-		model.addAttribute("PackageTourDTO", PackageTourDTO);
+		model.addAttribute("packageTourDTO", packageTourDTO);
 		model.addAttribute("page", page);
 
-		return "management-system/attraction/attraction-list";
+		return "management-system/attraction/packagetour-list";
 	}
     
+	
+    @GetMapping("/details")
+    @ResponseBody
+    public Result<PackageTourDTO> getPackageTourDetails(@RequestParam Integer packageTourId) {
+        Result<PackageTourDTO> packageTourResult = packageTourService.findPackageTourById(packageTourId);
+
+        if (packageTourResult.isFailure()) {
+            return Result.failure("無法找到該套裝行程");
+        }
+        return packageTourResult;
+    }
 	
 	
 	/**
@@ -73,8 +88,16 @@ public class PackageTourController {
 	 * return
 	 */
 	@GetMapping("/create/page")
-	private String sendCreatePage() {
-		return "management-system/attraction/packagetour-create";
+	private String sendCreatePage(Model model) {
+        PackageTourDTO packageTourDTO = new PackageTourDTO();
+        Result<PageImpl<AttractionDTO>> attractionsResult = attractionService.findAttractionAll(new AttractionDTO());
+        if (attractionsResult.isFailure()) {
+            return ""; 
+        }
+        List<AttractionDTO> attractions = attractionsResult.getData().getContent();
+        model.addAttribute("packageTourDTO", packageTourDTO);
+        model.addAttribute("allAttractions", attractions); 
+        return "management-system/attraction/packagetour-create";
 	}
 	
 	
@@ -85,18 +108,25 @@ public class PackageTourController {
 	 * @param session
 	 * @param model
 	 */
-	@GetMapping("/edit/page")
-	private String sendEditPage(@RequestParam Integer packageTourId, HttpSession session, Model model) {
-		session.setAttribute("packageTourId", packageTourId);
-		Result<PackageTourDTO> packageTourServiceResult = packageTourService.findPackageTourById(packageTourId);
-		
-		if(packageTourServiceResult.isFailure()) {
-			return "";
-		}
-		
-		model.addAttribute("packageTour", packageTourServiceResult.getData());
-		return "/management-system/attraction/packagetour-edit";
-	}
+    @GetMapping("/edit/page")
+    private String sendEditPage(@RequestParam Integer packageTourId, HttpSession session, Model model) {
+        session.setAttribute("packageTourId", packageTourId);
+        Result<PackageTourDTO> packageTourServiceResult = packageTourService.findPackageTourById(packageTourId);
+        
+        if(packageTourServiceResult.isFailure()) {
+            return ""; 
+        }
+        
+        Result<PageImpl<AttractionDTO>> attractionsResult = attractionService.findAttractionAll(new AttractionDTO()); // 使用 findAttractionAll 方法
+        if (attractionsResult.isFailure()) {
+            return ""; 
+        }
+        
+        List<AttractionDTO> allAttractions = attractionsResult.getData().getContent();
+        model.addAttribute("packageTour", packageTourServiceResult.getData());
+        model.addAttribute("allAttractions", allAttractions); // 添加景點列表到模型
+        return "management-system/attraction/packagetour-edit";
+    }
 	
 	
 	@GetMapping("/select")
@@ -184,4 +214,7 @@ public class PackageTourController {
         }
         return "redirect:/management/packageTour";
     }
+    
+    
+    
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>packagetour-select</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+            <form class="form" action="../select">
+                <div class="form-group">
+                    <label for="name">行程名稱</label>
+                    <input type="text" id="name" name="packageTourName" placeholder="輸入行程名稱">
+                </div>
+
+                <div class="form-group">
+                    <label for="price">行程價格</label>
+                    <input type="number" id="price" name="packageTourPrice" placeholder="輸入價格">
+                </div>
+
+		        <div class="form-group">
+		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+            </form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+</body>
+</html>

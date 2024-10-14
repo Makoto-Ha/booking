@@ -1,11 +1,15 @@
 package com.booking.bean.pojo.attraction;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity @Table(name = "attraction")
@@ -35,6 +39,9 @@ public class Attraction{
 	
 	@Column(name = "images_file")
 	private String imagesFile;
+	
+	@OneToMany(mappedBy = "attraction")
+	private List<PackageTourAttraction> packageTourAttractions = new ArrayList<>();
 	
 	public Attraction() {
 		
@@ -108,12 +115,22 @@ public class Attraction{
 	}
 
 
+	public List<PackageTourAttraction> getPackageTourAttractions() {
+		return packageTourAttractions;
+	}
+
+
+	public void setPackageTourAttractions(List<PackageTourAttraction> packageTourAttractions) {
+		this.packageTourAttractions = packageTourAttractions;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Attraction [attractionId=" + attractionId + ", attractionName=" + attractionName + ", attractionCity="
 				+ attractionCity + ", address=" + address + ", openingHour=" + openingHour + ", attractionType="
 				+ attractionType + ", attractionDescription=" + attractionDescription + ", imagesFile=" + imagesFile
-				+ "]";
+				+ ", packageTourAttractions=" + packageTourAttractions + "]";
 	}
 
 

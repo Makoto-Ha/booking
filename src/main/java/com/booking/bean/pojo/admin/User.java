@@ -187,21 +187,21 @@ public class User {
 //		this.packageTourOrder = packageTourOrder;
 //	}
 
-	public List<ShoppingOrder> getShoppingOrder() {
-		return shoppingOrder;
-	}
-
-	public void setShoppingOrder(List<ShoppingOrder> shoppingOrder) {
-		this.shoppingOrder = shoppingOrder;
-	}
-
-	public List<BookingOrder> getBookingOrder() {
-		return bookingOrder;
-	}
-
-	public void setBookingOrder(List<BookingOrder> bookingOrder) {
-		this.bookingOrder = bookingOrder;
-	}
+//	public List<ShoppingOrder> getShoppingOrder() {
+//		return shoppingOrder;
+//	}
+//
+//	public void setShoppingOrder(List<ShoppingOrder> shoppingOrder) {
+//		this.shoppingOrder = shoppingOrder;
+//	}
+//
+//	public List<BookingOrder> getBookingOrder() {
+//		return bookingOrder;
+//	}
+//
+//	public void setBookingOrder(List<BookingOrder> bookingOrder) {
+//		this.bookingOrder = bookingOrder;
+//	}
 
 //	public AdminPermission getAdminPermission() {
 //		return adminPermission;

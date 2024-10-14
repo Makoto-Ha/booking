@@ -1,5 +1,6 @@
 package com.booking.service.attraction;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,8 @@ public class PackageTourService {
 		Integer pageNumber = packageTourDTO.getPageNumber();
 		String attrOrderBy = packageTourDTO.getAttrOrderBy();
 		Boolean selectedSort = packageTourDTO.getSelectedSort();
+		System.out.println(attrOrderBy);
+		
 		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
 		Page<PackageTour> page = packageTourRepo.findAll(pageable);
 		List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
@@ -193,4 +196,6 @@ public class PackageTourService {
         packageTourAttractionRepo.save(packagetourAttraction); 
         return Result.success("更新景點成功");
     }
+    
+
 }
