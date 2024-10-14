@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -189,7 +190,7 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@PostMapping("/upload")
-	public ResponseEntity<String> uploadImageById(@RequestParam MultipartFile imageFile, Integer roomtypeId) {
+	private ResponseEntity<String> uploadImageById(@RequestParam MultipartFile imageFile, Integer roomtypeId) {
 		Result<String> uploadImageResult = roomtypeService.uploadImageById(imageFile, roomtypeId);
 		String message = uploadImageResult.getMessage();
 		if (uploadImageResult.isFailure()) {
@@ -207,7 +208,7 @@ public class RoomtypeController {
 	 * @throws IOException
 	 */
 	@GetMapping("/image/{roomtypeId}")
-	public ResponseEntity<?> findImageById(@PathVariable Integer roomtypeId) throws IOException {
+	private ResponseEntity<?> findImageById(@PathVariable Integer roomtypeId) throws IOException {
 		Result<UrlResource> findImageByIdResult = roomtypeService.findImageById(roomtypeId);
 
 		if (findImageByIdResult.isFailure()) {
@@ -218,5 +219,18 @@ public class RoomtypeController {
 		UrlResource resource = findImageByIdResult.getData();
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
+	}
+	
+	@PostMapping("/aws3/upload")
+	@ResponseBody
+	private String uploadImageByAWS(@RequestParam MultipartFile imageFile, Integer roomtypeId, @RequestParam(required = false) String imgOriginalKey) {
+		Result<String> uploadImageByAWS = roomtypeService.uploadImageByAWS(imageFile, roomtypeId, imgOriginalKey);
+		return uploadImageByAWS.getMessage();
+	}
+	
+	@GetMapping("/aws3/{roomtypeId}")
+	@ResponseBody
+	private List<String> getImageListByAWS(@PathVariable Integer roomtypeId) {
+		return roomtypeService.getImageListByAWS(roomtypeId);
 	}
 }

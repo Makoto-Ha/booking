@@ -1,5 +1,6 @@
 package com.booking.service.booking;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +28,7 @@ import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
+import com.booking.utils.AWSImageUtil;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -333,6 +335,38 @@ public class RoomtypeService {
 		}
 
 	   return Result.failure("獲取圖片失敗");
+		
+	}
+
+	public Result<String> uploadImageByAWS(MultipartFile imageFile, Integer roomtypeId, String imgOriginalKey) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		if(uploadResult.isFailure()) {
+			return uploadResult;
+		}
+		String fileName = imageFile.getOriginalFilename();
+		
+		String imgKey = "booking/roomtype" + roomtypeId + "/" + fileName; 
+		
+//		System.out.println(imgKey);
+//		System.out.println(imgOriginalKey);
+//		
+//		if(imgOriginalKey == null || imgKey.equals(imgOriginalKey)) {
+//			AWSImageUtil.uploadFile(imgKey, "uploads/" + fileName);
+//		}else {
+//			AWSImageUtil.uploadFile(imgOriginalKey, "uploads/" + fileName);
+//		}
+		System.out.println(imgOriginalKey);
+		AWSImageUtil.deleteImage(imgOriginalKey);
+		AWSImageUtil.uploadFile(imgKey, "uploads/" + fileName);
+		
+		File file = new File("uploads/" + fileName);
+		file.delete();
+		
+		return Result.success("圖片上傳AWS3成功");
+	}
+
+	public List<String> getImageListByAWS(Integer roomtypeId) {
+		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId);
 		
 	}
 }

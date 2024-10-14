@@ -16,7 +16,7 @@ public class UploadImageFile {
 		}
 		
 		try {
-			String uploadDir = "uploads" + "/";
+			String uploadDir = "uploads/";
 			String fileName = imageFile.getOriginalFilename();
 			Path filePath = Paths.get(uploadDir + fileName);
 			
