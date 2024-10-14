@@ -11,16 +11,17 @@ public class PackageTourDTO {
 	private String packageTourName;
 	private Integer packageTourPrice;
 	private String packageTourDescription;
+	private String imagesFile;
+	
 	private List<Attraction> attractions;
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "attractionId";
+	private String attrOrderBy = "packageTourId";
 	private Boolean selectedSort = true;
 
 
 	public PackageTourDTO() {
 		
 	}
-
 
 
 	public Integer getPackageTourId() {
@@ -71,6 +72,16 @@ public class PackageTourDTO {
 
 
 
+	public String getImagesFile() {
+		return imagesFile;
+	}
+
+
+	public void setImagesFile(String imagesFile) {
+		this.imagesFile = imagesFile;
+	}
+
+
 	public List<Attraction> getAttractions() {
 		return attractions;
 	}
@@ -105,16 +116,13 @@ public class PackageTourDTO {
 	}
 
 
-
 	@Override
 	public String toString() {
 		return "PackageTourDTO [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
 				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription
-				+ ", attractions=" + attractions + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
-				+ ", selectedSort=" + selectedSort + "]";
+				+ ", imagesFile=" + imagesFile + ", attractions=" + attractions + ", pageNumber=" + pageNumber
+				+ ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
 	}
-
-
 
 	
 }
