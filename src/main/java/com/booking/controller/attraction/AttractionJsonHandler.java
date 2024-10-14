@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
+import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.service.attraction.AttractionService;
+import com.booking.service.attraction.PackageTourService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 
@@ -23,11 +25,18 @@ public class AttractionJsonHandler {
 	@Autowired
 	private AttractionService attractionService;
 	
-
+	
+	@Autowired
+	private PackageTourService packageTourService;
+	
+	
+	
+	
+	
 	
 	/**
 	 * 返回景點類型
-	 * @param roomtypeId
+	 * @param Id
 	 * @return
 	 */
 	@GetMapping("/attraction/{id}")
@@ -51,6 +60,22 @@ public class AttractionJsonHandler {
 		Result<List<AttractionDTO>> attractionServiceResult = attractionService.findAttractionByName(name);
 		
 		if(attractionServiceResult.isFailure()) {
+			return null;
+		}
+		
+		return JsonUtil.toJson(attractionServiceResult.getData());
+	}
+	
+	
+	/**
+	 * 根據行程id獲取套裝行程
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/packagetour/{id}")
+	private String findPackageTourById(@PathVariable Integer id) {
+		Result<PackageTourDTO> attractionServiceResult = packageTourService.findPackageTourById(id);
+		if (attractionServiceResult.isFailure()) {
 			return null;
 		}
 		

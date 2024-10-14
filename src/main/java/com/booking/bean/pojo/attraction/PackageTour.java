@@ -1,17 +1,21 @@
 package com.booking.bean.pojo.attraction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "package_tour")
 public class PackageTour {
 
-	@Id @Column(name = "pacakgetour_id")
+	@Id @Column(name = "packagetour_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer packageTourId;
 	
@@ -21,10 +25,11 @@ public class PackageTour {
 	@Column(name = "packagetour_price")
 	private Integer packageTourPrice;
 	
-	@Column(name = "packagetour_description")
+	@Column(name = "packagetour_description")	
 	private String packageTourDescription;
 	
-	
+	@OneToMany(mappedBy = "packageTour")
+	private List<PackageTourAttraction> packageTourAttractions = new ArrayList<>();
 
 	public PackageTour() {
 	}
@@ -79,10 +84,23 @@ public class PackageTour {
 
 
 
+	public List<PackageTourAttraction> getPackageTourAttractions() {
+		return packageTourAttractions;
+	}
+
+
+
+	public void setPackageTourAttractions(List<PackageTourAttraction> packageTourAttractions) {
+		this.packageTourAttractions = packageTourAttractions;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "PackageTour [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
-				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription + "]";
+				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription
+				+ ", packageTourAttractions=" + packageTourAttractions + "]";
 	}
 
 
