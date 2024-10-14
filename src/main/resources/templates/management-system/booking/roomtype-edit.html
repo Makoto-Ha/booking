@@ -1,118 +1,327 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>create</title>
-<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+    <meta charset="UTF-8">
+    <title>create</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+    <style>
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            visibility: hidden; /* 改為使用 visibility */
+            opacity: 0;
+        }
+
+        .popup.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #imageGallery {
+            display: flex;
+            flex-wrap: wrap;
+            /* 允許換行 */
+            gap: 10px;
+            /* 圖片之間的間距 */
+            margin-bottom: 18.72px;
+        }
+
+        #imageGallery img,
+        .add-image {
+            width: 100px;
+            /* 固定寬度 */
+            height: 100px;
+            /* 固定高度，保持比例 */
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            object-fit: cover;
+            /* 確保圖片適應框架且不變形 */
+            box-sizing: border-box;
+            transition: .2s;
+        }
+
+        .scale:hover {
+            border: 5px solid rgb(255, 193, 60);
+            transform: scale(120%);
+        }
+
+        .add-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            border: 2px dashed #aaa;
+        }
+
+        .add-image span {
+            font-size: 24px;
+            color: #aaa;
+        }
+    </style>
 </head>
+
 <body>
-	<div class="container">
-		<div th:replace="~{/management-system/common/sidebar}"></div>
-		<div class="main-content">
-			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../update" method="post" enctype="multipart/form-data">
-		        <div class="form-group">
-		            <label for="roomtype-name">房間類型名稱 (輸入中文，至少四個)</label>
-		            <input type="text" id="roomtype-name" name="roomtypeName" placeholder="輸入內容" th:value="${roomtype.roomtypeName}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="price">房間類型價格</label>
-		            <input type="number" id="roomtype-price" name="roomtypePrice" placeholder="輸入內容" th:value="${roomtype.roomtypePrice}">
-		        </div>
-		        
-		        <div class="form-group">
-		            <label for="price">房間類型數量</label>
-		            <input type="number" id="roomtype-quantity" name="roomtypeQuantity" placeholder="輸入內容" th:value="${roomtype.roomtypeQuantity}" disabled>
-		        </div>
-		        
-		        <div class="form-group">
-					<label>上傳圖片</label>
-					<div class="upload-container">
-					    <label for="file-upload" class="custom-file-upload">
-					      <i class="fas fa-cloud-upload-alt"></i> <!-- 上傳圖示 -->
-					      選擇檔案
-					    </label>
-					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
-					    <p id="file-name" class="file-name">尚未選擇檔案</p>
-					    <p class="upload-instruction">支持 JPG, PNG 檔案（最大 5MB）</p>
-					</div>
-				</div>
-		
-		        <div class="form-group">
-		            <label for="description">房間類型介紹 (四個中文，至少八個字)</label>
-		            <input type="text" id="description" name="roomtypeDescription" placeholder="輸入內容" th:value="${roomtype.roomtypeDescription}">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="select-city">縣市</label>
-		            <select id="select-city" name="roomtypeCity"></select>
-		        </div>
-		        
-		        <div class="form-group">
-		            <label for="select-district">區域</label>
-		            <select id="select-district" name="roomtypeDistrict"></select>
-		        </div>
-		        
-		        <div class="form-group">
-		            <label for="description">地址 (xx市xx區xx街xx號x樓)</label>
-		            <input type="text" name="roomtypeAddress" placeholder="輸入內容" th:value="${roomtype.roomtypeAddress}">
-		        </div>
-				
-		        <div class="form-group roomtype-capacity-group">
-		            <div class="choose-roomtype-capacity">
-			            <label class="radio-label">
-			            	一人房
-			                <input type="radio" name="roomtypeCapacity" value="1" th:checked="${roomtype.roomtypeCapacity} == '1'">
-			            </label>
-		            </div>
-		            <div class="choose-roomtype-capacity">
-			            <label class="radio-label">
-			            	兩人房
-			                <input type="radio" name="roomtypeCapacity" value="2" th:checked="${roomtype.roomtypeCapacity} == '2'">
-			            </label>
-		            </div>
-		            <div class="choose-roomtype-capacity">
-			            <label class="radio-label">
-			            	三人房
-			                <input type="radio" name="roomtypeCapacity" value="3" th:checked="${roomtype.roomtypeCapacity} == '3'">
-			            </label>
-		            </div>
-	             	<div class="choose-roomtype-capacity">
-			            <label class="radio-label">
-			            	四人房
-			                <input type="radio" name="roomtypeCapacity" value="4" th:checked="${roomtype.roomtypeCapacity} == '4'">
-			            </label>
-		            </div>
-		            <div class="choose-roomtype-capacity">
-			            <label class="radio-label">
-			            	五人房
-			                <input type="radio" name="roomtypeCapacity" value="5" th:checked="${roomtype.roomtypeCapacity} == '5'">
-			            </label>
-		            </div>
-		        </div>
-		
-		        <div class="form-group">
-		            <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
-		            <button type="button" class="cancel">取消</button>
-		        </div>
-		    </form>
-		</div>
-	</div>
-	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
-	<script th:src="@{/management-system/booking/js/form.js}"></script>
-	<script>
-		let roomtypeCity = "[[${roomtype.roomtypeCity}]]";
-		selectCity.value = roomtypeCity;
-		
-		data.find(location => location.name === roomtypeCity)?.districts.forEach(district => {
-			let option = document.createElement("option");
-			option.textContent = district.name;
-			selectDistrict.appendChild(option);
-		});
-		
-		selectDistrict.value = "[[${roomtype.roomtypeDistrict}]]";
-	</script>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+            <form class="form" action="../update" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="roomtype-name">房間類型名稱 (輸入中文，至少四個)</label>
+                    <input type="text" id="roomtype-name" name="roomtypeName" placeholder="輸入內容"
+                        th:value="${roomtype.roomtypeName}">
+                </div>
+
+                <div class="form-group">
+                    <label for="price">房間類型價格</label>
+                    <input type="number" id="roomtype-price" name="roomtypePrice" placeholder="輸入內容"
+                        th:value="${roomtype.roomtypePrice}">
+                </div>
+
+                <div class="form-group">
+                    <label for="price">房間類型數量</label>
+                    <input type="number" id="roomtype-quantity" name="roomtypeQuantity" placeholder="輸入內容"
+                        th:value="${roomtype.roomtypeQuantity}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>上傳圖片</label>
+                    <div class="upload-container">
+                        <button class="custom-file-upload" id="openPopup">編輯圖片</button>
+                        <!-- 上傳圖片的彈窗 -->
+                        <div id="uploadPopup" class="popup">
+                            <div class="popup-content" style="width: 430px;">
+                                <h3 style="margin-top: 0;">上傳圖片</h3>
+                                <input type="file" class="custom-file-upload" id="imageInput" accept="image/*"
+                                    style="display: none !important;">
+
+
+                                <!-- 顯示已上傳的圖片 -->
+                                <div id="imageGallery"></div>
+                                <button id="closePopup" style="margin-bottom: 0;">關閉</button>
+                            </div>
+                        </div>
+                        <p class="upload-instruction">支持 JPG, PNG 檔案（最大 5MB）</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">房間類型介紹 (四個中文，至少八個字)</label>
+                    <input type="text" id="description" name="roomtypeDescription" placeholder="輸入內容"
+                        th:value="${roomtype.roomtypeDescription}">
+                </div>
+
+                <div class="form-group">
+                    <label for="select-city">縣市</label>
+                    <select id="select-city" name="roomtypeCity"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="select-district">區域</label>
+                    <select id="select-district" name="roomtypeDistrict"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">地址 (xx市xx區xx街xx號x樓)</label>
+                    <input type="text" name="roomtypeAddress" placeholder="輸入內容" th:value="${roomtype.roomtypeAddress}">
+                </div>
+
+                <div class="form-group roomtype-capacity-group">
+                    <div class="choose-roomtype-capacity">
+                        <label class="radio-label">
+                            一人房
+                            <input type="radio" name="roomtypeCapacity" value="1"
+                                th:checked="${roomtype.roomtypeCapacity} == '1'">
+                        </label>
+                    </div>
+                    <div class="choose-roomtype-capacity">
+                        <label class="radio-label">
+                            兩人房
+                            <input type="radio" name="roomtypeCapacity" value="2"
+                                th:checked="${roomtype.roomtypeCapacity} == '2'">
+                        </label>
+                    </div>
+                    <div class="choose-roomtype-capacity">
+                        <label class="radio-label">
+                            三人房
+                            <input type="radio" name="roomtypeCapacity" value="3"
+                                th:checked="${roomtype.roomtypeCapacity} == '3'">
+                        </label>
+                    </div>
+                    <div class="choose-roomtype-capacity">
+                        <label class="radio-label">
+                            四人房
+                            <input type="radio" name="roomtypeCapacity" value="4"
+                                th:checked="${roomtype.roomtypeCapacity} == '4'">
+                        </label>
+                    </div>
+                    <div class="choose-roomtype-capacity">
+                        <label class="radio-label">
+                            五人房
+                            <input type="radio" name="roomtypeCapacity" value="5"
+                                th:checked="${roomtype.roomtypeCapacity} == '5'">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="submit submit-edit" id="submit"
+                        style="background-color: #007bff;">保存</button>
+                    <button type="button" class="cancel">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
+    <script th:src="@{/management-system/booking/js/form.js}"></script>
+    <script th:inline="javascript">
+        let roomtypeCity = [[${ roomtype.roomtypeCity }]];
+        selectCity.value = roomtypeCity;
+
+        data.find(location => location.name === roomtypeCity)?.districts.forEach(district => {
+            let option = document.createElement("option");
+            option.textContent = district.name;
+            selectDistrict.appendChild(option);
+        });
+
+        selectDistrict.value = [[${ roomtype.roomtypeDistrict }]];
+
+        const openPopupBtn = document.getElementById("openPopup");
+        const uploadPopup = document.getElementById("uploadPopup");
+        const closePopupBtn = document.getElementById("closePopup");
+        const imageInput = document.getElementById("imageInput");
+        const imageGallery = document.getElementById("imageGallery");
+        let editingImage = null; // 用來跟蹤是否正在編輯圖片
+
+        (async function () {
+            let response = await fetch('/booking/management/roomtype/aws3/' + [[${ roomtype.roomtypeId }]]);
+            let imgKeyList = await response.json();
+            console.log(imgKeyList);
+            let imageGallery = document.getElementById('imageGallery');
+            imgKeyList.forEach(imgkey => { 
+                let img = document.createElement('img');
+                img.classList.add('scale');
+                img.classList.add('image');
+                img.dataset.imgkey = imgkey;
+                img.src = `https://bookingdb.s3.ap-east-1.amazonaws.com/${imgkey}`;  
+
+                imageGallery.insertAdjacentElement('afterbegin', img);
+            });
+        }());
+
+        // 開啟彈窗
+        openPopupBtn.addEventListener("click", async e => {
+            e.preventDefault();
+            uploadPopup.classList.add("show");
+            editingImage = null; // 每次打開彈窗時，重置編輯狀態
+            addAddImageBox(); // 確保始終有「新增圖片」框
+        });
+
+        let targetImg;
+
+        imageGallery.addEventListener('click', e => {
+            targetImg = e.target.closest('img');
+            if (targetImg) {
+                editImage(targetImg);
+            }
+        })
+
+        // 關閉彈窗
+        closePopupBtn.addEventListener("click", e => {
+            e.preventDefault();
+            uploadPopup.classList.remove("show");
+        });
+
+        // 當選擇文件時觸發
+        imageInput.addEventListener("change", e => {
+            const file = imageInput.files[0];
+            if (file) {
+                const formData = new FormData();
+
+                formData.append('imageFile', file);
+
+                if (targetImg) {
+                    formData.append('imgOriginalKey', targetImg.dataset.imgkey);
+                }
+
+                formData.append('roomtypeId', [[${ roomtype.roomtypeId }]]);
+
+                fetch('/booking/management/roomtype/aws3/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => res.text())
+                    .then(data => console.log(data));
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // console.log(e.target.result);
+                    e.target.src = e.target.result;
+                    if (editingImage) {
+                        // 更新圖片
+                        editingImage.src = e.target.result;
+                        editingImage = null; // 重置編輯狀態
+                    } else {
+                        // 新增圖片到畫廊
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.addEventListener("click", () => editImage(img));
+                        imageGallery.insertBefore(img, document.querySelector('.add-image'));
+                    }
+                    imageInput.value = ''; // 清空文件選擇框
+                    addAddImageBox(); // 確保始終有「新增圖片」框
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 點擊「新增圖片」框時觸發文件選擇
+        function addAddImageBox() {
+            // 檢查是否已經有「新增圖片」框，沒有則新增
+            if (!document.querySelector('.add-image')) {
+                const addImageBox = document.createElement('div');
+                addImageBox.classList.add('add-image');
+                addImageBox.innerHTML = '<span>+</span>';
+                addImageBox.addEventListener('click', () => {
+                    editingImage = null; // 清除編輯狀態
+                    imageInput.click(); // 觸發文件選擇框
+                });
+                imageGallery.appendChild(addImageBox);
+            }
+        }
+
+        // 點擊圖片進行編輯
+        function editImage(img) {
+            editingImage = img; // 設置當前正在編輯的圖片
+            imageInput.click(); // 觸發文件選擇框
+        }
+
+        // 初次打開彈窗時添加「新增圖片」框
+        addAddImageBox();
+    </script>
 </body>
+
 </html>

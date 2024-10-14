@@ -174,12 +174,15 @@ input.invalid:-webkit-autofill {
 
 .custom-file-upload {
 	display: inline-block !important;
-	padding: 12px 30px;
-	cursor: pointer;
+	width: 56px !important;
+	padding: 12px 30px !important;
+	cursor: pointer !important;
 	color: white !important;
-	background-color: #007bff;
-	border-radius: 5px;
-	transition: background-color 0.3s;
+	background-color: #007bff !important;
+	border-radius: 5px !important;
+	transition: background-color 0.3s !important;
+	box-sizing: content-box !important;
+	font-size: 14px !important;
 }
 
 .custom-file-upload:hover {
