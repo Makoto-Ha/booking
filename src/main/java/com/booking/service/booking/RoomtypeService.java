@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -339,34 +340,47 @@ public class RoomtypeService {
 	}
 
 	public Result<String> uploadImageByAWS(MultipartFile imageFile, Integer roomtypeId, String imgOriginalKey) {
+		
+		String fileName = imageFile.getOriginalFilename();
+		String avatarKey = "booking/roomtype" + roomtypeId + "/avatar.png";
+		String imgKey = "booking/roomtype" + roomtypeId + "/" + fileName;
+		File file = new File("uploads/" + fileName);
+		// 禁止檔名是avatar.png
+		if(avatarKey.equals(imgKey)) {
+			return Result.failure("請誤用檔名avatar.png，上傳檔案失敗");
+		}
+
+		System.out.println(imgOriginalKey);
+		// 先上傳本地，用於獲得路徑上傳到AWS
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
 		if(uploadResult.isFailure()) {
 			return uploadResult;
 		}
-		String fileName = imageFile.getOriginalFilename();
+		// 如果沒有大頭貼，檔名會默認變成avatar.png
+		if(!AWSImageUtil.imageExist(avatarKey)) {
+			AWSImageUtil.uploadFile(avatarKey, "uploads/" + fileName);
+			file.delete();
+			return Result.success("上傳大頭貼AWS3成功");
+		}	
+		// 如果有值才刪除，沒值代表是新增圖片
+		if(imgOriginalKey != null) {
+			AWSImageUtil.deleteImage(imgOriginalKey);
+		}
 		
-		String imgKey = "booking/roomtype" + roomtypeId + "/" + fileName; 
+		// 如果大頭貼和原本一樣，代表更新大頭貼
+		if(avatarKey.equals(imgOriginalKey)) {
+			AWSImageUtil.uploadFile(avatarKey, "uploads/" + fileName);
+			file.delete();
+			return Result.success("更新大頭貼成功");
+		}
 		
-//		System.out.println(imgKey);
-//		System.out.println(imgOriginalKey);
-//		
-//		if(imgOriginalKey == null || imgKey.equals(imgOriginalKey)) {
-//			AWSImageUtil.uploadFile(imgKey, "uploads/" + fileName);
-//		}else {
-//			AWSImageUtil.uploadFile(imgOriginalKey, "uploads/" + fileName);
-//		}
-		System.out.println(imgOriginalKey);
-		AWSImageUtil.deleteImage(imgOriginalKey);
 		AWSImageUtil.uploadFile(imgKey, "uploads/" + fileName);
-		
-		File file = new File("uploads/" + fileName);
 		file.delete();
-		
 		return Result.success("圖片上傳AWS3成功");
 	}
 
-	public List<String> getImageListByAWS(Integer roomtypeId) {
-		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId);
-		
+	public List<String> getImageListByAWS(Integer roomtypeId) {	
+		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId).stream().filter(imgkey -> !imgkey.equals("booking/roomtype" + roomtypeId + "/avatar.png")).collect(Collectors.toList());
 	}
 }

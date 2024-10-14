@@ -10,9 +10,12 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 public class AWSImageUtil {
@@ -70,6 +73,52 @@ public class AWSImageUtil {
 			return null;
 		}
 	}
+	
+	public static boolean imageExist(String imageKey) {
+		s3 = S3Client.builder().region(region)
+				.credentialsProvider(ProfileCredentialsProvider.create()).build();
+		try {
+			// 判斷文件是否存在
+	        boolean fileExists = doesFileExist(s3, BUCEKT_NAME, imageKey);
+	        if (fileExists) {
+	            System.out.println("檔案存在於S3: " + imageKey);
+	        } else {
+	            System.out.println("檔案不存在於S3: " + imageKey);
+	        }
+			
+			
+			s3.close();
+			
+			return fileExists;
+
+		} catch (Exception e) {
+			System.err.println("Failed to list images: " + e.getMessage());
+			return false;
+		}
+	}
+	
+	// 確認檔案是否存在於AWS3
+	private static boolean doesFileExist(S3Client s3, String bucketName, String key) {
+        try {
+            // 發送 headObject 請求來檢查文件是否存在
+            HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            HeadObjectResponse headObjectResponse = s3.headObject(headObjectRequest);
+            return headObjectResponse != null;  // 文件存在
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                // 如果狀態碼是 404，說明文件不存在
+                return false;
+            } else {
+                // 其他 S3 異常可以根據需要處理
+                System.err.println("Error checking file existence: " + e.awsErrorDetails().errorMessage());
+                throw e;
+            }
+        }
+    }
 
 	public static void deleteImage(String imageKey) {
 		s3 = S3Client.builder().region(region)
