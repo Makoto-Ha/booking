@@ -91,7 +91,16 @@
 			                <input type="radio" name="roomtypeCapacity" value="5">
 			            </label>
 		            </div>
-		        </div>
+		        </div>	        
+		        
+				<div style="display: flex; flex-wrap: wrap">
+		        	<div class="form-group" th:each="amenity : ${amenities}" style="display: flex; align-items: center; width:25%;">	
+		        		<label class="checkbox-label" style="display: flex; align-items: center; margin-bottom: 0; width: 100%;">
+		        			<span th:text="${amenity.name}"></span>
+		        			<input type="checkbox" style="margin-left: auto;">
+		        		</label>
+		        	</div>
+			    </div>
 		
 		        <div class="form-group">
 		            <button type="submit" class="submit" id="submit" disabled>新增</button>
