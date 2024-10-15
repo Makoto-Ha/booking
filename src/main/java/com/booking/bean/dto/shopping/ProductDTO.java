@@ -22,6 +22,7 @@ public class ProductDTO {
 	private Integer categoryId;
 
 	private String categoryName;
+	
 	//--------------------------------------
 	private String productImage;
 	private Integer pageNumber = 1;

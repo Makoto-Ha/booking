@@ -19,9 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
 	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p")
 	Page<ProductDTO> findProductDTOAll(Pageable pageable);
 
-//	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p")
-//	Page<ProductDTO> findProductDTOAllBySpc(Specification<Product> specification,Pageable pageable);
-
 	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p WHERE p.productName LIKE %:productName%")
 	Result<List<Product>> findProductByNameContaining(String productName);
 
@@ -30,7 +27,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
 
 	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p WHERE p.productId = :productId")
 	ProductDTO findProductDTOById(Integer productId);
-	
 	
     @EntityGraph(attributePaths = {"category"})
     Page<Product> findAll(Specification<Product> spec, Pageable pageable);

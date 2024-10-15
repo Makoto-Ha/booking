@@ -36,7 +36,5 @@ public class ProductCategory {
 		return "ProductCategory [categoryId=" + categoryId + ", categoryName=" + categoryName + ", categoryDescription="
 				+ categoryDescription + "]";
 	}
-
-	
 	
 }
