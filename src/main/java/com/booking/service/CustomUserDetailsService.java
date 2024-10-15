@@ -1,4 +1,4 @@
-package com.booking.service.User;
+package com.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,22 +9,23 @@ import org.springframework.stereotype.Service;
 import com.booking.bean.pojo.user.User;
 import com.booking.dao.user.UserRepository;
 
+
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserAccount(username)
-                .orElseThrow(() -> new UsernameNotFoundException("用戶不存在"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUserAccount())
                 .password(user.getUserPassword())
-                .authorities("USER")
-                .accountExpired(!user.getEmailVerified())
+                .roles("USER")
                 .build();
     }
 }
