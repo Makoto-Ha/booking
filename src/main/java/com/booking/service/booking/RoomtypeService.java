@@ -26,9 +26,11 @@ import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.bean.pojo.common.Amenity;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
+import com.booking.dao.common.AmenityRepository;
 import com.booking.utils.AWSImageUtil;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
@@ -43,6 +45,8 @@ public class RoomtypeService {
 	private RoomDao roomDao;
 	@Autowired
 	private RoomService roomService;
+	@Autowired
+	private AmenityRepository amenityRepo;
 	
 	/**
 	 * 獲取所有房間類型
@@ -146,15 +150,26 @@ public class RoomtypeService {
 	 * @return
 	 */
 	public Result<RoomtypeDTO> findRoomtypeById(Integer roomtypeId) {
+		// 根據id獲取roomtype
 		Optional<Roomtype> optional = roomtypeRepo.findById(roomtypeId);
 	
+		// 判斷是否為空
 		if(optional.isEmpty()) {
 			return Result.failure("找不到該房間類型");
 		}
 		
+		// 獲取roomtype
 		Roomtype roomtype = optional.get();
+		// 創建DTO用於返回前端
 		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+		// 複製屬性
 		BeanUtils.copyProperties(roomtype, roomtypeDTO);
+		
+		// 查詢所有服務
+		List<Amenity> amenities = amenityRepo.findAll();
+		
+		// 設置服務給房型
+		roomtypeDTO.setAmenities(amenities);
 		
 		return Result.success(roomtypeDTO);
 	}
@@ -165,18 +180,26 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> saveRoomtype(MultipartFile imageFile, Roomtype roomtype) {
+	public Result<String> saveRoomtype(MultipartFile imageFile, Roomtype roomtype, List<Amenity> amenities) {
+		// 上傳圖片
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		
+		// 圖片上傳成功後設置圖片的路徑
 		if(uploadResult.isSuccess()) {
 			String fileName = imageFile.getOriginalFilename();
 			roomtype.setImagePath("uploads" + "/" + fileName);
 		}
-			
+		
+		// 保存房型
 		Roomtype saveRoomtype = roomtypeRepo.save(roomtype);
 		
+		// 設置服務
+		roomtype.setAmenities(amenities);
+		
+		// 保存房間
 		Result<String> roomServiceResult = roomService.saveRoomsByRoomtype(saveRoomtype);
 	
+		// 新增失敗返回訊息
 		if(roomServiceResult.isFailure()) {
 			return Result.failure("新增空房失敗");
 		}
@@ -349,8 +372,7 @@ public class RoomtypeService {
 		if(avatarKey.equals(imgKey)) {
 			return Result.failure("請誤用檔名avatar.png，上傳檔案失敗");
 		}
-
-		System.out.println(imgOriginalKey);
+		
 		// 先上傳本地，用於獲得路徑上傳到AWS
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		

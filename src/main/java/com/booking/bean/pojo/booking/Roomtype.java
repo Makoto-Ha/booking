@@ -6,12 +6,17 @@ import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 
+import com.booking.bean.pojo.common.Amenity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -63,6 +68,14 @@ public class Roomtype {
 	
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
 	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
+	
+	@ManyToMany
+    @JoinTable(
+        name = "roomtype_amenity", // 中間表名稱
+        joinColumns = @JoinColumn(name = "roomtype_id"), 
+        inverseJoinColumns = @JoinColumn(name = "amenity_id") 
+    )
+    private List<Amenity> amenities = new ArrayList<>();
 
 	public Roomtype() {
 	}
@@ -179,6 +192,14 @@ public class Roomtype {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
+	public List<Amenity> getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(List<Amenity> amenities) {
+		this.amenities = amenities;
+	}
+
 	@Override
 	public String toString() {
 		return "Roomtype [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
@@ -186,7 +207,7 @@ public class Roomtype {
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
 				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms
-				+ ", bookingOrderItems=" + bookingOrderItems + "]";
+				+ ", bookingOrderItems=" + bookingOrderItems + ", amenities=" + amenities + "]";
 	}
-
+	
 }

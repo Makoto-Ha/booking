@@ -1,6 +1,9 @@
 package com.booking.bean.dto.booking;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.booking.bean.pojo.common.Amenity;
 
 public class RoomtypeDTO {
 	private Integer roomtypeId;
@@ -15,6 +18,7 @@ public class RoomtypeDTO {
 	private LocalDateTime updatedTime;
 	private LocalDateTime createdTime;
 	private String imageFile;
+	private List<Amenity> amenities;
 	
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "createdTime";
@@ -161,15 +165,23 @@ public class RoomtypeDTO {
 		this.imageFile = imageFile;
 	}
 
+	public List<Amenity> getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(List<Amenity> amenities) {
+		this.amenities = amenities;
+	}
+
 	@Override
 	public String toString() {
-		return "RoomtypeDTO [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
-				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
+		return "RoomtypeDTO [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypePrice="
+				+ roomtypePrice + ", roomtypeCapacity=" + roomtypeCapacity + ", roomtypeQuantity=" + roomtypeQuantity
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", imageFile=" + imageFile + ", pageNumber="
-				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + ", minMoney="
-				+ minMoney + ", maxMoney=" + maxMoney + "]";
+				+ updatedTime + ", createdTime=" + createdTime + ", imageFile=" + imageFile + ", amenities=" + amenities
+				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
+				+ ", minMoney=" + minMoney + ", maxMoney=" + maxMoney + "]";
 	}
-	
+
 }

@@ -25,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.bean.pojo.common.Amenity;
 import com.booking.service.booking.RoomtypeService;
+import com.booking.service.common.AmenityService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -36,6 +38,9 @@ public class RoomtypeController {
 
 	@Autowired
 	private RoomtypeService roomtypeService;
+	
+	@Autowired
+	private AmenityService amenityService;
 
 	/**
 	 * 轉到查詢
@@ -77,7 +82,9 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@GetMapping("/create/page")
-	private String sendCreatePage() {
+	private String sendCreatePage(Model model) {
+		List<Amenity> amenities = amenityService.findAll();
+		model.addAttribute("amenities", amenities);
 		return "management-system/booking/roomtype-create";
 	}
 
@@ -138,8 +145,8 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype) {
-		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype);
+	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype, List<Amenity> amenities) {
+		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype, amenities);
 		if (saveRoomtypeResult.isFailure()) {
 			return "";
 		}
