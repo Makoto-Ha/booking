@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>booking-order-list</title>
+	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+</head>
+
+<body>
+
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<section class="main-list">
+
+				<!-- ----------------搜索欄----------------- -->
+				<div class="search-bar">
+					<input type="text" id="search-input" placeholder="搜索...">
+					<button id="search-btn">進階搜索</button>
+
+					<div class="pagination">
+						<button id="prev-page">上一頁</button>
+						<input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
+						/ <span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
+						<button id="next-page">下一頁</button>
+					</div>
+
+					<div class="attr-order-by">
+						<select class="attr-select-order-by" id="select-order-by">
+							<option value="categoryId" th:selected="categoryId == ${productCategoryDTO.attrOrderBy}">商品名稱</option>
+						</select>
+
+						<select class="attr-select-order-by" id="select-sort">
+							<option value="false" th:selected="${productCategoryDTO.selectedSort}">升冪</option>
+							<option value="true" th:selected="${productCategoryDTO.selectedSort}">降冪</option>
+						</select>
+					</div>
+
+					<div class="search-bar-addbtn">
+						<button class="action-btn add-btn">新增</button>
+					</div>
+				</div>
+
+				<div class="content-area-pages">
+					<button class="content-area-page" data-url="/booking/management/product" style="height: 50px;">商品</button>
+					<button class="content-area-page" data-url="/booking/management/productCategory" style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/shoppingOrder" style="height: 50px;">訂單</button>
+				</div>
+
+				<!-- -------------------管理頁面內容--------------------- -->
+				<section id="content" class="content-area">
+					<div id="modal-overlay" class="overlay">
+						<div class="modal">
+							<h2 id="modal-title">查看</h2>
+							<form id="modal-form">
+								<div class="form-group">
+									<label>分類名稱</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>分類描述</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<button type="button" id="modal-cancel-btn">取消</button>
+							</form>
+						</div>
+					</div>
+
+					<!-- 刪除確認視窗 -->
+					<div id="delete-overlay" class="overlay">
+						<div class="delete-modal">
+							<h2>確認刪除</h2>
+							<p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
+							<button id="confirmDeleteBtn">確認</button>
+							<button type="button" id="cancelDeleteBtn">取消</button>
+						</div>
+					</div>
+
+					<!-- 這裡是管理頁面的動態內容 -->
+					<ul class="item-list">
+						<li th:each="productCategoryDTO : ${page.content}" class="list-item"
+							th:data-current-list-id="${productCategoryDTO.categoryId}">
+							<div class="item-content">
+								<span class="item-title" th:text="${productCategoryDTO.categoryName}"></span>
+								<div class="listInfo-group">
+									<span class="item-info" style="color: darkred">分類編號</span>
+									<span th:text="${productCategoryDTO.categoryId}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">分類描述</span>
+									<span th:text="${productCategoryDTO.categoryDescription}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+								</div>
+							</div>
+							<div class="item-actions">
+								<button class="action-btn check-btn">查看</button>
+								<button class="action-btn edit-btn">編輯</button>
+								<button class="action-btn delete-btn">刪除</button>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<script th:inline="javascript">
+					var requestParameters = [[${ requestParameters }]] || {};
+					var page = [[${ page }]];
+					var totalPages = page.totalPages;
+					console.log(totalPages);
+					console.log(requestParameters);
+				</script>
+			</section>
+		</div>
+	</div>
+	<script th:src="@{/management-system/common/js/index.js}"></script>
+</body>
+
+</html>

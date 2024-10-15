@@ -1,6 +1,7 @@
 package com.booking.bean.pojo.shopping;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,15 +14,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "shopping_order")
-@Getter
-@Setter
-@NoArgsConstructor
 @DynamicInsert
 public class ShoppingOrder {
 
@@ -35,10 +32,13 @@ public class ShoppingOrder {
 	
 	private Integer orderState;
 	
+	private LocalDateTime createdAt;
+	
+	private LocalDateTime updatedAt;
+	
 	@JsonFormat(pattern = "yyyy-MM-dd",timezone = "UTF+8")
 	@DateTimeFormat(pattern = "yyyy-MM-dd") // 檢查進來的時間，並做格式化
 	private LocalDate createdDate;
-	
 
 	@PrePersist // 當物件要轉換成 Persistent 狀態時，先做這個方法
 	public void onCreate() {

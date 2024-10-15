@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>product-update</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+<style>
+button[disabled] {
+	background-color: #cccccc;
+	/* 禁用時的灰色背景 */
+	cursor: not-allowed;
+	/* 指針顯示為禁止符號 */
+	opacity: 0.6;
+	/* 減少透明度 */
+}
+#categoryId {
+background-color: #cccccc;
+opacity: 0.6;
+	/* 減少透明度 */
+}
+</style>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+
+			<form id="productForm" class="form" action="../update" method="post" enctype="multipart/form-data">
+			
+				<div class="form-group">
+					<label for="categoryId">分類編號</label>
+					<input type="text" id="categoryId" name="categoryId" placeholder="輸入內容"
+						th:value="${productCategoryDTO.categoryId}" readonly>
+				</div>
+				<div class="form-group">
+					<label for="categoryName">分類名稱</label>
+					<input type="text" id="categoryName" name="categoryName" placeholder="輸入內容"
+						th:value="${productCategoryDTO.categoryName}">
+						<span id="categoryNameSP"></span>
+				</div>
+				<div class="form-group">
+					<label for="categoryDescription">分類描述</label>
+					<input type="text" id="categoryDescription" name="categoryDescription" placeholder="輸入內容"
+						th:value="${productCategoryDTO.categoryDescription}">
+				</div>
+				<div class="form-group">
+					<button type="submit" class="submit submit-edit" id="submit"
+						style="background-color: #007bff;">保存</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+			</form>
+		</div>
+	</div>
+		<script th:src="@{/management-system/shopping/js/back.js}"></script>
+		<script th:src="@{/management-system/shopping/js/CheckCategory.js}"></script>
+</body>
+</html>

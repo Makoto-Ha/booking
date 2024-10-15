@@ -1,5 +1,7 @@
 package com.booking.bean.pojo.shopping;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.DynamicInsert;
 
 import jakarta.persistence.Column;
@@ -48,5 +50,11 @@ public class Product {
 
 	@Column(name = "product_state")
 	private Integer productState;
+	
+	@Column(name="created_At")
+	private LocalDateTime createdAt;
+	
+	@Column(name="updated_At")
+	private LocalDateTime updatedAt;
 
 }
