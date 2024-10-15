@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+	<div th:replace="~{/management-system/common/sidebar}"></div>
+	<div class="main-content">
+		<div th:replace="~{/management-system/common/navbar}"></div>
+		
+			<form class="form" action="../select">
+				<div class="form-group">
+		            <label for="product-name">商品名稱</label>
+		            <input type="text" id="product-name" name="productName" placeholder="輸入內容">
+		        </div>
+			
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-categoryId" name="categoryId" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-price" name="productPrice" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-number">商品分類編號</label>
+		            <input type="text" id="product-inventory" name="productInventory" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <label for="product-description">商品描述</label>
+		            <input type="text" id="product-description" name="productDescription" placeholder="輸入內容">
+		        </div>
+		
+		        <div class="form-group">
+		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+		    </form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+		
+	</script>
+</body>
+</html>

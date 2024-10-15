@@ -88,26 +88,25 @@ public class ProductService {
 				.and(ProductSpecification.productInventoryContains(productDTO.getProductInventory()))
 				.and(ProductSpecification.productDescriptionContains(productDTO.getProductDescription()));
 
-
 		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10, productDTO.getSelectedSort(),
 				productDTO.getAttrOrderBy());
 //		Page<ProductDTO> productDTOPage = productRepository.findProductDTOAllBySpc(spec,pageable);
 
-		Page<Product> page = productRepository.findAll(spec,pageable);
+		Page<Product> page = productRepository.findAll(spec, pageable);
 		List<Product> products = page.getContent();
 		List<ProductDTO> productDTOs = new ArrayList<>();
-	
+
 		for (Product product : products) {
 			ProductDTO productDTO2 = new ProductDTO();
 			productDTO2.setCategoryId(product.getCategory().getCategoryId());
 			productDTO2.setCategoryName(product.getCategory().getCategoryName());
-			
+
 			BeanUtils.copyProperties(product, productDTO2);
 			productDTOs.add(productDTO2);
 		}
-		
+
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
-		
+
 		return Result.success(new PageImpl<>(productDTOs, newPageable, page.getTotalElements()));
 	}
 
@@ -161,6 +160,7 @@ public class ProductService {
 	 */
 	@Transactional
 	public Result<String> saveProduct(ProductDTO productDTO, MultipartFile imageFile) {
+		
 		Result<String> upload = UploadImageFile.upload(imageFile);
 		if (upload.isSuccess()) {
 			String originalFilename = imageFile.getOriginalFilename();
@@ -200,22 +200,35 @@ public class ProductService {
 	 */
 	@Transactional
 	public Result<String> updateProduct(ProductDTO productDTO, MultipartFile imageFile) {
-		Result<String> upload = UploadImageFile.upload(imageFile);
 
-		if (upload.isSuccess()) {
-			String originalFilename = imageFile.getOriginalFilename();
-			productDTO.setProductImage("uploads" + "/" + originalFilename);
+		Product updateProduct = productRepository.findById(productDTO.getProductId()).orElse(null);
+
+		// 處理圖片邏輯
+		if (imageFile != null && !imageFile.isEmpty()) {
+			Result<String> upload = UploadImageFile.upload(imageFile);
+			if (upload.isSuccess()) {
+				String originalFilename = imageFile.getOriginalFilename();
+				productDTO.setProductImage("uploads" + "/" + originalFilename);
+			} else {
+				return Result.failure("圖片上傳失敗");
+			}
 		} else {
-			productDTO.setProductImage("uploads/default.jpg");
+			productDTO.setProductImage(updateProduct.getProductImage());
 		}
 
-		Product update = productRepository.findById(productDTO.getProductId()).orElse(null);
-		MyModelMapper.map(productDTO, update);
-		productRepository.save(update);
+		ProductCategory newCategory = productCategoryService.findProductCategoryById(productDTO.getCategoryId())
+				.getData();
+		updateProduct.setCategory(newCategory);
+
+		MyModelMapper.map(productDTO, updateProduct);
+		productRepository.save(updateProduct);
 
 		return Result.success("更新成功");
 	}
 
+	
+	// 圖片 ====================================================================================
+	
 	/**
 	 * ID上傳圖片
 	 * 
@@ -239,9 +252,9 @@ public class ProductService {
 		return Result.success("上傳圖片成功");
 	}
 
-	
 	/**
 	 * Id查圖片 預設圖片
+	 * 
 	 * @param productId
 	 * @return
 	 */
