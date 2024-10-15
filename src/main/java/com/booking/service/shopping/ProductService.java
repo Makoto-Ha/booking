@@ -45,11 +45,8 @@ public class ProductService {
 	 */
 
 	public Result<ProductDTO> findProductDTOById(Integer productId) {
-
 		ProductDTO productDTO = productRepository.findProductDTOById(productId);
-		System.out.println(productDTO);
 		return Result.success(productDTO);
-
 	}
 
 	/**
@@ -90,7 +87,6 @@ public class ProductService {
 
 		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10, productDTO.getSelectedSort(),
 				productDTO.getAttrOrderBy());
-//		Page<ProductDTO> productDTOPage = productRepository.findProductDTOAllBySpc(spec,pageable);
 
 		Page<Product> page = productRepository.findAll(spec, pageable);
 		List<Product> products = page.getContent();
@@ -119,20 +115,14 @@ public class ProductService {
 	public Result<List<ProductDTO>> findProductsByName(String name) {
 
 		Result<List<Product>> result = productRepository.findProductByNameContaining(name);
-
-		List<Product> products = result.getData();
-
-		ProductDTO productDTO = new ProductDTO();
-
 		List<ProductDTO> DTOList = new ArrayList<>();
 
-		for (Product product : products) {
+		for (Product product : result.getData()) {
+			ProductDTO productDTO = new ProductDTO();
 			BeanUtils.copyProperties(product, productDTO);
 			DTOList.add(productDTO);
 		}
-
 		return Result.success(DTOList);
-
 	}
 
 	/**
@@ -236,6 +226,7 @@ public class ProductService {
 	 * @param productId
 	 * @return
 	 */
+	
 	public Result<String> uploadImageByProductId(MultipartFile imageFile, Integer productId) {
 		Product product = productRepository.findById(productId).orElse(null);
 		if (product == null) {
@@ -258,6 +249,7 @@ public class ProductService {
 	 * @param productId
 	 * @return
 	 */
+	
 	public Result<UrlResource> findImageByProductId(Integer productId) {
 		Product product = productRepository.findById(productId).orElse(null);
 		if (product == null) {

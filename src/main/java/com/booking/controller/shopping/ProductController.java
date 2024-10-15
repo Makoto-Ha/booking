@@ -59,8 +59,6 @@ public class ProductController {
 	private String findProducts(@RequestParam Map<String, String> requestParameters, ProductDTO productDTO,
 			Model model) {
 
-		System.out.println("requestParameters = " + requestParameters);
-
 		Result<PageImpl<ProductDTO>> result = productService.findProducts(productDTO);
 
 		if (result.isFailure()) {
@@ -75,37 +73,6 @@ public class ProductController {
 		return "/management-system/shopping/product-list";
 	}
 
-	/**
-	 * 前往查詢頁面 return
-	 */
-	@GetMapping("/select/page")
-	private String sendSelectPage() {
-		return "/management-system/shopping/product-select";
-	}
-
-	/**
-	 * 前往建立頁面 return
-	 */
-	@GetMapping("/create/page")
-	private String sendCreatePage() {
-		return "/management-system/shopping/product-create";
-	}
-
-	/**
-	 * 前往編輯頁面 return
-	 */
-	@GetMapping("/edit/page")
-	private String sendOrderEditPage(@RequestParam Integer productId, HttpSession session, Model model) {
-
-		session.setAttribute("productId", productId);
-
-		Result<ProductDTO> result = productService.findProductDTOById(productId);
-		if (result.isFailure()) {
-			return "";
-		}
-		model.addAttribute("product", result.getData());
-		return "/management-system/shopping/product-edit";
-	}
 
 	@PostMapping("/create")
 	private String saveProduct(ProductDTO productDTO, @RequestParam(required = false) MultipartFile imageFile) {
@@ -161,4 +128,35 @@ public class ProductController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
 	}
 
+	/**
+	 * 前往查詢頁面 return
+	 */
+	@GetMapping("/select/page")
+	private String sendSelectPage() {
+		return "/management-system/shopping/product-select";
+	}
+	
+	/**
+	 * 前往建立頁面 return
+	 */
+	@GetMapping("/create/page")
+	private String sendCreatePage() {
+		return "/management-system/shopping/product-create";
+	}
+	
+	/**
+	 * 前往編輯頁面 return
+	 */
+	@GetMapping("/edit/page")
+	private String sendOrderEditPage(@RequestParam Integer productId, HttpSession session, Model model) {
+		
+		session.setAttribute("productId", productId);
+		
+		Result<ProductDTO> result = productService.findProductDTOById(productId);
+		if (result.isFailure()) {
+			return "";
+		}
+		model.addAttribute("product", result.getData());
+		return "/management-system/shopping/product-edit";
+	}
 }

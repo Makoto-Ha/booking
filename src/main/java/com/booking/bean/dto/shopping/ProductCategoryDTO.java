@@ -18,7 +18,7 @@ public class ProductCategoryDTO {
 
 	// --------------------------------------
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "productId";
+	private String attrOrderBy = "categoryId";
 	private Boolean selectedSort = true;
 
 	public ProductCategoryDTO(Integer categoryId, String categoryName, String categoryDescription,

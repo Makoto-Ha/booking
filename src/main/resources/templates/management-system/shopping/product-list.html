@@ -52,11 +52,10 @@
 					</div>
 				</div>
 
-				<div class="content-area-pages">
-					<button class="content-area-page" data-url="/booking/management/product"
-						style="height: 50px;">商品</button>
-					<button class="content-area-page" data-url="/booking/management/productCategory"
-						style="height: 50px;">商品分類</button>
+					<div class="content-area-pages">
+					<button class="content-area-page" data-url="/booking/management/product" style="height: 50px;">商品</button>
+					<button class="content-area-page" data-url="/booking/management/productCategory" style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/shoppingOrder" style="height: 50px;">訂單</button>
 				</div>
 
 				<!-- -------------------管理頁面內容--------------------- -->
@@ -65,33 +64,43 @@
 						<div class="modal">
 							<h2 id="modal-title">查看</h2>
 							<form id="modal-form">
+							
 								<div class="form-group">
-									<label>訂單編號</label>
+									<label>商品名稱</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
 								<div class="form-group">
-									<label>訂單狀態</label>
+									<label>商品描述</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
 								<div class="form-group">
-									<label>訂單總金額</label>
+									<label>商品售價</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
-
 								<div class="form-group">
-									<label>更新時間</label>
+									<label>商品銷量</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
-
 								<div class="form-group">
-									<label>創建時間</label>
+									<label>商品庫存</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>商品狀態</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>商品分類編號</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>商品分類名稱</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
 								<button type="button" id="modal-cancel-btn">取消</button>
 							</form>
 						</div>
 					</div>
-
 
 					<!-- 刪除確認視窗 -->
 					<div id="delete-overlay" class="overlay">
@@ -102,7 +111,6 @@
 							<button type="button" id="cancelDeleteBtn">取消</button>
 						</div>
 					</div>
-
 
 					<!-- 這裡是管理頁面的動態內容 -->
 					<ul class="item-list">
@@ -137,8 +145,6 @@
 						</li>
 					</ul>
 				</section>
-
-
 				<script th:inline="javascript">
 					var requestParameters = [[${ requestParameters }]] || {};
 					var page = [[${ page }]];
@@ -151,5 +157,4 @@
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
 </body>
-
 </html>

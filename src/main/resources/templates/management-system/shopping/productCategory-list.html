@@ -29,21 +29,12 @@
 
 					<div class="attr-order-by">
 						<select class="attr-select-order-by" id="select-order-by">
-							<option value="productName" th:selected="productName == ${productDTO.attrOrderBy}">商品名稱
-							</option>
-							<option value="category.categoryId"
-								th:selected="category.categoryId == ${productDTO.attrOrderBy}">商品分類</option>
-							<option value="productPrice" th:selected="productPrice == ${productDTO.attrOrderBy}">商品售價
-							</option>
-							<option value="productSales" th:selected="productSales == ${productDTO.attrOrderBy}">商品銷量
-							</option>
-							<option value="productInventory"
-								th:selected="productInventory == ${productDTO.attrOrderBy}">商品庫存</option>
+							<option value="categoryId" th:selected="categoryId == ${productCategoryDTO.attrOrderBy}">商品名稱</option>
 						</select>
 
 						<select class="attr-select-order-by" id="select-sort">
-							<option value="false" th:selected="${productDTO.selectedSort}">升冪</option>
-							<option value="true" th:selected="${productDTO.selectedSort}">降冪</option>
+							<option value="false" th:selected="${productCategoryDTO.selectedSort}">升冪</option>
+							<option value="true" th:selected="${productCategoryDTO.selectedSort}">降冪</option>
 						</select>
 					</div>
 
@@ -53,10 +44,9 @@
 				</div>
 
 				<div class="content-area-pages">
-					<button class="content-area-page" data-url="/booking/management/product"
-						style="height: 50px;">商品</button>
-					<button class="content-area-page" data-url="/booking/management/productCategory"
-						style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/product" style="height: 50px;">商品</button>
+					<button class="content-area-page" data-url="/booking/management/productCategory" style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/shoppingOrder" style="height: 50px;">訂單</button>
 				</div>
 
 				<!-- -------------------管理頁面內容--------------------- -->
@@ -66,32 +56,17 @@
 							<h2 id="modal-title">查看</h2>
 							<form id="modal-form">
 								<div class="form-group">
-									<label>訂單編號</label>
+									<label>分類名稱</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
 								<div class="form-group">
-									<label>訂單狀態</label>
-									<input type="text" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>訂單總金額</label>
-									<input type="text" class="input-show-value" disabled>
-								</div>
-
-								<div class="form-group">
-									<label>更新時間</label>
-									<input type="text" class="input-show-value" disabled>
-								</div>
-
-								<div class="form-group">
-									<label>創建時間</label>
+									<label>分類描述</label>
 									<input type="text" class="input-show-value" disabled>
 								</div>
 								<button type="button" id="modal-cancel-btn">取消</button>
 							</form>
 						</div>
 					</div>
-
 
 					<!-- 刪除確認視窗 -->
 					<div id="delete-overlay" class="overlay">
@@ -103,30 +78,19 @@
 						</div>
 					</div>
 
-
 					<!-- 這裡是管理頁面的動態內容 -->
 					<ul class="item-list">
-						<li th:each="productDTO : ${page.content}" class="list-item"
-							th:data-current-list-id="${productDTO.productId}">
-							<img width="60" height="60" style="border-radius: 50%;"
-								th:src="@{'/management/product/image/' + ${productDTO.productId}}">
+						<li th:each="productCategoryDTO : ${page.content}" class="list-item"
+							th:data-current-list-id="${productCategoryDTO.categoryId}">
 							<div class="item-content">
-								<span class="item-title" th:text="${productDTO.productName}"></span>
+								<span class="item-title" th:text="${productCategoryDTO.categoryName}"></span>
 								<div class="listInfo-group">
-									<span class="item-info" style="color: darkred">商品編號</span>
-									<span th:text="${productDTO.productId}"></span>
+									<span class="item-info" style="color: darkred">分類編號</span>
+									<span th:text="${productCategoryDTO.categoryId}"></span>
 									<span style="color: #e3e3e373"> ┃ </span>
-									<span class="item-info" style="color: darkred">分類名稱</span>
-									<span th:text="${productDTO.categoryName}"></span>
+									<span class="item-info" style="color: darkred">分類描述</span>
+									<span th:text="${productCategoryDTO.categoryDescription}"></span>
 									<span style="color: #e3e3e373"> ┃ </span>
-									<span class="item-info" style="color: darkred">商品售價</span>
-									<span th:text="${productDTO.productPrice}"></span>
-									<span style="color: #e3e3e373"> ┃ </span>
-									<span class="item-info" style="color: darkred">商品庫存</span>
-									<span th:text="${productDTO.productInventory}"></span>
-									<span style="color: #e3e3e373"> ┃ </span>
-									<span class="item-info" style="color: darkred">商品狀態</span>
-									<span th:text="${productDTO.productState}"></span>
 								</div>
 							</div>
 							<div class="item-actions">
@@ -137,8 +101,6 @@
 						</li>
 					</ul>
 				</section>
-
-
 				<script th:inline="javascript">
 					var requestParameters = [[${ requestParameters }]] || {};
 					var page = [[${ page }]];
