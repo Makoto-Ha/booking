@@ -31,6 +31,7 @@ import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.dao.common.AmenityRepository;
+import com.booking.service.common.AmenityService;
 import com.booking.utils.AWSImageUtil;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
@@ -47,6 +48,8 @@ public class RoomtypeService {
 	private RoomService roomService;
 	@Autowired
 	private AmenityRepository amenityRepo;
+	@Autowired
+	private AmenityService amenityService;
 	
 	/**
 	 * 獲取所有房間類型
@@ -166,12 +169,13 @@ public class RoomtypeService {
 		BeanUtils.copyProperties(roomtype, roomtypeDTO);
 		
 		// 查詢所有服務
-		List<Amenity> amenities = amenityRepo.findAll();
+		List<Amenity> allAmenities = amenityRepo.findAll();  // 所有可用服務
+	    List<Amenity> selectedAmenities = roomtype.getAmenities();  // 已選服務
 		
 		// 設置服務給房型
-		roomtypeDTO.setAmenities(amenities);
+		roomtypeDTO.setAmenities(selectedAmenities);
 		
-		return Result.success(roomtypeDTO);
+		return Result.success(roomtypeDTO).setExtraData("allAmenities", allAmenities);
 	}
 	
 	/**
@@ -180,7 +184,7 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> saveRoomtype(MultipartFile imageFile, Roomtype roomtype, List<Amenity> amenities) {
+	public Result<String> saveRoomtype(MultipartFile imageFile, Roomtype roomtype, List<Integer> amenitiesId) {
 		// 上傳圖片
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
 		
@@ -193,8 +197,13 @@ public class RoomtypeService {
 		// 保存房型
 		Roomtype saveRoomtype = roomtypeRepo.save(roomtype);
 		
-		// 設置服務
-		roomtype.setAmenities(amenities);
+		// 設置多個服務
+		Result<String> saveRoomtypeAmenitiesResult = amenityService.saveRoomtypeAmenities(saveRoomtype, amenitiesId);
+		
+		// 獲取服務失敗返回失敗訊息
+		if(saveRoomtypeAmenitiesResult.isFailure()) {
+			return saveRoomtypeAmenitiesResult;
+		}
 		
 		// 保存房間
 		Result<String> roomServiceResult = roomService.saveRoomsByRoomtype(saveRoomtype);
@@ -236,7 +245,7 @@ public class RoomtypeService {
 	 * @return
 	 */
 	@Transactional
-	public Result<String> updateRoomtype(MultipartFile imageFile, Roomtype roomtype) {
+	public Result<String> updateRoomtype(MultipartFile imageFile, Roomtype roomtype, List<Integer> amenitiesId) {
 		Roomtype oldRoomtype = roomtypeRepo.findById(roomtype.getRoomtypeId()).get();
 		
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
@@ -305,6 +314,13 @@ public class RoomtypeService {
 		if(updateRoomtypeResult.isFailure()) {
 			return Result.failure("更新房間類型失敗");
 		}	
+		
+		// 設置多個服務
+		Result<String> saveRoomtypeAmenitiesResult = amenityService.updateRoomtypeAmenities(roomtype, amenitiesId);
+		
+		if(saveRoomtypeAmenitiesResult.isFailure()) {
+			return saveRoomtypeAmenitiesResult;
+		}
 		
 		return Result.success("更新房間類型成功");
 	}
