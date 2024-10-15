@@ -171,6 +171,7 @@ public class ProductCategoryService {
 //	        if (hasOrdersWithProducts(products)) {
 //	            return Result.failure("有訂單包含此分類下的產品，無法刪除");
 //	        }
+		
 		for (ProductDTO productDTO : products) {
 			productRepository.deleteById(productDTO.getProductId());
 		}
@@ -208,5 +209,4 @@ public class ProductCategoryService {
 		
 		return Result.success("更新分類成功");
 	}
-
 }
