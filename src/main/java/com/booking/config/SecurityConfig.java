@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
@@ -32,19 +33,29 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-            		 .loginPage("/auth/login")
-                     .loginProcessingUrl("/auth/login")
-                     .usernameParameter("userAccount")
-                     .passwordParameter("userPassword")
-                     .defaultSuccessUrl("/dashboard", true)
-                     .failureUrl("/auth/register")
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login")
+                .usernameParameter("userAccount")
+                .passwordParameter("userPassword")
+                .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/auth/register")
             )
             .logout(logout -> logout
+                .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/login?logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/auth/login")
                 .defaultSuccessUrl("/dashboard")
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .invalidSessionUrl("/auth/login?invalid")
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+                .expiredUrl("/auth/login?expired")
             );
      
         return http.build();
