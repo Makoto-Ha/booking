@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.DynamicInsert;
 
 import com.booking.bean.pojo.common.Amenity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -75,6 +76,7 @@ public class Roomtype {
         joinColumns = @JoinColumn(name = "roomtype_id"), 
         inverseJoinColumns = @JoinColumn(name = "amenity_id") 
     )
+	@JsonManagedReference
     private List<Amenity> amenities = new ArrayList<>();
 
 	public Roomtype() {
@@ -207,7 +209,7 @@ public class Roomtype {
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
 				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms
-				+ ", bookingOrderItems=" + bookingOrderItems + ", amenities=" + amenities + "]";
+				+ ", bookingOrderItems=" + bookingOrderItems + "]";
 	}
 	
 }

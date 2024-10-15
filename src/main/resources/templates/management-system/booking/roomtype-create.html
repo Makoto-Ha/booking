@@ -97,7 +97,7 @@
 		        	<div class="form-group" th:each="amenity : ${amenities}" style="display: flex; align-items: center; width:25%;">	
 		        		<label class="checkbox-label" style="display: flex; align-items: center; margin-bottom: 0; width: 100%;">
 		        			<span th:text="${amenity.name}"></span>
-		        			<input type="checkbox" style="margin-left: auto;">
+		        			<input type="checkbox" style="margin-left: auto;" name="amenitiesId" th:value="${amenity.amenityId}">
 		        		</label>
 		        	</div>
 			    </div>

@@ -106,8 +106,10 @@ public class RoomtypeController {
 		}
 
 		RoomtypeDTO roomtypeDTO = findRoomtypeById.getData();
+		Object allAmenities = findRoomtypeById.getExtraData("allAmenities");
 
 		model.addAttribute("roomtype", roomtypeDTO);
+		model.addAttribute("allAmenities", allAmenities);
 		return "/management-system/booking/roomtype-edit";
 	}
 
@@ -145,8 +147,8 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype, List<Amenity> amenities) {
-		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype, amenities);
+	private String saveRoomtype(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype, @RequestParam List<Integer> amenitiesId) {
+		Result<String> saveRoomtypeResult = roomtypeService.saveRoomtype(imageFile, roomtype, amenitiesId);
 		if (saveRoomtypeResult.isFailure()) {
 			return "";
 		}
@@ -178,10 +180,14 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@PostMapping("/update")
-	private String updateById(@RequestParam(required = false) MultipartFile imageFile, Roomtype roomtype,
-			@SessionAttribute Integer roomtypeId) {
+	private String updateById(
+			@RequestParam(required = false) MultipartFile imageFile, 
+			Roomtype roomtype,
+			@RequestParam List<Integer> amenitiesId,
+			@SessionAttribute Integer roomtypeId
+	) {
 		roomtype.setRoomtypeId(roomtypeId);
-		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype);
+		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype, amenitiesId);
 
 		if (updateRoomtypeResult.isFailure()) {
 			return "";

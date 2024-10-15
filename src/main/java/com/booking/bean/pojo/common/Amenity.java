@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.booking.bean.pojo.booking.Roomtype;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ public class Amenity {
     private String name;
 
     @ManyToMany(mappedBy = "amenities")
+    @JsonBackReference
     private Set<Roomtype> roomtypes = new HashSet<>();
 
     public Amenity() {}
