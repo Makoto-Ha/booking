@@ -204,9 +204,9 @@
 				
 				<div style="display: flex; flex-wrap: wrap">
 		        	<div class="form-group" th:each="amenity : ${allAmenities}" style="display: flex; align-items: center; width:25%;">	
-		        		<label class="checkbox-label" style="display: flex; align-items: center; margin-bottom: 0; width: 100%;">
+		        		<label class="checkbox-label" style="display: flex; align-items: center; margin-bottom: 0;">
 		        			<span th:text="${amenity.name}"></span>
-		        			<input type="checkbox" style="margin-left: auto;" name="amenitiesId" th:value="${amenity.amenityId}" th:checked="${#lists.contains(roomtype.amenities, amenity)}">
+		        			<input type="checkbox" style="margin-left: 0 5px;" name="amenitiesId" th:value="${amenity.amenityId}" th:checked="${#lists.contains(roomtype.amenities, amenity)}">
 		        		</label>
 		        	</div>
 			    </div>

@@ -21,7 +21,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 根據房間人數進行模糊查詢
+	// 根據房間人數進行查詢
 	public static Specification<Roomtype> capacityContains (Integer roomtypeCapacity) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(roomtypeCapacity == null) {
@@ -32,7 +32,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 根據價錢進行模糊查詢
+	// 根據價錢進行查詢
 	public static Specification<Roomtype> priceContains (Integer roomtypePrice) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(roomtypePrice == null) {
@@ -43,7 +43,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 根據數量進行模糊查詢
+	// 根據數量進行查詢
 	public static Specification<Roomtype> quantityContains (Integer roomtypeQuantity) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(roomtypeQuantity == null) {
@@ -76,7 +76,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 根據城市進行模糊查詢
+	// 根據城市進行查詢
 	public static Specification<Roomtype> cityContains (String roomtypeCity) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(roomtypeCity == null || roomtypeCity.isEmpty()) {
@@ -87,7 +87,29 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+	// 根據城市進行模糊查詢
+	public static Specification<Roomtype> likeCityContains (String roomtypeCity) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(roomtypeCity == null || roomtypeCity.isEmpty()) {
+				return builder.conjunction();
+			}
+			
+			return builder.like(root.get("roomtypeCity"), '%' + roomtypeCity + '%');
+		};
+	}
+	
 	// 根據區域進行模糊查詢
+	public static Specification<Roomtype> likeDistrictContains (String roomtypeDistrict) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(roomtypeDistrict == null || roomtypeDistrict.isEmpty()) {
+				return builder.conjunction();
+			}
+			
+			return builder.like(root.get("roomtypeDistrict"), '%' + roomtypeDistrict + '%');
+		};
+	}
+	
+	// 根據區域進行查詢
 	public static Specification<Roomtype> districtContains (String roomtypeDistrict) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(roomtypeDistrict == null || roomtypeDistrict.isEmpty()) {
@@ -98,7 +120,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 根據價錢區間進行模糊查詢
+	// 根據價錢區間進行查詢
 	public static Specification<Roomtype> moneyContains (Integer minMoney, Integer maxMoney) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(minMoney == 0 && maxMoney == 0) {

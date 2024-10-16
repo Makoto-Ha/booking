@@ -291,33 +291,7 @@
   </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary px-4 py-2">
-      <div class="container-fluid">
-        <a class="navbar-brand py-2" href="#">Instastay</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav w-100">
-            <li class="nav-item mx-2">
-              <a class="nav-link active" aria-current="page" href="#">搜好房</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">活動</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">商城</a>
-            </li>    
-            <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
-              <a class="nav-link" href="#">登入</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>   
-  </header>
+  <div th:replace="~{client/common/header}"></div>
 
   <main>
     <header class="container-fluid theme-instastay d-flex flex-column justify-content-center align-items-center p-0 mb-3" id="banner">
@@ -360,16 +334,16 @@
     <section class="container-fluid p-0 max-width-1200px w-100 mb-3">
       <div class="row m-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <div class="col-md-5 p-0">
-          <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 object-fit-cover room-detail-largeimg-radius" alt="room">
+          <img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 object-fit-cover room-detail-largeimg-radius" alt="room">
         </div>
         <div class="col-md-7 p-0">
           <div class="row m-0 text-center h-100">
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius1" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius2" alt=""></div>        
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius1" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius2" alt=""></div>        
           </div>
         </div>
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -383,31 +357,31 @@
               <div class="modal-body">
                 <div class="row">
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/frontend/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                 </div>
               </div>
@@ -443,7 +417,7 @@
         <div class="col-md-9 p-0">
           <!-- 房間簡介 -->
           <div class="mb-3 p-3 border rounded">
-            <div class="mb-2"><img th:src="@{/frontend/booking/image/homes-logo.svg}" width="25" alt="homes-logo"></div>
+            <div class="mb-2"><img th:src="@{/client/booking/image/homes-logo.svg}" width="25" alt="homes-logo"></div>
             <h3 class="fs-4 fw-bolder mb-0">苓雅區的1臥室 - 33平方公尺/1間專用衛浴 (Kaohsiung Port Inn (高雄港商旅-希臘市景4人房)) 滿分5顆星，住宿獲得3顆星</h3>
             <div><a href="#" class="small link-underline link-underline-opacity-0">苓雅區, 高雄市, 台灣 - 查看地圖&週邊景點</a></div>
             <hr>
@@ -451,7 +425,7 @@
           </div>
           <!-- 重點服務 -->
           <div class="mb-3 p-3 border rounded">
-            <div class="mb-2"><img th:src="@{/frontend/booking/image/service-logo.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
+            <div class="mb-2"><img th:src="@{/client/booking/image/service-logo.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
             <h3 class="fs-4 fw-bolder">重點服務</h3>
             <div class="row m-0">
               <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>電梯</small></div>
@@ -466,7 +440,7 @@
           </div>
           <!-- 空間、房間 -->
           <div class="mb-3 p-3 border rounded">
-            <div class="mb-2"><img th:src="@{/frontend/booking/image/bed-icon.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
+            <div class="mb-2"><img th:src="@{/client/booking/image/bed-icon.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
             <h3 class="fs-4 fw-bolder mb-3">空間與房間</h3>
             <hr>
      
@@ -483,16 +457,16 @@
                 <span class="d-block small">第1間臥室床型 : </span>
                 <small class="font-size-12px">2張雙人床</small>
                 <div class="mt-2">  
-                  <img th:src="@{/frontend/booking/image/bed-icon2.png}" width="20" alt="hairdryer">
+                  <img th:src="@{/client/booking/image/bed-icon2.png}" width="20" alt="hairdryer">
                 </div>
               </div>
               <div class="border p-3 rounded-3 w-240px">
                 <span class="d-block small">衛浴設備 : </span>
                 <small class="font-size-12px">吹風機，浴巾，盥洗用品</small>
                 <div class="mt-2">  
-                  <img th:src="@{/frontend/booking/image/hairdryer-icon.png}" width="20" alt="hairdryer">
-                  <img class="mx-2" th:src="@{/frontend/booking/image/towel-icon.png}" width="20" alt="towel">
-                  <img th:src="@{/frontend/booking/image/toiletries-icon.png}" width="20" alt="toiletries">
+                  <img th:src="@{/client/booking/image/hairdryer-icon.png}" width="20" alt="hairdryer">
+                  <img class="mx-2" th:src="@{/client/booking/image/towel-icon.png}" width="20" alt="towel">
+                  <img th:src="@{/client/booking/image/toiletries-icon.png}" width="20" alt="toiletries">
                 </div>
               </div>
             </div>
@@ -532,27 +506,7 @@
     </section>
   </main>
 
-  <footer>
-    <section class="container-fluid footer-bgc mt-4 py-2">
-      <div class="row text-white-50 pt-5 pb-4">
-        <div class="col text-center">
-          <p class="mb-0 small text-gray">本網站內容由© 2005–2024 ispan 資展國際保留所有權利</p>
-          <p class="mb-0 small text-gray">Instastay.com隸屬台灣線上旅遊相關事業。</p>
-        </div>
-      </div>
-      <div class="row justify-content-center text-white text-center pb-4">
-        <div class="col-md-1 me-2">agoda</div>
-        <div class="col-md-1 mx-2">priceline</div>
-        <div class="col-md-1 mx-2">kayak</div>
-        <div class="col-md-1 mx-2">booking</div>
-        <div class="col-md-1 mx-2">OpenTable</div>
-        <div class="col-md-1 ms-2">instastay</div>
-      </div>
-      <div class="row text-white-50 pt-4">
-        <div class="col text-center small">hk-pc-2i-webnapp-essentials-user-5cdcfc5b9f-hpnkw</div>
-      </div>
-  </section>
-  </footer>
+  <div th:replace="~{client/common/footer}"></div>
   <!-- 遮罩層 -->
   <div id="overlay"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
