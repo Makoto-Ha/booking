@@ -1,5 +1,11 @@
 package com.booking.bean.dto.shopping;
 
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -23,7 +29,15 @@ public class ProductDTO {
 
 	private String categoryName;
 	
-	//--------------------------------------
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDateTime updatedAt;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDateTime createdAt;
+
+	// --------------------------------------
 	private String productImage;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "productId";
@@ -35,7 +49,8 @@ public class ProductDTO {
 
 	public ProductDTO(Integer productId, String productName, String productDescription, Integer productPrice,
 			Integer productSales, Integer productInventory, Integer productState, Integer categoryId,
-			String categoryName,String productImage, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
+			String categoryName, LocalDateTime updatedAt, LocalDateTime createdAt, String productImage,
+			Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -45,8 +60,10 @@ public class ProductDTO {
 		this.productInventory = productInventory;
 		this.productState = productState;
 		this.categoryId = categoryId;
-		this.productImage = productImage;
 		this.categoryName = categoryName;
+		this.updatedAt = updatedAt;
+		this.createdAt = createdAt;
+		this.productImage = productImage;
 		this.pageNumber = pageNumber;
 		this.attrOrderBy = attrOrderBy;
 		this.selectedSort = selectedSort;
@@ -54,7 +71,7 @@ public class ProductDTO {
 
 	public ProductDTO(Integer productId, String productName, String productDescription, Integer productPrice,
 			Integer productSales, Integer productInventory, Integer productState, Integer categoryId,
-			String categoryName,String productImage) {
+			String categoryName, LocalDateTime updatedAt, LocalDateTime createdAt, String productImage) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -65,7 +82,11 @@ public class ProductDTO {
 		this.productState = productState;
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
+		this.updatedAt = updatedAt;
+		this.createdAt = createdAt;
 		this.productImage = productImage;
 	}
+
+	
 
 }

@@ -1,7 +1,11 @@
 package com.booking.bean.pojo.shopping;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.hibernate.annotations.DynamicInsert;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +14,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -28,25 +35,36 @@ public class Product {
 	@JoinColumn(name = "category_id", nullable = false)
 	private ProductCategory category;
 
-	@Column(name = "product_name")
 	private String productName;
 
-	@Column(name = "product_image")
 	private String productImage;
 
-	@Column(name = "product_description")
 	private String productDescription;
 
-	@Column(name = "product_price")
 	private Integer productPrice;
 
-	@Column(name = "product_sales")
 	private Integer productSales;
 
-	@Column(name = "product_inventory")
 	private Integer productInventory;
 
-	@Column(name = "product_state")
 	private Integer productState;
+	
+	private LocalDateTime updatedAt;
+	
+	private LocalDateTime createdAt;
+	
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShopOrderItem> orderItems;
+	
+	@PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+	
 }

@@ -27,22 +27,9 @@ opacity: 0.6;
 			<div th:replace="~{/management-system/common/navbar}"></div>
 
 			<form id="productForm" class="form" action="../update" method="post" enctype="multipart/form-data">
-				<div class="form-group">
-					<label for="categoryId">分類編號</label>
-					<input type="text" id="categoryId" name="categoryId" placeholder="輸入內容"
-						th:value="${productCategoryDTO.categoryId}" readonly>
-				</div>
-				<div class="form-group">
-					<label for="categoryName">分類名稱</label>
-					<input type="text" id="categoryName" name="categoryName" placeholder="輸入內容"
-						th:value="${productCategoryDTO.categoryName}">
-						<span id="categoryNameSP"></span>
-				</div>
-				<div class="form-group">
-					<label for="categoryDescription">分類描述</label>
-					<input type="text" id="categoryDescription" name="categoryDescription" placeholder="輸入內容"
-						th:value="${productCategoryDTO.categoryDescription}">
-				</div>
+
+
+
 				<div class="form-group">
 					<button type="submit" class="submit submit-edit" id="submit"
 						style="background-color: #007bff;">保存</button>
@@ -52,6 +39,5 @@ opacity: 0.6;
 		</div>
 	</div>
 		<script th:src="@{/management-system/shopping/js/back.js}"></script>
-		<script th:src="@{/management-system/shopping/js/CheckCategory.js}"></script>
 </body>
 </html>

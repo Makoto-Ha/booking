@@ -1,5 +1,6 @@
 package com.booking.controller.shopping;
 
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import jakarta.servlet.http.HttpSession;
 public class ProductCategoryController {
 
 	@Autowired
-	private ProductCategoryService productCategoryService;
+	public ProductCategoryService productCategoryService;
 
 	/**
 	 * 首頁
@@ -37,12 +38,15 @@ public class ProductCategoryController {
 	@GetMapping
 	public String index(Model model) {
 
+
 		ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
 		Result<Page<ProductCategoryDTO>> result = productCategoryService.findProductCategoryAll(productCategoryDTO);
+
 		model.addAttribute("productCategoryDTO", productCategoryDTO);
 		model.addAttribute("page", result.getData());
 		return "/management-system/shopping/productCategory-list";
 	}
+
 
 	// -----CRUD------------------------------------------------------------
 
@@ -148,4 +152,5 @@ public class ProductCategoryController {
 		model.addAttribute("productCategoryDTO",result.getData());
 		return "/management-system/shopping/productCategory-edit";
 	}
+
 }
