@@ -16,19 +16,19 @@ import com.booking.utils.Result;
 
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 
-	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p")
+	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName,p.updatedAt,p.createdAt, p.productImage) FROM Product p")
 	Page<ProductDTO> findProductDTOAll(Pageable pageable);
 
-	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p WHERE p.productName LIKE %:productName%")
+	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName,p.updatedAt,p.createdAt, p.productImage) FROM Product p WHERE p.productName LIKE %:productName%")
 	Result<List<Product>> findProductByNameContaining(String productName);
 
-	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p WHERE p.category.categoryId = :categoryId")
+	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName,p.updatedAt,p.createdAt, p.productImage) FROM Product p WHERE p.category.categoryId = :categoryId")
 	List<ProductDTO> findProductByCategoryId(Integer categoryId);
 
-	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName, p.productImage) FROM Product p WHERE p.productId = :productId")
+	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName,p.updatedAt,p.createdAt, p.productImage) FROM Product p WHERE p.productId = :productId")
 	ProductDTO findProductDTOById(Integer productId);
-	
-    @EntityGraph(attributePaths = {"category"})
-    Page<Product> findAll(Specification<Product> spec, Pageable pageable);
+
+	@EntityGraph(attributePaths = { "category" })
+	Page<Product> findAll(Specification<Product> spec, Pageable pageable);
 
 }

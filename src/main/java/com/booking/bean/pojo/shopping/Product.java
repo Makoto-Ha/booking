@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -30,31 +32,33 @@ public class Product {
 	@JoinColumn(name = "category_id", nullable = false)
 	private ProductCategory category;
 
-	@Column(name = "product_name")
 	private String productName;
 
-	@Column(name = "product_image")
 	private String productImage;
 
-	@Column(name = "product_description")
 	private String productDescription;
 
-	@Column(name = "product_price")
 	private Integer productPrice;
 
-	@Column(name = "product_sales")
 	private Integer productSales;
 
-	@Column(name = "product_inventory")
 	private Integer productInventory;
 
-	@Column(name = "product_state")
 	private Integer productState;
 	
-	@Column(name="created_At")
+	private LocalDateTime updatedAt;
+	
 	private LocalDateTime createdAt;
 	
-	@Column(name="updated_At")
-	private LocalDateTime updatedAt;
+	@PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+	
 }
