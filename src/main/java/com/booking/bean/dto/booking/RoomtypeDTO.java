@@ -17,7 +17,7 @@ public class RoomtypeDTO {
 	private String roomtypeDistrict;
 	private LocalDateTime updatedTime;
 	private LocalDateTime createdTime;
-	private String imageFile;
+	private String imagePath;
 	private List<Amenity> amenities;
 	
 	private Integer pageNumber = 1;
@@ -157,12 +157,12 @@ public class RoomtypeDTO {
 		this.maxMoney = maxMoney;
 	}
 
-	public String getImageFile() {
-		return imageFile;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-	public void setImageFile(String imageFile) {
-		this.imageFile = imageFile;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	public List<Amenity> getAmenities() {
@@ -179,7 +179,7 @@ public class RoomtypeDTO {
 				+ roomtypePrice + ", roomtypeCapacity=" + roomtypeCapacity + ", roomtypeQuantity=" + roomtypeQuantity
 				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
 				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", imageFile=" + imageFile + ", amenities=" + amenities
+				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", amenities=" + amenities
 				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
 				+ ", minMoney=" + minMoney + ", maxMoney=" + maxMoney + "]";
 	}
