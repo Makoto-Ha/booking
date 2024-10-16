@@ -201,15 +201,5 @@ public class Roomtype {
 	public void setAmenities(List<Amenity> amenities) {
 		this.amenities = amenities;
 	}
-
-	@Override
-	public String toString() {
-		return "Roomtype [roomtypeId=" + roomtypeId + ", roomtypeName=" + roomtypeName + ", roomtypeCapacity="
-				+ roomtypeCapacity + ", roomtypePrice=" + roomtypePrice + ", roomtypeQuantity=" + roomtypeQuantity
-				+ ", roomtypeDescription=" + roomtypeDescription + ", roomtypeAddress=" + roomtypeAddress
-				+ ", roomtypeCity=" + roomtypeCity + ", roomtypeDistrict=" + roomtypeDistrict + ", updatedTime="
-				+ updatedTime + ", createdTime=" + createdTime + ", imagePath=" + imagePath + ", rooms=" + rooms
-				+ ", bookingOrderItems=" + bookingOrderItems + "]";
-	}
 	
 }

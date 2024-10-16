@@ -153,11 +153,7 @@
           <div class="dropdown w-35 d-flex" id="search">
             <label for="searchRoomtypes" class="bg-white d-flex justify-content-center align-items-center rounded-start ps-3 pe-2"><i class="bi bi-search fs-5"></i></label>
             <input type="text" class="form-control dropdown-toggle rounded-start-0 border-start-0 px-0 py-3" id="searchRoomtypes" data-bs-toggle="dropdown" aria-expanded="false" placeholder="輸入城市、區域、景點或住宿名稱...">
-            <ul class="dropdown-menu drop-menu-search w-search-input" aria-labelledby="searchRoomtypes">
-              <li><a class="dropdown-item" href="#">Option 1</a></li>
-              <li><a class="dropdown-item" href="#">Option 2</a></li>
-              <li><a class="dropdown-item" href="#">Option 3</a></li>
-            </ul>
+            <ul class="dropdown-menu drop-menu-search w-search-input" style="padding: 0" aria-labelledby="searchRoomtypes"></ul>
           </div>
 
           <div id="date" class="w-25 d-flex ms-2 align-items-center">
@@ -213,8 +209,14 @@
 <script>
     // 确保 DOM 完全加载后再初始化 Litepicker
     document.addEventListener('DOMContentLoaded', function() {
-
-      document.getElementById('searchRoomtypes').addEventListener('change', async e => {
+		
+	  let searchDropdown = document.querySelector('[aria-labelledby="searchRoomtypes"]');
+	  let searchRoomtypesInput = document.getElementById('searchRoomtypes');
+	  searchDropdown.addEventListener('click', e => {
+		searchRoomtypesInput.value = e.target.closest('li').dataset.name;
+	  });
+	  
+      searchRoomtypesInput.addEventListener('input', async e => {
         let searchValue = e.target.value;
         let queryString = new URLSearchParams({
             roomtypeName: searchValue,
@@ -223,9 +225,37 @@
           }).toString();
         let response = await fetch(`/booking/search/roomtype/keyword?${queryString}`);
 
-        let data = await response.json();
+        let roomtypes = await response.json();
 
-        console.log(data);
+        console.log(roomtypes);
+		
+		searchDropdown.innerHTML = '';
+		
+		if(roomtypes.length === 0) {
+			let dropdown = `
+				<li class="dropdown-item p-2 rounded" style="display: flex; flex-direction: column; justify-content: center; width: 100%;">
+					查無此資料			
+				</li>
+			`;
+			searchDropdown.innerHTML += dropdown;
+			return;
+		}
+		
+		roomtypes.forEach(roomtype => {
+			let dropdown = `
+				<li class="dropdown-item p-2 rounded" style="display: flex; justify-content: space-between; width: 100%;" data-name="${roomtype.roomtypeName}">
+					<div>
+						${roomtype.roomtypeName}
+						<span style='font-size: 12px; width: 25%; display: block;'>城市: ${roomtype.roomtypeCity}</span>
+						<span style='font-size: 12px; width: 25%; display: block;'	>區域: ${roomtype.roomtypeDistrict}</span>	
+					</div>
+					
+					<div><img style="width: 80px;" src="management/roomtype/image/${roomtype.roomtypeId}"/></div>			
+				</li>
+			`;
+			searchDropdown.innerHTML += dropdown;
+		});
+	
       });
 
       let today = new Date();
