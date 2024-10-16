@@ -288,36 +288,14 @@
     .custom-box-shadow {
       box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
     }
+    
+    .tag-color {
+    	color: #5e6b82;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary px-4 py-2">
-      <div class="container-fluid">
-        <a class="navbar-brand py-2" href="#">Instastay</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav w-100">
-            <li class="nav-item mx-2">
-              <a class="nav-link active" aria-current="page" href="#">搜好房</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">活動</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">商城</a>
-            </li>    
-            <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
-              <a class="nav-link" href="#">登入</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>   
-  </header>
+  <div th:replace="~{client/common/header}"></div>
 
   <main>
     <section class="container-fluid theme-instastay d-flex flex-column justify-content-center align-items-center p-0 mb-3" id="banner">
@@ -341,7 +319,7 @@
           <div class="dropdown people-number flex-grow-2 mx-2">
             <button id="search-people-number" class="w-100 h-50px d-flex justify-content-center align-items-center bg-white border-0 rounded text-start p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-people fs-5 ps-3 pe-2"></i>
-              <span class="">幾位大人</span>
+              <span>幾位大人</span>
               <span class="dropdown-toggle d-block ms-auto me-2"></span>
             </button>
            
@@ -473,16 +451,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -499,16 +477,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -525,16 +503,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -551,16 +529,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -577,16 +555,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -603,16 +581,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -629,16 +607,16 @@
           <div class="card card-bgc w-100 mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img th:src="@{/frontend/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
+                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
               </div>
               <div class="col-md-5">
                 <div class="card-body">
                   <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
                   <p class="card-text mb-0 small">這間住宿提供: </p>
                   <p class="card-text">
-                    <span class="border px-2 small bg-secondary-subtle">早餐</span>
-                    <span class="border px-2 small bg-secondary-subtle">快速入住服務</span>
-                    <span class="border px-2 small bg-secondary-subtle">免費Wi-Fi</span>
+                    <span class="border px-2 small tag-color">早餐</span>
+                    <span class="border px-2 small tag-color">快速入住服務</span>
+                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
                   </p>
                 </div>
               </div>
@@ -657,27 +635,7 @@
     </section>
   </main>
 
-  <footer>
-    <section class="container-fluid footer-bgc mt-4 py-2">
-      <div class="row text-white-50 pt-5 pb-4">
-        <div class="col text-center">
-          <p class="mb-0 small text-gray">本網站內容由© 2005–2024 ispan 資展國際保留所有權利</p>
-          <p class="mb-0 small text-gray">Instastay.com隸屬台灣線上旅遊相關事業。</p>
-        </div>
-      </div>
-      <div class="row justify-content-center text-white text-center pb-4">
-        <div class="col-md-1 me-2">agoda</div>
-        <div class="col-md-1 mx-2">priceline</div>
-        <div class="col-md-1 mx-2">kayak</div>
-        <div class="col-md-1 mx-2">booking</div>
-        <div class="col-md-1 mx-2">OpenTable</div>
-        <div class="col-md-1 ms-2">instastay</div>
-      </div>
-      <div class="row text-white-50 pt-4">
-        <div class="col text-center small">hk-pc-2i-webnapp-essentials-user-5cdcfc5b9f-hpnkw</div>
-      </div>
-  </section>
-  </footer>
+  <div th:replace="~{client/common/footer}"></div>
   <!-- 遮罩層 -->
   <div id="overlay"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

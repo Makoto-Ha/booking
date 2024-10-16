@@ -160,7 +160,6 @@ public class RoomtypeController {
 	 * 
 	 * @param roomtypeId
 	 */
-
 	@PostMapping("/delete")
 	private ResponseEntity<?> deleteById(@RequestParam Integer roomtypeId) {
 		Result<String> deleteRoomtypeResult = roomtypeService.deleteRoomtypeById(roomtypeId);
@@ -234,6 +233,13 @@ public class RoomtypeController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path)).body(resource);
 	}
 	
+	/**
+	 * 上傳圖片到AWS3
+	 * @param imageFile
+	 * @param roomtypeId
+	 * @param imgOriginalKey
+	 * @return
+	 */
 	@PostMapping("/aws3/upload")
 	@ResponseBody
 	private String uploadImageByAWS(@RequestParam MultipartFile imageFile, Integer roomtypeId, @RequestParam(required = false) String imgOriginalKey) {
@@ -241,6 +247,11 @@ public class RoomtypeController {
 		return uploadImageByAWS.getMessage();
 	}
 	
+	/**
+	 * 獲取AWS3的圖片
+	 * @param roomtypeId
+	 * @return
+	 */
 	@GetMapping("/aws3/{roomtypeId}")
 	@ResponseBody
 	private List<String> getImageListByAWS(@PathVariable Integer roomtypeId) {
