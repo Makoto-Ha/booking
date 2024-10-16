@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(path = "/api",  produces = "application/json")
-public class ShoppingJsonHandler {
+public class ShopJsonHandler {
 	
 	@Autowired
 	private ProductService productService;

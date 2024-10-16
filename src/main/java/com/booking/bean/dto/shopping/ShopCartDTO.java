@@ -3,6 +3,6 @@ package com.booking.bean.dto.shopping;
 import lombok.Data;
 
 @Data
-public class ShoppingCartItemDTO {
+public class ShopCartDTO {
 
 }

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.booking.bean.pojo.booking.BookingOrder;
-import com.booking.bean.pojo.shopping.ShoppingOrder;
+import com.booking.bean.pojo.shopping.ShopOrder;
 
 
 public class UserDTO {
@@ -35,7 +35,7 @@ public class UserDTO {
     private LocalDateTime updatedTime;   
     private Byte permission;
    // private List<PackageTourOrder> packageTourOrder;
-    private List<ShoppingOrder> shoppingOrder; 
+    private List<ShopOrder> shoppingOrder; 
     private List<BookingOrder> bookingOrder;   
     //private AdminPermission adminPermission;
 	public Integer getUserId() {
@@ -122,10 +122,10 @@ public class UserDTO {
 //	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
 //		this.packageTourOrder = packageTourOrder;
 //	}
-	public List<ShoppingOrder> getShoppingOrder() {
+	public List<ShopOrder> getShoppingOrder() {
 		return shoppingOrder;
 	}
-	public void setShoppingOrder(List<ShoppingOrder> shoppingOrder) {
+	public void setShoppingOrder(List<ShopOrder> shoppingOrder) {
 		this.shoppingOrder = shoppingOrder;
 	}
 	public List<BookingOrder> getBookingOrder() {

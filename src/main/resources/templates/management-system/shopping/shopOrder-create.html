@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>product-create</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+<style>
+button[disabled] {
+	background-color: #cccccc; /* 禁用時的灰色背景 */
+	cursor: not-allowed; /* 指針顯示為禁止符號 */
+	opacity: 0.6; /* 減少透明度 */
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+		
+			<div th:replace="~{/management-system/common/navbar}"></div>
+		
+			<form id="productForm" class="form" action="../create" method="post">
+		        
+
+
+		        <div class="form-group">
+		            <button type="submit" class="submit" id="submit" disabled>新增</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+		    </form>
+		</div>
+	</div>
+	
+	<script th:src="@{/management-system/shopping/js/back.js}"></script>
+	
+</body>
+</html>

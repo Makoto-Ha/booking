@@ -3,6 +3,7 @@ package com.booking.service.shopping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,11 @@ import com.booking.bean.dto.shopping.ProductCategoryDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.pojo.shopping.Product;
 import com.booking.bean.pojo.shopping.ProductCategory;
+import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.dao.shopping.ProductCategoryRepository;
 import com.booking.dao.shopping.ProductCategorySpecification;
 import com.booking.dao.shopping.ProductRepository;
+import com.booking.dao.shopping.ShopOrderRepository;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -32,24 +35,27 @@ public class ProductCategoryService {
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
 	private ProductRepository productRepository;
+	@Autowired
+	private ShopOrderRepository shopOrderRepository;
 
 	/**
 	 * ID單筆DTO
+	 * 
 	 * @param categoryId
 	 * @return
 	 */
-	
-	public Result<ProductCategoryDTO> findCategoryDTOById(Integer categoryId){
+
+	public Result<ProductCategoryDTO> findCategoryDTOById(Integer categoryId) {
 		ProductCategoryDTO productCategoryDTO = productCategoryRepository.findProductCategoryDTOById(categoryId);
 		return Result.success(productCategoryDTO);
 	}
-	
-	public Result<List<ProductCategoryDTO>> findCategoryDTOByName(String name){
-		
+
+	public Result<List<ProductCategoryDTO>> findCategoryDTOByName(String name) {
+
 		Result<List<ProductCategory>> result = productCategoryRepository.findProductCategoryByNameContaining(name);
-		
+
 		List<ProductCategoryDTO> DTOList = new ArrayList<>();
-		
+
 		for (ProductCategory productCategory : result.getData()) {
 			ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
 			BeanUtils.copyProperties(productCategory, productCategoryDTO);
@@ -57,8 +63,7 @@ public class ProductCategoryService {
 		}
 		return Result.success(DTOList);
 	}
-	
-	
+
 	/**
 	 * 分類ID找分類
 	 * 
@@ -96,14 +101,15 @@ public class ProductCategoryService {
 		return Result.success(page);
 	}
 
-	/** 多重模糊查多筆
-	 *  
+	/**
+	 * 多重模糊查多筆
+	 * 
 	 * @param productCategoryDTO
 	 * @return
 	 */
-	
+
 	public Result<PageImpl<ProductCategoryDTO>> findCategorys(ProductCategoryDTO productCategoryDTO) {
-		
+
 		Specification<ProductCategory> spec = Specification
 				.where(ProductCategorySpecification.categoryNameContains(productCategoryDTO.getCategoryName()))
 				.and(ProductCategorySpecification
@@ -113,7 +119,7 @@ public class ProductCategoryService {
 				productCategoryDTO.getSelectedSort(), productCategoryDTO.getAttrOrderBy());
 
 		Page<ProductCategory> page = productCategoryRepository.findAll(spec, pageable);
-		
+
 		List<ProductCategoryDTO> productCategoryDTOs = new ArrayList<>();
 
 		for (ProductCategory productCategory : page.getContent()) {
@@ -168,10 +174,10 @@ public class ProductCategoryService {
 		List<ProductDTO> products = productRepository.findProductByCategoryId(productCategoryId);
 
 		// 檢查是否有訂單包含這些產品
-//	        if (hasOrdersWithProducts(products)) {
-//	            return Result.failure("有訂單包含此分類下的產品，無法刪除");
-//	        }
-		
+		if (hasOrdersWithProducts(products)) {
+			return Result.failure("有訂單包含此分類下的產品，無法刪除");
+		}
+
 		for (ProductDTO productDTO : products) {
 			productRepository.deleteById(productDTO.getProductId());
 		}
@@ -180,16 +186,14 @@ public class ProductCategoryService {
 
 	}
 
-//    // 檢查是否有訂單包含這些產品
-//    private boolean hasOrdersWithProducts(List<ProductDTO> products) {
-//        List<Integer> productIds = products.stream()
-//                .map(ProductDTO::getProductId)
-//                .collect(Collectors.toList());
-//
-//        // 查詢訂單，檢查是否存在與產品 ID 相關的訂單
-//        List<ShoppingOrder> orders = ShoppingOrderRepository.findOrdersByProductIds(productIds);
-//        return !orders.isEmpty(); // 如果訂單列表不為空，則表示有依賴的訂單
-//    }
+	// 檢查是否有訂單包含這些產品
+	private boolean hasOrdersWithProducts(List<ProductDTO> products) {
+		List<Integer> productIds = products.stream().map(ProductDTO::getProductId).collect(Collectors.toList());
+
+		// 查詢訂單，檢查是否存在與產品 ID 相關的訂單
+		List<ShopOrder> orders = shopOrderRepository.findOrdersByProductIds(productIds);
+		return !orders.isEmpty(); // 如果訂單列表不為空，則表示有依賴的訂單
+	}
 
 	/**
 	 * 更新 目前不處理products
@@ -202,11 +206,11 @@ public class ProductCategoryService {
 	public Result<String> updateProductCategory(ProductCategoryDTO productCategoryDTO) {
 
 		ProductCategory update = productCategoryRepository.findById(productCategoryDTO.getCategoryId()).orElse(null);
-		System.out.println("傳來的categoryDTO "+productCategoryDTO);
-		System.out.println("原本的category "+update);
+		System.out.println("傳來的categoryDTO " + productCategoryDTO);
+		System.out.println("原本的category " + update);
 		MyModelMapper.map(productCategoryDTO, update);
 		productCategoryRepository.save(update);
-		
+
 		return Result.success("更新分類成功");
 	}
 }
