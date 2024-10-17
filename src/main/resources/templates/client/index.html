@@ -141,6 +141,12 @@
       transform: translate(0, 78px) !important;
       /* X軸和Y軸的位移調整 */
     }
+	
+	.dropdown-item:hover {
+		background-color: #5392f9;
+		color: white;
+		border-bottom: 0 !important;
+	}
 
     .footer-bgc {
       background-color: rgb(42, 42, 46);
@@ -162,7 +168,7 @@
               class="bg-white d-flex justify-content-center align-items-center rounded-start ps-3 pe-2"><i
                 class="bi bi-search fs-5"></i></label>
             <input  type="text" class="form-control dropdown-toggle rounded-start-0 border-start-0 px-0 py-3"
-              id="searchRoomtypes" data-bs-toggle="dropdown" aria-expanded="false" placeholder="輸入城市、區域、景點或住宿名稱...">
+              id="searchRoomtypes" data-bs-toggle="dropdown" aria-expanded="false" placeholder="輸入城市、區域、景點或住宿名稱..." autocomplete="off">
             <ul class="dropdown-menu drop-menu-search w-search-input p-0" aria-labelledby="searchRoomtypes"></ul>
           </div>
 

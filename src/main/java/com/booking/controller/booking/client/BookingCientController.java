@@ -70,7 +70,7 @@ public class BookingCientController {
 	@GetMapping("/search/roomtype/keyword")
 	@ResponseBody
 	private List<RoomtypeDTO> roomtypeKeywordSearch(RoomtypeKeywordSearchDTO roomtypeKeywordSearchDTO) {
-		Page<RoomtypeDTO> page = rtClientService.searchRoomtypes(roomtypeKeywordSearchDTO);
+		Page<RoomtypeDTO> page = rtClientService.searchRoomtypesByKeyword(roomtypeKeywordSearchDTO);
 		return page.getContent();
 	}
 	

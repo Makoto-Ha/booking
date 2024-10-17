@@ -27,6 +27,17 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+	// 根據名字進行查詢
+	public static Specification<Roomtype> hasNameContains(String roomtypeName) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(roomtypeName == null || roomtypeName.isEmpty()) {
+				return builder.conjunction();
+			}
+			
+			return builder.equal(root.get("roomtypeName"), roomtypeName);
+		};
+	} 
+	
 	// 根據房間人數進行查詢
 	public static Specification<Roomtype> capacityContains (Integer roomtypeCapacity) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
