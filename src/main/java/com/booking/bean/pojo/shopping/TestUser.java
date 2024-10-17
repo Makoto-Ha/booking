@@ -63,4 +63,23 @@ public class TestUser {
     @OneToMany(mappedBy = "users")
     private List<ShopOrder> shopOrder;
 
+    
+    @Override
+    public String toString() {
+        return "TestUser{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userAccount='" + userAccount + '\'' +
+                ", userMail='" + userMail + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userBirthday=" + userBirthday +
+                ", userAddress='" + userAddress + '\'' +
+                ", creditCard='" + creditCard + '\'' +
+                ", createdTime=" + createdTime +
+                ", updatedTime=" + updatedTime +
+                ", permission=" + permission +
+                ", shopOrderCount=" + (shopOrder != null ? shopOrder.size() : "null") +  // 避免遞歸，僅打印訂單數量
+                '}';
+    }
+
 }

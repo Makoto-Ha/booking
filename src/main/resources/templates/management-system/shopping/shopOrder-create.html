@@ -5,25 +5,61 @@
 <title>product-create</title>
 <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
 <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
-<style>
-button[disabled] {
-	background-color: #cccccc; /* 禁用時的灰色背景 */
-	cursor: not-allowed; /* 指針顯示為禁止符號 */
-	opacity: 0.6; /* 減少透明度 */
-}
-</style>
 </head>
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
-		
 			<div th:replace="~{/management-system/common/navbar}"></div>
-		
 			<form id="productForm" class="form" action="../create" method="post">
+			
+				<div class="form-group">
+		            <label for="user-id">會員編號</label>
+		            <input type="text" id="userId" name="userId" placeholder="輸入內容不可為空">
+		            <span id="userIdSP"></span>
+		    	</div>
+				<div class="form-group">
+		            <label for="orderPrice">訂單金額</label>
+		            <input type="text" id="orderPrice" name="orderPrice">
+		        </div>
+				<div class="form-group">
+		            <label for="orderState">訂單狀態</label>
+                    <select id="orderState" name="orderState">
+                        <option value="" disabled selected>請選擇訂單狀態</option>
+                        <option value="1">待處理</option> <!-- 預設1 待處理 -->
+                        <option value="2">處理中</option>
+                        <option value="3">已發貨</option>
+                        <option value="4">已完成</option>
+                        <option value="5">已取消</option>
+                    </select>
+		        </div>
+				<div class="form-group">
+		            <label for="paymentMethod">支付方式</label>
+		            <select id="paymentMethod" name="paymentMethod">
+                        <option value="" disabled selected>請選擇支付方式</option>
+                        <option value="1">綠界</option>
+                        <option value="2" disabled>LinePay</option>
+                    </select>
+		        </div>
+				<div class="form-group">
+		            <label for="paymentState">支付狀態</label>    
+		             <select id="paymentState" name="paymentState">
+                        <option value="" disabled selected>請選擇支付狀態</option>
+                        <option value="1">未付款</option> <!-- 預設1 未付款 -->
+                        <option value="2">已付款</option>
+                        <option value="3">付款失敗</option>
+                        <option value="4">已退款</option>
+                    </select>
+		        </div>
+				<div class="form-group">
+		            <label for="merchantTradeNo">商家追蹤編號</label>
+		            <input type="text" id="merchantTradeNo" name="merchantTradeNo">
+		        </div>
+				<div class="form-group">
+		            <label for="transactionId">交易流水號</label>
+		            <input type="text" id="transactionId" name="transactionId">
+		        </div>
 		        
-
-
 		        <div class="form-group">
 		            <button type="submit" class="submit" id="submit" disabled>新增</button>
 		            <button type="button" class="cancel">取消</button>
@@ -31,8 +67,7 @@ button[disabled] {
 		    </form>
 		</div>
 	</div>
-	
+	<script th:src="@{/management-system/shopping/js/CheckOrder.js}"></script>
 	<script th:src="@{/management-system/shopping/js/back.js}"></script>
-	
 </body>
 </html>

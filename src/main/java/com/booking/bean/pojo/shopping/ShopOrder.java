@@ -31,7 +31,7 @@ public class ShopOrder {
     @JoinColumn(name = "user_id", nullable = false)  // 外鍵 user_id
     private TestUser users;
 
-    private Double orderPrice;
+    private Integer orderPrice;
 
     private Integer orderState;  // 訂單狀態：1: pending, 2: processing, 3: shipped, 4: completed, 5: cancelled
 
@@ -67,6 +67,24 @@ public class ShopOrder {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "ShopOrder{" +
+                "orderId=" + orderId +
+                ", orderPrice=" + orderPrice +
+                ", orderState=" + orderState +
+                ", paymentMethod=" + paymentMethod +
+                ", paymentState=" + paymentState +
+                ", merchantTradeNo='" + merchantTradeNo + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", paymentCreatedAt=" + paymentCreatedAt +
+                ", paymentUpdatedAt=" + paymentUpdatedAt +
+                ", updatedAt=" + updatedAt +
+                ", createdAt=" + createdAt +
+                ", userId=" + (users != null ? users.getUserId() : "null") +  // 避免遞歸，僅打印 userId
+                '}';
     }
 
     

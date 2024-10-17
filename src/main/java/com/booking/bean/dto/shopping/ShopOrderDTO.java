@@ -52,15 +52,15 @@ public class ShopOrderDTO {
 	private Boolean selectedSort = true;
 	// --------------------------------------
 
+	
 	public ShopOrderDTO() {
 		super();
 	}
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState,
-			Integer paymentMethod, Integer paymentState, String merchantTradeNo, String transactionId,
-			LocalDateTime paymentCreatedAt, LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt,
-			LocalDateTime createdAt, List<ShopOrderItemDTO> orderItems, Integer pageNumber, String attrOrderBy,
-			Boolean selectedSort) {
+	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
+			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
+			List<ShopOrderItemDTO> orderItems, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.orderId = orderId;
 		this.userId = userId;
@@ -80,10 +80,10 @@ public class ShopOrderDTO {
 		this.selectedSort = selectedSort;
 	}
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState,
-			Integer paymentMethod, Integer paymentState, String merchantTradeNo, String transactionId,
-			LocalDateTime paymentCreatedAt, LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt,
-			LocalDateTime createdAt, List<ShopOrderItemDTO> orderItems) {
+	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
+			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
+			List<ShopOrderItemDTO> orderItems) {
 		super();
 		this.orderId = orderId;
 		this.userId = userId;
@@ -98,6 +98,43 @@ public class ShopOrderDTO {
 		this.updatedAt = updatedAt;
 		this.createdAt = createdAt;
 		this.orderItems = orderItems;
+	}
+
+	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
+			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt) {
+		super();
+		this.orderId = orderId;
+		this.userId = userId;
+		this.orderPrice = orderPrice;
+		this.orderState = orderState;
+		this.paymentMethod = paymentMethod;
+		this.paymentState = paymentState;
+		this.merchantTradeNo = merchantTradeNo;
+		this.transactionId = transactionId;
+		this.paymentCreatedAt = paymentCreatedAt;
+		this.paymentUpdatedAt = paymentUpdatedAt;
+		this.updatedAt = updatedAt;
+		this.createdAt = createdAt;
+	}
+
+	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
+			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
+			ShopOrderItemDTO orderItemDTO) {
+		this.orderId = orderId;
+		this.userId = userId;
+		this.orderPrice = orderPrice;
+		this.orderState = orderState;
+		this.paymentMethod = paymentMethod;
+		this.paymentState = paymentState;
+		this.merchantTradeNo = merchantTradeNo;
+		this.transactionId = transactionId;
+		this.paymentCreatedAt = paymentCreatedAt;
+		this.paymentUpdatedAt = paymentUpdatedAt;
+		this.updatedAt = updatedAt;
+		this.createdAt = createdAt;
+		this.orderItems = List.of(orderItemDTO); // 初始化包含單一ShopOrderItemDTO的集合
 	}
 
 }

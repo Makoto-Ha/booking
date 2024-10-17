@@ -50,6 +50,12 @@ public class ProductCategoryService {
 		return Result.success(productCategoryDTO);
 	}
 
+	/**
+	 * 名稱模糊查多筆
+	 * @param name
+	 * @return
+	 */
+	
 	public Result<List<ProductCategoryDTO>> findCategoryDTOByName(String name) {
 
 		Result<List<ProductCategory>> result = productCategoryRepository.findProductCategoryByNameContaining(name);
@@ -186,7 +192,13 @@ public class ProductCategoryService {
 
 	}
 
-	// 檢查是否有訂單包含這些產品
+	
+	/**
+	 * 檢查訂單是否包含商品
+	 * @param products
+	 * @return
+	 */
+	
 	private boolean hasOrdersWithProducts(List<ProductDTO> products) {
 		List<Integer> productIds = products.stream().map(ProductDTO::getProductId).collect(Collectors.toList());
 
@@ -195,6 +207,7 @@ public class ProductCategoryService {
 		return !orders.isEmpty(); // 如果訂單列表不為空，則表示有依賴的訂單
 	}
 
+	
 	/**
 	 * 更新 目前不處理products
 	 * 
