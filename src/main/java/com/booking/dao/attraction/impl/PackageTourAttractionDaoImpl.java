@@ -37,9 +37,9 @@ public class PackageTourAttractionDaoImpl implements PackageTourAttractionDao{
      */
     @Override
     public DaoResult<List<Attraction>> getAttractionsByPackageTourId(Integer tourId) {
-        String jpql = "SELECT attraction FROM PackageTourAttraction  WHERE packageTour.tourId = :tourId";
+        String jpql = "SELECT attraction FROM PackageTourAttraction  WHERE packageTour.packageTourId = :pacakgeTourId";
         TypedQuery<Attraction> query = entityManager.createQuery(jpql, Attraction.class);
-        query.setParameter("tourId", tourId);
+        query.setParameter("pacakgeTourId", tourId);
         List<Attraction> attractions = query.getResultList();
         return DaoResult.create(attractions).setSuccess(attractions != null);
     }
@@ -53,9 +53,9 @@ public class PackageTourAttractionDaoImpl implements PackageTourAttractionDao{
      */
     @Override
     public DaoResult<?> removeAttractionFromPackage(Integer tourId, Integer attractionId) {
-        String jpql = "DELETE FROM PackageTourAttraction WHERE packageTour.tourId = :tourId AND attraction.attractionId = :attractionId";
+        String jpql = "DELETE FROM PackageTourAttraction WHERE packageTour.pacakgeTourId = :pacakgeTourId AND attraction.attractionId = :attractionId";
         Query query = entityManager.createQuery(jpql);
-        query.setParameter("tourId", tourId);
+        query.setParameter("pacakgeTourId", tourId);
         query.setParameter("attractionId", attractionId);
         int rowsDeleted = query.executeUpdate();
         return DaoResult.create().setAffectedRows(rowsDeleted).setSuccess(rowsDeleted > 0);

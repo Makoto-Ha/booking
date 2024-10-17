@@ -22,29 +22,22 @@ public class PackageTourSpecification {
 		};
 	}
 	
-	
-	//根據價錢進行模糊查詢
-	public static Specification<PackageTour> priceContains (Integer packageTourPrice) {
-		return (Root<PackageTour> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(packageTourPrice == null) {
-				return builder.conjunction();
-			}
-			
-			return builder.equal(root.get("packageTourPrice"), packageTourPrice);
-		};
-	}
-	
-	
-	// 根據描述進行模糊查詢
-	public static Specification<PackageTour> descriptionContains (String packageTourDescription) {
-		return (Root<PackageTour> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(packageTourDescription == null || packageTourDescription.isEmpty()) {
-				return builder.conjunction();
-			}
-			
-			return builder.like(root.get("packageTourDescription"), "%" + packageTourDescription + "%");
-		};
-	}
+	    
+    //根據價錢進行模糊搜索
+    public static Specification<PackageTour> priceBetween(Integer minPrice, Integer maxPrice) {
+        return (root, query, cb) -> {
+            if (minPrice == null && maxPrice == null) {
+                return null;
+            }
+            if (minPrice == null) {
+                return cb.lessThanOrEqualTo(root.get("packageTourPrice"), maxPrice);
+            }
+            if (maxPrice == null) {
+                return cb.greaterThanOrEqualTo(root.get("packageTourPrice"), minPrice);
+            }
+            return cb.between(root.get("packageTourPrice"), minPrice, maxPrice);
+        };
+    }
 	
 	
 }
