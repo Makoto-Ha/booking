@@ -55,16 +55,6 @@ public class AttractionSpecification {
 		};
 	}
 	
-	// 根據景點描述進行模糊查詢
-	public static Specification<Attraction> descriptionContains (String attractionDescription) {
-		return (Root<Attraction> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(attractionDescription == null || attractionDescription.isEmpty()) {
-				return builder.conjunction();
-			}
-			
-			return builder.like(root.get("attractionDescription"), "%" + attractionDescription + "%");
-		};
-	}
 	
 
 	}

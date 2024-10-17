@@ -6,9 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-
-
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
@@ -65,6 +63,20 @@ public class AttractionService {
 		return Result.success(new PageImpl<>(attractionDTOs, newPageable, page.getTotalElements()));
 	}
 	
+	/**
+	 * 返回所有景點
+	 * @return
+	 */
+	public List<AttractionDTO> findAllAttractions() {
+	    List<Attraction> allAttractions = attractionRepo.findAll();
+	    return allAttractions.stream()
+	            .map(attraction -> {
+	                AttractionDTO attractionDTO = new AttractionDTO();
+	                BeanUtils.copyProperties(attraction, attractionDTO);
+	                return attractionDTO;
+	            })
+	            .collect(Collectors.toList());
+	}
 	
 	/**
 	 * 依模糊查詢得到多筆景點
@@ -77,8 +89,7 @@ public class AttractionService {
 				.where(AttractionSpecification.nameContains(attractionDTO.getAttractionName()))
 				.and(AttractionSpecification.cityContains(attractionDTO.getAttractionCity()))
 				.and(AttractionSpecification.addressContains(attractionDTO.getAddress()))
-				.and(AttractionSpecification.typeContains(attractionDTO.getAttractionType()))
-				.and(AttractionSpecification.descriptionContains(attractionDTO.getAttractionDescription()));
+				.and(AttractionSpecification.typeContains(attractionDTO.getAttractionType()));
 
 		Pageable pageable = MyPageRequest.of(attractionDTO.getPageNumber(), 10, attractionDTO.getSelectedSort(),
 				attractionDTO.getAttrOrderBy());
@@ -142,6 +153,7 @@ public class AttractionService {
 		BeanUtils.copyProperties(attraction, attractionDTO);
 		return Result.success(attractionDTO);
 	}
+	
 
 	/**
 	 * 新增景點
@@ -232,7 +244,7 @@ public class AttractionService {
 		Attraction attraction = attractionRepo.findById(attractionId).orElse(null);
 		
 		if(attraction == null) {
-			return Result.failure("根據ID查找不到房間類型");
+			return Result.failure("根據ID查找不到景點");
 		}
 		
 		String imagesFile = attraction.getImagesFile();

@@ -4,6 +4,7 @@ package com.booking.service.attraction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourAttraction;
 import com.booking.bean.pojo.attraction.PackageTourAttractionId;
+import com.booking.dao.attraction.AttractionRepository;
 import com.booking.dao.attraction.PackageTourAttractionRepository;
 import com.booking.dao.attraction.PackageTourRepository;
 import com.booking.dao.attraction.PackageTourSpecification;
-import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
@@ -36,7 +38,8 @@ public class PackageTourService {
 	@Autowired
 	private PackageTourAttractionRepository packageTourAttractionRepo;
 
-	
+	@Autowired
+	private AttractionRepository attractionRepo;
 	
 	/**
 	 * 獲取所有套裝行稱
@@ -48,18 +51,23 @@ public class PackageTourService {
 		Integer pageNumber = packageTourDTO.getPageNumber();
 		String attrOrderBy = packageTourDTO.getAttrOrderBy();
 		Boolean selectedSort = packageTourDTO.getSelectedSort();
-		System.out.println(attrOrderBy);
 		
 		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
 		Page<PackageTour> page = packageTourRepo.findAll(pageable);
 		List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
 		List<PackageTour> packageTours = page.getContent();
 
-		for (PackageTour packageTour : packageTours) {
-			PackageTourDTO responsepackageTourDTO = new PackageTourDTO();
-			BeanUtils.copyProperties(packageTour, responsepackageTourDTO);
-			packageTourDTOs.add(responsepackageTourDTO);
-		}
+	    for (PackageTour packageTour : packageTours) {
+	        PackageTourDTO responsePackageTourDTO = new PackageTourDTO();
+	        BeanUtils.copyProperties(packageTour, responsePackageTourDTO);
+	        
+	        List<String> attractionNames = packageTour.getPackageTourAttractions().stream()
+	            .map(packageToutaAttraction -> packageToutaAttraction.getAttraction().getAttractionName())
+	            .collect(Collectors.toList());
+	        responsePackageTourDTO.setAttractionNames(attractionNames);
+	        
+	        packageTourDTOs.add(responsePackageTourDTO);
+	    }
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 		return Result.success(new PageImpl<>(packageTourDTOs, newPageable, page.getTotalElements()));
@@ -72,29 +80,31 @@ public class PackageTourService {
 	 * @return
 	 */
 	public Result<PageImpl<PackageTourDTO>> findPackagesTours(PackageTourDTO packageTourDTO) {
-		Specification<PackageTour> spec = Specification
-				.where(PackageTourSpecification.nameContains(packageTourDTO.getPackageTourName()))
-				.and(PackageTourSpecification.priceContains(packageTourDTO.getPackageTourPrice()))
-				.and(PackageTourSpecification.descriptionContains(packageTourDTO.getPackageTourDescription()));
-				
-		Pageable pageable = MyPageRequest.of(packageTourDTO.getPageNumber(), 10, packageTourDTO.getSelectedSort(),
-				packageTourDTO.getAttrOrderBy());
-		
-		Page<PackageTour> page = packageTourRepo.findAll(spec, pageable);
-		List<PackageTour> packageTours = page.getContent();
-		List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
+	    Specification<PackageTour> spec = Specification
+	            .where(PackageTourSpecification.nameContains(packageTourDTO.getPackageTourName()))
+	            .and(PackageTourSpecification.priceBetween(packageTourDTO.getMinPrice(), packageTourDTO.getMaxPrice()));
 
-		for (PackageTour packageTour : packageTours) {
-			PackageTourDTO responsepackageTourDTO = new PackageTourDTO();
+	    Pageable pageable = MyPageRequest.of(packageTourDTO.getPageNumber(), 10, packageTourDTO.getSelectedSort(),
+	            packageTourDTO.getAttrOrderBy());
 
-			BeanUtils.copyProperties(packageTour, responsepackageTourDTO);
-			packageTourDTOs.add(responsepackageTourDTO);
+	    Page<PackageTour> page = packageTourRepo.findAll(spec, pageable);
+	    List<PackageTour> packageTours = page.getContent();
+	    List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
 
-		}
+	    for (PackageTour packageTour : packageTours) {
+	        PackageTourDTO responsePackageTourDTO = new PackageTourDTO();
 
-		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
-		return Result.success(new PageImpl<>(packageTourDTOs, newPageable, page.getTotalElements()));
-		
+	        BeanUtils.copyProperties(packageTour, responsePackageTourDTO);
+	        List<String> attractionNames = packageTour.getPackageTourAttractions().stream()
+	                .map(packageTourAttraction -> packageTourAttraction.getAttraction().getAttractionName())
+	                .collect(Collectors.toList());
+	        responsePackageTourDTO.setAttractionNames(attractionNames);
+
+	        packageTourDTOs.add(responsePackageTourDTO);
+	    }
+
+	    PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+	    return Result.success(new PageImpl<>(packageTourDTOs, newPageable, page.getTotalElements()));
 	}
 	
 	
@@ -105,28 +115,49 @@ public class PackageTourService {
 	 * @param packageTourId
 	 * @return
 	 */
-    public Result<PackageTourDTO> findPackageTourById(Integer packageTourId) {
-        Optional<PackageTour> optional = packageTourRepo.findById(packageTourId);
-        if (optional.isEmpty()) {
-            return Result.failure("無法找到該套裝行程");
-        }
+	public Result<PackageTourDTO> findPackageTourById(Integer packageTourId) {
+	    Optional<PackageTour> optional = packageTourRepo.findById(packageTourId);
+	    if (optional.isPresent()) {
+	        PackageTour packageTour = optional.get();
+	        PackageTourDTO packageTourDTO = new PackageTourDTO();
+	        BeanUtils.copyProperties(packageTour, packageTourDTO);
 
-        // 取得行程相關的景點
-        DaoResult<List<Attraction>> attractionResult = packageTourAttractionRepo.getAttractionsByPackageTourId(packageTourId);
+	        List<AttractionDTO> selectedAttractions = packageTour.getPackageTourAttractions().stream()
+	            .map(packageTourAttraction -> {
+	                AttractionDTO attractionDTO = new AttractionDTO();
+	                BeanUtils.copyProperties(packageTourAttraction.getAttraction(), attractionDTO);
+	                return attractionDTO;
+	            })
+	            .collect(Collectors.toList());
+	        packageTourDTO.setSelectedAttractions(selectedAttractions);
 
-        if (attractionResult.isFailure()) {
-            return Result.failure("無法取得景點");
-        }
-
-        List<Attraction> attractions = attractionResult.getData();
-
-        PackageTourDTO packageTourDTO = new PackageTourDTO();
-        BeanUtils.copyProperties(optional.get(), packageTourDTO);
-        packageTourDTO.setAttractions(attractions);  
-
-        return Result.success(packageTourDTO);
-    }
+	        return Result.success(packageTourDTO);
+	    }
+	    return Result.failure("找不到指定的套裝行程");
+	}
     
+	/**
+	 * 根據套裝行程ID找到景點名稱
+	 * @param packageTourId
+	 * @return
+	 */
+    public Result<PackageTourDTO> getPackageTourDetailsWithAttractionNames(Integer packageTourId) {
+        Optional<PackageTour> optional = packageTourRepo.findById(packageTourId);
+        if (optional.isPresent()) {
+            PackageTour packageTour = optional.get();
+            PackageTourDTO packageTourDTO = new PackageTourDTO();
+            BeanUtils.copyProperties(packageTour, packageTourDTO);
+
+            List<String> attractionNames = packageTour.getPackageTourAttractions().stream()
+                .map(packageTourAttraction -> packageTourAttraction.getAttraction().getAttractionName())
+                .collect(Collectors.toList());
+            packageTourDTO.setAttractionNames(attractionNames);
+
+            return Result.success(packageTourDTO);
+        }
+        return Result.failure("找不到指定的套裝行程");
+        
+    }
 	
 	
 	
@@ -138,20 +169,19 @@ public class PackageTourService {
 	 */
 	@Transactional
 	public Result<PackageTour> savePackageTour(PackageTourDTO packageTourDTO, List<Integer> attractionIds) {
-		PackageTour packageTour = new PackageTour();
-		BeanUtils.copyProperties(packageTourDTO, packageTour);
+	    PackageTour packageTour = new PackageTour();
+	    BeanUtils.copyProperties(packageTourDTO, packageTour);
+	    
+	    packageTourRepo.save(packageTour);
 
-		
-		packageTourRepo.save(packageTour);
+	    for (Integer attractionId : attractionIds) {
+	        Attraction attraction = attractionRepo.findById(attractionId).orElseThrow(() -> new RuntimeException("景點不存在"));
+	        PackageTourAttractionId id = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
+	        PackageTourAttraction packagetourAttraction = new PackageTourAttraction(id, attraction, packageTour);
+	        packageTourAttractionRepo.save(packagetourAttraction);
+	    }
 
-		// 新增景點至套裝行程
-		for (Integer attractionId : attractionIds) {
-			PackageTourAttractionId id = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
-			PackageTourAttraction packagetourAttraction = new PackageTourAttraction(id, new Attraction(),packageTour);
-			packageTourAttractionRepo.save(packagetourAttraction);
-		}
-
-		return Result.success("新增套裝行程成功");
+	    return Result.success("新增套裝行程成功");
 	}
 
 	
@@ -191,11 +221,33 @@ public class PackageTourService {
      * @return
      */
     @Transactional
-    public Result<String> updateAttractionInPackage(PackageTourAttractionId packageTourAttractionId, Attraction updatedAttraction) {
-        PackageTourAttraction packagetourAttraction = new PackageTourAttraction(packageTourAttractionId, updatedAttraction, new PackageTour());
-        packageTourAttractionRepo.save(packagetourAttraction); 
-        return Result.success("更新景點成功");
-    }
-    
+    public Result<String> updatePackageTour(PackageTourDTO packageTourDTO) {
+        if (packageTourDTO.getPackageTourId() == null) {
+            return Result.failure("套裝行程ID不能為空");
+        }
 
+        Optional<PackageTour> optionalPackageTour = packageTourRepo.findById(packageTourDTO.getPackageTourId());
+        if (optionalPackageTour.isEmpty()) {
+            return Result.failure("找不到指定的套裝行程");
+        }
+
+        PackageTour packageTour = optionalPackageTour.get();
+        BeanUtils.copyProperties(packageTourDTO, packageTour, "packageTourAttractions");
+
+        // 更新景點關聯
+        packageTour.getPackageTourAttractions().clear();
+        if (packageTourDTO.getSelectedAttractionIds() != null) {
+            for (Integer attractionId : packageTourDTO.getSelectedAttractionIds()) {
+                Attraction attraction = attractionRepo.findById(attractionId)
+                    .orElseThrow(() -> new RuntimeException("景點不存在: " + attractionId));
+                PackageTourAttraction pta = new PackageTourAttraction();
+                pta.setPackageTour(packageTour);
+                pta.setAttraction(attraction);
+                packageTour.getPackageTourAttractions().add(pta);
+            }
+        }
+
+        packageTourRepo.save(packageTour);
+        return Result.success("套裝行程更新成功");
+    }
 }
