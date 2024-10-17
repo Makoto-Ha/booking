@@ -1,5 +1,6 @@
 package com.booking.dao.shopping;
 
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import com.booking.bean.pojo.shopping.ProductCategory;
 import com.booking.utils.Result;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
+
 
 	// 不含products
 	@Query("SELECT new com.booking.bean.dto.shopping.ProductCategoryDTO(pc.categoryId, pc.categoryName,pc.categoryDescription) FROM ProductCategory pc")

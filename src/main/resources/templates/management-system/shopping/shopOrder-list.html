@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>booking-order-list</title>
+	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+</head>
+
+<body>
+
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<section class="main-list">
+
+				<!-- ----------------搜索欄----------------- -->
+				<div class="search-bar">
+					<input type="text" id="search-input" placeholder="搜索...">
+					<button id="search-btn">進階搜索</button>
+
+					<div class="pagination">
+						<button id="prev-page">上一頁</button>
+						<input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
+						/ <span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
+						<button id="next-page">下一頁</button>
+					</div>
+
+					<div class="attr-order-by">
+						<select class="attr-select-order-by" id="select-order-by">
+							<option value="orderId" th:selected="orderId == ${shopOrderDTO.attrOrderBy}">訂單編號</option>
+						</select>
+
+						<select class="attr-select-order-by" id="select-sort">
+							<option value="false" th:selected="${shopOrderDTO.selectedSort}">升冪</option>
+							<option value="true" th:selected="${shopOrderDTO.selectedSort}">降冪</option>
+						</select>
+					</div>
+
+					<div class="search-bar-addbtn">
+						<button class="action-btn add-btn">新增</button>
+					</div>
+				</div>
+
+				<div class="content-area-pages">
+					<button class="content-area-page" data-url="/booking/management/product" style=" height: 50px;">商品</button>
+					<button class="content-area-page" data-url="/booking/management/productCategory" style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/shopOrder" style="height: 50px;">訂單</button>
+				</div>
+
+				<!-- -------------------管理頁面內容--------------------- -->
+				<section id="content" class="content-area">
+					<div id="modal-overlay" class="overlay">
+						<div class="modal">
+							<h2 id="modal-title">查看</h2>
+							<form id="modal-form">
+								<div class="form-group">
+									<label>會員編號</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>訂單金額</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>訂單狀態</label>
+									<input type="text" id="orderState" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>支付方式</label>
+									<input type="text" id="paymentMethod" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>支付狀態</label>
+									<input type="text" id="paymentState" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>商家追蹤編號</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<div class="form-group">
+									<label>交易流水號</label>
+									<input type="text" class="input-show-value" disabled>
+								</div>
+								<button type="button" id="modal-cancel-btn">取消</button>
+							</form>
+						</div>
+					</div>
+
+					<!-- 刪除確認視窗 -->
+					<div id="delete-overlay" class="overlay">
+						<div class="delete-modal">
+							<h2>確認刪除</h2>
+							<p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
+							<button id="confirmDeleteBtn">確認</button>
+							<button type="button" id="cancelDeleteBtn">取消</button>
+						</div>
+					</div>
+
+					<!-- 這裡是管理頁面的動態內容 -->
+					<ul class="item-list">
+						<li th:each="shopOrderDTO : ${page.content}" class="list-item"
+							th:data-current-list-id="${shopOrderDTO.orderId}">
+							<div class="item-content">
+								<span class="item-title" th:text="${shopOrderDTO.orderId}"></span>
+								<div class="listInfo-group">
+									<span class="item-info" style="color: darkred">訂單價格</span>
+									<span th:text="${shopOrderDTO.orderPrice}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">會員編號</span>
+									<span th:text="${shopOrderDTO.userId}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">訂單支付方式</span>
+									<!-- 使用 th:switch 處理支付方式 -->
+									<span th:switch="${shopOrderDTO.paymentMethod}">
+										<span th:case="1">綠界</span>
+										<span th:case="2">LinePay</span>
+										<span th:case="null">未選擇</span>
+									</span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">訂單狀態</span>
+									<!-- 使用 th:switch 處理訂單狀態 -->
+									<span th:switch="${shopOrderDTO.orderState}">
+										<span th:case="1">待處理</span>
+										<span th:case="2">處理中</span>
+										<span th:case="3">已發貨</span>
+										<span th:case="4">已完成</span>
+										<span th:case="5">已取消</span>
+										<span th:default></span>
+									</span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">支付狀態</span>
+									<!-- 使用 th:switch 處理支付狀態 -->
+									<span th:switch="${shopOrderDTO.paymentState}">
+										<span th:case="1">未付款</span>
+										<span th:case="2">已付款</span>
+										<span th:case="3">付款失敗</span>
+										<span th:case="4">已退款</span>
+										<span th:default></span>
+									</span>
+									<span style="color: #e3e3e373"> ┃ </span>
+								</div>
+							</div>
+							<div class="item-actions">
+								<button class="action-btn check-btn">查看</button>
+								<button class="action-btn edit-btn">編輯</button>
+								<button class="action-btn delete-btn">刪除</button>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<script th:inline="javascript">
+					var requestParameters = [[${ requestParameters }]] || {};
+					var page = [[${ page }]];
+					var totalPages = page.totalPages;
+					console.log(totalPages);
+					console.log(requestParameters);
+				</script>
+			</section>
+		</div>
+	</div>
+<script th:src="@{/management-system/common/js/index.js}"></script>
+	<script>
+	document.querySelectorAll('.check-btn').forEach(button => {
+  button.addEventListener('click', function(e) {
+    e.stopPropagation();
+    let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
+    let hrefSplit = location.pathname.split('/');
+    let lastHref = hrefSplit[3];
+
+    // 映射表
+    const orderStateMap = {
+      1: '待處理',
+      2: '處理中',
+      3: '已發貨',
+      4: '已完成',
+      5: '已取消'
+    };
+    const paymentMethodMap = {
+      1: '綠界',
+      2: 'LinePay'
+    };
+    const paymentStateMap = {
+      1: '未付款',
+      2: '已付款',
+      3: '付款失敗',
+      4: '已退款'
+    };
+
+    // 顯示模態窗口
+    document.getElementById('modal-overlay').style.display = 'flex';
+
+    fetch(`/booking/api/${lastHref}/${currentListId}`)
+      .then(res => res.json())
+      .then(data => {
+        // 轉換數字狀態為中文
+        data.orderState = orderStateMap[data.orderState] || '未知狀態';
+        data.paymentMethod = paymentMethodMap[data.paymentMethod] || '未知方式';
+        data.paymentState = paymentStateMap[data.paymentState] || '未知狀態';
+
+        // 構建 values 陣列，按照輸入框的順序
+        let values = [
+          data.userId,
+          data.orderPrice,
+          data.merchantTradeNo,
+          data.transactionId
+        ];
+
+        // 填充輸入框
+        const inputs = document.querySelectorAll('.form-group > .input-show-value');
+        inputs.forEach((input, i) => input.value = values[i]);
+
+        // 使用 setTimeout 延遲覆蓋狀態欄位的值
+        setTimeout(() => {
+          document.getElementById('orderState').value = data.orderState;
+          document.getElementById('paymentMethod').value = data.paymentMethod;
+          document.getElementById('paymentState').value = data.paymentState;
+        }, 50); // 延遲 50 毫秒，可根據需要調整
+      })
+      .catch(error => {
+        console.error("Error fetching data: ", error);
+        alert('獲取資料時發生錯誤，請稍後再試。');
+        // 隱藏模態窗口
+        document.getElementById('modal-overlay').style.display = 'none';
+      });
+  });
+});
+
+	</script>
+	
+</body>
+</html>
