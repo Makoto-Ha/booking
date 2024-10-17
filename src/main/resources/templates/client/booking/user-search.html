@@ -292,6 +292,7 @@
     .tag-color {
     	color: #5e6b82;
     }
+
   </style>
 </head>
 <body>
@@ -369,10 +370,10 @@
         <div class="border-bottom-gray-2 opacity-50 w-100 mb-1"></div>
 
         <div class="py-3">
-          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件1</span>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">淡水區</label>
+          <span class="fw-bolder small d-block mb-3">服務設施篩選</span>
+          <div th:each="amenity : ${amenities}" class="form-check">
+            <input class="form-check-input" type="checkbox" value="" th:id="${'amenityCheckBox' + amenity.amenityId}">
+            <label class="form-check-label small" th:for="${'amenityCheckBox' + amenity.amenityId}" th:text="${amenity.name}"></label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -447,189 +448,32 @@
           </div>  
         </div>
         <div class="card-list">
-          
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        
+          	<div th:each="roomtype : ${roomtypes}" class="card card-bgc w-100 mb-3">
+			    <div class="row g-0 h-100">
+			        <div class="col-md-4 h-100">
+			            <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
+			        </div>
+			        <div class="col-md-5">
+			            <div class="card-body h-100">
+			                <h5 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h5>
+			                <p class="card-text mb-0 small">這間住宿提供: </p>
+			
+			                <div class="d-flex flex-wrap">
+			                    <span th:each="amenity : ${roomtype.amenities}" class="border px-2 small tag-color d-block me-2 mb-2 text-nowrap" th:text="${amenity.name}"></span>
+			                </div>
+			            </div>
+			        </div>
+			        <div class="col-md-3 border-start">
+			            <div class="card-body d-flex flex-column h-100 text-end">
+			                <h5 class="card-title text-success">9.1超棒</h5>
+			                <p class="card-text">空中商務旅館價錢</p>
+			                <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ [[${roomtype.roomtypePrice}]]</p>
+			            </div>
+			        </div>
+			    </div>
+			</div>
 
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-bgc w-100 mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="@{/client/booking/image/room1.webp}" class="img-fluid rounded-start h-100 object-fit-cover" alt="...">
-              </div>
-              <div class="col-md-5">
-                <div class="card-body">
-                  <h5 class="card-title fw-bolder">空中城都會商務旅館</h5>
-                  <p class="card-text mb-0 small">這間住宿提供: </p>
-                  <p class="card-text">
-                    <span class="border px-2 small tag-color">早餐</span>
-                    <span class="border px-2 small tag-color">快速入住服務</span>
-                    <span class="border px-2 small tag-color">免費Wi-Fi</span>
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-3 border-start">
-                <div class="card-body d-flex flex-column h-100 text-end">
-                  <h5 class="card-title text-success">9.1超棒</h5>
-                  <p class="card-text">空中商務旅館價錢</p>
-                  <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ 3,947</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
         </div>
       </div>
     </section>
@@ -705,6 +549,9 @@
       	location.href = '/booking/room/detail';
       });
     });
+    
 </script>
+    
+
 </body>
 </html>
