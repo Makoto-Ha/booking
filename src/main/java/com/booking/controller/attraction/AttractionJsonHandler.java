@@ -31,9 +31,6 @@ public class AttractionJsonHandler {
 	
 	
 	
-	
-	
-	
 	/**
 	 * 返回景點類型
 	 * @param Id
@@ -72,14 +69,14 @@ public class AttractionJsonHandler {
 	 * @param id
 	 * @return
 	 */
-	@GetMapping("/packagetour/{id}")
+	@GetMapping("/packageTour/{id}")
 	private String findPackageTourById(@PathVariable Integer id) {
-		Result<PackageTourDTO> attractionServiceResult = packageTourService.findPackageTourById(id);
-		if (attractionServiceResult.isFailure()) {
+		Result<PackageTourDTO> packageTourServiceResult = packageTourService.findPackageTourById(id);
+		if (packageTourServiceResult.isFailure()) {
 			return null;
 		}
 		
-		return JsonUtil.toJson(attractionServiceResult.getData());
+		return JsonUtil.toJson(packageTourServiceResult.getData());
 	}
 	
 

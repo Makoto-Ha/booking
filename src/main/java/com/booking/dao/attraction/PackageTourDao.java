@@ -20,7 +20,7 @@ public interface PackageTourDao {
 	 * @param tourId
 	 * @return
 	 */
-	DaoResult<PackageTour> getPackageTourById(Integer tourId);
+	DaoResult<PackageTour> getPackageTourById(Integer packageTourId);
 	
 	
 	/**
@@ -36,7 +36,7 @@ public interface PackageTourDao {
 	 * @param tourId
 	 * @return
 	 */
-	DaoResult<?> removePackageTourById(Integer tourId);
+	DaoResult<?> removePackageTourById(Integer packageTourId);
 	
 	
 	/**

@@ -59,13 +59,6 @@ public class PackageTourAttraction{
 
 	public void setPackageTour(PackageTour packageTour) {
 		this.packageTour = packageTour;
-	}
-
-	@Override
-	public String toString() {
-		return "PackagetourAttraction [id=" + id + ", attraction=" + attraction + ", packageTour=" + packageTour + "]";
-	}
-
-	
+	}	
 	
 }

@@ -26,7 +26,7 @@ public class PackageTourDaoImpl implements PackageTourDao{
 	 */
 	@Override
 	public DaoResult<List<PackageTour>> getPackageTourAll(Integer page) {
-		String jpql = "FROM PackageTour";
+		String jpql = "SELECT p FROM PackageTour p LEFT JOIN FETCH p.packageTourAttractions";
 		TypedQuery<PackageTour> query = entityManager.createQuery(jpql, PackageTour.class);
 
 		query.setFirstResult((page - 1) * 10);

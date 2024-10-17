@@ -18,7 +18,7 @@
 		        </div>
 		
 		        <div class="form-group">
-		            <label for="view">縣市</label>
+		            <label for="select-city">縣市</label>
 		            <select id="select-city" name="attractionCity"></select>
 		        </div>
 		
@@ -34,13 +34,13 @@
 		
 		        <div class="form-group">
     				<label for="type">景點類型</label>
-    				<select id="type" name="attractionType">
-    					<option value="">選擇類型</option>
-        				<option value="自然景點">自然景點</option>
-        				<option value="歷史文化">歷史文化</option>
-        				<option value="親子共遊">親子共遊</option>
-        				<option value="休閒娛樂">休閒娛樂</option>
-    				</select>
+    					<select id="type" name="attractionType">
+        					<option value="">選擇類型</option>
+        					<option value="自然景點" th:selected="${attraction.attractionType == '自然景點'}">自然景點</option>
+        					<option value="歷史文化" th:selected="${attraction.attractionType == '歷史文化'}">歷史文化</option>
+        					<option value="親子共遊" th:selected="${attraction.attractionType == '親子共遊'}">親子共遊</option>
+        					<option value="休閒娛樂" th:selected="${attraction.attractionType == '休閒娛樂'}">休閒娛樂</option>
+    					</select>
 				</div>
 		
 		        <div class="form-group">
