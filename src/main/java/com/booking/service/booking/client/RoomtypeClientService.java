@@ -26,20 +26,17 @@ public class RoomtypeClientService {
 	 * @return
 	 */
 	public Page<RoomtypeDTO> searchRoomtypes(RoomtypeKeywordSearchDTO roomtpyeSearchDTO) {
-		System.out.println(roomtpyeSearchDTO);
 		
 		// 根據房型、城市、區域的名稱來做or條件合併
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtpyeSearchDTO.getRoomtypeName()))
 													.or(RoomtypeSpecification.likeCityContains(roomtpyeSearchDTO.getRoomtypeCity()))
 													.or(RoomtypeSpecification.likeDistrictContains(roomtpyeSearchDTO.getRoomtypeDistrict()));
-		
+													
 		// 獲取pageable
 		PageRequest pageable = PageRequest.of(roomtpyeSearchDTO.getPageNumber() - 1, 10);
 		
 		// 獲取page
 		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
-		
-		System.out.println(page.getContent());
 		
 		// Page<Roomtype>轉換類型成Page<RoomtypeDTO>
 		return MyPageRequest.convert(page, roomtype -> {
@@ -48,4 +45,24 @@ public class RoomtypeClientService {
 			return responseDTO;
 		});
 	}
+	
+public Page<RoomtypeDTO> userSearchRoomtypes(RoomtypeKeywordSearchDTO roomtypeSearchDTO) {
+		// 根據房型、城市、區域的名稱來做or條件合併
+		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()))
+										.and(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))								
+										.and(RoomtypeSpecification.cityContains(roomtypeSearchDTO.getRoomtypeCity()));
+		// 獲取pageable
+		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);
+		
+		// 獲取page	
+		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
+		
+		// Page<Roomtype>轉換類型成Page<RoomtypeDTO>
+		return MyPageRequest.convert(page, roomtype -> {
+			RoomtypeDTO responseDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, responseDTO);
+			return responseDTO;
+		});
+	}
+
 }

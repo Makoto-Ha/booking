@@ -8,6 +8,7 @@ public class RoomtypeKeywordSearchDTO {
 	private String roomtypeName;
 	private String roomtypeDistrict;
 	private String roomtypeCity;
+	private String peopleNumber;
 	private Integer pageNumber = 1;
 
 	public RoomtypeKeywordSearchDTO() {
@@ -60,12 +61,20 @@ public class RoomtypeKeywordSearchDTO {
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
+	
+	public String getPeopleNumber() {
+		return peopleNumber;
+	}
+
+	public void setPeopleNumber(String peopleNumber) {
+		this.peopleNumber = peopleNumber;
+	}
 
 	@Override
 	public String toString() {
 		return "RoomtypeKeywordSearchDTO [searchStartDate=" + searchStartDate + ", searchEndDate=" + searchEndDate
 				+ ", roomtypeName=" + roomtypeName + ", roomtypeDistrict=" + roomtypeDistrict + ", roomtypeCity="
-				+ roomtypeCity + ", pageNumber=" + pageNumber + "]";
+				+ roomtypeCity + ", peopleNumber=" + peopleNumber + ", pageNumber=" + pageNumber + "]";
 	}
 	
 }

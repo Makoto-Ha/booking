@@ -1,12 +1,18 @@
 package com.booking.dao.booking;
 
+import java.time.LocalDate;
+
 import org.springframework.data.jpa.domain.Specification;
 
+import com.booking.bean.pojo.booking.BookingOrderItem;
+import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 public class RoomtypeSpecification {
 	
@@ -142,5 +148,48 @@ public class RoomtypeSpecification {
 			return builder.conjunction();
 		};
 	}
+	
+	// 根據日期區間做查詢
+	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
+        return (root, query, criteriaBuilder) -> {
+            // Fetch amenities to ensure they are loaded with RoomType
+            root.fetch("amenities", JoinType.LEFT);
+
+            // Subquery to represent Room entity
+            Subquery<Room> roomSubquery = query.subquery(Room.class);
+            Root<Room> roomRoot = roomSubquery.from(Room.class);
+            roomSubquery.select(roomRoot)
+                    .where(
+                            criteriaBuilder.equal(roomRoot.get("roomtype"), root),
+                            criteriaBuilder.not(
+                                    criteriaBuilder.exists(
+                                            createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
+                                    )
+                            )
+                    );
+
+            return criteriaBuilder.exists(roomSubquery);
+        };
+    }
+
+    private static Subquery<BookingOrderItem> createBookingOrderItemSubquery(Subquery<Room> roomSubquery,
+                                                                             Root<Room> roomRoot,
+                                                                             LocalDate checkInDate,
+                                                                             LocalDate checkOutDate,
+                                                                             CriteriaBuilder criteriaBuilder) {
+        // Subquery to represent BookingOrderItem entity
+        Subquery<BookingOrderItem> bookingOrderItemSubquery = roomSubquery.subquery(BookingOrderItem.class);
+        Root<BookingOrderItem> bookingOrderItemRoot = bookingOrderItemSubquery.from(BookingOrderItem.class);
+        bookingOrderItemSubquery.select(bookingOrderItemRoot)
+                .where(
+                        criteriaBuilder.equal(bookingOrderItemRoot.get("room"), roomRoot),
+                        criteriaBuilder.and(
+                                criteriaBuilder.lessThanOrEqualTo(bookingOrderItemRoot.get("checkOutDate"), checkInDate),
+                                criteriaBuilder.greaterThanOrEqualTo(bookingOrderItemRoot.get("checkInDate"), checkOutDate)
+                        )
+                );
+
+        return bookingOrderItemSubquery;
+    }
 	
 }
