@@ -101,12 +101,5 @@ public class BookingOrderItemDTO {
 	public void setPrice(Long price) {
 		this.price = price;
 	}
-
-	@Override
-	public String toString() {
-		return "BookingOrderItemDTO [roomId=" + roomId + ", roomtypeId=" + roomtypeId + ", price=" + price
-				+ ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate + ", checkInTime=" + checkInTime
-				+ ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime + "]";
-	}
 	
 }

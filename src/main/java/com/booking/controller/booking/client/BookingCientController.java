@@ -5,18 +5,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
+import com.booking.bean.pojo.common.Amenity;
 import com.booking.service.booking.client.RoomtypeClientService;
+import com.booking.service.common.AmenityService;
 
 @Controller
-public class UserController {
+public class BookingCientController {
 	
 	@Autowired
 	private RoomtypeClientService rtClientService;
+	@Autowired
+	private AmenityService amenityService;
 	
 	/**
 	 * 轉去首頁
@@ -25,6 +30,25 @@ public class UserController {
 	@GetMapping("/")
 	private String sendIndex() {
 		return "client/index";
+	}
+	
+	/**
+	 * 轉去房型List
+	 * @return
+	 */
+	@GetMapping("/user/search/roomtype")
+	private String sendRoomtypeDetails(RoomtypeKeywordSearchDTO roomtypeKeywordSearchDTO, Model model) {
+		System.out.println(roomtypeKeywordSearchDTO);
+		
+		Page<RoomtypeDTO> page = rtClientService.userSearchRoomtypes(roomtypeKeywordSearchDTO);
+		List<Amenity> amenities = amenityService.findAll();
+		List<RoomtypeDTO> roomtypes = page.getContent();
+		
+		System.out.println(roomtypes);
+		
+		model.addAttribute("roomtypes", roomtypes);
+		model.addAttribute("amenities", amenities);
+		return "client/booking/user-search";
 	}
 	
 	/**

@@ -61,7 +61,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 開啟檢查視窗
-	document.querySelectorAll('.check-btn').forEach(button => {
+	document.querySelectorAll('.check-btn')?.forEach(button => {
 		button.addEventListener('click', function(e) {
 			e.stopPropagation();
 			let currentListId = e.target.parentElement.parentElement.dataset.currentListId;

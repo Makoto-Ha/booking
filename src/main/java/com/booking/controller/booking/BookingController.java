@@ -122,12 +122,10 @@ public class BookingController {
 	@PostMapping("/create")
 	@ResponseBody
 	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO) {
-		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
-		if(saveBookingOrderResult.isFailure()) {
-			return saveBookingOrderResult.getMessage();
-		}
 		
-		return "redirect:/management/booking";
+		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
+	
+		return saveBookingOrderResult.getMessage();
 	}
 	
 	/**

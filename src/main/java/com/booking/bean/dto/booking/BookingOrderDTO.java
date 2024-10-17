@@ -126,12 +126,5 @@ public class BookingOrderDTO {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
-	@Override
-	public String toString() {
-		return "BookingOrderDTO [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus="
-				+ orderStatus + ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime + ", createdTime="
-				+ createdTime + ", roomtypeId=" + roomtypeId + ", pageNumber="
-				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
-	}
 
 }

@@ -3,7 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <title>packagetour-list</title>
-<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet"
+	th:href="@{/management-system/common/css/index.css}">
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            width: 500px;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .modal input[type="text"],
+        .modal textarea {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .modal button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 	<div class="container">
@@ -11,144 +72,132 @@
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
 			<section class="main-list">
-			  <!-- 搜索欄 -->
-			  <div class="search-bar">
-			      <input type="text" id="search-input" placeholder="搜索...">
-			      <button id="search-btn">進階搜索</button>
-			      <div class="pagination">
-				      <button id="prev-page">上一頁</button>
-				      <input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1">
-				       / <span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
-				      <button id="next-page">下一頁</button>
-				   </div>
-				   <div class="attr-order-by">
-				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="packageTourPrice" th:selected="packageTourPrice == ${packageTourDTO.attrOrderBy}">價錢</option>
-				      </select>
-				     <select class="attr-select-order-by" id="select-sort">
-			    			<option value="false" th:selected="${packageTourDTO.selectedSort}">升冪</option>
-				      		<option value="true" th:selected="${packageTourDTO.selectedSort}">降冪</option>
-				      </select>
-				   </div>
-			      <div class="search-bar-addbtn">
-			          <button class="action-btn add-btn">新增</button>
-			      </div>
-			  </div> 
-				  
-			  <div class="content-area-pages">
-			  		<button class="content-area-page" data-url="/booking/management/attraction">景點</button>
-			  		<button class="content-area-page" data-url="/booking/management/packageTour" style="height: 50px;">套裝行程</button>    
-			  </div>  
-			  <!-- 管理頁面內容 -->
-			  <section id="content" class="content-area">       
-			     <div id="modal-overlay" class="overlay">
-			         <div class="modal">
-			             <h2 id="modal-title">查看</h2>
-			             <form id="modal-form">      
-					         <div class="form-group">
-			                     <label>行程名稱</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-			                     <label>價錢</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
-			                 <div class="form-group">
-                				 <label>景點名稱</label>
-                				 <input type="text" id="modal-attractionNames" class="input-show-value" disabled>
-            				 </div>
-			                 <div class="form-group">
-			                     <label>行程介紹</label>
-			                     <input type="text" class="input-show-value" disabled>
-			                 </div>
+				<!-- 搜索欄 -->
+				<div class="search-bar">
+					<input type="text" id="search-input" placeholder="搜索...">
+					<button id="search-btn">進階搜索</button>
+					<div class="pagination">
+						<button id="prev-page">上一頁</button>
+						<input type="number" id="page-input"
+							th:value="${page.pageable.pageNumber}+1" min="1"> / <span
+							id="total-pages"
+							th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
+						<button id="next-page">下一頁</button>
+					</div>
+					<div class="attr-order-by">
+						<select class="attr-select-order-by" id="select-order-by">
+							<option value="packageTourPrice"
+								th:selected="packageTourPrice == ${packageTourDTO.attrOrderBy}">價錢</option>
+						</select> <select class="attr-select-order-by" id="select-sort">
+							<option value="false"
+								th:selected="${packageTourDTO.selectedSort}">升冪</option>
+							<option value="true" th:selected="${packageTourDTO.selectedSort}">降冪</option>
+						</select>
+					</div>
+					<div class="search-bar-addbtn">
+						<button class="action-btn add-btn">新增</button>
+					</div>
+				</div>
 
-			                 <button type="button" id="modal-cancel-btn">取消</button>
-			             </form>
-			         </div>
-			     </div>
-			     <!-- 刪除確認視窗 -->
-			     <div id="delete-overlay" class="overlay">
-			         <div class="delete-modal">
-			             <h2>確認刪除</h2>
-			             <p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
-			             <button id="confirmDeleteBtn">確認</button>
-			             <button type="button" id="cancelDeleteBtn">取消</button>
-			         </div>
-			     </div>
-			     <!-- 這裡是管理頁面的動態內容 -->
-			        <ul class="item-list">
-			            <li th:each="packageTourDTO : ${page.content}" class="list-item" th:data-current-list-id="${packageTourDTO.packageTourId}">
-			                <div class="item-content">     	
-			                	<span class="item-title" th:text="${packageTourDTO.packageTourName}"></span>
-			                	<div class="listInfo-group">
-		                			<span class="item-info" style="color: darkred">價錢</span>
-		                			<span th:text="${packageTourDTO.packageTourPrice}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>
-		                			<span class="item-info" style="color: darkred">行程介紹</span>
-		                			<span th:text="${packageTourDTO.packageTourDescription}"></span>
-		                			<span style="color: #e3e3e373"> ┃ </span>             		   			
-			                	</div>
-			                </div>
-			                <div class="item-actions">
-			                	<button class="action-btn check-btn">查看</button>
-			                    <button class="action-btn edit-btn">編輯</button>
-			                    <button class="action-btn delete-btn">刪除</button>
-			                </div> 
-			            </li>
-			        </ul>
-			    </section>
-			    <script th:inline="javascript">  	
+				<div class="content-area-pages">
+					<button class="content-area-page" data-url="/booking/management/attraction">景點</button>
+					<button class="content-area-page" data-url="/booking/management/packageTour" style="height: 50px;">套裝行程</button>
+				</div>
+				<!-- 管理頁面內容 -->
+				<section id="content" class="content-area">
+					<div id="modal-overlay" class="overlay">
+						<div class="modal">
+							<h2 id="modal-title">查看</h2>
+							        <form id="modal-form">
+            							<div class="form-group">
+                							<label>行程名稱</label>
+                							<input type="text" id="modal-packageTourName" class="input-show-value" disabled>
+            							</div>
+            							<div class="form-group">
+                							<label>價錢</label>
+                							<input type="text" id="modal-packageTourPrice" class="input-show-value" disabled>
+            							</div>
+            							<div class="form-group">
+                							<label>景點名稱</label>
+                							<input type="text" id="modal-attractionNames" class="input-show-value" disabled>
+            							</div>
+            							<div class="form-group">
+                							<label>行程介紹</label>
+                							<textarea id="modal-packageTourDescription" class="input-show-value" disabled rows="8" style="width: 100%;"></textarea>
+            							</div>
+            							<button type="button" id="modal-cancel-btn">關閉</button>
+        							</form>
+						</div>
+					</div>
+					<!-- 刪除確認視窗 -->
+					<div id="delete-overlay" class="overlay">
+						<div class="delete-modal">
+							<h2>確認刪除</h2>
+							<p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
+							<button id="confirmDeleteBtn">確認</button>
+							<button type="button" id="cancelDeleteBtn">取消</button>
+						</div>
+					</div>
+					<!-- 這裡是管理頁面的動態內容 -->
+					<ul class="item-list">
+						<li th:each="packageTourDTO : ${page.content}" class="list-item"
+							th:data-current-list-id="${packageTourDTO.packageTourId}">
+							<div class="item-content">
+								<span class="item-title"
+									th:text="${packageTourDTO.packageTourName}"></span>
+								<div class="listInfo-group">
+									<span class="item-info" style="color: darkred">價錢</span> 
+									<span th:text="${packageTourDTO.packageTourPrice}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">景點</span> 
+									<span th:text="${#strings.listJoin(packageTourDTO.attractionNames, ', ')}"></span>
+									<span style="color: #e3e3e373"> ┃ </span> 
+									<span class="item-info" style="color: darkred">行程介紹</span> 
+									<span th:text="${packageTourDTO.packageTourDescription}"></span> 
+									<span style="color: #e3e3e373"> ┃ </span>
+								</div>
+							</div>
+							<div class="item-actions">
+								<button class="action-btn" th:onclick="'viewPackageTourDetails(' + ${packageTourDTO.packageTourId} + ')'">查看</button>
+								<button class="action-btn edit-btn">編輯</button>
+								<button class="action-btn delete-btn">刪除</button>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<script th:inline="javascript">  	
 					var requestParameters = [[${requestParameters}]] || {};
 					var page = [[${page}]];
 			    	var totalPages = page.totalPages;
 			    	console.log(totalPages);
 					console.log(requestParameters);
 			    </script>
-			  </section>
-		  </div>
+			</section>
+		</div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
-	<script th:inline="javascript">
-    function viewPackageTourDetails(button) {
-        var packageTourId = button.getAttribute("data-id");
-        
-        // 發送 AJAX 請求以獲取詳細信息
-        $.ajax({
-            url: '/management/packageTour/details',
-            method: 'GET',
-            data: { packageTourId: packageTourId },
-            success: function(response) {
-                if (response.success) {
-                    var packageTour = response.data;
-                    
-                    // 填充模態框中的數據
-                    $('#modal-packageTourName').val(packageTour.packageTourName);
-                    $('#modal-packageTourPrice').val(packageTour.packageTourPrice);
-                    $('#modal-packageTourDescription').val(packageTour.packageTourDescription);
-                    
-                    // 將所有景點名稱顯示在一行，用逗號分隔
-                    var attractionNames = packageTour.attractions.map(function(attraction) {
-                        return attraction.attractionName;
-                    }).join(', ');
-                    $('#modal-attractionNames').val(attractionNames);
+<script>
+function viewPackageTourDetails(packageTourId) {
+    fetch(`/booking/management/packageTour/details?packageTourId=${packageTourId}`)
+        .then(response => response.json())
+        .then(details => {
+            document.getElementById('modal-packageTourName').value = details.packageTourName;
+            document.getElementById('modal-packageTourPrice').value = details.packageTourPrice;
+            document.getElementById('modal-packageTourDescription').value = details.packageTourDescription;
+            
+            // 顯示景點名稱
+            let attractionNames = details.attractionNames
+                ? details.attractionNames.join(', ')
+                : '無景點資訊';
+            document.getElementById('modal-attractionNames').value = attractionNames;
 
-                    // 顯示模態框
-                    $('#modal-overlay').show();
-                } else {
-                    alert('無法加載行程詳細資料');
-                }
-            },
-            error: function(err) {
-                console.error('Error loading package tour details', err);
-                alert('發生錯誤，無法加載行程詳細資料');
-            }
+            document.getElementById('modal-overlay').style.display = 'block';
+        })
+        .catch(error => {
+        	console.log('touch')
+            console.error('Error:', error);
         });
-    }
-
-    // 關閉模態框
-    $('#modal-cancel-btn').click(function() {
-        $('#modal-overlay').hide();
-    });
+}
 </script>
 </body>
 </html>
