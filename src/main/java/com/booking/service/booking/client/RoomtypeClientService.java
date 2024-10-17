@@ -25,7 +25,7 @@ public class RoomtypeClientService {
 	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Page<RoomtypeDTO> searchRoomtypes(RoomtypeKeywordSearchDTO roomtpyeSearchDTO) {
+	public Page<RoomtypeDTO> searchRoomtypesByKeyword(RoomtypeKeywordSearchDTO roomtpyeSearchDTO) {
 		
 		// 根據房型、城市、區域的名稱來做or條件合併
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtpyeSearchDTO.getRoomtypeName()))
@@ -49,8 +49,8 @@ public class RoomtypeClientService {
 public Page<RoomtypeDTO> userSearchRoomtypes(RoomtypeKeywordSearchDTO roomtypeSearchDTO) {
 		// 根據房型、城市、區域的名稱來做or條件合併
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()))
-										.and(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))								
-										.and(RoomtypeSpecification.cityContains(roomtypeSearchDTO.getRoomtypeCity()));
+										.and(RoomtypeSpecification.hasNameContains(roomtypeSearchDTO.getRoomtypeName()));								
+//										.or(RoomtypeSpecification.cityContains(roomtypeSearchDTO.getRoomtypeCity()));
 		// 獲取pageable
 		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);
 		
