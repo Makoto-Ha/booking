@@ -23,7 +23,7 @@ public class PackageTourAttraction{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("packageTourId")
-	@JoinColumn(name = "packagetour_id")
+	@JoinColumn(name = "package_tour_id")
 	private PackageTour packageTour;
 
 	public PackageTourAttraction() {

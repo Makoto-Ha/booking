@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>packagetourorder-create</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+            <form class="form" action="../create" method="post">
+                <div class="form-group">
+                    <label for="userId">使用者編號</label>
+                    <input type="number" id="userId" name="userId" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageTourId">套裝行程</label>
+                    <select id="packageTourId" name="packageTourId" required>
+                        <option value="">選擇套裝行程</option>
+                        <option th:each="tour : ${packageTours}" 
+                                th:value="${tour.packageTourId}" 
+                                th:text="${tour.packageTourName + ' - $' + tour.packageTourPrice}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="orderPrice">訂單價格</label>
+                    <input type="number" id="orderPrice" name="orderPrice" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="travelDate">旅遊日期</label>
+                    <input type="date" id="travelDate" name="travelDate" required>
+                </div>
+
+                <input type="hidden" id="orderStatus" name="orderStatus" value="1">
+                <input type="hidden" id="orderDateTime" name="orderDateTime">
+
+                <div class="form-group">
+                    <button type="submit" class="submit" id="submit">新增</button>
+                    <button type="button" class="cancel">取消</button>
+                </div>
+            </form>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+        </div>
+    </div>
+	<script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const packageTourSelect = document.getElementById('packageTourId');
+            const orderPriceInput = document.getElementById('orderPrice');
+            const orderDateTimeInput = document.getElementById('orderDateTime');
+
+            // 當選擇套裝行程時，自動填入價格
+            packageTourSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const price = selectedOption.text.split('$')[1];
+                orderPriceInput.value = price;
+            });
+
+            // 在表單提交時設置當前日期時間
+            document.querySelector('form').addEventListener('submit', function() {
+                orderDateTimeInput.value = new Date().toISOString();
+            });
+        });
+    </script>
+</body>
+</html>

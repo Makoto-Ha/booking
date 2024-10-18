@@ -42,7 +42,7 @@ public class PackageTourService {
 	private AttractionRepository attractionRepo;
 	
 	/**
-	 * 獲取所有套裝行稱
+	 * 獲取所有套裝行程
 	 * @param packageTourDTO
 	 * @return
 	 */
@@ -184,20 +184,6 @@ public class PackageTourService {
 	    return Result.success("新增套裝行程成功");
 	}
 
-	
-	
-	/**
-	 * 刪除套裝行程中的景點
-	 * @param packageTourId
-	 * @param attractionId
-	 * @return
-	 */
-    @Transactional
-    public Result<String> removeAttractionFromPackage(Integer packageTourId, Integer attractionId) {
-        packageTourAttractionRepo.removeAttractionFromPackage(packageTourId, attractionId);
-        return Result.success("刪除景點成功");
-    }
-    
     
     
     /**
