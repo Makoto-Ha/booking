@@ -66,7 +66,6 @@ public class ProductController {
 		}
 
 		Page<ProductDTO> page = result.getData();
-		System.out.println("page = "+page.getContent());
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("product", productDTO);
 		model.addAttribute("page", page);

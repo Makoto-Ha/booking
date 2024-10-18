@@ -131,9 +131,9 @@ public class ProductService {
 	 * @param categoryId
 	 * @return
 	 */
-	public Result<Page<ProductDTO>> findProductsByCategoryId(Integer categoryId) {
-
-		List<ProductDTO> DTOList = productRepository.findProductByCategoryId(categoryId);
+	public Result<Page<ProductDTO>> findProductsByCategoryId(ProductDTO productDTO) {
+		
+		List<ProductDTO> DTOList = productRepository.findProductByCategoryId(productDTO.getCategoryId());
 
 		Pageable pageable = MyPageRequest.of(1, 10, DTOList.get(0).getSelectedSort(), DTOList.get(0).getAttrOrderBy());
 
