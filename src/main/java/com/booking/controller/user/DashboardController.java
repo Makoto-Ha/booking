@@ -1,7 +1,8 @@
 package com.booking.controller.user;
 
 import com.booking.bean.pojo.user.User;
-import com.booking.service.UserService;
+import com.booking.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

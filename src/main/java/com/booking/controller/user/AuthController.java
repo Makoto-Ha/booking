@@ -1,7 +1,7 @@
 package com.booking.controller.user;
 
 import com.booking.bean.pojo.user.User;
-import com.booking.service.UserService;
+import com.booking.service.user.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,10 +15,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -54,15 +56,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String authenticateUser(@RequestParam String userAccount, @RequestParam String userPassword, Model model, HttpServletRequest request) {
+    public String authenticateUser(@RequestParam String userAccount, @RequestParam String userPassword, Model model) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userAccount, userPassword)
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "redirect:/dashboard";
+            return "redirect:/"; // 登入成功後重定向到首頁
         } catch (Exception e) {
-            model.addAttribute("error", "無效的用戶名或密碼");
+            model.addAttribute("error", "Invalid username or password");
             return "login";
         }
     }
@@ -79,12 +81,9 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public String logoutUser(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "redirect:/auth/login?logout";
+    public String logoutUser() {
+        SecurityContextHolder.clearContext();
+        return "redirect:/?logout"; // 登出後重定向到首頁，並帶上logout參數
     }
 
     @GetMapping("/forgot-password")
@@ -135,6 +134,57 @@ public class AuthController {
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "verify-error";
+        }
+    }
+    
+    
+    @GetMapping("/oauth2/callback/google")
+    public String handleGoogleCallback() {
+        return "redirect:/auth/oauth2-success";
+    }
+    
+    @GetMapping("/oauth2-success")
+    public String handleOAuth2Success(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+            OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+            String email = oauth2User.getAttribute("email");
+            String name = oauth2User.getAttribute("name");
+            
+            // 處理 OAuth2 用戶登錄
+            User user = userService.processOAuthPostLogin(email, "GOOGLE", oauth2User.getName());
+            
+            model.addAttribute("user", user);
+            return "oauth2-success";  // 創建一個新的視圖來顯示 OAuth2 登錄成功信息
+        }
+        return "redirect:/";  // 如果不是 OAuth2 用戶，重定向到首頁
+    }
+
+    @GetMapping("/profile")
+    public String showUserProfile(Model model, Principal principal) {
+        String username = principal.getName();
+        User user = userService.findByUserAccount(username);
+        model.addAttribute("user", user);
+        return "user-profile";
+    }
+
+    @GetMapping("/edit-profile")
+    public String showEditProfileForm(Model model, Principal principal) {
+        String username = principal.getName();
+        User user = userService.findByUserAccount(username);
+        model.addAttribute("user", user);
+        return "edit-profile";
+    }
+
+    @PostMapping("/edit-profile")
+    public String updateProfile(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            userService.updateUser(user);
+            redirectAttributes.addFlashAttribute("message", "個人資料更新成功！");
+            return "redirect:/auth/profile";
+        } catch (Exception e) {
+            model.addAttribute("error", "更新失敗：" + e.getMessage());
+            return "edit-profile";
         }
     }
 }

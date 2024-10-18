@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OAuth2 Login Success</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>OAuth2 Login Successful</h2>
+        <p>Welcome, <span th:text="${user.userName}">User</span>!</p>
+        <p>Your email is: <span th:text="${user.userMail}">email@example.com</span></p>
+        <a href="/" class="btn btn-primary">Go to Home</a>
+    </div>
+</body>
+</html>
