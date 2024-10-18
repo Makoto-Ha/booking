@@ -171,22 +171,6 @@ public class PackageTourController {
     }
     
     
-    /**
-     * 刪除套裝行程中的景點
-     * @param packageTourId
-     * @param attractionId
-     * @return
-     */
-    @PostMapping("/deleteAttraction")
-    public ResponseEntity<?> deleteAttractionFromPackage(@RequestParam Integer packageTourId, @RequestParam Integer attractionId) {
-        Result<String> deleteAttractionFromPackageResult = packageTourService.removeAttractionFromPackage(packageTourId, attractionId);
-        String message = deleteAttractionFromPackageResult.getMessage();
-        if (deleteAttractionFromPackageResult.isFailure()) {
-        	return ResponseEntity.badRequest().body(message);
-        }
-        return ResponseEntity.ok(message);
-    }
-    
     
     /**
      * 刪除整個套裝行程
@@ -205,10 +189,8 @@ public class PackageTourController {
     
     
     /**
-     * 更新套裝行程中的景點
-     * @param packageTourId
-     * @param attractionId
-     * @param updatedAttraction
+     * 更新訂單
+     * @param packageTourDTO
      * @return
      */
     @PostMapping("/update")

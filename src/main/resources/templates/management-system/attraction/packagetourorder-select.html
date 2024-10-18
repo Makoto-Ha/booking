@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>packagetourorder-select</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+            <form class="form" action="../select" method="get">
+            
+                <div class="form-group">
+                    <label for="orderId">訂單編號</label>
+                    <input type="number" id="orderId" name="orderId" placeholder="輸入訂單編號">
+                </div>
+            
+                <div class="form-group">
+                    <label for="packageTourName">套裝行程名稱</label>
+                    <input type="text" id="packageTourName" name="packageTourName" placeholder="輸入套裝行程名稱">
+                </div>
+                
+                <div class="form-group">
+                    <label for="orderDateTime">訂單建立日期</label>
+                    <input type="date" id="orderDateTime" name="orderDateTime">
+                </div>
+                
+                <div class="form-group">
+                    <label for="orderStatus">訂單狀態</label>
+                    <select id="orderStatus" name="orderStatus">
+                        <option value="1">未付款</option>
+                        <option value="2">已付款</option>
+                        <option value="3">已取消</option>
+                        <option value="4">已完成</option>
+                    </select>
+                </div>
+                <div class="form-group">
+		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
+		            <button type="button" class="cancel">取消</button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    <script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+
+</body>
+</html>

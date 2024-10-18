@@ -15,17 +15,17 @@ import jakarta.persistence.Table;
 @Table(name = "package_tour")
 public class PackageTour {
 
-	@Id @Column(name = "packagetour_id")
+	@Id @Column(name = "package_tour_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer packageTourId;
 	
-	@Column(name = "packagetour_name")
+	@Column(name = "package_tour_name")
 	private String packageTourName;
 	
-	@Column(name = "packagetour_price")
+	@Column(name = "package_tour_price")
 	private Integer packageTourPrice;
 	
-	@Column(name = "packagetour_description")	
+	@Column(name = "package_tour_description")	
 	private String packageTourDescription;
 	
 	@OneToMany(mappedBy = "packageTour")

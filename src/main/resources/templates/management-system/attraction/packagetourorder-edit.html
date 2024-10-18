@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>packagetour-edit</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+           <form class="form" action="../update" method="post" th:object="${packageTourOrder}">
+                <input type="hidden" th:field="*{orderId}">
+                
+                <div class="form-group">
+                    <label for="userId">使用者編號</label>
+                    <input type="number" id="userId" th:field="*{userId}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="packageTourName">套裝行程名稱</label>
+                    <input type="text" id="packageTourName" th:field="*{packageTourName}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="orderPrice">訂單價格</label>
+                    <input type="number" id="orderPrice" th:field="*{orderPrice}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="orderDateTime">訂單建立時間</label>
+                    <input type="datetime-local" id="orderDateTime" th:field="*{orderDateTime}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="travelDate">旅遊日期</label>
+                    <input type="date" id="travelDate" th:field="*{travelDate}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="orderStatus">訂單狀態</label>
+                    <select id="orderStatus" th:field="*{orderStatus}" required>
+                        <option value="1">未付款</option>
+                        <option value="2">已付款</option>
+                        <option value="3">已取消</option>
+                        <option value="4">已完成</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
+                    <button type="button" class="cancel">取消</button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    <script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script th:inline="javascript">
+        // 處理日期時間格式
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderDateTimeInput = document.getElementById('orderDateTime');
+            if (orderDateTimeInput.value) {
+                const date = new Date(orderDateTimeInput.value);
+                orderDateTimeInput.value = date.toISOString().slice(0, 16);
+            }
+        });
+    </script>
+</body>
+</html>
