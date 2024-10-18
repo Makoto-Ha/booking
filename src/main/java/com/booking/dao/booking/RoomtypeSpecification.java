@@ -163,9 +163,12 @@ public class RoomtypeSpecification {
 	// 根據日期區間做查詢
 	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
         return (root, query, criteriaBuilder) -> {
+	
             // Fetch amenities to ensure they are loaded with RoomType
-            root.fetch("amenities", JoinType.LEFT);
+            root.join("amenities", JoinType.LEFT);
 
+          	query.distinct(true);
+        
             // Subquery to represent Room entity
             Subquery<Room> roomSubquery = query.subquery(Room.class);
             Root<Room> roomRoot = roomSubquery.from(Room.class);

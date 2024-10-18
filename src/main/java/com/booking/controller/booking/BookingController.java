@@ -152,7 +152,7 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/delete")
-	private ResponseEntity<String> deleteById(Integer bookingId) {
+	private ResponseEntity<?> deleteById(Integer bookingId) {
 		Result<String> deleteByBookingIdResult = bookingService.deleteByBookingId(bookingId);
 		
 		String message = deleteByBookingIdResult.getMessage();

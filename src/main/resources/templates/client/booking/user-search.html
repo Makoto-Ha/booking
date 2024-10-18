@@ -418,7 +418,12 @@
 			        </div>
 			        <div class="col-md-5">
 			            <div class="card-body h-100">
-			                <h5 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h5>
+			                <h4 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h4>
+			                <div class="d-flex align-items-center">
+			                	<i class="bi bi-geo-alt-fill text-primary"></i>
+				                <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeDistrict} + ','"></span>
+				                <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeCity}"></span>	   
+			                </div>            
 			                <p class="card-text mb-0 small">這間住宿提供: </p>
 			
 			                <div class="d-flex flex-wrap">
@@ -443,12 +448,29 @@
 
   <div th:replace="~{client/common/footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script>
-    // 确保 DOM 完全加载后再初始化 Litepicker
+<script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
       document.querySelector('.card-list').addEventListener('click', function() {
       	location.href = '/booking/room/detail';
+      });
+
+      
+      let footerHeight = document.querySelector('footer').clientHeight;
+      let url = new URLPattern();
+      let u = new URL(location.href);
+      console.log([[${searchKeywords}]]);
+      console.log(u);
+      window.addEventListener('wheel', async e => {
+        let htmlHeight = document.documentElement.clientHeight;
+        
+        if(document.documentElement.scrollTop > (htmlHeight - footerHeight)) {
+          console.log('touch');
+          // fetch('/booking/user/search/roomtype')
+         
+         
+        }
+        
       });
     });
     

@@ -47,10 +47,12 @@ public class RoomtypeClientService {
 	}
 	
 public Page<RoomtypeDTO> userSearchRoomtypes(RoomtypeKeywordSearchDTO roomtypeSearchDTO) {
+
 		// 根據房型、城市、區域的名稱來做or條件合併
-		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()))
-										.and(RoomtypeSpecification.hasNameContains(roomtypeSearchDTO.getRoomtypeName()));								
-//										.or(RoomtypeSpecification.cityContains(roomtypeSearchDTO.getRoomtypeCity()));
+		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))			
+										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
+										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
+										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()));
 		// 獲取pageable
 		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);
 		

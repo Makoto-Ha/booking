@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" rel="stylesheet">
-  
-  <title>user-search-input</title>
 
+  <title>user-search-input</title>
+  
   <style>
-    html, body {
+    html,
+    body {
       height: 100% !important;
     }
 
@@ -126,7 +128,7 @@
     .h-30px {
       height: 30px;
     }
-    
+
     .h-40px {
       height: 40px;
     }
@@ -161,13 +163,16 @@
 
     /* 取消默認的外框 */
     .form-control {
-      border: none !important;         /* 移除边框 */
-      box-shadow: none !important;     /* 移除阴影 */
+      border: none !important;
+      /* 移除边框 */
+      box-shadow: none !important;
+      /* 移除阴影 */
     }
 
     /* 調整輸入下拉框的位置 */
     .drop-menu-search {
-      transform: translate(0, 66px) !important; /* X軸和Y軸的位移調整 */
+      transform: translate(0, 66px) !important;
+      /* X軸和Y軸的位移調整 */
     }
 
     /* 調整輸入下拉框的位置 */
@@ -201,11 +206,13 @@
 
     .card {
       cursor: pointer;
-      transition: box-shadow 0.2s ease; /* 添加動畫過渡效果 */
+      transition: box-shadow 0.2s ease;
+      /* 添加動畫過渡效果 */
     }
 
     .card:hover {
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 3px 20px rgba(95, 95, 95, 0.147); /* hover時的陰影效果 */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 3px 20px rgba(95, 95, 95, 0.147);
+      /* hover時的陰影效果 */
     }
 
     .card-bgc {
@@ -240,12 +247,12 @@
         cursor: pointer;
       }
     }
-	
-	.dropdown-item:hover {
-		background-color: #5392f9;
-		color: white;
-		border-bottom: 0 !important;
-	}
+
+    .dropdown-item:hover {
+      background-color: #5392f9;
+      color: white;
+      border-bottom: 0 !important;
+    }
 
     /* 專屬於某個標籤的特定class */
     .theme-instastay {
@@ -267,6 +274,7 @@
     .w-search-input {
       width: calc(171.428571428% + 8px);
     }
+
     .w-search-date-input {
       width: calc(50% + 16px)
     }
@@ -292,275 +300,380 @@
     .custom-box-shadow {
       box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
     }
-  
   </style>
 </head>
-<body>
-    <header class="container-fluid theme-instastay d-flex flex-column justify-content-center align-items-center p-0 mb-3" id="banner">
-      <div class="max-width-1200px w-100">   
-        <div id="search-room" class="input-group d-flex justify-content-center align-items-center px-0 py-3">
-          <div class="dropdown flex-grow-4 d-flex" id="search">
-            <label for="searchRoomtypes" class="bg-white d-flex justify-content-center align-items-center rounded-start ps-3 pe-2"><i class="bi bi-search fs-5"></i></label>
-            <input type="text" class="form-control dropdown-toggle rounded-start-0 border-start-0 px-0 h-50px " id="searchRoomtypes" data-bs-toggle="dropdown" aria-expanded="false" placeholder="輸入城市、區域、景點或住宿名稱..." autocomplete="off">
-            <ul class="dropdown-menu drop-menu-search w-search-input p-0" aria-labelledby="searchRoomtypes"></ul>
-          </div>
 
-          <div id="date" class="flex-grow-3 d-flex ms-2 align-items-center">
-            <label for="datepicker" class="bg-white h-50px rounded-start d-flex align-items-center ps-3 pe-2"><i class="bi bi-calendar-date fs-5"></i></label>
-            <input id="datepicker" class="form-control h-50px bg-white border-0 rounded-start-0 px-0 py-3" placeholder="請選擇日期範圍" readonly>
-          </div>        
-        
-          <div class="dropdown people-number flex-grow-2 mx-2">
-            <button id="searchPeopleNumber" class="w-100 h-50px d-flex justify-content-center align-items-center bg-white border-0 rounded text-start p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-people fs-5 ps-3 pe-2"></i>
-              <span>幾位大人</span>
-              <span class="dropdown-toggle d-block ms-auto me-2"></span>
-            </button>
-           
-			<ul class="dropdown-menu w-100 p-0" aria-labelledby="searchPeopleNumber">
-              <li><a class="dropdown-item py-2" href="#" data-people="1">單人旅遊</a></li>
-              <li>
-                <hr class="dropdown-divider my-0">
-              </li>
-              <li><a class="dropdown-item py-2" href="#" data-people="2">雙人旅遊</a></li>
-              <li>
-                <hr class="dropdown-divider my-0">
-              </li>
-              <li><a class="dropdown-item py-2" href="#" data-people="-1">家庭旅遊</a></li>
-              <li>
-                <hr class="dropdown-divider my-0">
-              </li>
-              <li><a class="dropdown-item py-2" href="#" data-people="-2">團體旅遊</a></li>
-            </ul>
-          </div>
-          <button id="submit" class="flex-grow-1 search-btn-bgc text-white h-50px px-4 border-0 rounded">搜尋好價</button>
-        </div>  
-      </div> 
-    </header>  
+<body>
+  <header class="container-fluid theme-instastay d-flex flex-column justify-content-center align-items-center p-0 mb-3"
+    id="banner">
+    <div class="max-width-1200px w-100">
+      <div id="search-room" class="input-group d-flex justify-content-center align-items-center px-0 py-3">
+        <div class="dropdown flex-grow-4 d-flex" id="search">
+          <label for="searchRoomtypes"
+            class="bg-white d-flex justify-content-center align-items-center rounded-start ps-3 pe-2"><i
+              class="bi bi-search fs-5"></i></label>
+          <input type="text" class="form-control dropdown-toggle rounded-start-0 border-start-0 px-0 h-50px "
+            id="searchRoomtypes" data-bs-toggle="dropdown" aria-expanded="false" placeholder="輸入城市、區域、景點或住宿名稱..."
+            autocomplete="off">
+          <ul class="dropdown-menu drop-menu-search w-search-input p-0" aria-labelledby="searchRoomtypes"></ul>
+        </div>
+
+        <div id="date" class="flex-grow-3 d-flex ms-2 align-items-center">
+          <label for="datepicker" class="bg-white h-50px rounded-start d-flex align-items-center ps-3 pe-2"><i
+              class="bi bi-calendar-date fs-5"></i></label>
+          <input id="datepicker" class="form-control h-50px bg-white border-0 rounded-start-0 px-0 py-3"
+            placeholder="請選擇日期範圍" readonly>
+        </div>
+
+        <div class="dropdown people-number flex-grow-2 mx-2">
+          <button id="searchPeopleNumber"
+            class="w-100 h-50px d-flex justify-content-center align-items-center bg-white border-0 rounded text-start p-0"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-people fs-5 ps-3 pe-2"></i>
+            <span>幾位大人</span>
+            <span class="dropdown-toggle d-block ms-auto me-2"></span>
+          </button>
+
+          <ul class="dropdown-menu w-100 p-0" aria-labelledby="searchPeopleNumber">
+            <li><a class="dropdown-item py-2" href="#" data-people="1">單人旅遊</a></li>
+            <li>
+              <hr class="dropdown-divider my-0">
+            </li>
+            <li><a class="dropdown-item py-2" href="#" data-people="2">雙人旅遊</a></li>
+            <li>
+              <hr class="dropdown-divider my-0">
+            </li>
+            <li><a class="dropdown-item py-2" href="#" data-people="-1">家庭旅遊</a></li>
+            <li>
+              <hr class="dropdown-divider my-0">
+            </li>
+            <li><a class="dropdown-item py-2" href="#" data-people="-2">團體旅遊</a></li>
+          </ul>
+        </div>
+        <button id="submit" class="flex-grow-1 search-btn-bgc text-white h-50px px-4 border-0 rounded">搜尋好價</button>
+      </div>
+    </div>
+  </header>
   <!-- 遮罩層 -->
   <div id="overlay"></div>
-<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-<script>
+  <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  <script th:src="@{/client/common/js/taiwan_cities.js}"></script>
+  <script>
     // 确保 DOM 完全加载后再初始化 Litepicker
-    document.addEventListener('DOMContentLoaded', function() {
-		// 發送需要的參數
-		      let submitParams = {
-		        peopleNumber: null,
-		        roomtypeName: null,
-		        searchStartDate: null,
-		        searchEndDate: null
-		      }
+    document.addEventListener('DOMContentLoaded', function () {
 
-		      let searchDropdown = document.querySelector('ul[aria-labelledby="searchRoomtypes"]');
-		      let searchRoomtypesInput = document.getElementById('searchRoomtypes');
+      let searchInputType;
+      let peopleNumberParam;
+      // 發送需要的參數
+      let submitParams = {}
 
-		      searchDropdown.addEventListener('click', e => {
-		        searchRoomtypesInput.value = e.target.closest('li').dataset.name;
-		        submitParams.roomtypeName = searchRoomtypesInput.value;
-		        searchDropdown.classList.remove('show');
-		      });
+      let searchDropdown = document.querySelector('ul[aria-labelledby="searchRoomtypes"]');
+      let searchRoomtypesInput = document.getElementById('searchRoomtypes');
 
-		      searchRoomtypesInput.addEventListener('input', _.throttle(async e => {
-		        let searchValue = e.target.value;
-		        let queryString = new URLSearchParams({
-		          roomtypeName: searchValue,
-		          roomtypeDistrict: searchValue,
-		          roomtypeCity: searchValue
-		        }).toString();
-		        let response = await fetch(`/booking/search/roomtype/keyword?${queryString}`);
+      let roomtypeName = "[[${searchKeywords?.roomtypeName ?: ''}]]";
+      let roomtypeCity = "[[${searchKeywords?.roomtypeCity ?: ''}]]";
+      let roomtypeDistrict = "[[${searchKeywords?.roomtypeDistrict ?: ''}]]";
 
-		        let roomtypes = await response.json();
+      searchRoomtypesInput.value = roomtypeName || roomtypeCity || roomtypeDistrict;
 
-		        console.log(roomtypes);
+      searchDropdown.addEventListener('click', e => {
+        let targetDropdown = e.target.closest('li');
+        let keyword = targetDropdown.dataset.name;
+        searchInputType = targetDropdown.dataset.type;
 
-		        searchDropdown.innerHTML = '';
+        submitParams = {}
 
-		        if (roomtypes.length === 0) {
-		          let dropdown = `
-		            <div class="d-flex justify-content-center">
-		              <li class="dropdown-item p-2 rounded m-5" style="display: flex; justify-content: center; width: 50%; font-size: 20px;">
-		                查無此資料			
-		              </li>  
-		            </div>
-		          `;
-		          searchDropdown.innerHTML += dropdown;
-		          return;
-		        }
+        switch (searchInputType) {
+          case 'city':
+            submitParams.roomtypeCity = keyword;
+            break;
+          case 'district':
+            submitParams.roomtypeDistrict = keyword;
+            break;
+          case 'roomtype':
+            submitParams.roomtypeName = keyword;
+            break;
+        }
 
-		        roomtypes.forEach(roomtype => {
-		          let dropdown = `
-		            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${roomtype.roomtypeName}">
-		              <div class="d-flex">
-		                <div class="me-2"><img src="/booking/client/booking/image/bed-icon3.png" width="40"></div>
-		                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
-		                  ${roomtype.roomtypeName}
-		                  <div>
-		                    <span style='font-size: 14px; width: 25%; display: block;'>城市: ${roomtype.roomtypeCity}</span>
-		                    <span style='font-size: 14px; width: 25%; display: block;'	>區域: ${roomtype.roomtypeDistrict}</span>
-		                  </div>	
-		                </div>
-		              </div>
-		              
-		              <div><img style="width: 80px; height: 80px;" src="/booking/management/roomtype/image/${roomtype.roomtypeId}"/></div>			
-		            </li>
-		          `;
-		          searchDropdown.innerHTML += dropdown;
-		        });
+        searchRoomtypesInput.value = targetDropdown.dataset.name;
+        searchDropdown.classList.remove('show');
+      });
 
-		      }, 1200));
+      searchRoomtypesInput.addEventListener('input', _.debounce(async e => {
+        let searchValue = e.target.value;
+        let queryString = new URLSearchParams({
+          roomtypeName: searchValue,
+          roomtypeDistrict: searchValue,
+          roomtypeCity: searchValue
+        }).toString();
+        let response = await fetch(`/booking/search/roomtype/keyword?${queryString}`);
 
-		      searchRoomtypesInput.addEventListener('input', e => {
-		        searchDropdown.innerHTML = '';
-		        searchDropdown.classList.add('show');
+        let roomtypes = await response.json();
 
-		        let dropdown = `
-		          <div class="d-flex justify-content-center w-100">
-		            <div class="my-4">
-		              <div class="spinner-grow text-primary m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-secondary m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-success m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-danger m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-warning m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-info m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-light m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>
-		              <div class="spinner-grow text-dark m-4" role="status">
-		                <span class="sr-only"></span>
-		              </div>   
-		            </div>
-		          </div>
-		        `;
+        console.log(roomtypes);
 
-		        searchDropdown.innerHTML += dropdown;
-		      });
+        searchDropdown.innerHTML = '';
+        submitParams = {}
 
-		      let today = new Date();
-		      const picker = new Litepicker({
-		        element: document.getElementById('datepicker'),
-		        singleMode: false,           // 启用范围选择
-		        format: 'YYYY年MM月DD日',        // 日期格式
-		        autoApply: true,             // 自动应用选择
-		        numberOfMonths: 2,           // 显示2个月视图
-		        numberOfColumns: 2,          // 以2列显示
-		        startDate: new Date(),       // 起始日期（可选）
-		        minDate: today
-		      });
+        let filterCities = cities.filter(city => city.includes(searchValue));
+        let filterDistricts = districts.filter(district => district.includes(searchValue));
 
-		      const litePicker = document.querySelector('.litepicker');
+        let roomtypesLength = roomtypes.length;
+        let filterDistrictsLength = filterDistricts.length;
+        let filterCitiesLength = filterCities.length;
 
-		      // 紀錄原本的date位置，防止點擊一次就會往左下移動
-		      let litePickerLocation = {
-		        top: null,
-		        left: null,
-		        toggle: true
-		      }
+        if (roomtypesLength === 0 && filterDistrictsLength === 0 && filterCitiesLength === 0) {
+          let dropdown = `
+            <div class="d-flex justify-content-center">
+              <li class="dropdown-item p-2 rounded m-5" style="display: flex; justify-content: center; width: 50%; font-size: 20px;">
+                查無此資料			
+              </li>  
+            </div>
+          `;
+          searchInputType = '';
+          searchDropdown.innerHTML += dropdown;
+          return;
+        }
 
-		      document.getElementById('datepicker').addEventListener('click', e => {
-		        overlay.style.display = 'block';
+        filterCities.forEach(city => {
+          let dropdown = `
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${city}" data-type="city">
+              <div class="d-flex align-items-center">
+                <div class="me-2"><img src="/booking/client/booking/image/city-icon.png" width="40"></div>
+                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
+                  ${city}	
+                </div>
+              </div>
+            </li>
+          `;
+          searchDropdown.innerHTML += dropdown;
+        });
 
-		        if (litePickerLocation.toggle) {
-		          litePickerLocation.top = parseInt(litePicker.style.top);
-		          litePickerLocation.left = parseInt(litePicker.style.left);
-		          litePickerLocation.toggle = false;
-		        }
+        filterDistricts.forEach(district => {
+          let dropdown = `
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${district}" data-type="district">
+              <div class="d-flex align-items-center">
+                <div class="me-2"><img src="/booking/client/booking/image/district-icon.png" width="40"></div>
+                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
+                  ${district}	
+                </div>
+              </div>
+            </li>
+          `;
+          searchDropdown.innerHTML += dropdown;
+        });
 
-		        litePicker.style.top = litePickerLocation.top + 'px';
-		        litePicker.style.left = litePickerLocation.left + 'px';
+        roomtypes.forEach(roomtype => {
+          let dropdown = `
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${roomtype.roomtypeName}" data-type="roomtype">
+              <div class="d-flex">
+                <div class="me-2 d-flex align-items-center"><img src="/booking/client/booking/image/bed-icon3.png" width="40"></div>
+                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
+                  ${roomtype.roomtypeName}
+                  <div>
+                    <span style='font-size: 14px; width: 25%; display: block;'>城市: ${roomtype.roomtypeCity}</span>
+                    <span style='font-size: 14px; width: 25%; display: block;'	>區域: ${roomtype.roomtypeDistrict}</span>
+                  </div>	
+                </div>
+              </div>
+              
+              <div><img style="width: 80px; height: 80px;" src="/booking/management/roomtype/image/${roomtype.roomtypeId}"/></div>			
+            </li>
+          `;
+          searchDropdown.innerHTML += dropdown;
+        });
 
-		        // 指定date所在的位置
-		        if (litePicker) {
-		          litePicker.style.top = (parseInt(litePicker.style.top) + 15) + 'px';
-		          litePicker.style.left = (parseInt(litePicker.style.left) + -47) + 'px';
-		        }
-		      });
+        if (roomtypesLength === 0 && filterDistrictsLength === 0) {
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        } else if (roomtypesLength === 0 && filterCitiesLength === 0) {
+          searchInputType = 'district';
+          submitParams.roomtypeDistrict = searchValue;
+        } else if (filterDistrictsLength === 0 && filterCitiesLength === 0) {
+          searchInputType = 'roomtype';
+          submitParams.roomtypeName = searchValue;
+        } else if (roomtypesLength === 0 || filterDistrictsLength === 0) {
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        } else if (filterCitiesLength === 0) {
+          searchInputType = 'district';
+          submitParams.roomtypeDistrict = searchValue;
+        } else {
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        }
 
-		      document.getElementById('search').addEventListener('click', e => {
-		        overlay.style.display = 'block';
-		      });
+      }, 1200));
 
-		      let peopleNumber = document.querySelector('.people-number');
+      searchRoomtypesInput.addEventListener('input', e => {
+        searchDropdown.innerHTML = '';
+        searchDropdown.classList.add('show');
 
-		      peopleNumber.addEventListener('click', e => {
-		        overlay.style.display = 'block';
-		      });
+        let dropdown = `
+          <div class="d-flex justify-content-center w-100">
+            <div class="my-4">
+              <div class="spinner-grow text-primary m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-secondary m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-success m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-danger m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-warning m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-info m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-light m-4" role="status">
+                <span class="sr-only"></span>
+              </div>
+              <div class="spinner-grow text-dark m-4" role="status">
+                <span class="sr-only"></span>
+              </div>   
+            </div>
+          </div>
+        `;
 
-		      peopleNumber.addEventListener('hidden.bs.dropdown', e => {
-		        overlay.style.display = 'none';
-		      });
-
-		      overlay.addEventListener('click', function () {
-		        overlay.style.display = 'none';
-		      });
-
-		      let searchPeopleNumber = document.querySelector('ul[aria-labelledby="searchPeopleNumber"]');
-		      let searchPeopleButton = document.getElementById('searchPeopleNumber');
-
-		      searchPeopleNumber.addEventListener('click', e => {
-		        searchPeopleButton.innerHTML = `
-		          <i class="bi bi-people fs-5 ps-3"></i>
-		          <span class="ps-2">${e.target.innerText}</span>
-		          <span class="dropdown-toggle d-block ms-auto me-2"></span>
-		        `;
-
-		        submitParams.peopleNumber = parseInt(e.target.dataset.people);
-		      });
-
-		      // 發送請求搜尋房間
-		      document.getElementById('submit').addEventListener('click', function () {
-		        let date = document.getElementById('datepicker').value;
-
-		        if (!/\d{4}年\d{2}月\d{2}日 - \d{4}年\d{2}月\d{2}日/.test(date)) {
-		          alert('請選擇日期');
-		          return;
-		        }
-
-		        let dateArr = date.split(' - ');
-
-		        let startDate = dateArr[0].split(/年|月|日/);
-		        let endDate = dateArr[1].split(/年|月|日/);
-
-		        let startYear = parseInt(startDate[0]);
-		        let startMonth = parseInt(startDate[1]);
-		        let startDay = parseInt(startDate[2]);
-
-		        let searchStartDate = `${startYear}/${startMonth}/${startDay}`;
-
-		        let endYear = parseInt(endDate[0]);
-		        let endMonth = parseInt(endDate[1]);
-		        let endDay = parseInt(endDate[2]);
-
-		        let searchEndDate = `${endYear}/${endMonth}/${endDay}`;
-
-		        submitParams.searchStartDate = searchStartDate;
-		        submitParams.searchEndDate = searchEndDate;
-
-		        let params = new URLSearchParams({
-		          searchStartDate,
-		          searchEndDate,
-		          ...submitParams
-		        });
-
-
-		        console.log(submitParams);
-		        location.assign(`/booking/user/search/roomtype?${params}`);
-		      })
+        searchDropdown.innerHTML += dropdown;
+      });
       
-    }); 
-</script>   
+      let datePicker = document.getElementById('datepicker');
+
+      let today = new Date();
+      const picker = new Litepicker({
+        element: datePicker,
+        singleMode: false,           // 启用范围选择
+        format: 'YYYY年MM月DD日',        // 日期格式
+        autoApply: true,             // 自动应用选择
+        numberOfMonths: 2,           // 显示2个月视图
+        numberOfColumns: 2,          // 以2列显示
+        startDate: new Date(),       // 起始日期（可选）
+        minDate: today
+      });
+
+      const litePicker = document.querySelector('.litepicker');
+
+      // 紀錄原本的date位置，防止點擊一次就會往左下移動
+      let litePickerLocation = {
+        top: null,
+        left: null,
+        toggle: true
+      }
+
+      let startDate = "[[${searchKeywords?.searchStartDate ?: ''}]]";
+      let endDate = "[[${searchKeywords?.searchEndDate ?: ''}]]";
+
+      if(startDate != '' && endDate != '') {
+        datePicker.value = startDate + " 到 " + endDate;
+      }
+
+      datePicker.addEventListener('click', e => {
+        overlay.style.display = 'block';
+
+        if (litePickerLocation.toggle) {
+          litePickerLocation.top = parseInt(litePicker.style.top);
+          litePickerLocation.left = parseInt(litePicker.style.left);
+          litePickerLocation.toggle = false;
+        }
+
+        litePicker.style.top = litePickerLocation.top + 'px';
+        litePicker.style.left = litePickerLocation.left + 'px';
+
+        // 指定date所在的位置
+        if (litePicker) {
+          litePicker.style.top = (parseInt(litePicker.style.top) + 15) + 'px';
+          litePicker.style.left = (parseInt(litePicker.style.left) + -47) + 'px';
+        }
+      });
+
+      document.getElementById('search').addEventListener('click', e => {
+        overlay.style.display = 'block';
+      });
+
+      let peopleNumber = document.querySelector('.people-number');
+
+      peopleNumber.addEventListener('click', e => {
+        overlay.style.display = 'block';
+      });
+
+      peopleNumber.addEventListener('hidden.bs.dropdown', e => {
+        overlay.style.display = 'none';
+      });
+
+      overlay.addEventListener('click', function () {
+        overlay.style.display = 'none';
+      });
+
+      let searchPeopleNumber = document.querySelector('ul[aria-labelledby="searchPeopleNumber"]');
+      let searchPeopleButton = document.getElementById('searchPeopleNumber');
+
+      searchPeopleNumber.addEventListener('click', e => {
+        searchPeopleButton.innerHTML = `
+          <i class="bi bi-people fs-5 ps-3 pe-2"></i>
+          <span>${e.target.innerText}</span>
+          <span class="dropdown-toggle d-block ms-auto me-2"></span>
+        `;
+
+        peopleNumberParam = parseInt(e.target.dataset.people);
+      });
+
+      // 發送請求搜尋房間
+      document.getElementById('submit').addEventListener('click', function () {
+        let date = document.getElementById('datepicker').value;
+
+        if (!/\d{4}年\d{2}月\d{2}日 - \d{4}年\d{2}月\d{2}日/.test(date)) {
+          alert('請選擇日期');
+          return;
+        }
+
+        let dateArr = date.split(' - ');
+
+        let startDate = dateArr[0].split(/年|月|日/);
+        let endDate = dateArr[1].split(/年|月|日/);
+
+        let startYear = parseInt(startDate[0]);
+        let startMonth = parseInt(startDate[1]);
+        let startDay = parseInt(startDate[2]);
+
+        let searchStartDate = `${startYear}/${startMonth}/${startDay}`;
+
+        let endYear = parseInt(endDate[0]);
+        let endMonth = parseInt(endDate[1]);
+        let endDay = parseInt(endDate[2]);
+
+        let searchEndDate = `${endYear}/${endMonth}/${endDay}`;
+
+        submitParams.searchStartDate = searchStartDate;
+        submitParams.searchEndDate = searchEndDate;
+
+        let params = new URLSearchParams({
+          searchStartDate,
+          searchEndDate,
+          peopleNumberParam,
+          ...submitParams
+        });
+
+        console.log(searchInputType);
+
+        console.log({
+          searchStartDate,
+          searchEndDate,
+          peopleNumberParam,
+          ...submitParams
+        });
+
+        location.assign(`/booking/user/search/roomtype?${params}`);
+      });
+    }) 
+  </script>
 
 </body>
+
 </html>

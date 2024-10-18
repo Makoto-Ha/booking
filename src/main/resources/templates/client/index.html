@@ -240,27 +240,43 @@
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  <script th:src="@{client/common/js/taiwan_cities.js}"></script>
   <script th:inline="javascript">
     // 确保 DOM 完全加载后再初始化 Litepicker
     document.addEventListener('DOMContentLoaded', function () {
+
+      let searchInputType;
+      let peopleNumberParam;
       // 發送需要的參數
-      let submitParams = {
-        peopleNumber: null,
-        roomtypeName: null,
-        searchStartDate: null,
-        searchEndDate: null
-      }
+      let submitParams = {}
 
       let searchDropdown = document.querySelector('ul[aria-labelledby="searchRoomtypes"]');
       let searchRoomtypesInput = document.getElementById('searchRoomtypes');
 
       searchDropdown.addEventListener('click', e => {
-        searchRoomtypesInput.value = e.target.closest('li').dataset.name;
-        submitParams.roomtypeName = searchRoomtypesInput.value;
+        let targetDropdown = e.target.closest('li');
+        let keyword = targetDropdown.dataset.name;
+        searchInputType = targetDropdown.dataset.type;
+
+        submitParams = {}
+
+        switch(searchInputType) {
+          case 'city': 
+            submitParams.roomtypeCity = keyword;
+            break;
+          case 'district':
+            submitParams.roomtypeDistrict = keyword;
+            break;
+          case 'roomtype':
+            submitParams.roomtypeName = keyword;
+            break;
+        }
+
+        searchRoomtypesInput.value = targetDropdown.dataset.name;
         searchDropdown.classList.remove('show');
       });
 
-      searchRoomtypesInput.addEventListener('input', _.throttle(async e => {
+      searchRoomtypesInput.addEventListener('input', _.debounce(async e => {
         let searchValue = e.target.value;
         let queryString = new URLSearchParams({
           roomtypeName: searchValue,
@@ -274,8 +290,16 @@
         console.log(roomtypes);
 
         searchDropdown.innerHTML = '';
+        submitParams = {}
 
-        if (roomtypes.length === 0) {
+        let filterCities = cities.filter(city => city.includes(searchValue));
+        let filterDistricts = districts.filter(district => district.includes(searchValue));
+        
+        let roomtypesLength = roomtypes.length;
+        let filterDistrictsLength = filterDistricts.length;
+        let filterCitiesLength = filterCities.length;
+
+        if (roomtypesLength === 0 && filterDistrictsLength === 0 && filterCitiesLength === 0) {
           let dropdown = `
             <div class="d-flex justify-content-center">
               <li class="dropdown-item p-2 rounded m-5" style="display: flex; justify-content: center; width: 50%; font-size: 20px;">
@@ -283,15 +307,44 @@
               </li>  
             </div>
           `;
-          searchDropdown.innerHTML += dropdown;
+          searchInputType = '';
+          searchDropdown.innerHTML += dropdown;   
           return;
         }
 
+        filterCities.forEach(city => {
+          let dropdown = `
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${city}" data-type="city">
+              <div class="d-flex align-items-center">
+                <div class="me-2"><img src="client/booking/image/city-icon.png" width="40"></div>
+                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
+                  ${city}	
+                </div>
+              </div>
+            </li>
+          `;
+          searchDropdown.innerHTML += dropdown;
+        });
+
+        filterDistricts.forEach(district => {
+          let dropdown = `
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${district}" data-type="district">
+              <div class="d-flex align-items-center">
+                <div class="me-2"><img src="client/booking/image/district-icon.png" width="40"></div>
+                <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
+                  ${district}	
+                </div>
+              </div>
+            </li>
+          `;
+          searchDropdown.innerHTML += dropdown;
+        });
+
         roomtypes.forEach(roomtype => {
           let dropdown = `
-            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${roomtype.roomtypeName}">
+            <li class="dropdown-item p-2 border-bottom" style="display: flex; justify-content: space-between; width: 100%;" data-name="${roomtype.roomtypeName}" data-type="roomtype">
               <div class="d-flex">
-                <div class="me-2"><img src="client/booking/image/bed-icon3.png" width="40"></div>
+                <div class="me-2 d-flex align-items-center"><img src="client/booking/image/bed-icon3.png" width="40"></div>
                 <div style="display: flex; flex-direction: column; justify-content: space-between; font-size: 18px;">
                   ${roomtype.roomtypeName}
                   <div>
@@ -306,6 +359,26 @@
           `;
           searchDropdown.innerHTML += dropdown;
         });
+
+        if(roomtypesLength === 0 && filterDistrictsLength === 0) {     
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        }else if(roomtypesLength === 0 && filterCitiesLength === 0) {
+          searchInputType = 'district';
+          submitParams.roomtypeDistrict = searchValue;
+        }else if(filterDistrictsLength === 0 && filterCitiesLength === 0) {
+          searchInputType = 'roomtype';
+          submitParams.roomtypeName = searchValue;
+        }else if(roomtypesLength === 0 || filterDistrictsLength === 0) {
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        }else if(filterCitiesLength === 0) {
+          searchInputType = 'district';
+          submitParams.roomtypeDistrict = searchValue;
+        }else {
+          searchInputType = 'city';
+          submitParams.roomtypeCity = searchValue;
+        }
 
       }, 1200));
 
@@ -415,7 +488,7 @@
           <span class="dropdown-toggle d-block ms-auto"></span>
         `;
 
-        submitParams.peopleNumber = parseInt(e.target.dataset.people);
+        peopleNumberParam = parseInt(e.target.dataset.people);
       });
 
       // 發送請求搜尋房間
@@ -450,11 +523,19 @@
         let params = new URLSearchParams({
           searchStartDate,
           searchEndDate,
+          peopleNumberParam,
           ...submitParams
         });
 
+        console.log(searchInputType);
 
-        console.log(submitParams);
+        console.log({
+          searchStartDate,
+          searchEndDate,
+          peopleNumberParam,
+          ...submitParams
+        });
+
         location.assign(`/booking/user/search/roomtype?${params}`);
       })
     })
