@@ -1,4 +1,4 @@
-package com.booking.service;
+package com.booking.service.user;
 
 import com.booking.bean.pojo.user.User;
 import com.booking.dao.user.UserRepository;
@@ -80,6 +80,7 @@ public class UserService {
         return false;
     }
 
+    @Transactional
     public User processOAuthPostLogin(String email, String provider, String providerId) {
         User existUser = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElse(null);
@@ -89,8 +90,36 @@ public class UserService {
             newUser.setProvider(provider);
             newUser.setProviderId(providerId);
             newUser.setEmailVerified(true);
+            
+            // 設置 userAccount
+            String userAccount = email.split("@")[0]; // 使用郵箱的用戶名部分作為 userAccount
+            newUser.setUserAccount(userAccount);
+            
+            // 設置一個隨機的密碼（因為OAuth2用戶不需要密碼登錄）
+            newUser.setUserPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+            
+            // 設置其他必要的字段
+            newUser.setUserName(email.split("@")[0]); // 使用郵箱的用戶名部分作為 userName
+            newUser.setCreatedTime(LocalDateTime.now());
+            
             return userRepository.save(newUser);
         }
         return existUser;
+    }
+    
+    @Transactional
+    public User updateUser(User updatedUser) {
+        User existingUser = userRepository.findById(updatedUser.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Update fields
+        existingUser.setUserName(updatedUser.getUserName());
+        existingUser.setUserMail(updatedUser.getUserMail());
+        existingUser.setUserPhone(updatedUser.getUserPhone());
+        existingUser.setUserBirthday(updatedUser.getUserBirthday());
+        existingUser.setUserAddress(updatedUser.getUserAddress());
+
+        // Save the updated user
+        return userRepository.save(existingUser);
     }
 }

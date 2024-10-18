@@ -1,4 +1,4 @@
-package com.booking.service;
+package com.booking.service.user;
 
 import com.booking.bean.pojo.user.User;
 import org.springframework.beans.factory.annotation.Autowired;

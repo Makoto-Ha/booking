@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>編輯個人資料</h2>
+        <form th:action="@{/auth/edit-profile}" th:object="${user}" method="post">
+            <input type="hidden" th:field="*{userId}">
+            <div class="form-group">
+                <label for="userName">會員名字:</label>
+                <input type="text" class="form-control" id="userName" th:field="*{userName}" required>
+            </div>
+            <div class="form-group">
+                <label for="userAccount">會員帳號:</label>
+                <input type="text" class="form-control" id="userAccount" th:field="*{userAccount}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="userMail">電子信箱:</label>
+                <input type="email" class="form-control" id="userMail" th:field="*{userMail}" required>
+            </div>
+            <div class="form-group">
+                <label for="userPhone">電話號碼:</label>
+                <input type="tel" class="form-control" id="userPhone" th:field="*{userPhone}">
+            </div>
+            <div class="form-group">
+                <label for="userBirthday">生日:</label>
+                <input type="date" class="form-control" id="userBirthday" th:field="*{userBirthday}">
+            </div>
+            <div class="form-group">
+                <label for="userAddress">地址:</label>
+                <input type="text" class="form-control" id="userAddress" th:field="*{userAddress}">
+            </div>
+            <button type="submit" class="btn btn-primary">儲存變更</button>
+        </form>
+        <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    </div>
+</body>
+</html>

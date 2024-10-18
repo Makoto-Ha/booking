@@ -3,6 +3,11 @@ package com.booking.bean.pojo.user;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.booking.bean.pojo.attraction.PackageTour;
+import com.booking.bean.pojo.booking.BookingOrder;
+import com.booking.bean.pojo.shopping.ShoppingOrder;
 
 @Entity
 @Table(name = "users")
@@ -58,6 +63,8 @@ public class User {
 
     @Column(name = "provider_id")
     private String providerId;
+    
+
 
     // Getters and setters
 
