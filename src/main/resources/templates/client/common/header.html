@@ -5,32 +5,46 @@
 <title>header</title>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary px-4 py-2">
-      <div class="container-fluid">
-        <a class="navbar-brand py-2" th:href="@{/}">Instastay</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav w-100">
-            <li class="nav-item mx-2">
-              <a class="nav-link active" aria-current="page" href="#">搜好房</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">活動</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">商城</a>
-            </li>    
-            <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
-              <a class="nav-link" href="#">登入</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>   
-  </header>
+	<header>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary px-4 py-2">
+			<div class="container-fluid">
+				<a class="navbar-brand py-2" th:href="@{/}">Instastay</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+					aria-controls="navbarNavDropdown" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNavDropdown">
+					<ul class="navbar-nav w-100">
+						<li class="nav-item mx-2"><a class="nav-link active"
+							aria-current="page" href="#">搜好房</a></li>
+						<li class="nav-item mx-2"><a class="nav-link" href="#">活動</a>
+						</li>
+						<li class="nav-item mx-2"><a class="nav-link" href="#">商城</a>
+						</li>
+						<li class="nav-item ms-auto d-flex"
+							sec:authorize="!isAuthenticated()"><a
+							href="/booking/auth/register"
+							class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
+							<a class="nav-link" href="/booking/auth/login">登入</a></li>
+						<li class="nav-item ms-auto d-flex"
+							sec:authorize="isAuthenticated()">
+							<div class="dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="userDropdown"
+									role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<span sec:authentication="name"></span>
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="userDropdown">
+									<li><a class="dropdown-item" href="/booking/auth/profile">個人資料</a></li>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="/booking/auth/logout">登出</a></li>
+								</ul>
+
+							</div>
+						 </li>	
+				</div>
+		</nav>
+	</header>
 </body>
 </html>

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 
-import com.booking.bean.pojo.admin.User;
+import com.booking.bean.pojo.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
