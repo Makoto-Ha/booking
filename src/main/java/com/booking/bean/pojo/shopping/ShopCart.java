@@ -34,7 +34,7 @@ public class ShopCart {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private TestUser user;
 
     @OneToMany(mappedBy = "shopCart", cascade = CascadeType.ALL)
     private List<ShopCartItem> cartItems = new ArrayList<>();

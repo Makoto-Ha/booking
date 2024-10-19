@@ -76,7 +76,7 @@ public class ProductService {
 	 * @param productCapacityAll
 	 * @return
 	 */
-	public Result<PageImpl<ProductDTO>> findProducts(ProductDTO productDTO) {
+	public Result<Page<ProductDTO>> findProducts(ProductDTO productDTO) {
 
 		Specification<Product> spec = Specification
 				.where(ProductSpecification.productNameContains(productDTO.getProductName()))
@@ -103,7 +103,9 @@ public class ProductService {
 
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 
-		return Result.success(new PageImpl<>(productDTOs, newPageable, page.getTotalElements()));
+		Page<ProductDTO> pageImpl = new PageImpl<>(productDTOs, newPageable, page.getTotalElements());
+		
+		return Result.success(pageImpl);
 	}
 
 	/**
@@ -131,13 +133,13 @@ public class ProductService {
 	 * @param categoryId
 	 * @return
 	 */
-	public Result<Page<ProductDTO>> findProductsByCategoryId(Integer categoryId) {
+	public Result<Page<ProductDTO>> findProductsByCategoryId(ProductDTO productDTO) {
+		
+		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10,productDTO.getSelectedSort(),productDTO.getAttrOrderBy());
+		
+		Page<ProductDTO> page = productRepository.findProductByCategoryIdWithPage(productDTO.getCategoryId(),pageable);
 
-		List<ProductDTO> DTOList = productRepository.findProductByCategoryId(categoryId);
-
-		Pageable pageable = MyPageRequest.of(1, 10, DTOList.get(0).getSelectedSort(), DTOList.get(0).getAttrOrderBy());
-
-		return Result.success(new PageImpl<>(DTOList, pageable, DTOList.size()));
+		return Result.success(page);
 
 	}
 
