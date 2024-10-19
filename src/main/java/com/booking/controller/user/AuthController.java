@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -160,31 +159,5 @@ public class AuthController {
         return "redirect:/";  // 如果不是 OAuth2 用戶，重定向到首頁
     }
 
-    @GetMapping("/profile")
-    public String showUserProfile(Model model, Principal principal) {
-        String username = principal.getName();
-        User user = userService.findByUserAccount(username);
-        model.addAttribute("user", user);
-        return "user-profile";
-    }
-
-    @GetMapping("/edit-profile")
-    public String showEditProfileForm(Model model, Principal principal) {
-        String username = principal.getName();
-        User user = userService.findByUserAccount(username);
-        model.addAttribute("user", user);
-        return "edit-profile";
-    }
-
-    @PostMapping("/edit-profile")
-    public String updateProfile(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            userService.updateUser(user);
-            redirectAttributes.addFlashAttribute("message", "個人資料更新成功！");
-            return "redirect:/auth/profile";
-        } catch (Exception e) {
-            model.addAttribute("error", "更新失敗：" + e.getMessage());
-            return "edit-profile";
-        }
-    }
+ 
 }

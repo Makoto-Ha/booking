@@ -40,7 +40,7 @@ public class SecurityConfig {
          http
          .csrf(csrf -> csrf.disable())  // Disable CSRF for testing
          .authorizeHttpRequests(authz -> authz
-             .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**","/client/**").permitAll()
+             .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**","/frontend/**","/client/**").permitAll()
              .anyRequest().authenticated()
          )
             .formLogin(form -> form
