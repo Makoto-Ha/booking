@@ -1,16 +1,21 @@
 package com.booking.dao.booking;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.bean.pojo.common.Amenity;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 
@@ -164,12 +169,12 @@ public class RoomtypeSpecification {
 	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
         return (root, query, criteriaBuilder) -> {
 	
-            // Fetch amenities to ensure they are loaded with RoomType
+            // 連結Amenity表格
             root.join("amenities", JoinType.LEFT);
 
           	query.distinct(true);
         
-            // Subquery to represent Room entity
+            // 創建Room子查詢
             Subquery<Room> roomSubquery = query.subquery(Room.class);
             Root<Room> roomRoot = roomSubquery.from(Room.class);
             roomSubquery.select(roomRoot)
@@ -191,7 +196,7 @@ public class RoomtypeSpecification {
                                                                              LocalDate checkInDate,
                                                                              LocalDate checkOutDate,
                                                                              CriteriaBuilder criteriaBuilder) {
-        // Subquery to represent BookingOrderItem entity
+        // 創建BookingOrderItem的子查詢
         Subquery<BookingOrderItem> bookingOrderItemSubquery = roomSubquery.subquery(BookingOrderItem.class);
         Root<BookingOrderItem> bookingOrderItemRoot = bookingOrderItemSubquery.from(BookingOrderItem.class);
         bookingOrderItemSubquery.select(bookingOrderItemRoot)
@@ -205,5 +210,59 @@ public class RoomtypeSpecification {
 
         return bookingOrderItemSubquery;
     }
+
+    // 根據點擊的服務做查詢
+	public static Specification<Roomtype> hasAmenities(List<Amenity> amenities) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+            if (amenities == null || amenities.isEmpty()) {
+                // 是空的amenities，返回where 1=1
+                return builder.conjunction();
+            }
+
+            // Join Roomtype 和 Amenity 表
+            Join<Roomtype, Amenity> amenityJoin = root.join("amenities");
+
+            // 獲取所有amenityId
+            List<Integer> amenityIds = new ArrayList<>();
+            for (Amenity amenity : amenities) {
+                amenityIds.add(amenity.getAmenityId());
+            }
+
+            // 創建 WHERE ra.amenity_id IN (1, 2, 3, ...)
+            Predicate amenityInPredicate = amenityJoin.get("amenityId").in(amenityIds);
+            
+            // 因為GROUP BY之後不能使用*，所以必須每個欄位都寫上
+            query.multiselect(root.get("roomtypeId")
+            		, root.get("roomtypeName")
+            		, root.get("roomtypeCapacity")
+            		, root.get("roomtypePrice")
+            		, root.get("roomtypeQuantity")
+            		, root.get("roomtypeDescription")
+            		, root.get("roomtypeAddress")
+            		, root.get("roomtypeCity")
+            		, root.get("roomtypeDistrict")
+            		, root.get("updatedTime")
+            		, root.get("createdTime")
+            		, root.get("imagePath"));
+
+            // 使用 HAVING 和 COUNT(DISTINCT ra.amenity_id)
+            query.groupBy(root.get("roomtypeId")
+            		, root.get("roomtypeName")
+            		, root.get("roomtypeCapacity")
+            		, root.get("roomtypePrice")
+            		, root.get("roomtypeQuantity")
+            		, root.get("roomtypeDescription")
+            		, root.get("roomtypeAddress")
+            		, root.get("roomtypeCity")
+            		, root.get("roomtypeDistrict")
+            		, root.get("updatedTime")
+            		, root.get("createdTime")
+            		, root.get("imagePath")); 
+            
+            query.having(builder.equal(builder.countDistinct(amenityJoin.get("amenityId")), amenityIds.size()));
+
+            return amenityInPredicate;
+        };
+	}
 	
 }

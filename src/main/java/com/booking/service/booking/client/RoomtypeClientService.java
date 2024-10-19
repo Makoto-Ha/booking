@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
+import com.booking.bean.dto.booking.client.RoomtypeSearchDTO;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
@@ -46,12 +47,44 @@ public class RoomtypeClientService {
 		});
 	}
 	
-public Page<RoomtypeDTO> userSearchRoomtypes(RoomtypeKeywordSearchDTO roomtypeSearchDTO) {
+	/**
+	 * 使用者做名字、城市、區域、日期做模糊查詢房型
+	 * @param roomtypeSearchDTO
+	 * @return
+	 */
+	public Page<RoomtypeDTO> userSearchRoomtypes(RoomtypeKeywordSearchDTO roomtypeSearchDTO) {
 
-		// 根據房型、城市、區域的名稱來做or條件合併
+		// 根據房型、城市、區域的名稱來做and條件合併
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))			
 										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
 										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
+										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()));
+		// 獲取pageable
+		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);
+		
+		// 獲取page	
+		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
+		
+		// Page<Roomtype>轉換類型成Page<RoomtypeDTO>
+		return MyPageRequest.convert(page, roomtype -> {
+			RoomtypeDTO responseDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, responseDTO);
+			return responseDTO;
+		});
+	}
+	
+	/**
+	 * 使用者在房型列表做模糊查詢
+	 * @param roomtypeSearchDTO
+	 * @return
+	 */
+	public Page<RoomtypeDTO> searchRoomtypes(RoomtypeSearchDTO roomtypeSearchDTO) {
+
+		// 根據房型、城市、區域、服務的名稱來做and條件合併
+		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))			
+										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
+										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
+										.and(RoomtypeSpecification.hasAmenities(roomtypeSearchDTO.getAmenities()))
 										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()));
 		// 獲取pageable
 		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);

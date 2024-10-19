@@ -38,7 +38,6 @@ public class BookingCientController {
 	 */
 	@GetMapping("/user/search/roomtype")
 	private String sendRoomtypeDetails(RoomtypeKeywordSearchDTO roomtypeKeywordSearchDTO, Model model) {
-		
 		Page<RoomtypeDTO> page = rtClientService.userSearchRoomtypes(roomtypeKeywordSearchDTO);
 		List<Amenity> amenities = amenityService.findAll();
 		List<RoomtypeDTO> roomtypes = page.getContent();
