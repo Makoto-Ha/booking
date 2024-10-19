@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -59,7 +58,7 @@ public class ProductController {
 	private String findProducts(@RequestParam Map<String, String> requestParameters, ProductDTO productDTO,
 			Model model) {
 
-		Result<PageImpl<ProductDTO>> result = productService.findProducts(productDTO);
+		Result<Page<ProductDTO>> result = productService.findProducts(productDTO);
 
 		if (result.isFailure()) {
 			return "";

@@ -98,12 +98,7 @@ public class ProductCategoryService {
 				productCategoryDTO.getSelectedSort(), productCategoryDTO.getAttrOrderBy());
 
 		Page<ProductCategoryDTO> page = productCategoryRepository.findProductCategoryDTOALL(pageable);
-
-		// 手動設productDTO陣列
-		for (ProductCategoryDTO matchCategoryDTO : page.getContent()) {
-			List<ProductDTO> productDTOs = productRepository.findProductByCategoryId(matchCategoryDTO.getCategoryId());
-			matchCategoryDTO.setProducts(productDTOs);
-		}
+		
 		return Result.success(page);
 	}
 
@@ -219,8 +214,6 @@ public class ProductCategoryService {
 	public Result<String> updateProductCategory(ProductCategoryDTO productCategoryDTO) {
 
 		ProductCategory update = productCategoryRepository.findById(productCategoryDTO.getCategoryId()).orElse(null);
-		System.out.println("傳來的categoryDTO " + productCategoryDTO);
-		System.out.println("原本的category " + update);
 		MyModelMapper.map(productCategoryDTO, update);
 		productCategoryRepository.save(update);
 
