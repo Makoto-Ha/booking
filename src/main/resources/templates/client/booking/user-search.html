@@ -305,7 +305,7 @@
         </div>
         <div class="d-flex align-items-center search-key-bgc border border-radius-22px mb-3 px-3">
           <label for="search-key" class="d-flex justify-content-center align-items-center ps-3 pe-2 search-key-bgc"><i class="bi bi-search fs-5 search-key-bgc"></i></label>
-          <input type="text" id="search-key" class="form-control rounded search-key-bgc px-0 h-50px" placeholder="搜尋關鍵字">
+          <input type="text" id="searchKey" class="form-control rounded search-key-bgc px-0 h-50px" placeholder="搜尋關鍵字">
         </div>
         <div class="mb-4">
           <label for="customRange1" class="form-label fw-bolder small">每晚預算</label>
@@ -409,38 +409,36 @@
             <a href="#" class="text-dark-emphasis small">最低價優先</a>
           </div>  
         </div>
-        <div class="card-list">
+        <div class="card-list" id="cardList">       
+          <div th:each="roomtype : ${roomtypes}" class="card card-bgc w-100 mb-3" th:data-id="${roomtype.roomtypeId}">
+              <div class="row g-0 h-100">
+                <div class="col-md-4 h-100">
+                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
+                </div>
+                <div class="col-md-5">
+                    <div class="card-body h-100">
+                        <h4 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h4>
+                        <div class="d-flex align-items-center">
+                          <i class="bi bi-geo-alt-fill text-primary"></i>
+                          <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeDistrict} + ','"></span>
+                          <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeCity}"></span>	   
+                        </div>            
+                        <p class="card-text mb-0 small">這間住宿提供: </p>
         
-          	<div th:each="roomtype : ${roomtypes}" class="card card-bgc w-100 mb-3">
-			    <div class="row g-0 h-100">
-			        <div class="col-md-4 h-100">
-			            <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
-			        </div>
-			        <div class="col-md-5">
-			            <div class="card-body h-100">
-			                <h4 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h4>
-			                <div class="d-flex align-items-center">
-			                	<i class="bi bi-geo-alt-fill text-primary"></i>
-				                <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeDistrict} + ','"></span>
-				                <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeCity}"></span>	   
-			                </div>            
-			                <p class="card-text mb-0 small">這間住宿提供: </p>
-			
-			                <div class="d-flex flex-wrap">
-			                    <span th:each="amenity : ${roomtype.amenities}" class="border px-2 small tag-color d-block me-2 mb-2 text-nowrap" th:text="${amenity.name}"></span>
-			                </div>
-			            </div>
-			        </div>
-			        <div class="col-md-3 border-start">
-			            <div class="card-body d-flex flex-column h-100 text-end">
-			                <h5 class="card-title text-success">9.1超棒</h5>
-			                <p class="card-text">空中商務旅館價錢</p>
-			                <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ [[${roomtype.roomtypePrice}]]</p>
-			            </div>
-			        </div>
+                        <div class="d-flex flex-wrap">
+                            <span th:each="amenity : ${roomtype.amenities}" class="border px-2 small tag-color d-block me-2 mb-2 text-nowrap" th:text="${amenity.name}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 border-start">
+                    <div class="card-body d-flex flex-column h-100 text-end">
+                        <h5 class="card-title text-success">9.1超棒</h5>
+                        <p class="card-text">空中商務旅館價錢</p>
+                        <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ [[${roomtype.roomtypePrice}]]</p>
+                    </div>
+                </div>
+            </div>
 			    </div>
-			</div>
-
         </div>
       </div>
     </section>
@@ -448,30 +446,82 @@
 
   <div th:replace="~{client/common/footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
-      document.querySelector('.card-list').addEventListener('click', function() {
-      	location.href = '/booking/room/detail';
+      document.querySelector('.card-list').addEventListener('click', function(e) {
+        let card = e.target.closest('.card');
+        let cardId = card.dataset.id;
+        console.log(cardId);
+      	location.href = '/booking/room/detail?roomtypeId=' + cardId;
       });
 
-      
-      let footerHeight = document.querySelector('footer').clientHeight;
-      let url = new URLPattern();
-      let u = new URL(location.href);
-      console.log([[${searchKeywords}]]);
-      console.log(u);
-      window.addEventListener('wheel', async e => {
-        let htmlHeight = document.documentElement.clientHeight;
-        
-        if(document.documentElement.scrollTop > (htmlHeight - footerHeight)) {
-          console.log('touch');
-          // fetch('/booking/user/search/roomtype')
-         
-         
+      let footer = document.querySelector('footer');
+      let footerHeight = footer.clientHeight + parseInt(getComputedStyle(footer).marginTop);
+      let searchKeywords = [[${searchKeywords}]];
+      let pageNumber = searchKeywords.pageNumber;
+
+      let cardList = document.getElementById('cardList');
+
+      window.addEventListener('scroll', _.debounce(
+        async e => {
+          let htmlHeight = document.documentElement.clientHeight;
+          const scrollTop = window.scrollY || document.documentElement.scrollTop;
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+
+          if((windowHeight + scrollTop) <= (documentHeight - footerHeight)) {
+            console.log('還未到達最下面');
+            return;   
+          }
+
+          let params = new URLSearchParams({
+              pageNumber: pageNumber+1
+            }).toString();
+
+          let response = await fetch(`/booking/client/api/roomtype?${params}`);
+          pageNumber++;
+          let data = await response.json();
+          let roomtypes = data.content;
+          console.log(roomtypes);
+          
+          roomtypes.forEach(roomtype => {
+            let card = `
+              <div class="card card-bgc w-100 mb-3" data-id="${roomtype.roomtypeId}">
+                <div class="row g-0 h-100">
+                  <div class="col-md-4 h-100">
+                      <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
+                  </div>
+                  <div class="col-md-5">
+                      <div class="card-body h-100">
+                          <h4 class="card-title fw-bolder">${roomtype.roomtypeName}</h4>
+                          <div class="d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-primary"></i>
+                            <span class="small mx-1 text-primary">${roomtype.roomtypeDistrict},</span>
+                            <span class="small mx-1 text-primary">${roomtype.roomtypeCity}</span>	   
+                          </div>            
+                          <p class="card-text mb-0 small">這間住宿提供: </p>
+                          <div class="d-flex flex-wrap">
+                            ${roomtype.amenities.map(amenity => `<span class="tag border px-2 small tag-color d-block me-2 mb-2 text-nowrap">${amenity.name}</span>`).join('')}         
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-3 border-start">
+                      <div class="card-body d-flex flex-column h-100 text-end">
+                          <h5 class="card-title text-success">9.1超棒</h5>
+                          <p class="card-text">空中商務旅館價錢</p>
+                          <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ ${roomtype.roomtypePrice}</p>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            cardList.innerHTML += card;
+          });
         }
-        
-      });
+      , 100));
     });
     
 </script>
