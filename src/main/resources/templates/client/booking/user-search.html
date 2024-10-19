@@ -241,6 +241,14 @@
       }
     }
 
+    .customer-blue-active {
+      background-color: #5392f9 !important;
+
+      & > a {
+        color: white !important;
+      }
+    }
+
     /* 專屬於某個標籤的特定class */
     .theme-instastay {
       background-color: #20274d;
@@ -291,6 +299,51 @@
     	color: #5e6b82;
     }
 
+    .range-slider {
+        position: relative;
+        width: 100%;
+    }
+    .range-slider .form-range {
+        position: absolute;
+        pointer-events: none;
+        width: 100%;
+    }
+    /* 確保滑塊按鈕可以點擊 */
+    .range-slider .form-range::-webkit-slider-thumb {
+        pointer-events: auto;
+        position: relative;
+        z-index: 100;
+    }
+    .range-slider .form-range::-moz-range-thumb {
+        pointer-events: auto;
+        position: relative;
+        z-index: 100;
+    }
+    /* 移除第二個滑塊的背景軌道 */
+    #range2 {
+        background: none;
+    }
+    .values {
+        margin-top: 40px;
+    }
+    /* 自定義滑塊按鈕樣式 */
+    .form-range::-webkit-slider-thumb {
+        background: #0d6efd;
+        border: 2px solid white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+    .form-range::-moz-range-thumb {
+        background: #0d6efd;
+        border: 2px solid white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
   </style>
 </head>
 <body>
@@ -309,13 +362,17 @@
         </div>
         <div class="mb-4">
           <label for="customRange1" class="form-label fw-bolder small">每晚預算</label>
-          <input type="range" class="form-range" id="customRange1">
-          <div class="d-flex">
-            <input class="form-control outline-1 rounded-0 w-100px h-25px p-1" type="text" placeholder="NT$" readonly>
+          <div class="range-slider">
+            <input type="range" class="form-range" id="range1" min="0" max="12000" value="0">
+            <input type="range" class="form-range" id="range2" min="0" max="12000" value="12000">
+          </div>
+          <div class="d-flex mt-5">
+            <input class="form-control outline-1 rounded-0 w-100px h-25px p-1" type="text" placeholder="NT$ 0" readonly id="minValue">
             <span class="border-0 border-bottom-dashed inline-block w-100 h-12d5px"></span>
-            <input class="form-control outline-1 rounded-0 w-100px h-25px ms-auto p-1" type="text" placeholder="NT$" readonly>
+            <input class="form-control outline-1 rounded-0 w-100px h-25px ms-auto p-1" type="text" placeholder="NT$ 12000" readonly id="maxValue">
           </div>
         </div>
+
         <div class="border rounded p-3 mb-4" id="filterCriteria">
           <span class="fw-bolder small d-block mb-3">篩選條件</span>
         </div>
@@ -377,24 +434,26 @@
         </div>
       </aside>
       <div class="w-75 m-0">
-        <div class="m-0 d-flex border rounded px-0 p-2 text-center mb-3">
-          <div class="m-2 flex-grow-1 border-end">
-            <a href="#" class="text-dark-emphasis small">排序</a>
+        <div class="m-0 d-flex border rounded px-0 text-center mb-3">
+          <div class="p-3 border-end flex-grow-1" style="background-color: rgb(248, 247, 249);">
+            <a href="#" class="text-dark-emphasis small link-underline link-underline-opacity-0">排序</a>
           </div>
-          <div class="m-2 flex-grow-2 border-end">
-            <a href="#" class="text-dark-emphasis small">最低價優先</a>
-          </div>
-          <div class="m-2 flex-grow-2 border-end">
-            <a href="#" class="text-dark-emphasis small">最低價優先</a>
-          </div>
-          <div class="m-2 flex-grow-2 border-end">
-            <a href="#" class="text-dark-emphasis small">最低價優先</a>
-          </div>
-          <div class="m-2 flex-grow-2 border-end">
-            <a href="#" class="text-dark-emphasis small">最低價優先</a>
-          </div>
-          <div class="m-2 flex-grow-2">
-            <a href="#" class="text-dark-emphasis small">最低價優先</a>
+          <div class="d-flex w-90" id="sortOptions">
+            <div class="p-3 flex-grow-1 border-end cursor-pointer customer-blue-active" data-attr="roomtypeId" data-sort="false">
+              <a href="#" class="text-dark-emphasis small">最佳匹配</a>
+            </div>
+            <div class="p-3 flex-grow-1 border-end cursor-pointer" data-attr="roomtypePrice" data-sort="false">
+              <a href="#" class="text-dark-emphasis small">最低價優先</a>
+            </div>
+            <div class="p-3 flex-grow-1 border-end cursor-pointer" data-attr="roomtypePrice" data-sort="true">
+              <a href="#" class="text-dark-emphasis small">最高價優先</a>
+            </div>
+            <div class="p-3 flex-grow-1 border-end cursor-pointer" data-attr="amenities" data-sort="true">
+              <a href="#" class="text-dark-emphasis small">最多服務優先</a>
+            </div>
+            <div class="p-3 flex-grow-1 cursor-pointer" data-attr="score" data-sort="true">
+              <a href="#" class="text-dark-emphasis small">最高評分優先</a>
+            </div>
           </div>  
         </div>
         <div class="card-list" id="cardList">       
@@ -439,7 +498,85 @@
     let myApp = {};
     
     document.addEventListener('DOMContentLoaded', function() {
+      // 請求參數
+      let searchKeywords = [[${searchKeywords}]];
+      searchKeywords.amenities = [];
+
+      let activeOption = document.querySelector('.customer-blue-active');
+
+      document.getElementById('sortOptions').addEventListener('click', async e => {
+        let targetSort = e.target.closest('div');
+        let attrOrderBy = targetSort.dataset.attr;
+        let selectedSort = targetSort.dataset.sort;
+
+        activeOption.classList.remove('customer-blue-active');
+        targetSort.classList.add('customer-blue-active');
+
+        activeOption = targetSort;
+        
+        searchKeywords.pageNumber = 1;
+        searchKeywords.attrOrderBy = attrOrderBy;
+        searchKeywords.selectedSort = selectedSort;
+
+        let response = await fetch('/booking/client/api/roomtype', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(searchKeywords)
+        });
+
+        let data = await response.json();
+        let roomtypes = data.content;
+
+        cardList.innerHTML = '';
+        renderCardList(roomtypes);
+      });
+
+      const range1 = document.getElementById('range1');
+      const range2 = document.getElementById('range2');
+      const minValue = document.getElementById('minValue');
+      const maxValue = document.getElementById('maxValue');
+
+      function updateRange() {
+          if(parseInt(range1.value) > parseInt(range2.value)) {
+              let tmp = range1.value;
+              range1.value = range2.value;
+              range2.value = tmp;
+          }
+
+          minValue.value = 'NT$ ' + range1.value;
+          maxValue.value = 'NT$ ' + range2.value;
+      }
+
+      const rangeHandler = async e => {
+        // 去除掉NT$ 
+        searchKeywords.minMoney = minValue.value.substring(4);
+        searchKeywords.maxMoney = maxValue.value.substring(4);
+        searchKeywords.pageNumber = 1;
+
+        let response = await fetch('/booking/client/api/roomtype', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(searchKeywords)
+        });
+
+        let data = await response.json();
+        let roomtypes = data.content;
+
+        cardList.innerHTML = '';
+        renderCardList(roomtypes);
+      }
+
+      range1.addEventListener('change', rangeHandler);
+      range2.addEventListener('change', rangeHandler);
       
+
+      range1.addEventListener('input', updateRange);
+      range2.addEventListener('input', updateRange);
+
       document.querySelector('.card-list').addEventListener('click', function(e) {
         let card = e.target.closest('.card');
         let cardId = card.dataset.id;
@@ -448,10 +585,6 @@
 
       let footer = document.querySelector('footer');
       let footerHeight = footer.clientHeight + parseInt(getComputedStyle(footer).marginTop);
-      // 請求參數
-      let searchKeywords = [[${searchKeywords}]];
-      searchKeywords.amenities = [];
-
       let filterCriteria = document.getElementById('filterCriteria');
 
       // 用來過濾URLSearchParams屬性值為null或undefined
@@ -563,8 +696,6 @@
 
         cardList.innerHTML = '';
         renderCardList(roomtypes);
-        console.log(data);
-        console.log(searchKeywords);
       }
 
       console.log(searchKeywords);
@@ -572,23 +703,19 @@
       document.getElementById('searchKey').addEventListener('change', async e => {
         let keywords = e.target.value;
 
-        console.log(keywords);
+        searchKeywords.roomtypeName = keywords;
+        searchKeywords.pageNumber = 1;
 
-        let params = new URLSearchParams({
-          roomtypeName: keywords,
-          roomtypeCity: keywords,
-          roomtypeDistrict: keywords
-        }).toString();
-
-        let response = await fetch(`/booking/client/api/roomtype?${params}`);
+        let response = await fetch('/booking/client/api/roomtype', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(searchKeywords)
+        });
 
         let data = await response.json();
-        
-        searchKeywords.roomtypeName = keywords;
-
         let roomtypes = data.content;
-
-        console.log(roomtypes);
 
         cardList.innerHTML = '';
 
@@ -609,16 +736,14 @@
           }
 
           searchKeywords.pageNumber++;
-
+          console.log(searchKeywords);
           let response = await fetch('/booking/client/api/roomtype', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(searchKeywords)
-          });
-          
-          
+          });   
 
           let data = await response.json();
 

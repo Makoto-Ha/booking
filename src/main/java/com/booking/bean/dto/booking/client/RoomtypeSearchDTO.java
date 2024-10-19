@@ -12,7 +12,11 @@ public class RoomtypeSearchDTO {
 	private String roomtypeDistrict;
 	private String roomtypeCity;
 	private String peopleNumber;
+	private Integer minMoney;
+	private Integer maxMoney;
 	private Integer pageNumber = 1;
+	private String attrOrderBy = "roomtypeId";
+	private Boolean selectedSort = false;
 	private List<Amenity> amenities;
 
 	public RoomtypeSearchDTO() {
@@ -81,13 +85,46 @@ public class RoomtypeSearchDTO {
 	public void setAmenities(List<Amenity> amenities) {
 		this.amenities = amenities;
 	}
+	
+	public Integer getMinMoney() {
+		return minMoney;
+	}
+
+	public void setMinMoney(Integer minMoney) {
+		this.minMoney = minMoney;
+	}
+
+	public Integer getMaxMoney() {
+		return maxMoney;
+	}
+
+	public void setMaxMoney(Integer maxMoney) {
+		this.maxMoney = maxMoney;
+	}
+	
+	public String getAttrOrderBy() {
+		return attrOrderBy;
+	}
+
+	public void setAttrOrderBy(String attrOrderBy) {
+		this.attrOrderBy = attrOrderBy;
+	}
+
+	public Boolean getSelectedSort() {
+		return selectedSort;
+	}
+
+	public void setSelectedSort(Boolean selectedSort) {
+		this.selectedSort = selectedSort;
+	}
 
 	@Override
 	public String toString() {
 		return "RoomtypeSearchDTO [searchStartDate=" + searchStartDate + ", searchEndDate=" + searchEndDate
 				+ ", roomtypeName=" + roomtypeName + ", roomtypeDistrict=" + roomtypeDistrict + ", roomtypeCity="
-				+ roomtypeCity + ", peopleNumber=" + peopleNumber + ", pageNumber=" + pageNumber + ", amenities="
-				+ amenities + "]";
+				+ roomtypeCity + ", peopleNumber=" + peopleNumber + ", minMoney=" + minMoney + ", maxMoney=" + maxMoney
+				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
+				+ ", amenities=" + amenities + "]";
 	}
 
 }

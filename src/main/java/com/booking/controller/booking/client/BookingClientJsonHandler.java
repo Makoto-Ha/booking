@@ -21,6 +21,11 @@ public class BookingClientJsonHandler {
 	@Autowired
 	private RoomtypeClientService rtClientService;
 	
+	/**
+	 * 根據用戶多種篩選做模糊查詢
+	 * @param roomtypeSearchDTO
+	 * @return
+	 */
 	@PostMapping("/roomtype")
 	private ResponseEntity<?> searchRoomtypes(@RequestBody RoomtypeSearchDTO roomtypeSearchDTO) {
 		System.out.println(roomtypeSearchDTO);
@@ -28,6 +33,11 @@ public class BookingClientJsonHandler {
 		return ResponseEntity.ok(page);
 	}
 	
+	/**
+	 * 根據輸入的關鍵字做模糊查詢
+	 * @param roomtypeKeywordSearchDTO
+	 * @return
+	 */
 	@GetMapping("/roomtype")
 	private ResponseEntity<?> searchRoomtypesByKeywords(RoomtypeKeywordSearchDTO roomtypeKeywordSearchDTO) {
 		Page<RoomtypeDTO> page = rtClientService.searchRoomtypesByKeyword(roomtypeKeywordSearchDTO);

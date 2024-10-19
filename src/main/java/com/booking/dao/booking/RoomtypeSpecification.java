@@ -13,8 +13,8 @@ import com.booking.bean.pojo.common.Amenity;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
@@ -145,7 +145,7 @@ public class RoomtypeSpecification {
 	// 根據價錢區間進行查詢
 	public static Specification<Roomtype> moneyContains (Integer minMoney, Integer maxMoney) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(minMoney == 0 && maxMoney == 0) {
+			if((minMoney == null && maxMoney == null) || (minMoney == 0 && maxMoney == 0)) {
 				return builder.conjunction();
 			}
 			
@@ -165,31 +165,56 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+	// 留著沒有解決的問題，這邊設置query.distinct(true)，之後寫的orderby有用到聚合函數，就會出現聚合函數未被選取到select中
+//	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
+//        return (root, query, criteriaBuilder) -> {
+//
+//          	query.distinct(true);
+//          	
+//            query.multiselect(root);
+//          	
+//           // 創建Room子查詢
+//            Subquery<Room> roomSubquery = query.subquery(Room.class);
+//           Root<Room> roomRoot = roomSubquery.from(Room.class);
+//       
+//            roomSubquery.select(roomRoot)
+//                    .where(
+//                           criteriaBuilder.equal(roomRoot.get("roomtype"), root),
+//                           criteriaBuilder.not(
+//                                   criteriaBuilder.exists(
+//                                           createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
+//                                   )
+//                            )
+//                    );
+//
+//            return criteriaBuilder.exists(roomSubquery);
+//      };
+//    }
+	
 	// 根據日期區間做查詢
 	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
-        return (root, query, criteriaBuilder) -> {
-	
-            // 連結Amenity表格
-            root.join("amenities", JoinType.LEFT);
+	    return (root, query, criteriaBuilder) -> {
 
-          	query.distinct(true);
-        
-            // 創建Room子查詢
-            Subquery<Room> roomSubquery = query.subquery(Room.class);
-            Root<Room> roomRoot = roomSubquery.from(Room.class);
-            roomSubquery.select(roomRoot)
-                    .where(
-                            criteriaBuilder.equal(roomRoot.get("roomtype"), root),
-                            criteriaBuilder.not(
-                                    criteriaBuilder.exists(
-                                            createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
-                                    )
-                            )
-                    );
+	        // 創建 Room 子查詢
+	        Subquery<Room> roomSubquery = query.subquery(Room.class);
+	        Root<Room> roomRoot = roomSubquery.from(Room.class);
 
-            return criteriaBuilder.exists(roomSubquery);
-        };
-    }
+	        roomSubquery.select(roomRoot)
+	            .where(
+	                criteriaBuilder.equal(roomRoot.get("roomtype"), root),
+	                criteriaBuilder.not(
+	                    criteriaBuilder.exists(
+	                        createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
+	                    )
+	                )
+	            );
+
+	        // 使用 GROUP BY 確保唯一性
+	        query.groupBy(root); // 對 Roomtype 進行分組
+
+	        return criteriaBuilder.exists(roomSubquery);
+	    };
+	}
 
     private static Subquery<BookingOrderItem> createBookingOrderItemSubquery(Subquery<Room> roomSubquery,
                                                                              Root<Room> roomRoot,
@@ -232,37 +257,42 @@ public class RoomtypeSpecification {
             Predicate amenityInPredicate = amenityJoin.get("amenityId").in(amenityIds);
             
             // 因為GROUP BY之後不能使用*，所以必須每個欄位都寫上
-            query.multiselect(root.get("roomtypeId")
-            		, root.get("roomtypeName")
-            		, root.get("roomtypeCapacity")
-            		, root.get("roomtypePrice")
-            		, root.get("roomtypeQuantity")
-            		, root.get("roomtypeDescription")
-            		, root.get("roomtypeAddress")
-            		, root.get("roomtypeCity")
-            		, root.get("roomtypeDistrict")
-            		, root.get("updatedTime")
-            		, root.get("createdTime")
-            		, root.get("imagePath"));
+            query.multiselect(root);
 
             // 使用 HAVING 和 COUNT(DISTINCT ra.amenity_id)
-            query.groupBy(root.get("roomtypeId")
-            		, root.get("roomtypeName")
-            		, root.get("roomtypeCapacity")
-            		, root.get("roomtypePrice")
-            		, root.get("roomtypeQuantity")
-            		, root.get("roomtypeDescription")
-            		, root.get("roomtypeAddress")
-            		, root.get("roomtypeCity")
-            		, root.get("roomtypeDistrict")
-            		, root.get("updatedTime")
-            		, root.get("createdTime")
-            		, root.get("imagePath")); 
+            query.groupBy(root); 
             
             query.having(builder.equal(builder.countDistinct(amenityJoin.get("amenityId")), amenityIds.size()));
 
             return amenityInPredicate;
         };
+	}
+
+	public static Specification<Roomtype> orderBy(String attrOrderBy, Boolean selectedSort) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(attrOrderBy == null || attrOrderBy.isEmpty()) {
+				return builder.conjunction();
+			}
+			
+			if(attrOrderBy.equals("amenities")) {
+				Join<Roomtype, Amenity> amenityJoin = root.join("amenities");
+				Expression<Long> amenitiesCount = builder.count(amenityJoin);
+				
+				query.multiselect(root, amenitiesCount);
+				query.groupBy(root);
+				
+				query.orderBy(builder.desc(amenitiesCount));
+				return builder.conjunction();
+			}
+			
+			if(selectedSort) {
+				query.orderBy(builder.desc(root.get(attrOrderBy)));
+			}else {
+				query.orderBy(builder.asc(root.get(attrOrderBy)));
+			}
+			
+			return builder.conjunction();
+		};
 	}
 	
 }

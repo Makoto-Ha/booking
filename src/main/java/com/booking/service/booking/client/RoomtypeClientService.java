@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -85,9 +86,13 @@ public class RoomtypeClientService {
 										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
 										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
 										.and(RoomtypeSpecification.hasAmenities(roomtypeSearchDTO.getAmenities()))
-										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()));
-		// 獲取pageable
-		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);
+										.and(RoomtypeSpecification.moneyContains(roomtypeSearchDTO.getMinMoney(), roomtypeSearchDTO.getMaxMoney()))			
+										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()))
+										.and(RoomtypeSpecification.orderBy(roomtypeSearchDTO.getAttrOrderBy(), roomtypeSearchDTO.getSelectedSort()));
+		// 獲取pageable					
+		Pageable pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber()-1, 10);
+		
+//		Pageable pageable = MyPageRequest.of(roomtypeSearchDTO.getPageNumber(), 10, roomtypeSearchDTO.getSelectedSort(), roomtypeSearchDTO.getAttrOrderBy());
 		
 		// 獲取page	
 		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
