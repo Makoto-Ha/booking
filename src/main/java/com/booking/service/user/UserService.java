@@ -106,20 +106,4 @@ public class UserService {
         }
         return existUser;
     }
-    
-    @Transactional
-    public User updateUser(User updatedUser) {
-        User existingUser = userRepository.findById(updatedUser.getUserId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Update fields
-        existingUser.setUserName(updatedUser.getUserName());
-        existingUser.setUserMail(updatedUser.getUserMail());
-        existingUser.setUserPhone(updatedUser.getUserPhone());
-        existingUser.setUserBirthday(updatedUser.getUserBirthday());
-        existingUser.setUserAddress(updatedUser.getUserAddress());
-
-        // Save the updated user
-        return userRepository.save(existingUser);
-    }
 }

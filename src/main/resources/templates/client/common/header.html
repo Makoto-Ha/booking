@@ -23,27 +23,20 @@
 						</li>
 						<li class="nav-item mx-2"><a class="nav-link" href="#">商城</a>
 						</li>
-						<li class="nav-item ms-auto d-flex"
-							sec:authorize="!isAuthenticated()"><a
-							href="/booking/auth/register"
-							class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
-							<a class="nav-link" href="/booking/auth/login">登入</a></li>
-						<li class="nav-item ms-auto d-flex"
-							sec:authorize="isAuthenticated()">
-							<div class="dropdown">
-								<a class="nav-link dropdown-toggle" href="#" id="userDropdown"
-									role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<span sec:authentication="name"></span>
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="userDropdown">
-									<li><a class="dropdown-item" href="/booking/auth/profile">個人資料</a></li>
-									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="/booking/auth/logout">登出</a></li>
-								</ul>
-
-							</div>
-						 </li>	
+						  <li class="nav-item ms-auto d-flex" sec:authorize="!isAuthenticated()">
+              <a href="/booking/auth/register" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
+              <a class="nav-link" href="/booking/auth/login">登入</a>
+            </li>
+            <li class="nav-item ms-auto d-flex" sec:authorize="isAuthenticated()">
+              <span class="nav-link" th:text="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User) ? #authentication.principal.attributes.name : #authentication.principal.username}"></span>
+              <a href="/booking/auth/logout" class="btn btn-outline-primary border-radius-22px mx-2">登出</a>
+            </li>
+						
+								
+					</ul>
 				</div>
+				
+			</div>
 		</nav>
 	</header>
 </body>
