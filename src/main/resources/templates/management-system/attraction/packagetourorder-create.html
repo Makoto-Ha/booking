@@ -39,7 +39,7 @@
                 </div>
 
                 <input type="hidden" id="orderStatus" name="orderStatus" value="1">
-                <input type="hidden" id="orderDateTime" name="orderDateTime">
+                
 
                 <div class="form-group">
                     <button type="submit" class="submit" id="submit">新增</button>
@@ -64,10 +64,6 @@
                 orderPriceInput.value = price;
             });
 
-            // 在表單提交時設置當前日期時間
-            document.querySelector('form').addEventListener('submit', function() {
-                orderDateTimeInput.value = new Date().toISOString();
-            });
         });
     </script>
 </body>

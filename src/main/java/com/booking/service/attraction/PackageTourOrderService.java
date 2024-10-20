@@ -1,6 +1,8 @@
 package com.booking.service.attraction;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +57,10 @@ public class PackageTourOrderService {
         for (PackageTourOrder packageTourOrder : packageTourOrders) {
             PackageTourOrderDTO responsePackageTourOrderDTO = new PackageTourOrderDTO();
             BeanUtils.copyProperties(packageTourOrder, responsePackageTourOrderDTO);
-            
-            
+            if (packageTourOrder.getPackageTour() != null) {
+                responsePackageTourOrderDTO.setPackageTourId(packageTourOrder.getPackageTour().getPackageTourId());
+                responsePackageTourOrderDTO.setPackageTourName(packageTourOrder.getPackageTour().getPackageTourName());
+            }
             packageTourOrderDTOs.add(responsePackageTourOrderDTO);
         }
 
@@ -71,12 +75,17 @@ public class PackageTourOrderService {
      * @param packageTourOrderDTO
      * @return
      */
-    public Result<PageImpl<PackageTourOrderDTO>> findPackageTourOrders(PackageTourOrderDTO packageTourOrderDTO) {
+    public Result<PageImpl<PackageTourOrderDTO>> findPackageTourOrders(PackageTourOrderDTO packageTourOrderDTO, LocalDate searchDate) {
         Specification<PackageTourOrder> spec = Specification
-        		.where(PackageTourOrderSpecification.orderIdEquals(packageTourOrderDTO.getOrderId()))
-                .and(PackageTourOrderSpecification.packageTourNameContains(packageTourOrderDTO.getPackageTourName()))
-                .and(PackageTourOrderSpecification.orderDateTimeEquals(packageTourOrderDTO.getOrderDateTime()))
-                .and(PackageTourOrderSpecification.orderStatusEquals(packageTourOrderDTO.getOrderStatus()));
+            .where(PackageTourOrderSpecification.orderIdEquals(packageTourOrderDTO.getOrderId()))
+            .and(PackageTourOrderSpecification.packageTourNameContains(packageTourOrderDTO.getPackageTourName()))
+            .and(PackageTourOrderSpecification.orderStatusEquals(packageTourOrderDTO.getOrderStatus()));
+
+        if (searchDate != null) {
+            LocalDateTime startOfDay = searchDate.atStartOfDay();
+            LocalDateTime endOfDay = searchDate.atTime(LocalTime.MAX);
+            spec = spec.and(PackageTourOrderSpecification.orderDateTimeBetween(startOfDay, endOfDay));
+        }
 
         Pageable pageable = MyPageRequest.of(packageTourOrderDTO.getPageNumber(), 10, packageTourOrderDTO.getSelectedSort(),
                 packageTourOrderDTO.getAttrOrderBy());
@@ -90,7 +99,6 @@ public class PackageTourOrderService {
                         dto.setPackageTourId(order.getPackageTour().getPackageTourId());
                         dto.setPackageTourName(order.getPackageTour().getPackageTourName());
                     }
-
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -108,14 +116,18 @@ public class PackageTourOrderService {
      * @return
      */
     public Result<PackageTourOrderDTO> findPackageTourOrderById(Integer orderId) {
-        Optional<PackageTourOrder> optional = packageTourOrderRepo.findById(orderId);
-        if (optional.isEmpty()) {
-        	return Result.failure("訂單不存在");
+        PackageTourOrder packageTourOrder = packageTourOrderRepo.findById(orderId).orElse(null);
+        if (packageTourOrder == null) {
+            return Result.failure("訂單不存在");
         }
-        PackageTourOrder packageTourOrder = optional.get();
+        
         PackageTourOrderDTO packageTourOrderDTO = new PackageTourOrderDTO();
         BeanUtils.copyProperties(packageTourOrder, packageTourOrderDTO);
-		return Result.success(packageTourOrderDTO);
+        packageTourOrderDTO.setOrderId(packageTourOrder.getOrderId());
+        packageTourOrderDTO.setUserId(packageTourOrder.getUserId());
+        packageTourOrderDTO.setPackageTourName(packageTourOrder.getPackageTour().getPackageTourName());
+        
+        return Result.success(packageTourOrderDTO);
     }
     
 
@@ -125,6 +137,7 @@ public class PackageTourOrderService {
      * @param orderDTO
      * @return
      */
+    @Transactional
     public Result<PackageTourOrderDTO> savePackageTourOrder(PackageTourOrderDTO orderDTO) {
         PackageTour packageTour = packageTourRepo.findById(orderDTO.getPackageTourId())
             .orElse(null);
@@ -214,8 +227,8 @@ public class PackageTourOrderService {
             return Result.failure("訂單不存在");
         }
 
-        if (orderStatus == 2 || orderStatus == 4) { // 2是已付款狀態,4是已完成狀態
-            return Result.failure("已付款或已完成的訂單不能被刪除");
+        if (orderStatus == 2) { // 2 表示已付款狀態
+            return Result.failure("已付款的訂單不能被刪除");
         }
 
         DaoResult<?> deleteResult = packageTourOrderRepo.deleteOrder(orderId);

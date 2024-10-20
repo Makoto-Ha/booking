@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <title>結帳頁面</title>
+  <style>
+    .preset-range {
+      background-color: #ffeded !important;
+      color: #ff0000 !important;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" id="litepicker" placeholder="選擇日期範圍" readonly>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+  <script>
+    // 定義多組日期區間和對應的顏色
+    const dateRanges = [
+      {
+        checkIn: '2024-10-01',
+        checkOut: '2024-10-10',
+        backgroundColor: '#ffeded',
+        textColor: '#ff0000'
+      },
+      {
+        checkIn: '2024-10-14',
+        checkOut: '2024-10-20',
+        backgroundColor: '#edffed',
+        textColor: '#00aa00'
+      },
+      {
+        checkIn: '2024-10-25',
+        checkOut: '2024-10-30',
+        backgroundColor: '#ededff',
+        textColor: '#0000ff'
+      },
+      {
+        checkIn: '2024-10-11',
+        checkOut: '2024-10-13',
+        backgroundColor: '#edffed',
+        textColor: 'green'
+      },
+      {
+        checkIn: '2024-11-05',
+        checkOut: '2024-11-21',
+        backgroundColor: '#ffeded',
+        textColor: 'red'
+      }
+    ];
+
+    const picker = new Litepicker({
+      element: document.getElementById('litepicker'),
+      singleMode: false,
+      allowRepick: true,
+
+      setup: (picker) => {
+
+        picker.on('render', (ui) => {
+          const days = ui.querySelectorAll('.day-item');
+
+          days.forEach(day => {
+            // 獲取日期的時間戳
+            const timestamp = parseInt(day.getAttribute('data-time'));
+            if (!isNaN(timestamp)) {
+              const currentDate = new Date(timestamp);
+
+              for (const range of dateRanges) {
+                const startDate = new Date(range.checkIn + 'T00:00:00');
+                const endDate = new Date(range.checkOut + 'T23:59:59');
+
+                // 比較時間戳
+                if (currentDate >= startDate && currentDate <= endDate) {
+                  day.style.backgroundColor = range.backgroundColor;
+                  day.style.color = range.textColor;
+                  break;
+                }
+              }
+            }
+          });
+        });
+      }
+    });
+
+    picker.on('selected', (startDate, endDate) => {
+      console.log(startDate);
+      console.log(startDate.getDate());
+      console.log(endDate.getMonth());
+      console.log(startDate.getFullYear());
+    })
+  </script>
+  
+</body>
+
+</html>

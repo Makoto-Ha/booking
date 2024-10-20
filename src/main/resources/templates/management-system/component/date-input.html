@@ -5,7 +5,7 @@
 <link rel="stylesheet" th:href="@{/management-system/component/css/input-date.css}">
 </head>
 <body>
-<input type="text" id="date-input" placeholder="選擇日期" name="bookingDate" th:value="${room.bookingDate}" readonly>
+<input type="text" id="date-input" placeholder="選擇日期" name="bookingDate" th:value="${room?.bookingDate ?: ''}" readonly>
 <div class="calendar" id="calendar">
   <div class="calendar-header" id="month-year"></div>
   <div class="calendar-grid" id="calendar-grid"></div>

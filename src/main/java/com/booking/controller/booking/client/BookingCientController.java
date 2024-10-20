@@ -97,5 +97,16 @@ public class BookingCientController {
 		return "/client/booking/google-map";
 	}
 	
+
+	/**
+	 * 跳轉checkout-page頁面
+	 * 
+	 */
+	@GetMapping("/checkout")
+	public String sendCheckout() {
+		return "/client/booking/checkout";
+	}
+	
+
 	
 }
