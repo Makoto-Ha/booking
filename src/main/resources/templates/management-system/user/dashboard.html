@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>儀表板</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">我的應用</a>
+        <div class="navbar-nav ml-auto">
+            <span class="navbar-text mr-3" sec:authentication="name"></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-outline-secondary">登出</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h2>歡迎來到您的儀表板</h2>
+        <p>這裡是您的個人儀表板。您可以在這裡查看和管理您的個人信息。</p>
+        <!-- 在這裡添加更多儀表板內容 -->
+    </div>
+</body>
+</html>
