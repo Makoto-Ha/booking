@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
+import com.booking.bean.dto.attraction.PackageTourOrderDTO;
 import com.booking.service.attraction.AttractionService;
+import com.booking.service.attraction.PackageTourOrderService;
 import com.booking.service.attraction.PackageTourService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
@@ -29,7 +31,8 @@ public class AttractionJsonHandler {
 	@Autowired
 	private PackageTourService packageTourService;
 	
-	
+	@Autowired
+	private PackageTourOrderService packageTourOrderService;
 	
 	/**
 	 * 返回景點類型
@@ -79,6 +82,22 @@ public class AttractionJsonHandler {
 		return JsonUtil.toJson(packageTourServiceResult.getData());
 	}
 	
+	
+	
+	/**
+	 * 根據訂單id獲取訂單
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/packageTourOrder/{id}")
+	private String findPackageTourOrderById(@PathVariable Integer id) {
+		Result<PackageTourOrderDTO> packageTourOrderServiceResult = packageTourOrderService.findPackageTourOrderById(id);
+		if (packageTourOrderServiceResult.isFailure()) {
+			return null;
+		}
+		
+		return JsonUtil.toJson(packageTourOrderServiceResult.getData());
+	}
 
 
 }

@@ -46,13 +46,16 @@ public class PackageTourOrderSpecification {
     
     
     //根據訂單建立日期進行模糊查詢
-    public static Specification<PackageTourOrder> orderDateTimeEquals(LocalDateTime orderDateTime) {
+    public static Specification<PackageTourOrder> orderDateTimeBetween(LocalDateTime start, LocalDateTime end) {
         return (root, query, criteriaBuilder) -> {
-            if (orderDateTime == null) {
+            if (start == null || end == null) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("orderDateTime").as(LocalDateTime.class), orderDateTime);
+            return criteriaBuilder.between(root.get("orderDateTime"), start, end);
         };
     }
+    
+    
+
     
 }
