@@ -23,10 +23,15 @@
             <li class="nav-item mx-2">
               <a class="nav-link" th:href="@{/shop}">商城</a>
             </li>    
-            <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
-              <a class="nav-link" href="#">登入</a>
+             <li class="nav-item ms-auto d-flex" sec:authorize="!isAuthenticated()">
+              <a href="/booking/auth/register" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
+              <a class="nav-link" href="/booking/auth/login">登入</a>
             </li>
+            <li class="nav-item ms-auto d-flex" sec:authorize="isAuthenticated()">
+              <span class="nav-link" th:text="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User) ? #authentication.principal.attributes.name : #authentication.principal.username}"></span>
+              <a href="/booking/auth/logout" class="btn btn-outline-primary border-radius-22px mx-2">登出</a>
+            </li>
+
           </ul>
         </div>
       </div>
