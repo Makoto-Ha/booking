@@ -14,6 +14,9 @@ import com.booking.dao.shopping.ShopOrderRepository;
 import com.booking.dao.shopping.TestUserRepository;
 import com.booking.utils.Result;
 
+import ecpay.payment.integration.AllInOne;
+import ecpay.payment.integration.domain.AioCheckOutALL;
+
 @Service
 public class ShopClientService {
 
@@ -45,6 +48,26 @@ public class ShopClientService {
 		List<ProductDTO> result = productRepository.findTopSellingProductDTOs(pageable);
 		
 		return Result.success(result);
+	}
+	
+	
+	
+	public String ecpayCheckout() {
+
+		AllInOne all = new AllInOne("");
+
+		AioCheckOutALL obj = new AioCheckOutALL();
+		obj.setMerchantTradeNo("kdkfhm21111354545");
+		obj.setMerchantTradeDate("2017/01/01 08:05:23");
+		obj.setTotalAmount("50");
+		obj.setTradeDesc("test Description");
+		obj.setItemName("TestItem");
+		obj.setReturnURL("https://c9a5-2402-7500-46b-3963-442a-d162-9bdb-95ba.ngrok-free.app/booking/");//只接受 https 開頭的網站
+		obj.setNeedExtraPaidInfo("N");
+		obj.setClientBackURL("https://c9a5-2402-7500-46b-3963-442a-d162-9bdb-95ba.ngrok-free.app/booking/");
+		String form = all.aioCheckOut(obj, null);
+
+		return form;
 	}
 	
 	

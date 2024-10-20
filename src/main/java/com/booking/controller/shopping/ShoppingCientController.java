@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.booking.bean.dto.shopping.ProductCategoryDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
@@ -96,7 +98,12 @@ public class ShoppingCientController {
 	// 加入購物車
 	// 移除購物車
 	// 訂單結帳
-	
+	@ResponseBody
+	@PostMapping("/ecpayCheckout")
+	public String ecpayCheckout() {
+		String ecpayCheckout = shopclientService.ecpayCheckout();
+		return ecpayCheckout;
+	}
 	
 	
 	
@@ -114,7 +121,6 @@ public class ShoppingCientController {
 	
 	@GetMapping("/cart")
 	public String sendCart(Model model) {
-		
 		return "client/shopping/shop-cart";
 	}
 	

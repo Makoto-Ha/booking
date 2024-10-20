@@ -16,6 +16,22 @@
             background-color: rgb(42, 42, 46);
         }
     </style>
+    <style>/* 悬浮购物车图标样式 */
+.floating-cart {
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    font-size: 3rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.floating-cart .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+    </style>
 </head>
 <body>
     <div th:replace="~{/client/common/header}"></div>
@@ -37,6 +53,13 @@
             <!-- 主內容 -->
             <div class="col-12 col-md-9">
             
+<!-- 购物车悬浮图标 -->
+<a th:href="@{/shop/cart}" class="floating-cart position-fixed">
+    <i class="bi bi-cart3"></i>
+    <span th:if="${cartItemCount > 0}" class="badge rounded-pill bg-danger">
+        <span th:text="${cartItemCount}">0</span>
+    </span>
+</a>
             <!-- 页面顶部的搜索表单 -->
 <div class="container my-4">
     <form method="get" th:action="@{/shop}" class="row g-3">
