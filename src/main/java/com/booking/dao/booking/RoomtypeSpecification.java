@@ -3,6 +3,7 @@ package com.booking.dao.booking;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
 
@@ -165,76 +166,122 @@ public class RoomtypeSpecification {
 		};
 	}
 	
-	// 留著沒有解決的問題，這邊設置query.distinct(true)，之後寫的orderby有用到聚合函數，就會出現聚合函數未被選取到select中
+	// 根據日期區間，區間內有一天房型的房間能預定，就返回房型，日期區間被訂滿了，就不返回房型
 //	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
-//        return (root, query, criteriaBuilder) -> {
-//
-//          	query.distinct(true);
-//          	
-//            query.multiselect(root);
-//          	
-//           // 創建Room子查詢
-//            Subquery<Room> roomSubquery = query.subquery(Room.class);
-//           Root<Room> roomRoot = roomSubquery.from(Room.class);
-//       
-//            roomSubquery.select(roomRoot)
-//                    .where(
-//                           criteriaBuilder.equal(roomRoot.get("roomtype"), root),
-//                           criteriaBuilder.not(
-//                                   criteriaBuilder.exists(
-//                                           createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
-//                                   )
-//                            )
-//                    );
-//
-//            return criteriaBuilder.exists(roomSubquery);
-//      };
-//    }
+//	    return (root, query, criteriaBuilder) -> {
+//	        boolean isSingleDay = checkInDate.equals(checkOutDate);
+//	        
+//	        // 獲取房型的所有房間數量
+//	        Subquery<Long> totalRoomsSubquery = query.subquery(Long.class);
+//	        Root<Room> totalRoomsRoot = totalRoomsSubquery.from(Room.class);
+//	        totalRoomsSubquery.select(criteriaBuilder.count(totalRoomsRoot))
+//	            .where(criteriaBuilder.equal(totalRoomsRoot.get("roomtype"), root));
+//	        
+//	        if (isSingleDay) {
+//	            // 單日查詢：計算指定日期已訂房間數
+//	            Subquery<Long> bookedRoomsSubquery = query.subquery(Long.class);
+//	            Root<BookingOrderItem> bookingRoot = bookedRoomsSubquery.from(BookingOrderItem.class);
+//	            Join<BookingOrderItem, Room> roomJoin = bookingRoot.join("room");
+//	            
+//	            bookedRoomsSubquery.select(criteriaBuilder.countDistinct(roomJoin))
+//	                .where(
+//	                    criteriaBuilder.equal(roomJoin.get("roomtype"), root),
+//	                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("checkInDate"), checkInDate),
+//	                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), checkInDate)
+//	                );
+//	            
+//	            // 確保有可用房間
+//	            return criteriaBuilder.lessThan(bookedRoomsSubquery, totalRoomsSubquery);
+//	            
+//	        } else {
+//	            // 區間查詢：檢查每一天是否都被訂滿
+//	            List<LocalDate> dateRange = checkInDate.datesUntil(checkOutDate.plusDays(1))
+//	                                                 .collect(Collectors.toList());
+//	            
+//	            // 為每一天創建子查詢
+//	            List<Predicate> dayPredicates = new ArrayList<>();
+//	            
+//	            for (LocalDate date : dateRange) {
+//	                // 檢查特定日期的已訂房間數
+//	                Subquery<Long> dayBookedRoomsSubquery = query.subquery(Long.class);
+//	                Root<BookingOrderItem> bookingRoot = dayBookedRoomsSubquery.from(BookingOrderItem.class);
+//	                Join<BookingOrderItem, Room> roomJoin = bookingRoot.join("room");
+//	                
+//	                dayBookedRoomsSubquery.select(criteriaBuilder.countDistinct(roomJoin))
+//	                    .where(
+//	                        criteriaBuilder.equal(roomJoin.get("roomtype"), root),
+//	                        criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("checkInDate"), date),
+//	                        criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), date)
+//	                    );
+//	                
+//	                // 創建該天的房間可用性判斷
+//	                dayPredicates.add(criteriaBuilder.lessThan(dayBookedRoomsSubquery, totalRoomsSubquery));
+//	            }
+//	            
+//	            // 如果任何一天有空房，就返回該房型
+//	            return criteriaBuilder.or(dayPredicates.toArray(new Predicate[0]));
+//	        }
+//	    };
+//	}
 	
-	// 根據日期區間做查詢
+	// 根據日期區間，區間內有一天房間能預定，就返回房型，反之有一天被預訂滿，就不返回房型
 	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
 	    return (root, query, criteriaBuilder) -> {
+	        boolean isSingleDay = checkInDate.equals(checkOutDate);
 
-	        // 創建 Room 子查詢
-	        Subquery<Room> roomSubquery = query.subquery(Room.class);
-	        Root<Room> roomRoot = roomSubquery.from(Room.class);
+	        // 獲取房型的所有房間數量
+	        Subquery<Long> totalRoomsSubquery = query.subquery(Long.class);
+	        Root<Room> totalRoomsRoot = totalRoomsSubquery.from(Room.class);
+	        totalRoomsSubquery.select(criteriaBuilder.count(totalRoomsRoot))
+	            .where(criteriaBuilder.equal(totalRoomsRoot.get("roomtype"), root));
 
-	        roomSubquery.select(roomRoot)
-	            .where(
-	                criteriaBuilder.equal(roomRoot.get("roomtype"), root),
-	                criteriaBuilder.not(
-	                    criteriaBuilder.exists(
-	                        createBookingOrderItemSubquery(roomSubquery, roomRoot, checkInDate, checkOutDate, criteriaBuilder)
-	                    )
-	                )
-	            );
+	        if (isSingleDay) {
+	            // 單日查詢：計算指定日期已訂房間數
+	            Subquery<Long> bookedRoomsSubquery = query.subquery(Long.class);
+	            Root<BookingOrderItem> bookingRoot = bookedRoomsSubquery.from(BookingOrderItem.class);
+	            Join<BookingOrderItem, Room> roomJoin = bookingRoot.join("room");
 
-	        // 使用 GROUP BY 確保唯一性
-	        query.groupBy(root); // 對 Roomtype 進行分組
+	            bookedRoomsSubquery.select(criteriaBuilder.countDistinct(roomJoin))
+	                .where(
+	                    criteriaBuilder.equal(roomJoin.get("roomtype"), root),
+	                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("checkInDate"), checkInDate),
+	                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), checkInDate)
+	                );
 
-	        return criteriaBuilder.exists(roomSubquery);
+	            // 如果某一天所有房間都已預定，則不返回該房型
+	            return criteriaBuilder.lessThan(bookedRoomsSubquery, totalRoomsSubquery);
+
+	        } else {
+	            // 區間查詢：檢查每一天是否所有房間都被預定滿
+	            List<LocalDate> dateRange = checkInDate.datesUntil(checkOutDate.plusDays(1))
+	                                                 .collect(Collectors.toList());
+
+	            // 為每一天創建子查詢
+	            List<Predicate> dayPredicates = new ArrayList<>();
+
+	            for (LocalDate date : dateRange) {
+	                // 檢查特定日期的已訂房間數
+	                Subquery<Long> dayBookedRoomsSubquery = query.subquery(Long.class);
+	                Root<BookingOrderItem> bookingRoot = dayBookedRoomsSubquery.from(BookingOrderItem.class);
+	                Join<BookingOrderItem, Room> roomJoin = bookingRoot.join("room");
+
+	                dayBookedRoomsSubquery.select(criteriaBuilder.countDistinct(roomJoin))
+	                    .where(
+	                        criteriaBuilder.equal(roomJoin.get("roomtype"), root),
+	                        criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("checkInDate"), date),
+	                        criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), date)
+	                    );
+
+	                // 如果某一天所有房間都已預定，則排除該房型
+	                Predicate dayFull = criteriaBuilder.greaterThanOrEqualTo(dayBookedRoomsSubquery, totalRoomsSubquery);
+	                dayPredicates.add(dayFull);
+	            }
+
+	            // 如果任何一天所有房間都被訂滿，則排除該房型
+	            return criteriaBuilder.not(criteriaBuilder.or(dayPredicates.toArray(new Predicate[0])));
+	        }
 	    };
 	}
-
-    private static Subquery<BookingOrderItem> createBookingOrderItemSubquery(Subquery<Room> roomSubquery,
-                                                                             Root<Room> roomRoot,
-                                                                             LocalDate checkInDate,
-                                                                             LocalDate checkOutDate,
-                                                                             CriteriaBuilder criteriaBuilder) {
-        // 創建BookingOrderItem的子查詢
-        Subquery<BookingOrderItem> bookingOrderItemSubquery = roomSubquery.subquery(BookingOrderItem.class);
-        Root<BookingOrderItem> bookingOrderItemRoot = bookingOrderItemSubquery.from(BookingOrderItem.class);
-        bookingOrderItemSubquery.select(bookingOrderItemRoot)
-                .where(
-                        criteriaBuilder.equal(bookingOrderItemRoot.get("room"), roomRoot),
-                        criteriaBuilder.and(
-                                criteriaBuilder.lessThanOrEqualTo(bookingOrderItemRoot.get("checkOutDate"), checkInDate),
-                                criteriaBuilder.greaterThanOrEqualTo(bookingOrderItemRoot.get("checkInDate"), checkOutDate)
-                        )
-                );
-
-        return bookingOrderItemSubquery;
-    }
 
     // 根據點擊的服務做查詢
 	public static Specification<Roomtype> hasAmenities(List<Amenity> amenities) {
