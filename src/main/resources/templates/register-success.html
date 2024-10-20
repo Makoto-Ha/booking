@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>註冊成功</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>註冊成功</h2>
+        <div class="alert alert-success" th:text="${message}"></div>
+        <p>請檢查您的電子郵件以驗證您的帳戶。</p>
+        <div class="mt-3">
+            <a th:href="@{/auth/login}" class="btn btn-primary">回到登入</a>
+        </div>
+    </div>
+</body>
+</html>

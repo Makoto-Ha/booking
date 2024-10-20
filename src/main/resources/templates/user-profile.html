@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>個人資料</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${user.userName}">使用者名稱</h5>
+                <p class="card-text"><strong>帳號：</strong> <span th:text="${user.userAccount}"></span></p>
+                <p class="card-text"><strong>電子信箱：</strong> <span th:text="${user.userMail}"></span></p>
+                <p class="card-text"><strong>電話號碼：</strong> <span th:text="${user.userPhone}"></span></p>
+                <p class="card-text"><strong>生日：</strong> <span th:text="${#temporals.format(user.userBirthday, 'yyyy-MM-dd')}"></span></p>
+                <p class="card-text"><strong>地址：</strong> <span th:text="${user.userAddress}"></span></p>
+                <a th:href="@{/auth/edit-profile}" class="btn btn-primary">編輯資料</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

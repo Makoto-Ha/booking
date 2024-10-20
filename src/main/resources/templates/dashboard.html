@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Welcome to Your Dashboard</h2>
+        <div class="card">
+            <div class="card-header">
+                會員資訊
+            </div>
+            <div class="card-body">
+                <p><strong>會員名字:</strong> <span th:text="${user.userName}"></span></p>
+                <p><strong>會員帳號:</strong> <span th:text="${user.userAccount}"></span></p>
+                <p><strong>電子郵件:</strong> <span th:text="${user.userMail}"></span></p>
+                <!-- Add more user information as needed -->
+            </div>
+        </div>
+        <div class="mt-3">
+            <a th:href="@{/auth/logout}" class="btn btn-primary">登出</a>
+        </div>
+    </div>
+</body>
+</html>
