@@ -3,6 +3,10 @@ package com.booking.bean.dto.attraction;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class PackageTourOrderDTO {
 
     private Integer orderId;
@@ -10,9 +14,12 @@ public class PackageTourOrderDTO {
     private Integer packageTourId;
     private String packageTourName;
     private Integer orderStatus;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderDateTime;
     private Integer orderPrice;
     private LocalDate travelDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate searchDate;
     
     
     private Integer pageNumber = 1;
@@ -82,6 +89,16 @@ public class PackageTourOrderDTO {
 	public void setOrderDateTime(LocalDateTime orderDateTime) {
 		this.orderDateTime = orderDateTime;
 	}
+	
+	
+	public LocalDate getSearchDate() {
+		return searchDate;
+	}
+
+
+	public void setSearchDate(LocalDate searchDate) {
+		this.searchDate = searchDate;
+	}
 
 
 	public Integer getOrderPrice() {
@@ -138,8 +155,9 @@ public class PackageTourOrderDTO {
 	public String toString() {
 		return "PackageTourOrderDTO [orderId=" + orderId + ", userId=" + userId + ", packageTourId=" + packageTourId
 				+ ", packageTourName=" + packageTourName + ", orderStatus=" + orderStatus + ", orderDateTime="
-				+ orderDateTime + ", orderPrice=" + orderPrice + ", travelDate=" + travelDate + ", pageNumber="
-				+ pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort + "]";
+				+ orderDateTime + ", searchDate=" + searchDate + ", orderPrice=" + orderPrice + ", travelDate="
+				+ travelDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
+				+ selectedSort + "]";
 	}
 
 

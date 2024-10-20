@@ -78,19 +78,16 @@
 					<button id="search-btn">進階搜索</button>
 					<div class="pagination">
 						<button id="prev-page">上一頁</button>
-						<input type="number" id="page-input"
-							th:value="${page.pageable.pageNumber}+1" min="1"> / <span
-							id="total-pages"
-							th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
+						<input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1"> / 
+						<span id="total-pages" th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
 						<button id="next-page">下一頁</button>
 					</div>
 					<div class="attr-order-by">
 						<select class="attr-select-order-by" id="select-order-by">
-							<option value="packageTourPrice"
-								th:selected="packageTourPrice == ${packageTourDTO.attrOrderBy}">價錢</option>
-						</select> <select class="attr-select-order-by" id="select-sort">
-							<option value="false"
-								th:selected="${packageTourDTO.selectedSort}">升冪</option>
+							<option value="packageTourPrice" th:selected="packageTourPrice == ${packageTourDTO.attrOrderBy}">價錢</option>
+						</select> 
+						<select class="attr-select-order-by" id="select-sort">
+							<option value="false" th:selected="${packageTourDTO.selectedSort}">升冪</option>
 							<option value="true" th:selected="${packageTourDTO.selectedSort}">降冪</option>
 						</select>
 					</div>

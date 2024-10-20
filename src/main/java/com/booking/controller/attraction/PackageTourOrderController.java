@@ -1,11 +1,13 @@
 package com.booking.controller.attraction;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +41,6 @@ public class PackageTourOrderController {
      */
     @GetMapping
     public String packageTourOrder(Model model) {
-        // DTO用於分頁所需數據
         PackageTourOrderDTO packageTourOrderDTO = new PackageTourOrderDTO();
         Result<PageImpl<PackageTourOrderDTO>> findPackageTourOrderAllResult = packageTourOrderService.findAllPackageTourOrder(packageTourOrderDTO);
         
@@ -109,17 +110,23 @@ public class PackageTourOrderController {
      * 處理查詢請求
      */
     @GetMapping("/select")
-    public String select(@RequestParam Map<String, String> requestParameters, PackageTourOrderDTO packageTourOrderDTO, Model model) {
-        Result<PageImpl<PackageTourOrderDTO>> packageTourOrderServiceResult = packageTourOrderService.findPackageTourOrders(packageTourOrderDTO);
+    public String select(@RequestParam Map<String, String> requestParameters, 
+                         @ModelAttribute PackageTourOrderDTO packageTourOrderDTO,
+                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchDate,
+                         Model model) {
+        
+        Result<PageImpl<PackageTourOrderDTO>> packageTourOrderServiceResult = 
+            packageTourOrderService.findPackageTourOrders(packageTourOrderDTO, searchDate);
         
         if(packageTourOrderServiceResult.isFailure()) {
-            return ""; 
+            return "error-page"; 
         }
         
         Page<PackageTourOrderDTO> page = packageTourOrderServiceResult.getData();
         
         model.addAttribute("requestParameters", requestParameters);
         model.addAttribute("packageTourOrderDTO", packageTourOrderDTO);
+        model.addAttribute("searchDate", searchDate);
         model.addAttribute("page", page);
 
         return "/management-system/attraction/packagetourorder-list";    
@@ -130,10 +137,8 @@ public class PackageTourOrderController {
      * 處理創建訂單請求
      */
     @PostMapping("/create")
-    public String savePackageTourOrder(@ModelAttribute PackageTourOrderDTO packageTourOrderDTO) {
-        // 設置訂單狀態為未付款
-        packageTourOrderDTO.setOrderStatus(1);
-        
+    public String savePackageTourOrder(@ModelAttribute PackageTourOrderDTO packageTourOrderDTO, Model model) {
+        packageTourOrderDTO.setOrderDateTime(null); 
         Result<PackageTourOrderDTO> savePackageTourOrderResult = packageTourOrderService.savePackageTourOrder(packageTourOrderDTO);
         if (savePackageTourOrderResult.isSuccess()) {
             return "redirect:/management/packageTourOrder";
