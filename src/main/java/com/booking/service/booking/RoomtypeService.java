@@ -378,16 +378,26 @@ public class RoomtypeService {
 		
 	}
 
+	/**
+	 * 上傳房型的圖片，下面註解如果拿掉就取消本地上傳頭貼，改用aws上傳大頭貼
+	 * @param imageFile
+	 * @param roomtypeId
+	 * @param imgOriginalKey
+	 * @return
+	 */
 	public Result<String> uploadImageByAWS(MultipartFile imageFile, Integer roomtypeId, String imgOriginalKey) {
 		
 		String fileName = imageFile.getOriginalFilename();
 		String avatarKey = "booking/roomtype" + roomtypeId + "/avatar.png";
-		String imgKey = "booking/roomtype" + roomtypeId + "/" + fileName;
+//		String imgKey = "booking/roomtype" + roomtypeId + "/" + fileName;
+		
+		// delete方法用於刪除圖片
 		File file = new File("uploads/" + fileName);
+		
 		// 禁止檔名是avatar.png
-		if(avatarKey.equals(imgKey)) {
-			return Result.failure("請誤用檔名avatar.png，上傳檔案失敗");
-		}
+//		if(avatarKey.equals(imgKey)) {
+//			return Result.failure("請誤用檔名avatar.png，上傳檔案失敗");
+//		}
 		
 		// 先上傳本地，用於獲得路徑上傳到AWS
 		Result<String> uploadResult = UploadImageFile.upload(imageFile);
@@ -395,15 +405,24 @@ public class RoomtypeService {
 		if(uploadResult.isFailure()) {
 			return uploadResult;
 		}
+		
 		// 如果沒有大頭貼，檔名會默認變成avatar.png
-		if(!AWSImageUtil.imageExist(avatarKey)) {
-			AWSImageUtil.uploadFile(avatarKey, "uploads/" + fileName);
-			file.delete();
-			return Result.success("上傳大頭貼AWS3成功");
-		}	
+//		if(!AWSImageUtil.imageExist(avatarKey)) {
+//			AWSImageUtil.uploadFile(avatarKey, "uploads/" + fileName);
+//			file.delete();
+//			return Result.success("上傳大頭貼AWS3成功");
+//		}	
+		
 		// 如果有值才刪除，沒值代表是新增圖片
+//		if(imgOriginalKey != null) {
+//			AWSImageUtil.deleteImage(imgOriginalKey);
+//		}
+		
+		// 如果imgKey和imgOriginalKey一樣，代表就是更新圖片
 		if(imgOriginalKey != null) {
-			AWSImageUtil.deleteImage(imgOriginalKey);
+			AWSImageUtil.uploadFile(imgOriginalKey, "uploads/" + fileName);
+			file.delete();
+			return Result.success("更新圖片成功");
 		}
 		
 		// 如果大頭貼和原本一樣，代表更新大頭貼
@@ -413,7 +432,10 @@ public class RoomtypeService {
 			return Result.success("更新大頭貼成功");
 		}
 		
-		AWSImageUtil.uploadFile(imgKey, "uploads/" + fileName);
+		// 確保第一次是1
+		int index = AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId + "/").size() + 1;
+		
+		AWSImageUtil.uploadFile("booking/roomtype" + roomtypeId + "/room" + index, "uploads/" + fileName);
 		file.delete();
 		return Result.success("圖片上傳AWS3成功");
 	}

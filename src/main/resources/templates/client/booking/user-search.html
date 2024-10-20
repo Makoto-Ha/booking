@@ -147,6 +147,10 @@
       height: 80px;
     }
 
+    .h-190px {
+      height: 190px;
+    }
+
     .font-size-12px {
       font-size: 12px;
     }
@@ -460,11 +464,19 @@
           <div th:each="roomtype : ${roomtypes}" class="card card-bgc w-100 mb-3" th:data-id="${roomtype.roomtypeId}">
               <div class="row g-0 h-100">
                 <div class="col-md-4 h-100">
-                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
+                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-190px img-fluid" alt="...">
+                    <div class="litte-img-group d-flex">
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room5'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room6'}" class="w-100 h-100" alt=""></div>
+                    </div>
                 </div>
                 <div class="col-md-5">
                     <div class="card-body h-100">
-                        <h4 class="card-title fw-bolder" th:text="${roomtype.roomtypeName}"></h4>
+                        <h4 class="card-title fw-bolder fs-5" th:text="${roomtype.roomtypeName}"></h4>
                         <div class="d-flex align-items-center">
                           <i class="bi bi-geo-alt-fill text-primary"></i>
                           <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeDistrict} + ','"></span>
@@ -601,11 +613,19 @@
             <div class="card card-bgc w-100 mb-3" data-id="${roomtype.roomtypeId}">
               <div class="row g-0 h-100">
                 <div class="col-md-4 h-100">
-                    <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-100 img-fluid rounded-start" alt="..." style="height: 190px !important;">
+                    <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-190px img-fluid" alt="...">
+                    <div class="litte-img-group d-flex">
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room5" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room6" class="w-100 h-100" alt=""></div>
+                    </div>
                 </div>
                 <div class="col-md-5">
                     <div class="card-body h-100">
-                        <h4 class="card-title fw-bolder">${roomtype.roomtypeName}</h4>
+                        <h4 class="card-title fw-bolder fs-5">${roomtype.roomtypeName}</h4>
                         <div class="d-flex align-items-center">
                           <i class="bi bi-geo-alt-fill text-primary"></i>
                           <span class="small mx-1 text-primary">${roomtype.roomtypeDistrict},</span>

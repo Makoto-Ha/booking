@@ -30,7 +30,7 @@ const requiredInputs = document.querySelectorAll('.form-group input[type="text"]
 
 // 正則表達式
 const validationRules = {
-    'roomtypeName': /^[\u4e00-\u9fa5]{4,}$/, // 開頭中文且必須要有四個中文
+    'roomtypeName': /^[\u4e00-\u9fa5][\w\W]{3,}/, // 開頭中文且必須要有四個中文
     'roomtypeAddress': /^[\u4e00-\u9fa5]{2,3}市[\u4e00-\u9fa5]{2,3}區[\u4e00-\u9fa5]+(?:街|路|大道)[\u4e00-\u9fa5\d]+號(?:\d+樓)?$/, // 台灣地址  
     'roomtypeDescription': /^(?=(?:.*[\u4e00-\u9fa5]){4})(?=.{8,}).*$/ // 至少八個字，且必須要有四個中文
 };

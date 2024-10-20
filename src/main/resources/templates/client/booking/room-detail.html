@@ -295,21 +295,21 @@
   <main>
 	<div th:replace="~{client/booking/room-search-input}"></div>
     <section class="container-fluid p-0 max-width-1200px w-100 mb-3">
-      <div class="row m-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        <div class="col-md-5 p-0">
-          <img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 object-fit-cover room-detail-largeimg-radius" alt="room">
+      <div class="row m-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#imgGroup" style="height: 375px !important">
+        <div class="col-md-5 p-0 h-100">
+          <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-100 object-fit-cover room-detail-largeimg-radius" alt="room">
         </div>
         <div class="col-md-7 p-0">
           <div class="row m-0 text-center h-100">
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius1" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 rounded" alt=""></div>
-            <div class="col-md-4 pe-0 ps-2"><img th:src="@{/client/booking/image/room2.webp}" class="w-100 h-100 room-detail-littleimg-radius2" alt=""></div>        
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2 pb-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100 room-detail-littleimg-radius1" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room5'}" class="w-100 h-100 rounded" alt=""></div>
+            <div class="col-md-4 pe-0 ps-2"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room6'}" class="w-100 h-100 room-detail-littleimg-radius2" alt=""></div>        
           </div>
         </div>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="imgGroup" tabindex="-1" aria-labelledby="imgGroup" aria-hidden="true">
           <div class="modal-dialog max-w-90">
             <div class="modal-content">
               <div class="modal-header custom-box-shadow">
@@ -320,31 +320,31 @@
               <div class="modal-body">
                 <div class="row">
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room5'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room6'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                   <div class="col-md-4 p-2">
-                    <img th:src="@{/client/booking/image/room2.webp}" class="w-100 rounded custom-box-shadow" alt="room1">
+                    <img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room5'}" class="w-100 rounded custom-box-shadow" alt="room1">
                   </div>
                 </div>
               </div>
@@ -371,7 +371,7 @@
             </div>
           </div>
           <div class="col-md-4 p-0 d-flex align-items-center justify-content-end">
-            <span class="fs-4 text-danger me-3"><small style="font-size: 14px;">NT$</small>13,059</span>
+            <span class="fs-4 text-danger me-3"><small style="font-size: 14px;">NT$</small><span th:text="${roomtype.roomtypePrice}"></span></span>
             <button class="btn btn-primary border-radius-22px fw-bolder me-3">立即預定</button>
           </div>
         </div>
@@ -381,24 +381,20 @@
           <!-- 房間簡介 -->
           <div class="mb-3 p-3 border rounded">
             <div class="mb-2"><img th:src="@{/client/booking/image/homes-logo.svg}" width="25" alt="homes-logo"></div>
-            <h3 class="fs-4 fw-bolder mb-0">苓雅區的1臥室 - 33平方公尺/1間專用衛浴 (Kaohsiung Port Inn (高雄港商旅-希臘市景4人房)) 滿分5顆星，住宿獲得3顆星</h3>
-            <div><a href="#" class="small link-underline link-underline-opacity-0">苓雅區, 高雄市, 台灣 - 查看地圖&週邊景點</a></div>
+            <h3 class="fs-4 fw-bolder mb-0" th:text="${roomtype.roomtypeName}"></h3>
+            <div><a href="#" class="small link-underline link-underline-opacity-0" th:text="${roomtype.roomtypeDistrict + ', ' + roomtype.roomtypeCity + ', 台灣 - 查看地圖&週邊景點'}"></a></div>
             <hr>
-            <p class="small mb-0">住宿位於苓雅區的絕佳位置，讓您輕鬆探索周遭景點。 離開前，別忘了探訪知名的光之穹頂。 這間3星級飯店的設施十分完善，可大大提升您的住宿品質，為旅程增添歡樂。</p>
+            <p class="small mb-0" th:text="${roomtype.roomtypeDescription}"></p>
           </div>
           <!-- 重點服務 -->
           <div class="mb-3 p-3 border rounded">
             <div class="mb-2"><img th:src="@{/client/booking/image/service-logo.jpg}" class="object-fit-cover" width="30" height="30" alt="homes-logo"></div>
             <h3 class="fs-4 fw-bolder">重點服務</h3>
             <div class="row m-0">
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>電梯</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>健康衛生標準清潔</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>健康衛生標準消毒</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>符合健康衛生標準的清潔用品</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>專業清潔公司打掃</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>提供酒精消毒液或洗手液</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>提供住客清潔用品</small></div>
-              <div class="col-md-3 p-0"><i class="bi bi-check-lg me-1 fs-5 align-middle"></i><small>無接觸入住/退房</small></div>
+              <div th:each="amenity : ${roomtype.amenities}" class="col-md-3 p-0">
+                <i class="bi bi-check-lg me-1 fs-5 align-middle"></i>
+                <small th:text="${amenity.name}"></small>
+              </div>
             </div>
           </div>
           <!-- 空間、房間 -->
@@ -410,15 +406,15 @@
             <div>民宿 <small class="font-size-12px">(客房面積：33平方公尺/355平方英尺)</small></div>
           
             <div class="d-flex mb-3">
-              <small class="border-end ps-0 px-2 font-size-12px">最多限住3人</small>
+              <small class="border-end ps-0 px-2 font-size-12px" th:text="${'最多限住' + roomtype.roomtypeCapacity + '人'}">最多限住3人</small>
               <small class="border-end px-2 font-size-12px">單室套房/單臥室</small>
               <small class="px-2 font-size-12px">1間衛浴</small>
             </div>
 
             <div class="d-flex">
               <div class="border p-3 rounded-3 me-3 w-240px">
-                <span class="d-block small">第1間臥室床型 : </span>
-                <small class="font-size-12px">2張雙人床</small>
+                <span class="d-block small">臥室床型 : </span>
+                <small class="font-size-12px"><span th:text="${roomtype.roomtypeCapacity}"></span>張雙人床</small>
                 <div class="mt-2">  
                   <img th:src="@{/client/booking/image/bed-icon2.png}" width="20" alt="hairdryer">
                 </div>
@@ -437,32 +433,20 @@
         </div>
         <aside class="customer-col-md-3 p-3 ms-3 mb-3 border rounded">
           <div class="w-100">
-            <iframe class="w-100" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d29462.40766989298!2d120.29714847173928!3d22.623906743097525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1z6IuT6ZuF5Y2A55qEMeiHpeWupA!5e0!3m2!1szh-TW!2stw!4v1728820593331!5m2!1szh-TW!2stw" height="120" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div id="map" class="w-100" style="width: 250px; height: 120px;"></div>
           </div>
           <hr>
           <div class="small">
-            <span class="fw-bolder d-block my-2">可步行抵達的地點</span>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>高雄85大樓<span class="ms-auto">10公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>高雄85大樓<span class="ms-auto">10公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>意誠堂關帝廟<span class="ms-auto">190公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>意誠堂<span class="ms-auto">190公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>高雄新光碼頭<span class="ms-auto">190公尺</span></div>
+            <span class="fw-bolder d-block my-2 text-danger">可步行抵達的地點</span>
+            <div id="walkablePlaces"></div>
           </div>
           <div class="small">
-            <span class="fw-bolder d-block my-2">人氣景點</span>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>美麗島站<span class="ms-auto">2.2公里</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>光之穹頂<span class="ms-auto">2.2公里</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>六合觀光夜市<span class="ms-auto">2.3公里</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>旗津島<span class="ms-auto">3.2公里</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>打狗英國領事館<span class="ms-auto">3.5公里</span></div>
+            <span class="fw-bolder d-block my-2 text-danger">人氣景點</span>
+            <div id="attractions"></div>
           </div>
           <div class="small">
-            <span class="fw-bolder d-block my-2">距離最近的景點</span>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>新光碼頭<span class="ms-auto">410公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>阮綜合醫院<span class="ms-auto">480公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>四維香花公園<span class="ms-auto">500公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>陳中和紀念館<span class="ms-auto">520公尺</span></div>
-            <div class="d-flex my-1"><i class="bi bi-geo-alt-fill me-1"></i>新光公園<span class="ms-auto">540公尺</span></div>
+            <span class="fw-bolder d-block my-2 text-danger">距離最近的景點</span>
+            <div id="closestPlaces"></div>
           </div>
         </aside>
       </article>
@@ -471,5 +455,209 @@
 
   <div th:replace="~{client/common/footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOU_KEY&libraries=places&callback=initMap" async defer></script>
+
+<script>
+  // 儲存地點的數組
+  let walkablePlacesArray = [];
+  let attractionsArray = [];
+  let closestPlacesArray = [];
+
+  let map; // 將地圖變數移到外部範圍
+
+  let walkablePlaces = document.getElementById('walkablePlaces');
+  let attractions = document.getElementById('attractions');
+  let closestPlaces = document.getElementById('closestPlaces');
+
+  function renderLocation(dom, locations) {
+    locations.forEach(location => {
+      let div = `<div class="d-flex align-items-center my-1"><img src="${location.icon}" class="me-1" style="width: 14px; height: 14px;"></img>${location.name.substring(0, 10)}<span class="ms-auto">${location.distance}</span></div>`;
+      dom.innerHTML += div;
+    });
+  }
+
+  function initMap() {
+      const geocoder = new google.maps.Geocoder();
+      const address = "[[${roomtype.roomtypeAddress}]]"; // 地址
+
+      geocoder.geocode({ 'address': address }, (results, status) => {
+          if (status === 'OK') {
+              const centerLocation = results[0].geometry.location;
+              map = new google.maps.Map(document.getElementById("map"), {
+                  center: centerLocation,
+                  zoom: 15,
+              });
+
+              // 在地址位置添加紅色標記
+              const marker = new google.maps.Marker({
+                  map: map,
+                  position: centerLocation,
+                  title: '你的位置',
+                  icon: {
+                      url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                  }
+              });
+
+              map.setCenter(centerLocation);
+              findNearbyPlaces(map, centerLocation);
+          } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+          }
+      });
+  }
+
+  function findNearbyPlaces(map, centerLocation) {
+    const service = new google.maps.places.PlacesService(map);
+
+    // 可步行的地點請求，範圍設為1公里
+    const walkableRequest = {
+        location: centerLocation,
+        radius: 1000, // 1公里
+        type: ['store', 'restaurant', 'cafe', 'supermarket']
+    };
+
+    // 人氣景點請求，範圍設為5公里
+    const attractionRequest = {
+        location: centerLocation,
+        radius: 5000, // 5公里
+        type: ['tourist_attraction', 'park', 'museum']
+    };
+
+    // 執行搜索：可步行抵達的地點
+    service.nearbySearch(walkableRequest, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            processPlaces(results, centerLocation, 'walkable');
+        }
+    });
+
+    // 執行搜索：人氣景點
+    service.nearbySearch(attractionRequest, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            processPlaces(results, centerLocation, 'attractions');
+        }
+    });
+}
+
+// 檢查地點是否合法
+function isValidPlace(place) {
+    const validTypes = [
+        'restaurant', 
+        'cafe', 
+        'supermarket', 
+        'tourist_attraction', 
+        'park', 
+        'museum', 
+        'point_of_interest' // 添加其他有效類型
+    ];
+
+    // 檢查地點類型是否在有效類型中
+    const isValidType = place.types.some(type => validTypes.includes(type));
+    
+    // 檢查是否不屬於城市或地區
+    const isNotCity = !place.types.includes('locality') && !place.types.includes('administrative_area_level_1');
+
+    return isValidType && isNotCity; // 確保是有效地點並不屬於城市
+  }
+
+function processPlaces(places, centerLocation, type) {
+    console.log("processPlaces 被調用"); // 調試輸出
+    const distanceService = new google.maps.DistanceMatrixService();
+    const destinations = places.map(place => place.geometry.location);
+
+    distanceService.getDistanceMatrix({
+        origins: [centerLocation],
+        destinations: destinations,
+        travelMode: 'WALKING'
+    }, (response, status) => {
+        if (status === 'OK') {
+            const distances = response.rows[0].elements;
+
+            for (let i = 0; i < places.length; i++) {
+                const place = places[i];
+                const distanceValue = distances[i].distance.value;
+
+                // 過濾距離，根據類型進行篩選
+                if (type === 'walkable' && distanceValue <= 1000 && isValidPlace(place)) {
+                    const placeInfo = {
+                        name: place.name,
+                        location: place.geometry.location,
+                        address: place.vicinity,
+                        distance: distances[i].distance.text,
+                        distanceValue: distanceValue,
+                        icon: place.icon
+                    };
+
+                    // 檢查是否已經存在於可步行地點陣列中
+                    const isDuplicate = walkablePlacesArray.some(existingPlace => existingPlace.name === placeInfo.name && existingPlace.distanceValue === placeInfo.distanceValue);
+
+                    if (!isDuplicate) {
+                        walkablePlacesArray.push(placeInfo);
+                        createMarker(map, placeInfo);
+                    }
+                } else if (type === 'attractions' && distanceValue <= 5000 && isValidPlace(place)) { // 僅對人氣景點進行5公里範圍的檢查
+                    const placeInfo = {
+                        name: place.name,
+                        location: place.geometry.location,
+                        address: place.vicinity,
+                        distance: distances[i].distance.text,
+                        distanceValue: distanceValue,
+                        icon: place.icon
+                    };
+
+                    // 檢查是否已經存在於人氣景點陣列中
+                    const isDuplicate = attractionsArray.some(existingPlace => existingPlace.name === placeInfo.name && existingPlace.distanceValue === placeInfo.distanceValue);
+
+                    if (!isDuplicate) {
+                        attractionsArray.push(placeInfo);
+                        createMarker(map, placeInfo);
+                    }
+                }
+            }
+
+            // 根據類型進行輸出和排序
+            if (type === 'walkable') {
+                console.log("可步行抵達的地點數量:", walkablePlacesArray.length);
+                if (walkablePlacesArray.length > 0) {
+                    walkablePlacesArray.sort((a, b) => a.distanceValue - b.distanceValue);
+                    renderLocation(walkablePlaces, walkablePlacesArray);
+                    console.log('可步行抵達的地點排序:', walkablePlacesArray);
+                }
+            } else if (type === 'attractions') {
+                console.log("人氣景點數量:", attractionsArray.length);
+                if (attractionsArray.length > 0) {
+                    attractionsArray.sort((a, b) => a.distanceValue - b.distanceValue);
+                    renderLocation(attractions, attractionsArray);
+                    console.log('人氣景點排序:', attractionsArray);
+                    renderLocation(closestPlaces, attractionsArray.slice(0, 5));
+                }
+            }
+        }
+    });
+}
+
+
+  // 創建標記並顯示在地圖上
+  function createMarker(map, placeInfo) {
+      const marker = new google.maps.Marker({
+          map: map,
+          position: placeInfo.location,
+          icon: {
+              url: placeInfo.icon,
+              scaledSize: new google.maps.Size(30, 30)
+          }
+      });
+
+      // 創建 InfoWindow
+      const infoWindow = new google.maps.InfoWindow();
+
+      // 使用閉包保存當前的 placeInfo
+      google.maps.event.addListener(marker, 'click', () => {
+          // 設置 InfoWindow 的內容
+          infoWindow.setContent(`<div><strong>${placeInfo.name}</strong><br>距離: ${placeInfo.distance}</div>`);
+          infoWindow.open(map, marker); // 在標記位置打開 InfoWindow
+      });
+  }
+  
+</script>
 </body>
 </html>

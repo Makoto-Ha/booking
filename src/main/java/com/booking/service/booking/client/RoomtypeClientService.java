@@ -15,6 +15,7 @@ import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
 import com.booking.utils.MyPageRequest;
+import com.booking.utils.Result;
 
 @Service
 public class RoomtypeClientService {
@@ -91,9 +92,7 @@ public class RoomtypeClientService {
 										.and(RoomtypeSpecification.orderBy(roomtypeSearchDTO.getAttrOrderBy(), roomtypeSearchDTO.getSelectedSort()));
 		// 獲取pageable					
 		Pageable pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber()-1, 10);
-		
-//		Pageable pageable = MyPageRequest.of(roomtypeSearchDTO.getPageNumber(), 10, roomtypeSearchDTO.getSelectedSort(), roomtypeSearchDTO.getAttrOrderBy());
-		
+
 		// 獲取page	
 		Page<Roomtype> page = roomtypeRepo.findAll(spec, pageable);
 		
@@ -103,6 +102,24 @@ public class RoomtypeClientService {
 			BeanUtils.copyProperties(roomtype, responseDTO);
 			return responseDTO;
 		});
+	}
+	
+	/**
+	 * 根據roomtypeId查找房型
+	 * @param roomtypeId
+	 * @return
+	 */
+	public Result<RoomtypeDTO> findById(Integer roomtypeId) {
+		Roomtype roomtype = roomtypeRepo.findById(roomtypeId).orElse(null);
+		
+		if(roomtype == null) {
+			return Result.failure("查找房間失敗");
+		}
+		
+		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+		BeanUtils.copyProperties(roomtype, roomtypeDTO);
+		
+		return Result.success(roomtypeDTO);
 	}
 
 }
