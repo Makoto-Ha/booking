@@ -123,7 +123,8 @@ public class AuthController {
             return "reset-password";
         }
     }
-
+    
+    
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam String token, Model model) {
         try {
