@@ -293,37 +293,8 @@
 
   <div th:replace="~{client/common/header}"></div>
 
-  <header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary px-4 py-2">
-      <div class="container-fluid">
-        <a class="navbar-brand py-2" href="#">Instastay</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav w-100">
-            <li class="nav-item mx-2">
-              <a class="nav-link active" aria-current="page" href="#">搜好房</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">活動</a>
-            </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" href="#">商城</a>
-            </li>    
-   <li class="nav-item ms-auto d-flex">
-              <button type="button" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</button>
-              <a class="nav-link" href="#">登入</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>   
-  </header>
-
-
   <main>
-	<div th:replace="~{client/booking/room-search-input}"></div>
+	<div th:replace="~{client/booking/roomtype-search-input}"></div>
     <section class="container-fluid p-0 max-width-1200px w-100 mb-3">
       <div class="row m-0 cursor-pointer" data-bs-toggle="modal" data-bs-target="#imgGroup" style="height: 375px !important">
         <div class="col-md-5 p-0 h-100">
@@ -402,7 +373,7 @@
           </div>
           <div class="col-md-4 p-0 d-flex align-items-center justify-content-end">
             <span class="fs-4 text-danger me-3"><small style="font-size: 14px;">NT$</small><span th:text="${roomtype.roomtypePrice}"></span></span>
-            <button class="btn btn-primary border-radius-22px fw-bolder me-3">立即預定</button>
+            <button class="btn btn-primary border-radius-22px fw-bolder me-3" onclick="sendCheckout()">立即預定</button>
           </div>
         </div>
       </header>
@@ -488,8 +459,18 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKHcMV-JUzZPycnOjeLaS8OAztimOISuo&libraries=places&callback=initMap" async defer></script>
 
-
+<script th:inline="javascript">
+	let roomtype = [[${roomtype}]];
+</script>
 <script>
+	
+  function sendCheckout() {
+  	
+  	console.log(roomtype)
+  	let params = new URLSearchParams(roomtype).toString();
+  	location.href = '/booking/checkout?' + params;
+  }
+
   // 儲存地點的數組
   let walkablePlacesArray = [];
   let attractionsArray = [];

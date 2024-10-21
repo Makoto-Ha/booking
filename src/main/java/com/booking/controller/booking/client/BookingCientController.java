@@ -84,29 +84,18 @@ public class BookingCientController {
 		Result<RoomtypeDTO> findByIdReseult = rtClientService.findById(roomtypeId);
 		RoomtypeDTO roomtype = findByIdReseult.getData();
 		model.addAttribute("roomtype", roomtype);
-		return "/client/booking/room-detail";
+		return "/client/booking/roomtype-detail";
 	}
-	
-	
-	/**
-	 * 跳轉GoogleMap頁面
-	 * 
-	 */
-	@GetMapping("/googlemap")
-	public String sendGoogleMap() {
-		return "/client/booking/google-map";
-	}
-	
 
 	/**
 	 * 跳轉checkout-page頁面
 	 * 
 	 */
 	@GetMapping("/checkout")
-	public String sendCheckout() {
+	public String sendCheckout(RoomtypeDTO roomtypeDTO, Model model) {
+		System.out.println(roomtypeDTO);
+		model.addAttribute("roomtype", roomtypeDTO);
 		return "/client/booking/checkout";
 	}
-	
 
-	
 }

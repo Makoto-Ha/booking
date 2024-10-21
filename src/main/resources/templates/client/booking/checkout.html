@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <title>結帳頁面</title>
   <style>
@@ -13,15 +14,460 @@
       background-color: #ffeded !important;
       color: #ff0000 !important;
     }
+
+    html,
+    body {
+      height: 100% !important;
+      background-color: #f6f8fc !important;
+    }
+
+    /* 默認情況下隱藏遮罩層 */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* 半透明暗色效果 */
+      backdrop-filter: blur(5px);
+      /* 模糊效果 */
+      z-index: 998;
+      /* 高於其他元素但低於下拉選單 */
+      display: none;
+      /* 初始狀態隱藏 */
+    }
+
+    #date {
+      label {
+        cursor: pointer;
+      }
+
+      input {
+        cursor: pointer;
+      }
+    }
+
+    .border-box {
+      box-sizing: border-box !important;
+    }
+
+    .border-radius-22px {
+      border-radius: 22px;
+    }
+
+    .border-bottom-dashed {
+      border-bottom: 1px dashed black !important;
+    }
+
+    .border-bottom-gray {
+      border-bottom: 1px solid #ccc !important;
+    }
+
+    .border-bottom-gray-2 {
+      border-bottom: 2px solid #ccc !important;
+    }
+
+    .max-w-90 {
+      max-width: 90%;
+    }
+
+    .w-90 {
+      width: 90%;
+    }
+
+    .w-80 {
+      width: 80%;
+    }
+
+    .w-70 {
+      width: 70%;
+    }
+
+    .w-65 {
+      width: 65% !important;
+    }
+
+    .w-35 {
+      width: 35% !important;
+    }
+
+    .w-30 {
+      width: 30% !important;
+    }
+
+    .w-20 {
+      width: 20%;
+    }
+
+    .w-15 {
+      width: 15%;
+    }
+
+    .max-width-1200px {
+      max-width: 1200px;
+    }
+
+    .w-240px {
+      width: 240px;
+    }
+
+    .w-100px {
+      width: 100px;
+    }
+
+    .w-80px {
+      width: 80px;
+    }
+
+    .w-40px {
+      width: 40px;
+    }
+
+    .h-80 {
+      height: 80%;
+    }
+
+    .h-12d5px {
+      height: 12.5px;
+    }
+
+    .h-25px {
+      height: 25px;
+    }
+
+    .h-30px {
+      height: 30px;
+    }
+
+    .h-40px {
+      height: 40px;
+    }
+
+    .h-50px {
+      height: 50px;
+    }
+
+    .h-60px {
+      height: 60px;
+    }
+
+    .h-70px {
+      height: 70px;
+    }
+
+    .h-80px {
+      height: 80px;
+    }
+
+    .h-190px {
+      height: 190px;
+    }
+
+    .font-size-12px {
+      font-size: 12px;
+    }
+
+    .font-size-25px {
+      font-size: 25px;
+    }
+
+    .border-left-gray {
+      border-left: 1px solid #ccc;
+    }
+
+    /* 取消默認的外框 */
+    .form-control {
+      border: none !important;
+      /* 移除边框 */
+      box-shadow: none !important;
+      /* 移除阴影 */
+    }
+
+    .flex-grow-2 {
+      flex-grow: 2;
+    }
+
+    .flex-grow-3 {
+      flex-grow: 3;
+    }
+
+    .flex-grow-4 {
+      flex-grow: 4;
+    }
+
+    .outline-0 {
+      outline: none;
+    }
+
+    .outline-1 {
+      outline: 1px solid black;
+    }
+
+    .card {
+      cursor: pointer;
+      transition: box-shadow 0.2s ease;
+      /* 添加動畫過渡效果 */
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 3px 20px rgba(95, 95, 95, 0.147);
+      /* hover時的陰影效果 */
+    }
+
+    .card-bgc {
+      background-color: #f5f8ff;
+    }
+
+    .card-bgc:hover {
+      background-color: white;
+    }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    .outline-success {
+      outline-color: #09b057;
+    }
+
+    .outline-bluesubtle-color {
+      outline-color: rgb(193, 203, 224);
+    }
+
+    .border-bludsublte-color {
+      border: 1px solid rgb(193, 203, 224);
+    }
+
+    .customer-blue-hover {
+      transition: .2s ease-in-out;
+    }
+
+    .customer-blue-hover:hover {
+      cursor: pointer;
+      background-color: #EBF0FC;
+      outline-color: #3E6CEA;
+    }
+
+    .customer-blue-border {
+      border: 1px solid rgb(193, 203, 224);
+    }
+
+    input:focus {
+      background-color: #EBF0FC !important;
+      outline: 1px solid #3E6CEA !important;
+      /* 聚焦時設置深藍色邊框 */
+    }
+
+    #litepicker {
+      width: 1200px;
+      height: 70px;
+      border-radius: 10px;
+      box-sizing: content-box !important;
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding-left: 1.2rem;
+      text-align: center;
+      border: 1px solid rgb(193, 203, 224) !important;
+    }
+
+    /* 調整整個日曆的寬度 */
+    .litepicker {
+      position: relative;
+      font-size: 18px !important;
+      /* 調整字體大小，隨寬度調整 */
+    }
+
+    .container__months {
+      display: flex;
+      flex-wrap: wrap;
+      width: 1176px !important;
+      box-sizing: border-box !important;
+    }
+
+    .month-item {
+      width: 100%;
+    }
+
+    .container__days>div {
+      width: 14.2857142857% !important;
+      border-radius: 0 !important;
+    }
+
+    .container__days>div {
+      cursor: pointer !important;
+    }
+
+    .month-item {
+      border-bottom: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      flex-grow: 1;
+      box-sizing: border-box !important;
+    }
+
+    /* 固定下一個月按鈕在右上角 */
+    .button-next-month {
+      position: absolute;
+      top: 10px;
+      /* 距離頂部 10px */
+      right: 10px;
+      /* 距離右邊 10px */
+      z-index: 1000;
+      /* 保證按鈕在其他元素之上 */
+    }
+
+    .litepicker .is-selected:not(.is-start-date):not(.is-end-date) {
+      background-color: rgba(0, 140, 255, 0.4) !important;
+      color: #333 !important;
+    }
+
+    .litepicker .is-start-date,
+    .litepicker .is-end-date {
+      background-color: rgb(0, 140, 255) !important;
+      color: #fff !important;
+    }
+
+    #toggleBtn {
+      border: 1px solid rgb(193, 203, 224);
+      padding: .5rem;
+      border-radius: 22px;
+      background-color: white;
+      margin-bottom: .5rem;
+      transition: .2s ease-in-out;
+    }
+
+    #toggleBtn:hover {
+      background-color: #EBF0FC;
+      outline: 1px solid #3E6CEA;
+    }
+
+    .text-customer-darkblue-subtle {
+      color: rgb(107, 115, 136) !important;
+    }
+
+    .visually-hidden {
+      transition: .2s !important;
+    }
+
   </style>
 </head>
 
 <body>
-  <input type="text" id="litepicker" placeholder="選擇日期範圍" readonly>
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <div th:replace="~{client/common/header}"></div>
+  <main>
+    <section class="container-fluid max-width-1200px w-100 d-flex flex-column my-2" id="date">
+      <button id="toggleBtn" class="mb-2" onclick="">開關日歷</button>
+      <input type="text" class="visually-hidden" id="litepicker" placeholder="選擇預定日期，支援多日期預定" readonly>
+    </section>
+    <section class="container-fluid max-width-1200px w-100 d-flex justify-content-center pb-3">
+      <div class="w-65 m-0 me-3">
+        <div class="p-3 border-radius-22px border-bludsublte-color bg-white mb-2">
+          <div class="w-100">
+            <h2 class="fs-3 fw-bolder mt-2">主要登記住客</h2>
+          </div>
+          <div class="d-flex flex-column">
+
+            <input class="form-control form-control-lg mt-3 outline-1 outline-success customer-blue-hover" type="text"
+              placeholder="用戶名" aria-label=".form-control-lg example">
+
+            <input class="form-control form-control-lg mt-3 outline-1 outline-bluesubtle-color customer-blue-hover"
+              type="text" placeholder="電子信箱" aria-label=".form-control-lg example">
+            <input class="form-control form-control-lg mt-3 outline-1 outline-bluesubtle-color customer-blue-hover"
+              type="text" placeholder="連絡電話" aria-label=".form-control-lg example">
+            <small class="my-3">如果您輸入電子信箱但未完成預訂，我們可能會向您發送提醒，以幫助您繼續完成預訂。</small>
+            <input class="form-control form-control-lg outline-1 outline-success customer-blue-hover" type="text"
+              placeholder="台灣" aria-label=".form-control-lg example">
+          </div>
+        </div>
+        <div
+          class="bg-white d-flex flex-column justify-content-center align-items-center p-3 customer-blue-border border-radius-22px">
+          <button type="button" class="btn btn-primary w-100 border-radius-22px mb-2" data-bs-toggle="modal"
+            data-bs-target="#submitCheck">下一步: 最後一步</button>
+          <small class="text-success">今日付NT$0</small>
+        </div>
+
+        <!-- Modal (彈出框) -->
+        <div class="modal fade" id="submitCheck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="submitTitle">確認訂單</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="w-100 d-flex mb-3" id="dialogRoomtypeInfo"></div>
+                <hr>
+                <div id="dialogSelectedDates"></div>
+              </div>
+              <div class="modal-footer border-0 ">
+                <button type="button" class="btn btn-primary w-100">結帳</button>
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">關閉</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <aside class="flex-column border-sizing w-35 border-radius-22px m-0 p-3 bg-white shadow-sm">
+        <div class="w-100 d-flex mb-3" style="width: 440px;" id="roomtypeInfo">
+          <img class="me-2 rounded" th:src="@{/management/roomtype/image/{roomtypeId}(roomtypeId=${roomtype.roomtypeId})}" width="150" alt="img">
+          <div class="d-flex flex-column">
+            <div class="mb-2">
+              <small class="bg-danger px-2 py-1 text-white">搶手貨</small>
+              <small class="bg-success-subtle px-2 py-1 text-success">安心取消</small>
+            </div>
+            <h3 class="fw-bolder" th:text=${roomtype.roomtypeName}></h3>
+            <span class="text-primary">8.7很讚</span>
+            <span><small th:text="${roomtype.roomtypeDistrict + ', ' + roomtype.roomtypeCity} + ', 台灣' "></small></span>
+          </div>
+        </div>  
+
+        <hr>
+
+        <div id="selectedDates"></div>
+
+      </aside>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
   <script>
+    const aside = document.querySelector('aside');
+    const modalBody = document.querySelector('.modal-body');
+    const roomtypeInfo = document.getElementById('roomtypeInfo');
+
+    document.getElementById('submitCheck').addEventListener('show.bs.modal', e => {
+      dialogRoomtypeInfo.innerHTML = roomtypeInfo.innerHTML;
+      dialogSelectedDates.innerHTML = selectedDates.innerHTML
+    });
+
+    document.getElementById('submitCheck').addEventListener('hide.bs.modal', e => {
+      roomtypeInfo.innerHTML = dialogRoomtypeInfo.innerHTML;
+      selectedDates.innerHTML = dialogSelectedDates.innerHTML
+    });    
+    
+    {
+      let toggle = true;
+      toggleBtn.onclick = function () {
+
+        let pick = document.getElementsByClassName('litepicker')[0];
+        let litepicker = document.querySelector('.litepicker');
+        
+        if (toggle) {
+          pick.classList.add('visually-hidden');
+          toggle = !toggle;
+          return;
+        }
+
+        pick.classList.remove('visually-hidden');
+        toggle = !toggle;
+      }
+    }
+
     // 定義多組日期區間和對應的顏色
     const dateRanges = [
       {
@@ -33,8 +479,8 @@
       {
         checkIn: '2024-10-14',
         checkOut: '2024-10-20',
-        backgroundColor: '#edffed',
-        textColor: '#00aa00'
+        backgroundColor: '#ffeded',
+        textColor: '#ff0000'
       },
       {
         checkIn: '2024-10-25',
@@ -56,14 +502,189 @@
       }
     ];
 
+    // 首先定義中文的翻譯配置
+    const LITEPICKER_CHINESE = {
+      button_previous_month: '上個月',
+      button_next_month: '下個月',
+      tooltip_previous_month: '上個月',
+      tooltip_next_month: '下個月',
+      tooltip_previous_year: '上一年',
+      tooltip_next_year: '下一年',
+      months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      months_short: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      days: ['日', '一', '二', '三', '四', '五', '六'],
+      days_short: ['日', '一', '二', '三', '四', '五', '六'],
+      format_header_date: 'YYYY年M月',
+      pluralSelector: function (i) {
+        return 0;
+      }
+    };
+
+    let selectedDates = document.getElementById('selectedDates');
+
+    function removeDateRange(e) {
+      let parent = e.target.parentElement;
+
+      let rangeIndex = parseInt(parent.dataset.index);
+
+      parent.nextElementSibling.remove();
+
+      parent.remove();
+
+      selectedRanges = selectedRanges.filter(range => range.rangeIndex != rangeIndex);
+
+      picker.render();
+    }
+
+    let selectedRanges = [];
+
     const picker = new Litepicker({
       element: document.getElementById('litepicker'),
       singleMode: false,
       allowRepick: true,
+      numberOfColumns: 4,  // 控制月份顯示的列數，影響日曆大小
+      numberOfMonths: 4,  // 控制顯示月份的數量 
+      format: 'YYYY年MM月DD日',        // 日期格式
+      lang: 'zh-cn',
+      langObj: LITEPICKER_CHINESE,
+      dropdowns: {
+        months: false,
+        years: false
+      },
+      inlineMode: true,
+      startDate: new Date(),       // 起始日期（可选）
+      minDate: new Date(),
 
       setup: (picker) => {
 
+        let preselectedStart = null;
+        let preselectedEnd = null;
+        let controller = new AbortController();
+
+        picker.on('render:day', _.throttle((day, date) => {
+
+          const signal = controller.signal;
+
+          if (signal.aborted) return;
+
+          const timeStamp = date.getTime();
+
+          // 檢查已選擇的區間
+          const existingRange = selectedRanges.find(range =>
+            timeStamp >= range.start.getTime() && timeStamp <= range.end.getTime()
+          );
+
+          // 檢查預選狀態
+          const isPreselected = preselectedStart && timeStamp === preselectedStart.getTime();
+
+          if (existingRange || isPreselected) {
+            day.classList.add('is-in-range');
+            if (timeStamp === existingRange?.start.getTime() || isPreselected) {
+              day.classList.add('is-start-date', 'is-selected');
+            }
+            if (timeStamp === existingRange?.end.getTime()) {
+              day.classList.add('is-end-date', 'is-selected');
+            }
+          } else {
+            day.classList.remove('is-selected', 'is-in-range', 'is-start-date', 'is-end-date');
+          }
+        }));
+
+        picker.on('preselect', (startDate, endDate) => {
+          controller.abort();  // 中斷當前操作
+          controller = new AbortController();  // 創建一個新的控制器以繼續後續的操作
+          preselectedStart = startDate;
+          preselectedEnd = endDate;
+          updateHighlight();
+        });
+
+        // 更新高亮的輔助函數
+        function updateHighlight() {
+          if (!picker.ui) return;
+
+          const days = picker.ui.querySelectorAll('.day-item');
+          days.forEach(day => {
+            const date = new Date(parseInt(day.dataset.time));
+            const timeStamp = date.getTime();
+
+            // 檢查已選擇的區間
+            const existingRange = selectedRanges.find(range =>
+              timeStamp >= range.start.getTime() && timeStamp <= range.end.getTime()
+            );
+
+            // 檢查單點選擇
+            const isPreselected = preselectedStart &&
+              timeStamp === preselectedStart.getTime();
+
+            if (existingRange) {
+              day.classList.add('is-in-range');
+              if (timeStamp === existingRange.start.getTime()) {
+                day.classList.add('is-start-date', 'is-selected');
+              }
+              if (timeStamp === existingRange.end.getTime()) {
+                day.classList.add('is-end-date', 'is-selected');
+              }
+            }
+            else {
+              day.classList.remove('is-selected', 'is-in-range', 'is-start-date', 'is-end-date');
+            }
+          });
+        }
+
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        let rangeIndex = 0;
+
+        picker.on('selected', (startDate, endDate) => {
+          let startYear = startDate.getFullYear();
+          let startMonth = startDate.getMonth() + 1;
+          let startDay = startDate.getDate();
+
+          let endYear = endDate.getFullYear();
+          let endMonth = endDate.getMonth() + 1;
+          let endDay = endDate.getDate();
+
+          let checkInDate = `${startYear}/${startMonth}/${startDay}`;
+          let checkOutDate = `${endYear}/${endMonth}/${endDay}`;
+
+          const startDayOfWeek = weekdays[startDate.getDay()];
+          const endDayOfWeek = weekdays[endDate.getDay()];
+
+          console.log(checkInDate);
+          console.log(checkOutDate);
+
+          // 保存新選擇的區間
+          selectedRanges.push({
+            start: startDate,
+            end: endDate,
+            rangeIndex
+          });
+
+          let selectedDateItem = `
+            <div class="d-flex justify-content-between align-items-center" data-index=${rangeIndex}>
+              <div class="d-flex flex-column">
+                <span class="fw-bold">${startMonth}月${startDay}日 ( ${startDayOfWeek} )</span>
+                <small class="text-customer-darkblue-subtle">入住日期</small>
+              </div>   
+              <i class="bi bi-arrow-right-short fs-2"></i>
+              <div class="d-flex flex-column">
+                <span class="fw-bold">${endMonth}月${endDay}日 ( ${endDayOfWeek} )</span>
+                <small class="text-customer-darkblue-subtle">退房日期</small>
+              </div>
+              <button type="button" onclick="removeDateRange(event)" class="btn-close" aria-label="Close"></button>
+            </div>
+            <hr>
+          `;
+          selectedDates.innerHTML += selectedDateItem;
+          rangeIndex++;
+
+          preselectedStart = null;
+          preselectedEnd = null;
+
+          console.log(selectedRanges);
+        });
+
         picker.on('render', (ui) => {
+
           const days = ui.querySelectorAll('.day-item');
 
           days.forEach(day => {
@@ -85,18 +706,14 @@
               }
             }
           });
+
         });
+
+        
       }
     });
-
-    picker.on('selected', (startDate, endDate) => {
-      console.log(startDate);
-      console.log(startDate.getDate());
-      console.log(endDate.getMonth());
-      console.log(startDate.getFullYear());
-    })
   </script>
-  
+
 </body>
 
 </html>
