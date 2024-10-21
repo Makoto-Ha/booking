@@ -44,6 +44,22 @@
                     <label for="description">行程介紹</label>
                     <textarea id="description" name="packageTourDescription" placeholder="輸入內容" rows="8" style="width: 100%;" th:text="${packageTour.packageTourDescription}"></textarea>
                 </div>
+                
+                <div class="form-group">
+					<label>上傳圖片</label>
+					<div class="upload-container">
+					    <label for="file-upload" class="custom-file-upload">
+					    <!-- 上傳圖示 -->
+					      <i class="fas fa-cloud-upload-alt"></i> 
+					      選擇檔案
+					    </label>
+					    <input id="file-upload" name="packageTourImg" type="file" accept=".jpg, .png">
+					    <p id="file-name" class="file-name">尚未選擇檔案</p>
+					    <p class="upload-instruction">可上傳JPG, PNG</p>
+					</div>
+					<img id="preview-image" th:src="@{'/management/packageTour/image/' + ${packageTour.packageTourId}}" alt="套裝行程圖片" style="max-width: 200px; margin-top: 10px;">
+				</div>
+				
                 <div class="form-group">
                     <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
                     <button type="button" class="cancel">取消</button>

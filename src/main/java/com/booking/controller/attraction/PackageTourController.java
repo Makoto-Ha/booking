@@ -1,5 +1,8 @@
 package com.booking.controller.attraction;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -8,17 +11,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
@@ -162,8 +169,9 @@ public class PackageTourController {
      * @return
      */
     @PostMapping("/create")
-    public String savePackageTour(@ModelAttribute PackageTourDTO packageTourDTO, @RequestParam List<Integer> attractionIds) {
-        Result<PackageTour> savePackageTourResult = packageTourService.savePackageTour(packageTourDTO, attractionIds);
+    public String savePackageTour(@ModelAttribute PackageTourDTO packageTourDTO, @RequestParam List<Integer> attractionIds,
+    		 @RequestParam(required = false) MultipartFile packageTourImg) {
+        Result<PackageTour> savePackageTourResult = packageTourService.savePackageTour(packageTourDTO, attractionIds, packageTourImg);
         if (savePackageTourResult.isFailure()) {
             return ""; 
         }
@@ -194,11 +202,12 @@ public class PackageTourController {
      * @return
      */
     @PostMapping("/update")
-    public String updatePackageTour(@ModelAttribute PackageTourDTO packageTourDTO) {
+    public String updatePackageTour(@ModelAttribute PackageTourDTO packageTourDTO,
+    		@RequestParam(required = false) MultipartFile packageTourImg) {
         if (packageTourDTO.getPackageTourId() == null) {
             return "redirect:/management/packageTour";
         }
-        Result<String> result = packageTourService.updatePackageTour(packageTourDTO);
+        Result<String> result = packageTourService.updatePackageTour(packageTourDTO, packageTourImg);
         if (result.isSuccess()) {
             return "redirect:/management/packageTour";
         } else {
@@ -207,5 +216,40 @@ public class PackageTourController {
     }
     
     
+    /**
+     * 根據ID上傳圖片
+     * @param packageTourImg
+     * @param packageTourId
+     * @return
+     */
+	@PostMapping("/upload")
+	public ResponseEntity<String> uploadImageById(@RequestParam MultipartFile packageTourImg, Integer packageTourId) {
+		Result<String> uploadImageResult = packageTourService.uploadImageById(packageTourImg, packageTourId);
+		String message = uploadImageResult.getMessage();
+		if(uploadImageResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		return ResponseEntity.ok(message);
+	}
+	
+	
+	
+	@GetMapping("/image/{packageTourId}")
+	public ResponseEntity<?> findImageById(@PathVariable Integer packageTourId) throws IOException {
+		Result<UrlResource> findImageByIdResult = packageTourService.findImageById(packageTourId);
+		
+		if(findImageByIdResult.isFailure()) {
+			return ResponseEntity.badRequest().body(findImageByIdResult.getMessage());
+		}
+		
+		Path path = (Path) findImageByIdResult.getExtraData("path");
+		UrlResource resource = findImageByIdResult.getData();
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path))
+				.body(resource);
+				
+	}
     
 }

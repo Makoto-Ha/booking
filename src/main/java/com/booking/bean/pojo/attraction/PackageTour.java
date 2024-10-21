@@ -28,6 +28,9 @@ public class PackageTour {
 	@Column(name = "package_tour_description")	
 	private String packageTourDescription;
 	
+	@Column(name = "package_tour_img")
+	private String packageTourImg;
+	
 	@OneToMany(mappedBy = "packageTour")
 	private List<PackageTourAttraction> packageTourAttractions = new ArrayList<>();
 
@@ -84,6 +87,18 @@ public class PackageTour {
 
 
 
+	public String getPackageTourImg() {
+		return packageTourImg;
+	}
+
+
+
+	public void setPackageTourImg(String packageTourImg) {
+		this.packageTourImg = packageTourImg;
+	}
+
+
+
 	public List<PackageTourAttraction> getPackageTourAttractions() {
 		return packageTourAttractions;
 	}
@@ -100,8 +115,9 @@ public class PackageTour {
 	public String toString() {
 		return "PackageTour [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
 				+ ", packageTourPrice=" + packageTourPrice + ", packageTourDescription=" + packageTourDescription
-				+ ", packageTourAttractions=" + packageTourAttractions + "]";
+				+ ", packageTourImg=" + packageTourImg + ", packageTourAttractions=" + packageTourAttractions + "]";
 	}
+
 
 	
 }

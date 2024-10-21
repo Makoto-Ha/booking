@@ -64,6 +64,16 @@
         .modal button:hover {
             background-color: #0056b3;
         }
+        
+        .package-tour-image {
+        max-width: 100px;  
+        max-height: 100px; 
+        width: auto;       
+        height: auto;      
+        object-fit: cover; 
+        border-radius: 10px; 
+        margin: 10px 0; 
+    }
     </style>
 </head>
 <body>
@@ -138,8 +148,8 @@
 					</div>
 					<!-- 這裡是管理頁面的動態內容 -->
 					<ul class="item-list">
-						<li th:each="packageTourDTO : ${page.content}" class="list-item"
-							th:data-current-list-id="${packageTourDTO.packageTourId}">
+						<li th:each="packageTourDTO : ${page.content}" class="list-item" th:data-current-list-id="${packageTourDTO.packageTourId}">
+							<img class="package-tour-image" th:src="@{'/management/packageTour/image/' + ${packageTourDTO.packageTourId}}">
 							<div class="item-content">
 								<span class="item-title"
 									th:text="${packageTourDTO.packageTourName}"></span>
