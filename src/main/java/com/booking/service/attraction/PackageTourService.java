@@ -1,6 +1,9 @@
 package com.booking.service.attraction;
 
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
@@ -26,8 +31,10 @@ import com.booking.dao.attraction.AttractionRepository;
 import com.booking.dao.attraction.PackageTourAttractionRepository;
 import com.booking.dao.attraction.PackageTourRepository;
 import com.booking.dao.attraction.PackageTourSpecification;
+import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
 
 @Service
 public class PackageTourService {
@@ -161,16 +168,31 @@ public class PackageTourService {
 	
 	
 	
-	/**
-	 * 新增套裝行程
-	 * @param packageTourDTO
-	 * @param attractionIds
-	 * @return
-	 */
+    /**
+     * 新增套裝行程
+     * @param packageTourDTO
+     * @param attractionIds
+     * @param packageTourImg
+     * @return
+     */
 	@Transactional
-	public Result<PackageTour> savePackageTour(PackageTourDTO packageTourDTO, List<Integer> attractionIds) {
-	    PackageTour packageTour = new PackageTour();
-	    BeanUtils.copyProperties(packageTourDTO, packageTour);
+	public Result<PackageTour> savePackageTour(PackageTourDTO packageTourDTO, List<Integer> attractionIds, MultipartFile packageTourImg) {
+
+		PackageTour packageTour = new PackageTour();
+		BeanUtils.copyProperties(packageTourDTO, packageTour);
+       
+		if (packageTourImg != null && !packageTourImg.isEmpty()) {
+            Result<String> uploadResult = UploadImageFile.upload(packageTourImg);
+            
+            if(uploadResult.isSuccess()) {
+                String fileName = packageTourImg.getOriginalFilename();
+                packageTour.setPackageTourImg("uploads" + "/" + fileName);
+            } else {
+                packageTour.setPackageTourImg("uploads/default.jpg");
+            }
+        } else {
+            packageTour.setPackageTourImg("uploads/default.jpg");
+        }
 	    
 	    packageTourRepo.save(packageTour);
 
@@ -201,23 +223,36 @@ public class PackageTourService {
     
     
     /**
-     * 更新套裝行程中的景點
-     * @param packageTourAttractionId
-     * @param updatedAttraction
+     * 更新套裝行程
+     * @param packageTourDTO
+     * @param packageTourImg
      * @return
      */
     @Transactional
-    public Result<String> updatePackageTour(PackageTourDTO packageTourDTO) {
+    public Result<String> updatePackageTour(PackageTourDTO packageTourDTO, MultipartFile packageTourImg) {
         if (packageTourDTO.getPackageTourId() == null) {
             return Result.failure("套裝行程ID不能為空");
         }
 
-        Optional<PackageTour> optionalPackageTour = packageTourRepo.findById(packageTourDTO.getPackageTourId());
-        if (optionalPackageTour.isEmpty()) {
+        Optional<PackageTour> optional = packageTourRepo.findById(packageTourDTO.getPackageTourId());
+        if (optional.isEmpty()) {
             return Result.failure("找不到指定的套裝行程");
         }
+        PackageTour packageTour = optional.get();
 
-        PackageTour packageTour = optionalPackageTour.get();
+		if (packageTourImg != null && !packageTourImg.isEmpty()) {
+            Result<String> uploadResult = UploadImageFile.upload(packageTourImg);
+            
+            if(uploadResult.isSuccess()) {
+                String fileName = packageTourImg.getOriginalFilename();
+                packageTour.setPackageTourImg("uploads" + "/" + fileName);
+            } else {
+                packageTour.setPackageTourImg("uploads/default.jpg");
+            }
+        } else {
+            packageTour.setPackageTourImg("uploads/default.jpg");
+        }
+        
         BeanUtils.copyProperties(packageTourDTO, packageTour, "packageTourAttractions");
 
         // 更新景點關聯
@@ -236,4 +271,51 @@ public class PackageTourService {
         packageTourRepo.save(packageTour);
         return Result.success("套裝行程更新成功");
     }
+    
+    
+    
+	public Result<String> uploadImageById(MultipartFile packageTourImg, Integer packageTourId){
+		PackageTour packageTour = packageTourRepo.findById(packageTourId).orElse(null);
+		if(packageTour == null) {
+			return Result.failure("沒有此套裝行程");
+		}
+		
+		Result<String> uploadImageResult = UploadImageFile.upload(packageTourImg);
+		
+		if(uploadImageResult.isFailure()) {
+			return Result.failure(uploadImageResult.getMessage());
+		}
+		
+		Path path = (Path) uploadImageResult.getExtraData("path");
+		packageTour.setPackageTourImg(path.toString());
+		
+		return Result.success("上傳圖片成功");
+	}
+	
+	
+	public Result<UrlResource> findImageById(Integer packageTourId) {
+		PackageTour packageTour = packageTourRepo.findById(packageTourId).orElse(null);
+		
+		if(packageTour == null) {
+			return Result.failure("根據ID查找不到套裝行程");
+		}
+		
+		String packageTourImg = packageTour.getPackageTourImg();
+		
+		Path path = Paths.get(packageTourImg);
+		try {
+			UrlResource urlResource = new UrlResource(path.toUri());
+			 if (urlResource.exists() || urlResource.isReadable()) {
+		    	return Result.success(urlResource).setExtraData("path", path);
+		    } 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		DaoResult<?> updatePackageTourResult = packageTourRepo.updatePackageTour(packageTour);
+		if (updatePackageTourResult.isFailure()) {
+			return Result.failure("更新失敗");
+		}
+		return Result.success("更新套裝行程成功");
+	}
 }

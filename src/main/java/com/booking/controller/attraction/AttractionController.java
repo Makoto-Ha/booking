@@ -35,7 +35,7 @@ public class AttractionController {
 	@Autowired
 	private AttractionService attractionService;
 
-
+	
 	
 	/**
 	 * 轉到景點首頁
@@ -161,7 +161,7 @@ public class AttractionController {
 	 */
 	@PostMapping("/update")
 	private String updateAttractionById(AttractionDTO attractionDTO, @SessionAttribute Integer attractionId,
-			@RequestParam(required = false) MultipartFile imageFile ) {
+			@RequestParam(required = false) MultipartFile imageFile) {
 		attractionDTO.setAttractionId(attractionId);
 		Result<String> updateAttractionResult = attractionService.updateAttraction(attractionDTO, imageFile);
 		

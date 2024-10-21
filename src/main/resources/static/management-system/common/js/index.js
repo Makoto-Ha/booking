@@ -106,7 +106,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 為確認刪除按鈕添加事件監聽
-	document.getElementById('confirmDeleteBtn').addEventListener('click', async function(e) {
+	document.getElementById('confirmDeleteBtn')?.addEventListener('click', async function(e) {
 		// 在這裡添加刪除項目的邏輯
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];

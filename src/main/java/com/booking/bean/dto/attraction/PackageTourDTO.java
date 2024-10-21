@@ -16,7 +16,7 @@ public class PackageTourDTO {
 	
 	private List<Attraction> attractions;
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "packageTourId";
+	private String attrOrderBy = "packageTourPrice";
 	private Boolean selectedSort = true;
     private Integer minPrice;
     private Integer maxPrice;
@@ -76,6 +76,8 @@ public class PackageTourDTO {
 	public void setPackageTourDescription(String packageTourDescription) {
 		this.packageTourDescription = packageTourDescription;
 	}
+
+
 
 
 	public List<Attraction> getAttractions() {

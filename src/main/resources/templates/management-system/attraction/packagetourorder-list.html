@@ -89,7 +89,7 @@
 						<div class="delete-modal">
 							<h2>確認刪除</h2>
 							<p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
-							<button id="confirmDeleteBtn">確認</button>
+							<button id="confirmDelBtn">確認</button>
 							<button type="button" id="cancelDeleteBtn">取消</button>
 						</div>
 					</div>
@@ -186,9 +186,40 @@
 					window.location.href = `/booking/management/packageTourOrder/edit/page?orderId=${orderId}`;
 				});
 			});
+			
+			let currentDeleteOrderId = null;
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentDeleteOrderId = this.closest('.list-item').dataset.currentListId;
+                    document.getElementById('delete-overlay').style.display = 'flex';
+                });
+            });
+
+            document.getElementById('confirmDelBtn').addEventListener('click', function() {
+                fetch('/booking/management/packageTourOrder/delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'orderId=' + currentDeleteOrderId
+                })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    if (message.includes('成功')) {
+                        document.querySelector(`[data-current-list-id="${currentDeleteOrderId}"]`).remove();
+                    }
+                })
+                .catch(() => alert('刪除操作出錯，請稍後再試'))
+                .finally(() => document.getElementById('delete-overlay').style.display = 'none');
+            });
+
+            document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+                document.getElementById('delete-overlay').style.display = 'none';
+            });
+			
 
 		});
 	</script>
 </body>
-
 </html>
