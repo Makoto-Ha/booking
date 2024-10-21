@@ -98,12 +98,14 @@ public class ShoppingCientController {
 	// 加入購物車
 	// 移除購物車
 	// 訂單結帳
+	
 	@ResponseBody
 	@PostMapping("/ecpayCheckout")
 	public String ecpayCheckout() {
 		String ecpayCheckout = shopclientService.ecpayCheckout();
 		return ecpayCheckout;
 	}
+	
 	
 	
 	
