@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>驗證電子郵件錯誤</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>電子郵件驗證錯誤</h2>
+        <div class="alert alert-danger" th:text="${error}"></div>
+        <p>驗證您的電子郵件時發生錯誤。</p>
+        <div class="mt-3">
+            <a th:href="@{/auth/login}" class="btn btn-primary">回到登入</a>
+        </div>
+    </div>
+</body>
+</html>

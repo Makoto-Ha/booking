@@ -166,6 +166,7 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+
 	// 根據日期區間，區間內有一天房型的房間能預定，就返回房型，日期區間被訂滿了，就不返回房型
 //	public static Specification<Roomtype> availableRoomTypes(LocalDate checkInDate, LocalDate checkOutDate) {
 //	    return (root, query, criteriaBuilder) -> {
@@ -229,6 +230,7 @@ public class RoomtypeSpecification {
 	    return (root, query, criteriaBuilder) -> {
 	        boolean isSingleDay = checkInDate.equals(checkOutDate);
 
+
 	        // 獲取房型的所有房間數量
 	        Subquery<Long> totalRoomsSubquery = query.subquery(Long.class);
 	        Root<Room> totalRoomsRoot = totalRoomsSubquery.from(Room.class);
@@ -247,6 +249,7 @@ public class RoomtypeSpecification {
 	                    criteriaBuilder.lessThanOrEqualTo(bookingRoot.get("checkInDate"), checkInDate),
 	                    criteriaBuilder.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), checkInDate)
 	                );
+
 
 	            // 如果某一天所有房間都已預定，則不返回該房型
 	            return criteriaBuilder.lessThan(bookedRoomsSubquery, totalRoomsSubquery);
@@ -282,6 +285,7 @@ public class RoomtypeSpecification {
 	        }
 	    };
 	}
+
 
     // 根據點擊的服務做查詢
 	public static Specification<Roomtype> hasAmenities(List<Amenity> amenities) {

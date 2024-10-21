@@ -200,7 +200,11 @@ $RECYCLE.BIN/
 *.msp
 
 # Windows shortcuts
+<<<<<<< HEAD
 *.lnk
 
 ## image
 uploads/
+=======
+*.lnk
+>>>>>>> 8e843ca (黃威誠.新增: SpringMVC換到SpringBoot)

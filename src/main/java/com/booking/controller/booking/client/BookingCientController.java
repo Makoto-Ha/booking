@@ -97,6 +97,7 @@ public class BookingCientController {
 		return "/client/booking/google-map";
 	}
 	
+
 	/**
 	 * 跳轉checkout-page頁面
 	 * 
@@ -106,5 +107,6 @@ public class BookingCientController {
 		return "/client/booking/checkout";
 	}
 	
+
 	
 }
