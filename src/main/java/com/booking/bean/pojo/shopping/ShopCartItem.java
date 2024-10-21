@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.DynamicInsert;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -41,6 +45,27 @@ public class ShopCartItem {
 
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+    
+    @Override
+    public String toString() {
+        return "ShopCartItem [cartItemId=" + cartItemId + ", productId=" + product.getProductId()
+                + ", productName=" + product.getProductName() + ", quantity=" + quantity
+                + ", price=" + price + ", subtotal=" + subtotal + ", updatedAt=" + updatedAt
+                + ", createdAt=" + createdAt + "]";
+    }
+
+    
 }
