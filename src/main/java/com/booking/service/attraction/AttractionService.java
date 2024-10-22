@@ -198,21 +198,29 @@ public class AttractionService {
 	 * @param attractionDTO
 	 * @return
 	 */
-	public Result<String> updateAttraction(AttractionDTO attractionDTO, MultipartFile imageFile) {
-		Result<String> uploadResult = UploadImageFile.upload(imageFile);
-		
-		if(uploadResult.isSuccess()) {
-			String fileName = imageFile.getOriginalFilename();
-			attractionDTO.setImagesFile("uploads" + "/" + fileName);
-		}else {
-			attractionDTO.setImagesFile("uploads/default.jpg");
-		}
-		
-		Attraction updateAttraction = attractionRepo.findById(attractionDTO.getAttractionId()).orElse(null);
-		MyModelMapper.map(attractionDTO, updateAttraction);
-		attractionRepo.save(updateAttraction);
-		return Result.success("更新景點成功");
-	}
+    @Transactional
+    public Result<String> updateAttraction(AttractionDTO attractionDTO, MultipartFile imageFile) {
+        Attraction existingAttraction = attractionRepo.findById(attractionDTO.getAttractionId()).orElse(null);
+        if (existingAttraction == null) {
+            return Result.failure("景點不存在");
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            Result<String> uploadResult = UploadImageFile.upload(imageFile);
+            if (uploadResult.isSuccess()) {
+                String fileName = imageFile.getOriginalFilename();
+                attractionDTO.setImagesFile("uploads" + "/" + fileName);
+            } else {
+                attractionDTO.setImagesFile("uploads/default.jpg");
+            }
+        } else {
+            attractionDTO.setImagesFile(existingAttraction.getImagesFile());
+        }
+        
+        MyModelMapper.map(attractionDTO, existingAttraction);
+        attractionRepo.save(existingAttraction);
+        return Result.success("更新景點成功");
+    }
 	
 	
 	/**

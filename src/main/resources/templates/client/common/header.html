@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <title>header</title>
+<style>
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+    .dropdown-menu {
+        margin-top: 0;
+    }
+    .nav-item.dropdown > .nav-link::after {
+        display: none;
+    }
+</style>
 </head>
 <body>
 <header>
@@ -17,8 +28,12 @@
             <li class="nav-item mx-2">
               <a class="nav-link active" aria-current="page" href="#">搜好房</a>
             </li>
-            <li class="nav-item mx-2">
-              <a class="nav-link" th:href="@{/attraction}">活動</a>
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link" id="navbarDropdownMenuLink" role="button" aria-expanded="false">景點</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" th:href="@{/attraction}">推薦景點</a></li>
+                    <li><a class="dropdown-item" th:href="@{/packageTour}">套裝行程</a></li>
+                </ul>
             </li>
             <li class="nav-item mx-2">
               <a class="nav-link" th:href="@{/shop}">商城</a>

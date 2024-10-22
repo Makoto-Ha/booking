@@ -66,6 +66,12 @@
         <div class="row">
             <!-- 左側篩選區域 -->
             <div class="col-12 col-md-3">
+            	<div class="mb-3 search-container">
+                    <input type="text" id="searchInput" class="form-control" placeholder="搜尋景點">
+                    <button type="button" id="searchButton" class="btn btn-primary">
+                		<i class="fa-solid fa-magnifying-glass"></i>
+            		</button>
+                </div>
                 <form id="filterForm">
                     <div class="mb-3">
                         <label for="attractionType" class="form-label">景點類型</label>
@@ -84,16 +90,12 @@
                         </select>
                     </div>
                 </form>
-    
-                <div class="mb-3">
-                    <input type="text" id="searchInput" class="form-control" placeholder="搜尋景點">
-                </div>
             </div>
 
             <!-- 右側景點列表 -->
             <div class="col-12 col-md-9">
                 <div id="attractionList">
-                    <!-- 景點卡片將在這裡動態生成 -->
+                    
                 </div>
                 <div id="loadMoreSpinner" class="text-center mt-3">
                     <div class="spinner-border" role="status">
@@ -121,9 +123,7 @@
 
     <div th:replace="~{/client/common/footer}"></div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Google Maps API -->
     <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey}}"></script>
     
     <script>
@@ -135,7 +135,6 @@
         let loading = false;
         let allLoaded = false;
 
-        // 預定義的台灣城市列表
         const taiwanCities = [
             "臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "新竹縣", "苗栗縣", 
             "彰化縣", "南投縣", "雲林縣", "嘉義縣", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", 
@@ -226,9 +225,16 @@
                         title: name
                     });
                 } else {
-                    console.error('Geocode was not successful for the following reason: ' + status);
+                    console.error('讀取失敗，其原因: ' + status);
                 }
             });
+        }
+        
+        
+        function performSearch() {
+            offset = 0;
+            allLoaded = false;
+            loadAttractions();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -244,31 +250,16 @@
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    offset = 0;
-                    allLoaded = false;
-                    loadAttractions();
+                    performSearch();
                 }
             });
+
+            searchButton.addEventListener('click', performSearch);
+
+            document.getElementById('attractionType').addEventListener('change', performSearch);
+            document.getElementById('attractionCity').addEventListener('change', performSearch);
         });
 
-        document.getElementById('filterForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            offset = 0;
-            allLoaded = false;
-            loadAttractions();
-        });
-
-        document.getElementById('attractionType').addEventListener('change', () => {
-            offset = 0;
-            allLoaded = false;
-            loadAttractions();
-        });
-
-        document.getElementById('attractionCity').addEventListener('change', () => {
-            offset = 0;
-            allLoaded = false;
-            loadAttractions();
-        });
     </script>
 </body>
 </html>

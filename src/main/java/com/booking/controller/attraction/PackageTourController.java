@@ -168,15 +168,16 @@ public class PackageTourController {
      * @param attractionIds
      * @return
      */
-    @PostMapping("/create")
-    public String savePackageTour(@ModelAttribute PackageTourDTO packageTourDTO, @RequestParam List<Integer> attractionIds,
-    		 @RequestParam(required = false) MultipartFile packageTourImg) {
-        Result<PackageTour> savePackageTourResult = packageTourService.savePackageTour(packageTourDTO, attractionIds, packageTourImg);
-        if (savePackageTourResult.isFailure()) {
-            return ""; 
-        }
-        return "redirect:/management/packageTour";
-    }
+	@PostMapping("/create")
+	public String savePackageTour(@ModelAttribute PackageTourDTO packageTourDTO, 
+	                             @RequestParam List<Integer> attractionIds,
+	                             @RequestParam(required = false) MultipartFile imageFile) {
+	    Result<PackageTour> savePackageTourResult = packageTourService.savePackageTour(packageTourDTO, attractionIds, imageFile);
+	    if (savePackageTourResult.isFailure()) {
+	        return ""; 
+	    }
+	    return "redirect:/management/packageTour";
+	}
     
     
     
@@ -203,11 +204,12 @@ public class PackageTourController {
      */
     @PostMapping("/update")
     public String updatePackageTour(@ModelAttribute PackageTourDTO packageTourDTO,
-    		@RequestParam(required = false) MultipartFile packageTourImg) {
-        if (packageTourDTO.getPackageTourId() == null) {
-            return "redirect:/management/packageTour";
-        }
-        Result<String> result = packageTourService.updatePackageTour(packageTourDTO, packageTourImg);
+                                  @RequestParam(required = false) MultipartFile imageFile,
+                                  @RequestParam(required = false) String originalImagePath) {
+    	
+        packageTourDTO.setPackageTourImg(originalImagePath);
+        
+        Result<String> result = packageTourService.updatePackageTour(packageTourDTO, imageFile);
         if (result.isSuccess()) {
             return "redirect:/management/packageTour";
         } else {

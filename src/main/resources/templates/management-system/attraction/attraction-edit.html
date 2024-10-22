@@ -5,6 +5,17 @@
 <title>attraction-edit</title>
 <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
 <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+<style>
+    .current-image {
+        max-width: 200px;
+        max-height: 200px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    .image-preview-container {
+        margin-bottom: 15px;
+    }
+</style>
 </head>
 <body>
 	<div class="container">
@@ -48,7 +59,17 @@
         			<textarea id="description" name="attractionDescription" placeholder="輸入內容" rows="8" style="width: 100%;" th:text="${attraction.attractionDescription}"></textarea>
     			</div>
 		
-		    	<div class="form-group">
+				<input type="hidden" name="imagesFile" th:value="${attraction.imagesFile}">
+				<div class="form-group">
+                	<label>當前圖片</label>
+                	<div class="image-preview-container">
+                    	<img th:if="${attraction.imagesFile}" 
+                         	th:src="@{'/management/attraction/image/' + ${attraction.attractionId}}"
+                         	class="current-image"
+                         	alt="當前圖片">
+                    <p th:if="${attraction.imagesFile}" th:text="${#strings.substringAfter(attraction.imagesFile, 'uploads/')}"></p>
+                	</div>
+                	
 					<label>上傳圖片</label>
 					<div class="upload-container">
 					    <label for="file-upload" class="custom-file-upload">
@@ -73,5 +94,34 @@
 	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
 	<script th:src="@{/management-system/booking/js/form.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectCity = document.getElementById("select-city");
+            const currentCity = /*[[${attraction.attractionCity}]]*/ '';
+            
+            // 添加預設選項
+            let defaultOption = document.createElement("option");
+            defaultOption.setAttribute('disabled', true);
+            defaultOption.textContent = "請選擇縣市";
+            selectCity.appendChild(defaultOption);
+            
+            // 添加所有城市選項並設置選中狀態
+            data.forEach(location => {
+                let option = document.createElement("option");
+                option.textContent = location.name;
+                option.value = location.name;
+                if(location.name === currentCity) {
+                    option.selected = true;
+                }
+                selectCity.appendChild(option);
+            });
+        });
+        
+        // 檔案上傳預覽
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            document.getElementById('file-name').textContent = fileName || '尚未選擇檔案';
+        });
+    </script>
 </body>
 </html>

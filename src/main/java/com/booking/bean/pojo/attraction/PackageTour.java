@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ public class PackageTour {
 	@Column(name = "package_tour_img")
 	private String packageTourImg;
 	
-	@OneToMany(mappedBy = "packageTour")
+	@OneToMany(mappedBy = "packageTour", fetch = FetchType.LAZY)
 	private List<PackageTourAttraction> packageTourAttractions = new ArrayList<>();
 
 	public PackageTour() {

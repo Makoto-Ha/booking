@@ -7,9 +7,9 @@
 <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
 <style>
     #attractions {
-        height: 300px; /* 增加高度 */
-        width: 100%; /* 設置寬度為100% */
-        overflow-y: auto; /* 添加垂直滾動條 */
+        height: 300px;
+        width: 100%;
+        overflow-y: auto; 
     }
 </style>
 </head>
@@ -52,7 +52,7 @@
 					      <i class="fas fa-cloud-upload-alt"></i> 
 					      選擇檔案
 					    </label>
-					    <input id="file-upload" name="packageTourImg" type="file" accept=".jpg, .png">
+					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
 					    <p id="file-name" class="file-name">尚未選擇檔案</p>
 					    <p class="upload-instruction">可上傳JPG, PNG</p>
 					</div>
@@ -67,5 +67,19 @@
 	</div>
 	<script th:src="@{/management-system/booking/js/form.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+    		const fileUpload = document.getElementById('file-upload');
+    		const fileName = document.getElementById('file-name');
+    
+    		fileUpload.addEventListener('change', function() {
+        		if (this.files && this.files[0]) {
+            		fileName.textContent = this.files[0].name;
+        		} else {
+            		fileName.textContent = '尚未選擇檔案';
+        		}
+    		});
+		});
+	</script>
 </body>
 </html>

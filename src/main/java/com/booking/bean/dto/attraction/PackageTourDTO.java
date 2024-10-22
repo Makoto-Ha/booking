@@ -15,8 +15,9 @@ public class PackageTourDTO {
 	private String packageTourDescription;
 	
 	private List<Attraction> attractions;
+	private String packageTourImg;
 	private Integer pageNumber = 1;
-	private String attrOrderBy = "packageTourPrice";
+	private String attrOrderBy = "packageTourId";
 	private Boolean selectedSort = true;
     private Integer minPrice;
     private Integer maxPrice;
@@ -77,6 +78,16 @@ public class PackageTourDTO {
 		this.packageTourDescription = packageTourDescription;
 	}
 
+
+	public String getPackageTourImg() {
+		return packageTourImg;
+	}
+
+
+
+	public void setPackageTourImg(String packageTourImg) {
+		this.packageTourImg = packageTourImg;
+	}
 
 
 
@@ -189,12 +200,11 @@ public class PackageTourDTO {
 		return "PackageTourDTO [packageTourId=" + packageTourId + ", packageTourName=" + packageTourName
 				+ ", packageTourPrice=" + packageTourPrice + ", attractionNames=" + attractionNames
 				+ ", packageTourDescription=" + packageTourDescription + ", attractions=" + attractions
-				+ ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort=" + selectedSort
-				+ ", minPrice=" + minPrice + ", maxPrice=" + maxPrice + ", attractionDTOs=" + attractionDTOs
-				+ ", selectedAttractions=" + selectedAttractions + ", selectedAttractionIds=" + selectedAttractionIds
-				+ "]";
+				+ ", packageTourImg=" + packageTourImg + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
+				+ ", selectedSort=" + selectedSort + ", minPrice=" + minPrice + ", maxPrice=" + maxPrice
+				+ ", attractionDTOs=" + attractionDTOs + ", selectedAttractions=" + selectedAttractions
+				+ ", selectedAttractionIds=" + selectedAttractionIds + "]";
 	}
 
 
-	
 }

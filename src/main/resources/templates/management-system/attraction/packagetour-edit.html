@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>packagetour-edit</title>
-<link rel="stylesheet"
-	th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet"
-	th:href="@{/management-system/booking/css/booking.css}">
-<style>
-    #attractions {
-        height: 300px;
-        width: 100%;
-        overflow-y: auto;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>packagetour-edit</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+    <style>
+        #attractions {
+            height: 300px;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .current-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .image-preview-container {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
         <div th:replace="~{/management-system/common/sidebar}"></div>
@@ -24,58 +35,71 @@
                 <input type="hidden" name="packageTourId" th:value="${packageTour.packageTourId}">
                 <div class="form-group">
                     <label for="name">行程名稱</label>
-                    <input type="text" id="name" name="packageTourName" placeholder="輸入內容" th:value="${packageTour.packageTourName}" required>
+                    <input type="text" id="name" name="packageTourName" placeholder="輸入內容"
+                        th:value="${packageTour.packageTourName}" required>
                 </div>
                 <div class="form-group">
                     <label for="price">價錢</label>
-                    <input type="text" id="price" name="packageTourPrice" placeholder="輸入內容" th:value="${packageTour.packageTourPrice}" required>
+                    <input type="text" id="price" name="packageTourPrice" placeholder="輸入內容"
+                        th:value="${packageTour.packageTourPrice}" required>
                 </div>
                 <div class="form-group">
                     <label for="attractions">選擇景點</label>
                     <select id="attractions" name="selectedAttractionIds" multiple required>
-                        <option th:each="attraction : ${allAttractions}"
-                                th:value="${attraction.attractionId}"
-                                th:text="${attraction.attractionName}"
-                                th:selected="${selectedAttractionIds != null and selectedAttractionIds.contains(attraction.attractionId)}">
+                        <option th:each="attraction : ${allAttractions}" th:value="${attraction.attractionId}"
+                            th:text="${attraction.attractionName}"
+                            th:selected="${selectedAttractionIds != null and selectedAttractionIds.contains(attraction.attractionId)}">
                         </option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">行程介紹</label>
-                    <textarea id="description" name="packageTourDescription" placeholder="輸入內容" rows="8" style="width: 100%;" th:text="${packageTour.packageTourDescription}"></textarea>
+                    <textarea id="description" name="packageTourDescription" placeholder="輸入內容" rows="8"
+                        style="width: 100%;" th:text="${packageTour.packageTourDescription}"></textarea>
                 </div>
-                
+
+                <input type="hidden" name="originalImagePath" th:value="${packageTour.packageTourImg}">
                 <div class="form-group">
-					<label>上傳圖片</label>
-					<div class="upload-container">
-					    <label for="file-upload" class="custom-file-upload">
-					    <!-- 上傳圖示 -->
-					      <i class="fas fa-cloud-upload-alt"></i> 
-					      選擇檔案
-					    </label>
-					    <input id="file-upload" name="packageTourImg" type="file" accept=".jpg, .png">
-					    <p id="file-name" class="file-name">尚未選擇檔案</p>
-					    <p class="upload-instruction">可上傳JPG, PNG</p>
-					</div>
-					<img id="preview-image" th:src="@{'/management/packageTour/image/' + ${packageTour.packageTourId}}" alt="套裝行程圖片" style="max-width: 200px; margin-top: 10px;">
-				</div>
-				
+                    <label>當前圖片</label>
+                    <div class="image-preview-container">
+                        <img th:if="${packageTour.packageTourImg}" 
+                             th:src="@{'/management/packageTour/image/' + ${packageTour.packageTourId}}"
+                             class="current-image"
+                             alt="當前圖片">
+                        <p th:if="${packageTour.packageTourImg}" 
+                           th:text="${#strings.substringAfter(packageTour.packageTourImg, 'uploads/')}"></p>
+                    </div>
+                    
+                    <label>上傳圖片</label>
+                    <div class="upload-container">
+                        <label for="file-upload" class="custom-file-upload">
+                            <i class="fas fa-cloud-upload-alt"></i> 
+                            選擇檔案
+                        </label>
+                        <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
+                        <p id="file-name" class="file-name">尚未選擇檔案</p>
+                        <p class="upload-instruction">可上傳JPG, PNG</p>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
+                    <button type="submit" class="submit submit-edit" id="submit"
+                        style="background-color: #007bff;">保存</button>
                     <button type="button" class="cancel">取消</button>
                 </div>
             </form>
         </div>
     </div>
-	<script th:src="@{/management-system/booking/js/form.js}"></script>
-	<script th:src="@{/management-system/booking/js/booking.js}"></script>
-	<script>
-	        $(document).ready(function() {
+    <script th:src="@{/management-system/booking/js/form.js}"></script>
+    <script th:src="@{/management-system/booking/js/booking.js}"></script>
+    <script>
+        $(document).ready(function () {
             $('#attractions').select2({
                 placeholder: "選擇景點",
                 allowClear: true
             });
         });
-	</script>
+    </script>
 </body>
+
 </html>
