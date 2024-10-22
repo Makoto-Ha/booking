@@ -349,6 +349,51 @@
       transition: .2s !important;
     }
 
+    .opacity-50-hover:hover {
+      opacity: .5 !important;
+      transition: .2s ease-in-out !important;
+    }
+
+     /* 氣泡內容的樣式 */
+     .tooltip-text {
+          visibility: hidden;
+          width: 120px;
+          background-color: #555;
+          color: #fff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px 0;
+          position: absolute;
+          z-index: 999;
+          bottom: 125%; /* 氣泡顯示在容器上方 */
+          left: 50%;
+          margin-left: -60px; /* 氣泡居中 */
+          opacity: 0;
+          transition: opacity 0.3s;
+      }
+
+      /* 氣泡的箭頭 */
+      .tooltip-text::after {
+          content: "";
+          position: absolute;
+          top: 100%; /* 氣泡的底部 */
+          left: 50%;
+          margin-left: -5px;
+          border-width: 5px;
+          border-style: solid;
+          border-color: #555 transparent transparent transparent;
+      }
+
+      /* 當鼠標懸停時顯示氣泡 */
+      /* .day-item:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+      } */
+
+      .tooltip-text-show {
+        visibility: visible;
+        opacity: 1;
+      }
   </style>
 </head>
 
@@ -410,17 +455,19 @@
       </div>
       <aside class="flex-column border-sizing w-35 border-radius-22px m-0 p-3 bg-white shadow-sm">
         <div class="w-100 d-flex mb-3" style="width: 440px;" id="roomtypeInfo">
-          <img class="me-2 rounded" th:src="@{/management/roomtype/image/{roomtypeId}(roomtypeId=${roomtype.roomtypeId})}" width="150" alt="img">
+          <img class="me-2 rounded"
+            th:src="@{/management/roomtype/image/{roomtypeId}(roomtypeId=${roomtype.roomtypeId})}" width="150"
+            alt="img">
           <div class="d-flex flex-column">
             <div class="mb-2">
               <small class="bg-danger px-2 py-1 text-white">搶手貨</small>
               <small class="bg-success-subtle px-2 py-1 text-success">安心取消</small>
             </div>
-            <h3 class="fw-bolder" th:text=${roomtype.roomtypeName}></h3>
+            <h3 class="fw-bolder" th:text="${roomtype.roomtypeName.substring(0, 4) + '...'}"></h3>
             <span class="text-primary">8.7很讚</span>
             <span><small th:text="${roomtype.roomtypeDistrict + ', ' + roomtype.roomtypeCity} + ', 台灣' "></small></span>
           </div>
-        </div>  
+        </div>
 
         <hr>
 
@@ -435,7 +482,8 @@
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-  <script>
+  <script th:inline="javascript">
+    let roomtype = [[${roomtype}]];
     const aside = document.querySelector('aside');
     const modalBody = document.querySelector('.modal-body');
     const roomtypeInfo = document.getElementById('roomtypeInfo');
@@ -448,15 +496,15 @@
     document.getElementById('submitCheck').addEventListener('hide.bs.modal', e => {
       roomtypeInfo.innerHTML = dialogRoomtypeInfo.innerHTML;
       selectedDates.innerHTML = dialogSelectedDates.innerHTML
-    });    
-    
+    });
+
     {
       let toggle = true;
       toggleBtn.onclick = function () {
 
         let pick = document.getElementsByClassName('litepicker')[0];
         let litepicker = document.querySelector('.litepicker');
-        
+
         if (toggle) {
           pick.classList.add('visually-hidden');
           toggle = !toggle;
@@ -469,38 +517,7 @@
     }
 
     // 定義多組日期區間和對應的顏色
-    const dateRanges = [
-      {
-        checkIn: '2024-10-01',
-        checkOut: '2024-10-10',
-        backgroundColor: '#ffeded',
-        textColor: '#ff0000'
-      },
-      {
-        checkIn: '2024-10-14',
-        checkOut: '2024-10-20',
-        backgroundColor: '#ffeded',
-        textColor: '#ff0000'
-      },
-      {
-        checkIn: '2024-10-25',
-        checkOut: '2024-10-30',
-        backgroundColor: '#ededff',
-        textColor: '#0000ff'
-      },
-      {
-        checkIn: '2024-10-11',
-        checkOut: '2024-10-13',
-        backgroundColor: '#edffed',
-        textColor: 'green'
-      },
-      {
-        checkIn: '2024-11-05',
-        checkOut: '2024-11-21',
-        backgroundColor: '#ffeded',
-        textColor: 'red'
-      }
-    ];
+    let dateRanges = [];
 
     // 首先定義中文的翻譯配置
     const LITEPICKER_CHINESE = {
@@ -523,7 +540,8 @@
     let selectedDates = document.getElementById('selectedDates');
 
     function removeDateRange(e) {
-      let parent = e.target.parentElement;
+
+      let parent = e.target.parentElement.parentElement;
 
       let rangeIndex = parseInt(parent.dataset.index);
 
@@ -535,6 +553,27 @@
 
       picker.render();
     }
+
+    let addRoom = function(e) {
+    
+        let target = e.target;
+
+        let parent = e.target.parentElement.parentElement.parentElement;
+
+        let addRoomCount = parseInt(parent.dataset.addroomcount);
+
+        let availablecount = parseInt(parent.dataset.availablecount);
+
+        if(addRoomCount >= availablecount) {
+          alert(`房間只有${availablecount}間`);
+          return;
+        }
+
+        addRoomCount++;
+        parent.dataset.addroomcount = addRoomCount;
+        e.target.nextElementSibling.textContent = addRoomCount;
+ 
+    };
 
     let selectedRanges = [];
 
@@ -555,7 +594,19 @@
       startDate: new Date(),       // 起始日期（可选）
       minDate: new Date(),
 
-      setup: (picker) => {
+      setup: async picker => {
+
+        let response = await fetch('/booking/client/api/fullybookeddates?roomtypeId=' + roomtype.roomtypeId);
+        let resDates = await response.json();
+        console.log(resDates);
+        dateRanges = resDates.map(date => {
+          return {
+            checkIn: date,
+            checkOut: date,
+            backgroundColor: '#ffeded',
+            textColor: '#ff0000'
+          }; 
+        });
 
         let preselectedStart = null;
         let preselectedEnd = null;
@@ -634,7 +685,7 @@
         const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
         let rangeIndex = 0;
 
-        picker.on('selected', (startDate, endDate) => {
+        picker.on('selected', async (startDate, endDate) => {
           let startYear = startDate.getFullYear();
           let startMonth = startDate.getMonth() + 1;
           let startDay = startDate.getDate();
@@ -659,8 +710,17 @@
             rangeIndex
           });
 
+          let params = new URLSearchParams({
+            checkInDate,
+            checkOutDate,
+            roomtypeId: roomtype.roomtypeId
+          }).toString();
+
+          let response = await fetch('/booking/client/api/availableRoomCountInRange?' + params);
+          let availableRoomCount = await response.json();
+
           let selectedDateItem = `
-            <div class="d-flex justify-content-between align-items-center" data-index=${rangeIndex}>
+            <div class="d-flex justify-content-between align-items-center" data-index=${rangeIndex} data-addroomcount="1" data-availablecount="${availableRoomCount}">
               <div class="d-flex flex-column">
                 <span class="fw-bold">${startMonth}月${startDay}日 ( ${startDayOfWeek} )</span>
                 <small class="text-customer-darkblue-subtle">入住日期</small>
@@ -669,8 +729,14 @@
               <div class="d-flex flex-column">
                 <span class="fw-bold">${endMonth}月${endDay}日 ( ${endDayOfWeek} )</span>
                 <small class="text-customer-darkblue-subtle">退房日期</small>
+              </div> 
+              <div class="d-flex flex-column justify-content-between">
+                <i class="bi bi-x fs-2 lh-1 text-danger cursor-pointer opacity-50-hover" onclick="removeDateRange(event)"></i>
+                <div class="d-flex align-items-center lh-1">
+                  <i class="bi bi-plus fs-2 lh-1 text-warning cursor-pointer opacity-50-hover" onclick="addRoom(event)"></i>
+                  <span class="fs-4 text-warning">1</span>
+                </div>
               </div>
-              <button type="button" onclick="removeDateRange(event)" class="btn-close" aria-label="Close"></button>
             </div>
             <hr>
           `;
@@ -684,8 +750,40 @@
         });
 
         picker.on('render', (ui) => {
-
           const days = ui.querySelectorAll('.day-item');
+          let timer;
+          let tooltip;
+
+          const dayMouseOverHandler = _.debounce(async e => {
+            let target = e.target.closest('.day-item');
+            let date = new Date(parseInt(target.dataset.time));
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+
+            let movedDate = `${year}/${month}/${day}`;
+            let params = new URLSearchParams({
+              date: movedDate,
+              roomtypeId: roomtype.roomtypeId
+            }).toString();
+
+            let response = await fetch(`/booking/client/api/availablecount?${params}`);
+            let roomCount = await response.json();
+            console.log(target);
+            
+            tooltip = target.lastChild;
+            timer = setTimeout(() => {
+              tooltip.innerText = roomCount;
+              tooltip?.classList.add('tooltip-text-show');
+            }, 900);
+          }, 100);
+
+          const dayMouseOutHandler = e => {
+            tooltip?.classList.remove('tooltip-text-show');
+            clearTimeout(timer);
+          }
+
+         
 
           days.forEach(day => {
             // 獲取日期的時間戳
@@ -705,11 +803,22 @@
                 }
               }
             }
+
+            day.addEventListener('mouseover', dayMouseOverHandler);
+            day.addEventListener('mouseout', dayMouseOutHandler);
+            let tooltip = document.createElement('div');
+            tooltip.textContent = '這是氣泡提示';
+            day.style.position = 'relative';
+            tooltip.classList.add('tooltip-text');
+            day.appendChild(tooltip);
           });
 
         });
 
-        
+      
+          
+
+        picker.render()
       }
     });
   </script>

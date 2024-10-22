@@ -92,10 +92,11 @@ public class BookingCientController {
 	 * 
 	 */
 	@GetMapping("/checkout")
-	public String sendCheckout(RoomtypeDTO roomtypeDTO, Model model) {
-		System.out.println(roomtypeDTO);
+	public String sendCheckout(Integer roomtypeId, Model model) {
+		Result<RoomtypeDTO> findByIdResult = rtClientService.findById(roomtypeId);
+		RoomtypeDTO roomtypeDTO = findByIdResult.getData();
 		model.addAttribute("roomtype", roomtypeDTO);
 		return "/client/booking/checkout";
 	}
-
+	
 }
