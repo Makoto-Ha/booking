@@ -34,7 +34,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";
+        return "users/register";
     }
 
     @PostMapping("/register")
@@ -42,16 +42,16 @@ public class AuthController {
         try {
             userService.registerUser(user);
             model.addAttribute("message", "User registered successfully! Please check your email to verify your account.");
-            return "register-success";
+            return "users/register-success";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "register";
+            return "users/register";
         }
     }
 
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login";
+        return "users/login";
     }
 
     @PostMapping("/login")
@@ -64,7 +64,7 @@ public class AuthController {
             return "redirect:/"; // 登入成功後重定向到首頁
         } catch (Exception e) {
             model.addAttribute("error", "Invalid username or password");
-            return "login";
+            return "users/login";
         }
     }
 
@@ -76,7 +76,7 @@ public class AuthController {
         String username = principal.getName();
         User user = userService.findByUserAccount(username);
         model.addAttribute("user", user);
-        return "dashboard";
+        return "users/dashboard";
     }
 
     @GetMapping("/logout")
@@ -87,7 +87,7 @@ public class AuthController {
 
     @GetMapping("/forgot-password")
     public String showForgotPasswordForm() {
-        return "forgot-password";
+        return "users/forgot-password";
     }
 
     @PostMapping("/forgot-password")
@@ -95,32 +95,32 @@ public class AuthController {
         try {
             userService.initiatePasswordReset(email);
             model.addAttribute("message", "If an account exists with the provided email, a password reset link has been sent.");
-            return "forgot-password-success";
+            return "users/forgot-password-success";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "forgot-password";
+            return "users/forgot-password";
         }
     }
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
         model.addAttribute("token", token);
-        return "reset-password";
+        return "users/reset-password";
     }
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token, @RequestParam String newPassword, @RequestParam String confirmPassword, Model model) {
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", "密码不匹配");
-            return "reset-password";
+            return "users/reset-password";
         }
         boolean result = userService.resetPassword(token, newPassword);
         if (result) {
             model.addAttribute("message", "密码已成功重置。");
-            return "reset-password-success";
+            return "users/reset-password-success";
         } else {
             model.addAttribute("error", "无效或已过期的令牌。");
-            return "reset-password";
+            return "users/reset-password";
         }
     }
     
@@ -130,10 +130,10 @@ public class AuthController {
         try {
             userService.verifyEmail(token);
             model.addAttribute("message", "Email verified successfully!");
-            return "verify-success";
+            return "users/verify-success";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "verify-error";
+            return "users/verify-error";
         }
     }
     
@@ -155,7 +155,7 @@ public class AuthController {
             User user = userService.processOAuthPostLogin(email, "GOOGLE", oauth2User.getName());
             
             model.addAttribute("user", user);
-            return "oauth2-success";  // 創建一個新的視圖來顯示 OAuth2 登錄成功信息
+            return "users/oauth2-success";  // 創建一個新的視圖來顯示 OAuth2 登錄成功信息
         }
         return "redirect:/";  // 如果不是 OAuth2 用戶，重定向到首頁
     }

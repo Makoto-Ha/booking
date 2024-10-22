@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.booking.bean.pojo.attraction.PackageTour;
+import com.booking.bean.pojo.attraction.PackageTourOrder;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.shopping.ShopOrder;
 
@@ -64,69 +65,36 @@ public class User {
     @Column(name = "provider_id")
     private String providerId;
     
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<PackageTourOrder> packageTourOrder;
 
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ShopOrder> shopOrder;
 
-    // Getters and setters
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<BookingOrder> bookingOrder;
 
-    
-    
-    
+//	@OneToOne(mappedBy = "users")
+//	private AdminPermission adminPermission;
+	
+	@PreUpdate
+    protected void onUpdate() {
+        updatedTime = LocalDateTime.now();
+    }
+
+    public boolean isResetTokenValid() {
+        // Implement reset token validation logic
+        return true;
+    }
+
+    public void clearResetToken() {
+        this.resetToken = null;
+    }
     
     @PrePersist
     protected void onCreate() {
         createdTime = LocalDateTime.now();
     }
-
-    public User(String userName, String userAccount, String userPassword, String userMail, String userPhone,
-			LocalDate userBirthday, String userAddress, String userImg, String creditCard, LocalDateTime createdTime,
-			LocalDateTime updatedTime, boolean emailVerified, String verificationToken, String resetToken,
-			String provider, String providerId) {
-		super();
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-		
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.emailVerified = emailVerified;
-		this.verificationToken = verificationToken;
-		this.resetToken = resetToken;
-		this.provider = provider;
-		this.providerId = providerId;
-	}
-
-	public User() {
-		super();
-	}
-
-	public User(Integer userId, String userName, String userAccount, String userPassword, String userMail,
-			String userPhone, LocalDate userBirthday, String userAddress, String userImg, String creditCard,
-			LocalDateTime createdTime, LocalDateTime updatedTime, boolean emailVerified, String verificationToken,
-			String resetToken, String provider, String providerId) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.userAccount = userAccount;
-		this.userPassword = userPassword;
-		this.userMail = userMail;
-		this.userPhone = userPhone;
-		this.userBirthday = userBirthday;
-		this.userAddress = userAddress;
-	
-		this.creditCard = creditCard;
-		this.createdTime = createdTime;
-		this.updatedTime = updatedTime;
-		this.emailVerified = emailVerified;
-		this.verificationToken = verificationToken;
-		this.resetToken = resetToken;
-		this.provider = provider;
-		this.providerId = providerId;
-	}
 
 	public Integer getUserId() {
 		return userId;
@@ -192,7 +160,6 @@ public class User {
 		this.userAddress = userAddress;
 	}
 
-	
 	public String getCreditCard() {
 		return creditCard;
 	}
@@ -257,19 +224,29 @@ public class User {
 		this.providerId = providerId;
 	}
 
-	@PreUpdate
-    protected void onUpdate() {
-        updatedTime = LocalDateTime.now();
-    }
+	public List<PackageTourOrder> getPackageTourOrder() {
+		return packageTourOrder;
+	}
 
-    public boolean isResetTokenValid() {
-        // Implement reset token validation logic
-        return true;
-    }
+	public void setPackageTourOrder(List<PackageTourOrder> packageTourOrder) {
+		this.packageTourOrder = packageTourOrder;
+	}
 
-    public void clearResetToken() {
-        this.resetToken = null;
-    }
+	public List<ShopOrder> getShopOrder() {
+		return shopOrder;
+	}
+
+	public void setShopOrder(List<ShopOrder> shopOrder) {
+		this.shopOrder = shopOrder;
+	}
+
+	public List<BookingOrder> getBookingOrder() {
+		return bookingOrder;
+	}
+
+	public void setBookingOrder(List<BookingOrder> bookingOrder) {
+		this.bookingOrder = bookingOrder;
+	}
 
 	@Override
 	public String toString() {
@@ -278,9 +255,139 @@ public class User {
 				+ userBirthday + ", userAddress=" + userAddress + ", creditCard=" + creditCard + ", createdTime="
 				+ createdTime + ", updatedTime=" + updatedTime + ", emailVerified=" + emailVerified
 				+ ", verificationToken=" + verificationToken + ", resetToken=" + resetToken + ", provider=" + provider
-				+ ", providerId=" + providerId + "]";
+				+ ", providerId=" + providerId + ", packageTourOrder=" + packageTourOrder + ", shopOrder=" + shopOrder
+				+ ", bookingOrder=" + bookingOrder + "]";
 	}
+
+	public User(Integer userId, String userName, String userAccount, String userPassword, String userMail,
+			String userPhone, LocalDate userBirthday, String userAddress, String creditCard, LocalDateTime createdTime,
+			LocalDateTime updatedTime, boolean emailVerified, String verificationToken, String resetToken,
+			String provider, String providerId, List<PackageTourOrder> packageTourOrder, List<ShopOrder> shopOrder,
+			List<BookingOrder> bookingOrder) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.userAccount = userAccount;
+		this.userPassword = userPassword;
+		this.userMail = userMail;
+		this.userPhone = userPhone;
+		this.userBirthday = userBirthday;
+		this.userAddress = userAddress;
+		this.creditCard = creditCard;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.emailVerified = emailVerified;
+		this.verificationToken = verificationToken;
+		this.resetToken = resetToken;
+		this.provider = provider;
+		this.providerId = providerId;
+		this.packageTourOrder = packageTourOrder;
+		this.shopOrder = shopOrder;
+		this.bookingOrder = bookingOrder;
+	}
+
+	public User(String userName, String userAccount, String userPassword, String userMail, String userPhone,
+			LocalDate userBirthday, String userAddress, String creditCard, LocalDateTime createdTime,
+			LocalDateTime updatedTime, boolean emailVerified, String verificationToken, String resetToken,
+			String provider, String providerId, List<PackageTourOrder> packageTourOrder, List<ShopOrder> shopOrder,
+			List<BookingOrder> bookingOrder) {
+		super();
+		this.userName = userName;
+		this.userAccount = userAccount;
+		this.userPassword = userPassword;
+		this.userMail = userMail;
+		this.userPhone = userPhone;
+		this.userBirthday = userBirthday;
+		this.userAddress = userAddress;
+		this.creditCard = creditCard;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.emailVerified = emailVerified;
+		this.verificationToken = verificationToken;
+		this.resetToken = resetToken;
+		this.provider = provider;
+		this.providerId = providerId;
+		this.packageTourOrder = packageTourOrder;
+		this.shopOrder = shopOrder;
+		this.bookingOrder = bookingOrder;
+	}
+
+	public User(String userAccount, String userPassword, String userMail, String userPhone, LocalDate userBirthday,
+			String userAddress, String creditCard, LocalDateTime createdTime, LocalDateTime updatedTime,
+			boolean emailVerified, String verificationToken, String resetToken, String provider, String providerId,
+			List<PackageTourOrder> packageTourOrder, List<ShopOrder> shopOrder, List<BookingOrder> bookingOrder) {
+		super();
+		this.userAccount = userAccount;
+		this.userPassword = userPassword;
+		this.userMail = userMail;
+		this.userPhone = userPhone;
+		this.userBirthday = userBirthday;
+		this.userAddress = userAddress;
+		this.creditCard = creditCard;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.emailVerified = emailVerified;
+		this.verificationToken = verificationToken;
+		this.resetToken = resetToken;
+		this.provider = provider;
+		this.providerId = providerId;
+		this.packageTourOrder = packageTourOrder;
+		this.shopOrder = shopOrder;
+		this.bookingOrder = bookingOrder;
+	}
+
+	public User(String userPassword, String userMail, String userPhone, LocalDate userBirthday, String userAddress,
+			String creditCard, LocalDateTime createdTime, LocalDateTime updatedTime, boolean emailVerified,
+			String verificationToken, String resetToken, String provider, String providerId,
+			List<PackageTourOrder> packageTourOrder, List<ShopOrder> shopOrder, List<BookingOrder> bookingOrder) {
+		super();
+		this.userPassword = userPassword;
+		this.userMail = userMail;
+		this.userPhone = userPhone;
+		this.userBirthday = userBirthday;
+		this.userAddress = userAddress;
+		this.creditCard = creditCard;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.emailVerified = emailVerified;
+		this.verificationToken = verificationToken;
+		this.resetToken = resetToken;
+		this.provider = provider;
+		this.providerId = providerId;
+		this.packageTourOrder = packageTourOrder;
+		this.shopOrder = shopOrder;
+		this.bookingOrder = bookingOrder;
+	}
+
+	public User(String userMail, String userPhone, LocalDate userBirthday, String userAddress, String creditCard,
+			LocalDateTime createdTime, LocalDateTime updatedTime, boolean emailVerified, String verificationToken,
+			String resetToken, String provider, String providerId, List<PackageTourOrder> packageTourOrder,
+			List<ShopOrder> shopOrder, List<BookingOrder> bookingOrder) {
+		super();
+		this.userMail = userMail;
+		this.userPhone = userPhone;
+		this.userBirthday = userBirthday;
+		this.userAddress = userAddress;
+		this.creditCard = creditCard;
+		this.createdTime = createdTime;
+		this.updatedTime = updatedTime;
+		this.emailVerified = emailVerified;
+		this.verificationToken = verificationToken;
+		this.resetToken = resetToken;
+		this.provider = provider;
+		this.providerId = providerId;
+		this.packageTourOrder = packageTourOrder;
+		this.shopOrder = shopOrder;
+		this.bookingOrder = bookingOrder;
+	}
+
+	public User() {
+		super();
+	}
+
+  //getter and setter
+    
     
 
-    // Add remaining getters and setters
+	
 }
