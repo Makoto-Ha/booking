@@ -45,6 +45,6 @@ public class UserOrderViewController {
         model.addAttribute("shopOrders", shopOrders);
         model.addAttribute("packageOrders", packageOrders);
         
-        return "user-orders";
+        return "users/user-orders";
     }
 }
