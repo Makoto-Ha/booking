@@ -2,7 +2,6 @@ package com.booking.service.shopping;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.bean.pojo.shopping.ShopOrder;
-import com.booking.bean.pojo.shopping.TestUser;
+import com.booking.bean.pojo.user.User;
 import com.booking.dao.shopping.ShopOrderRepository;
 import com.booking.dao.shopping.ShopOrderSpecification;
-import com.booking.dao.shopping.TestUserRepository;
+import com.booking.service.user.UserService;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -29,8 +28,8 @@ public class ShopOrderService {
 
 	@Autowired
 	private ShopOrderRepository shopOrderRepository;
-	@Autowired
-	private TestUserRepository testUserRepository;
+
+	private UserService userService;
 
 	/**
 	 * 多重查詢
@@ -147,11 +146,10 @@ public class ShopOrderService {
 		ShopOrder shopOrder = new ShopOrder();
 		BeanUtils.copyProperties(shopOrderDTO, shopOrder);
 
-		Optional<TestUser> result = testUserRepository.findById(shopOrderDTO.getUserId());
-		shopOrder.setUsers(result.get());
+		User result = userService.findByUserAccount(shopOrder.getUsers().getUserAccount());
+		shopOrder.setUsers(result);
 
 		shopOrderRepository.save(shopOrder);
-
 		return Result.success("訂單新增成功");
 	}
 

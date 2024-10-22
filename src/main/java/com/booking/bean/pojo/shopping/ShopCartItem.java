@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.DynamicInsert;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -58,6 +56,18 @@ public class ShopCartItem {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    
+    /**
+     * 計算小計
+     */
+    public void calculateSubtotal() {
+        if (price != null && quantity != null) {
+            this.subtotal = price * quantity;
+        } else {
+            this.subtotal = 0;
+        }
+    }
+    
     
     @Override
     public String toString() {

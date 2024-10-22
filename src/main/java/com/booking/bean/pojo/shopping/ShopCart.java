@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 
+import com.booking.bean.pojo.user.User;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,47 +28,60 @@ import lombok.Data;
 @DynamicInsert
 public class ShopCart {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer shopCartId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer shopCartId;
 
-    private Integer cartState;
+	private Integer cartState;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private TestUser user;
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @OneToMany(mappedBy = "shopCart", cascade = CascadeType.ALL)
-    private List<ShopCartItem> cartItems = new ArrayList<>();
-    
-    private LocalDateTime updatedAt;
-    
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-    
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
+	@OneToMany(mappedBy = "shopCart", cascade = CascadeType.ALL)
+	private List<ShopCartItem> cartItems = new ArrayList<>();
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+	private Integer totalAmount; // 新增總金額屬性
 
-    @Override
-    public String toString() {
-        StringBuilder items = new StringBuilder();
-        for (ShopCartItem item : cartItems) {
-            items.append(item.toString()).append(", ");
-        }
-        if (items.length() > 0) {
-            items.setLength(items.length() - 2);
-        }
-        return "ShopCart [shopCartId=" + shopCartId + ", cartState=" + cartState + ", user=" + user
-                + ", cartItems=[" + items.toString() + "], updatedAt=" + updatedAt + ", createdAt=" + createdAt + "]";
-    }
+	private LocalDateTime updatedAt;
+
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+		updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = LocalDateTime.now();
+	}
+
+	/**
+	 * 計算並更新總金額
+	 */
+	public void calculateTotalAmount() {
+		if (cartItems != null && !cartItems.isEmpty()) {
+			this.totalAmount = cartItems.stream().mapToInt(ShopCartItem::getSubtotal).sum();
+		} else {
+			this.totalAmount = 0;
+		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder items = new StringBuilder();
+		for (ShopCartItem item : cartItems) {
+			items.append(item.toString()).append(", ");
+		}
+		if (items.length() > 0) {
+			items.setLength(items.length() - 2);
+		}
+		return "ShopCart [shopCartId=" + shopCartId + ",totalAmount=" + totalAmount + ", cartState=" + cartState
+				+ ", user=" + user + ", cartItems=[" + items.toString() + "], updatedAt=" + updatedAt + ", createdAt="
+				+ createdAt + "]";
+	}
 
 }
