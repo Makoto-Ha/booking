@@ -26,6 +26,9 @@
                 <input type="email" class="form-control" id="userMail" th:field="*{userMail}" required>
             </div>
             <button type="submit" class="btn btn-primary">註冊</button>
+            <div class="mt-3">
+            <a th:href="@{/oauth2/authorization/google}" class="btn btn-danger">Login with Google</a>
+        </div>
         </form>
         <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
         <div class="mt-3">
