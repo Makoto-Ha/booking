@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>會員訂單資訊</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 修改 header 的引入路徑 -->
+    <div th:include="client/common/header"></div>
+
+    <div class="container mt-4">
+        <h2>會員訂單資訊</h2>
+        
+        <!-- 訂單類型選擇按鈕 -->
+        <div class="btn-group mb-4" role="group">
+            <button type="button" class="btn btn-primary active" data-bs-toggle="tab" data-bs-target="#bookingOrders">
+                訂房訂單
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#shopOrders">
+                商城訂單
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#packageOrders">
+                景點活動訂單
+            </button>
+        </div>
+
+        <!-- 訂單內容區域 -->
+        <div class="tab-content">
+            <!-- 訂房訂單 -->
+            <div class="tab-pane fade show active" id="bookingOrders">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>訂單編號</th>
+                                <th>下單時間</th>
+                                <th>訂單金額</th>
+                                <th>訂單狀態</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${bookingOrders}">
+                                <td th:text="${order.orderNumber}"></td>
+                                <td th:text="${#temporals.format(order.createdTime, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td th:text="${order.totalPrice}"></td>
+                                <td th:text="${order.orderStatus}"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">查看詳情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 商城訂單 -->
+            <div class="tab-pane fade" id="shopOrders">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>訂單編號</th>
+                                <th>下單時間</th>
+                                <th>訂單金額</th>
+                                <th>訂單狀態</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${shopOrders}">
+                                <td th:text="${order.merchantTradeNo}"></td>
+                                <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td th:text="${order.orderPrice}"></td>
+                                <td th:text="${order.orderState}"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">查看詳情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 景點活動訂單 -->
+            <div class="tab-pane fade" id="packageOrders">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>訂單編號</th>
+                                <th>下單時間</th>
+                                <th>旅遊日期</th>
+                                <th>訂單金額</th>
+                                <th>訂單狀態</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${packageOrders}">
+                                <td th:text="${order.orderId}"></td>
+                                <td th:text="${#temporals.format(order.orderDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td th:text="${#temporals.format(order.travelDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${order.orderPrice}"></td>
+                                <td th:text="${order.orderStatus}"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">查看詳情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

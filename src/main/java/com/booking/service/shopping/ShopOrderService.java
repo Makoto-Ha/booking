@@ -56,7 +56,7 @@ public class ShopOrderService {
 		for (ShopOrder shopOrder : page.getContent()) {
 			ShopOrderDTO shopOrderDTO2 = new ShopOrderDTO();
 			BeanUtils.copyProperties(shopOrder, shopOrderDTO2);
-			shopOrderDTO2.setUserId(shopOrder.getUsers().getUserId());
+			shopOrderDTO2.setUserId(shopOrder.getUser().getUserId());
 			shopOrderDTOs.add(shopOrderDTO2);
 		}
 		System.out.println("shopOrderDTOs: " + shopOrderDTOs);
@@ -146,8 +146,8 @@ public class ShopOrderService {
 		ShopOrder shopOrder = new ShopOrder();
 		BeanUtils.copyProperties(shopOrderDTO, shopOrder);
 
-		User result = userService.findByUserAccount(shopOrder.getUsers().getUserAccount());
-		shopOrder.setUsers(result);
+		User result = userService.findByUserAccount(shopOrder.getUser().getUserAccount());
+		shopOrder.setUser(result);
 
 		shopOrderRepository.save(shopOrder);
 		return Result.success("訂單新增成功");

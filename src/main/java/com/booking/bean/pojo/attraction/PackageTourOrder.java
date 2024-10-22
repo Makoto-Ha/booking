@@ -3,6 +3,8 @@ package com.booking.bean.pojo.attraction;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.booking.bean.pojo.user.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,8 +25,12 @@ public class PackageTourOrder {
     @Column(name = "order_id")
     private Integer orderId;
     
-    @Column(name = "user_id")
+    @Column(name = "user_id", insertable = false, updatable = false) // 避免重复映射
     private Integer userId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
+	private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "package_tour_id", nullable = false)
@@ -41,12 +47,6 @@ public class PackageTourOrder {
     
     @Column(name = "travel_date")
     private LocalDate travelDate;
-    
-    
-
-	public PackageTourOrder() {
-		
-	}
 
 	public Integer getOrderId() {
 		return orderId;
@@ -62,6 +62,14 @@ public class PackageTourOrder {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public PackageTour getPackageTour() {
@@ -106,10 +114,50 @@ public class PackageTourOrder {
 
 	@Override
 	public String toString() {
-		return "PackageTourOrder [orderId=" + orderId + ", userId=" + userId + ", packageTour=" + packageTour
-				+ ", orderStatus=" + orderStatus + ", orderDateTime=" + orderDateTime + ", orderPrice=" + orderPrice
-				+ ", travelDate=" + travelDate + "]";
+		return "PackageTourOrder [orderId=" + orderId + ", userId=" + userId + ", user=" + user + ", packageTour="
+				+ packageTour + ", orderStatus=" + orderStatus + ", orderDateTime=" + orderDateTime + ", orderPrice="
+				+ orderPrice + ", travelDate=" + travelDate + "]";
 	}
-    
-    
+
+	public PackageTourOrder(Integer orderId, Integer userId, User user, PackageTour packageTour, Integer orderStatus,
+			LocalDateTime orderDateTime, Integer orderPrice, LocalDate travelDate) {
+		super();
+		this.orderId = orderId;
+		this.userId = userId;
+		this.user = user;
+		this.packageTour = packageTour;
+		this.orderStatus = orderStatus;
+		this.orderDateTime = orderDateTime;
+		this.orderPrice = orderPrice;
+		this.travelDate = travelDate;
+	}
+
+	public PackageTourOrder(Integer userId, User user, PackageTour packageTour, Integer orderStatus,
+			LocalDateTime orderDateTime, Integer orderPrice, LocalDate travelDate) {
+		super();
+		this.userId = userId;
+		this.user = user;
+		this.packageTour = packageTour;
+		this.orderStatus = orderStatus;
+		this.orderDateTime = orderDateTime;
+		this.orderPrice = orderPrice;
+		this.travelDate = travelDate;
+	}
+
+	public PackageTourOrder(PackageTour packageTour, Integer orderStatus, LocalDateTime orderDateTime,
+			Integer orderPrice, LocalDate travelDate) {
+		super();
+		this.packageTour = packageTour;
+		this.orderStatus = orderStatus;
+		this.orderDateTime = orderDateTime;
+		this.orderPrice = orderPrice;
+		this.travelDate = travelDate;
+	}
+
+	public PackageTourOrder() {
+		super();
+	}
+
+
+	
 }

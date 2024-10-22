@@ -30,9 +30,9 @@ public class ShopOrder {
     private Integer orderId;
 
     // 與 User 的多對一關係
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)  // 外鍵 user_id
-    private User users;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
+	private User user;
 
     private Integer orderPrice;
 
@@ -72,23 +72,14 @@ public class ShopOrder {
         updatedAt = LocalDateTime.now();
     }
 
-    @Override
-    public String toString() {
-        return "ShopOrder{" +
-                "orderId=" + orderId +
-                ", orderPrice=" + orderPrice +
-                ", orderState=" + orderState +
-                ", paymentMethod=" + paymentMethod +
-                ", paymentState=" + paymentState +
-                ", merchantTradeNo='" + merchantTradeNo + '\'' +
-                ", transactionId='" + transactionId + '\'' +
-                ", paymentCreatedAt=" + paymentCreatedAt +
-                ", paymentUpdatedAt=" + paymentUpdatedAt +
-                ", updatedAt=" + updatedAt +
-                ", createdAt=" + createdAt +
-                ", userId=" + (users != null ? users.getUserId() : "null") +  // 避免遞歸，僅打印 userId
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "ShopOrder [orderId=" + orderId + ", user=" + user + ", user=" + user + ", orderPrice=" + orderPrice
+				+ ", orderState=" + orderState + ", paymentMethod=" + paymentMethod + ", paymentState=" + paymentState
+				+ ", merchantTradeNo=" + merchantTradeNo + ", transactionId=" + transactionId + ", paymentCreatedAt="
+				+ paymentCreatedAt + ", paymentUpdatedAt=" + paymentUpdatedAt + ", updatedAt=" + updatedAt
+				+ ", createdAt=" + createdAt + ", items=" + items + "]";
+	}
 
     
 }

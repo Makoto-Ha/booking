@@ -7,11 +7,16 @@ import java.util.List;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.booking.bean.pojo.user.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -20,27 +25,31 @@ import jakarta.persistence.Table;
 @DynamicInsert
 @DynamicUpdate
 public class BookingOrder {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "booking_id")
 	private Integer bookingId;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
+	private User user;
+
 	@Column(name = "order_number")
 	private String orderNumber;
-	
+
 	@Column(name = "order_status")
 	private Integer orderStatus;
-	
+
 	@Column(name = "total_price")
 	private Long totalPrice;
-	
+
 	@Column(name = "updated_time")
 	private LocalDateTime updatedTime;
-	
+
 	@Column(name = "created_time")
 	private LocalDateTime createdTime;
-	
+
 	@OneToMany(mappedBy = "bookingOrder")
 	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
 
@@ -103,10 +112,50 @@ public class BookingOrder {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
+	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public BookingOrder(Integer bookingId, User user, String orderNumber, Integer orderStatus, Long totalPrice,
+			LocalDateTime updatedTime, LocalDateTime createdTime, List<BookingOrderItem> bookingOrderItems) {
+		super();
+		this.bookingId = bookingId;
+		this.user = user;
+		this.orderNumber = orderNumber;
+		this.orderStatus = orderStatus;
+		this.totalPrice = totalPrice;
+		this.updatedTime = updatedTime;
+		this.createdTime = createdTime;
+		this.bookingOrderItems = bookingOrderItems;
+	}
+
+	public BookingOrder(User user, String orderNumber, Integer orderStatus, Long totalPrice, LocalDateTime updatedTime,
+			LocalDateTime createdTime, List<BookingOrderItem> bookingOrderItems) {
+		super();
+		this.user = user;
+		this.orderNumber = orderNumber;
+		this.orderStatus = orderStatus;
+		this.totalPrice = totalPrice;
+		this.updatedTime = updatedTime;
+		this.createdTime = createdTime;
+		this.bookingOrderItems = bookingOrderItems;
+	}
+
 	@Override
 	public String toString() {
-		return "BookingOrder [bookingId=" + bookingId + ", orderNumber=" + orderNumber + ", orderStatus=" + orderStatus
-				+ ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime + ", createdTime=" + createdTime + "]";
+		return "BookingOrder [bookingId=" + bookingId + ", user=" + user + ", orderNumber=" + orderNumber
+				+ ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime
+				+ ", createdTime=" + createdTime + ", bookingOrderItems=" + bookingOrderItems + "]";
 	}
+
+
+
+	
 	
 }
