@@ -34,7 +34,7 @@
 				   </div>
 				   <div class="attr-order-by">
 				      <select class="attr-select-order-by" id="select-order-by">                     
-			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">城市</option>
+			              <option value="attractionCity" th:selected="attractionCity == ${attractionDTO.attrOrderBy}">縣市</option>
 						  <option value="attractionType" th:selected="attractionType == ${attractionDTO.attrOrderBy}">景點類型</option>
 				      </select>
 				     <select class="attr-select-order-by" id="select-sort">
@@ -63,7 +63,7 @@
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
-			                     <label>城市</label>
+			                     <label>縣市</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
@@ -103,7 +103,7 @@
 			                <div class="item-content">     	
 			                	<span class="item-title" th:text="${attractionDTO.attractionName}"></span>
 			                	<div class="listInfo-group">
-		                			<span class="item-info" style="color: darkred">城市</span>
+		                			<span class="item-info" style="color: darkred">縣市</span>
 		                			<span th:text="${attractionDTO.attractionCity}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">地址</span>

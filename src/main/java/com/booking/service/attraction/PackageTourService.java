@@ -54,30 +54,34 @@ public class PackageTourService {
 	 * @return
 	 */
 	public Result<PageImpl<PackageTourDTO>> findAllPackageTour(PackageTourDTO packageTourDTO) {
+	    Integer pageNumber = packageTourDTO.getPageNumber();
+	    String attrOrderBy = packageTourDTO.getAttrOrderBy();
+	    Boolean selectedSort = packageTourDTO.getSelectedSort();
+	    
+	    Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+	    Page<PackageTour> page = packageTourRepo.findAllWithAttractions(pageable);
+	    List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
 
-		Integer pageNumber = packageTourDTO.getPageNumber();
-		String attrOrderBy = packageTourDTO.getAttrOrderBy();
-		Boolean selectedSort = packageTourDTO.getSelectedSort();
-		
-		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
-		Page<PackageTour> page = packageTourRepo.findAll(pageable);
-		List<PackageTourDTO> packageTourDTOs = new ArrayList<>();
-		List<PackageTour> packageTours = page.getContent();
-
-	    for (PackageTour packageTour : packageTours) {
+	    for (PackageTour packageTour : page.getContent()) {
 	        PackageTourDTO responsePackageTourDTO = new PackageTourDTO();
 	        BeanUtils.copyProperties(packageTour, responsePackageTourDTO);
 	        
-	        List<String> attractionNames = packageTour.getPackageTourAttractions().stream()
-	            .map(packageToutaAttraction -> packageToutaAttraction.getAttraction().getAttractionName())
-	            .collect(Collectors.toList());
-	        responsePackageTourDTO.setAttractionNames(attractionNames);
+	        List<String> attractionNames = new ArrayList<>();
+	        for (PackageTourAttraction pta : packageTour.getPackageTourAttractions()) {
+	            Integer attractionId = pta.getId().getAttractionId();
+	            Optional<Attraction> attractionOpt = attractionRepo.findById(attractionId);
+	            if (attractionOpt.isPresent()) {
+	                Attraction attraction = attractionOpt.get();
+	                attractionNames.add(attraction.getAttractionName());
+	            }
+	        }
 	        
+	        responsePackageTourDTO.setAttractionNames(attractionNames);
 	        packageTourDTOs.add(responsePackageTourDTO);
 	    }
 
-		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
-		return Result.success(new PageImpl<>(packageTourDTOs, newPageable, page.getTotalElements()));
+	    PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+	    return Result.success(new PageImpl<>(packageTourDTOs, newPageable, page.getTotalElements()));
 	}
 	
 	
@@ -172,20 +176,18 @@ public class PackageTourService {
      * 新增套裝行程
      * @param packageTourDTO
      * @param attractionIds
-     * @param packageTourImg
+     * @param imageFile
      * @return
      */
-	@Transactional
-	public Result<PackageTour> savePackageTour(PackageTourDTO packageTourDTO, List<Integer> attractionIds, MultipartFile packageTourImg) {
-
-		PackageTour packageTour = new PackageTour();
-		BeanUtils.copyProperties(packageTourDTO, packageTour);
-       
-		if (packageTourImg != null && !packageTourImg.isEmpty()) {
-            Result<String> uploadResult = UploadImageFile.upload(packageTourImg);
-            
+    @Transactional
+    public Result<PackageTour> savePackageTour(PackageTourDTO packageTourDTO, List<Integer> attractionIds, MultipartFile imageFile) {
+        PackageTour packageTour = new PackageTour();
+        BeanUtils.copyProperties(packageTourDTO, packageTour);
+        
+        if (imageFile != null && !imageFile.isEmpty()) {
+            Result<String> uploadResult = UploadImageFile.upload(imageFile);
             if(uploadResult.isSuccess()) {
-                String fileName = packageTourImg.getOriginalFilename();
+                String fileName = imageFile.getOriginalFilename();
                 packageTour.setPackageTourImg("uploads" + "/" + fileName);
             } else {
                 packageTour.setPackageTourImg("uploads/default.jpg");
@@ -193,18 +195,35 @@ public class PackageTourService {
         } else {
             packageTour.setPackageTourImg("uploads/default.jpg");
         }
-	    
-	    packageTourRepo.save(packageTour);
-
-	    for (Integer attractionId : attractionIds) {
-	        Attraction attraction = attractionRepo.findById(attractionId).orElseThrow(() -> new RuntimeException("景點不存在"));
-	        PackageTourAttractionId id = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
-	        PackageTourAttraction packagetourAttraction = new PackageTourAttraction(id, attraction, packageTour);
-	        packageTourAttractionRepo.save(packagetourAttraction);
-	    }
-
-	    return Result.success("新增套裝行程成功");
-	}
+        
+        packageTour = packageTourRepo.save(packageTour);
+        packageTour.setPackageTourAttractions(new ArrayList<>());
+        List<PackageTourAttraction> newAttractions = new ArrayList<>();
+        
+        for (Integer attractionId : attractionIds) {
+            Optional<Attraction> attractionOpt = attractionRepo.findById(attractionId);
+            if (attractionOpt.isEmpty()) {
+                continue; 
+            }
+            
+            PackageTourAttractionId packageTourAttractionId = new PackageTourAttractionId();
+            packageTourAttractionId.setAttractionId(attractionId);
+            packageTourAttractionId.setPackageTourId(packageTour.getPackageTourId());
+            
+            PackageTourAttraction packageTourAttraction = new PackageTourAttraction();
+            packageTourAttraction.setId(packageTourAttractionId);
+            packageTourAttraction.setAttraction(attractionOpt.get());
+            packageTourAttraction.setPackageTour(packageTour);
+            
+            newAttractions.add(packageTourAttraction);
+        }
+        
+        if (!newAttractions.isEmpty()) {
+            packageTourAttractionRepo.saveAll(newAttractions);
+        }
+        
+        return Result.success("新增套裝行程成功");
+    }
 
     
     
@@ -215,7 +234,18 @@ public class PackageTourService {
      */
     @Transactional
     public Result<String> deletePackageTourById(Integer packageTourId) {
-        packageTourRepo.deleteById(packageTourId); 
+        Optional<PackageTour> optional = packageTourRepo.findById(packageTourId);
+        if (optional.isEmpty()) {
+            return Result.failure("找不到指定的套裝行程");
+        }
+        
+        PackageTour packageTour = optional.get();
+        
+        packageTour.getPackageTourAttractions().clear();
+        packageTourRepo.save(packageTour);
+        
+        packageTourRepo.deleteById(packageTourId);
+        
         return Result.success("刪除套裝行程成功");
     }
     
@@ -240,9 +270,8 @@ public class PackageTourService {
         }
         PackageTour packageTour = optional.get();
 
-		if (packageTourImg != null && !packageTourImg.isEmpty()) {
+        if (packageTourImg != null && !packageTourImg.isEmpty()) {
             Result<String> uploadResult = UploadImageFile.upload(packageTourImg);
-            
             if(uploadResult.isSuccess()) {
                 String fileName = packageTourImg.getOriginalFilename();
                 packageTour.setPackageTourImg("uploads" + "/" + fileName);
@@ -250,10 +279,12 @@ public class PackageTourService {
                 packageTour.setPackageTourImg("uploads/default.jpg");
             }
         } else {
-            packageTour.setPackageTourImg("uploads/default.jpg");
+            packageTour.setPackageTourImg(packageTourDTO.getPackageTourImg());
         }
-        
-        BeanUtils.copyProperties(packageTourDTO, packageTour, "packageTourAttractions");
+
+        packageTour.setPackageTourName(packageTourDTO.getPackageTourName());
+        packageTour.setPackageTourPrice(packageTourDTO.getPackageTourPrice());
+        packageTour.setPackageTourDescription(packageTourDTO.getPackageTourDescription());
 
         // 更新景點關聯
         packageTour.getPackageTourAttractions().clear();
@@ -261,7 +292,10 @@ public class PackageTourService {
             for (Integer attractionId : packageTourDTO.getSelectedAttractionIds()) {
                 Attraction attraction = attractionRepo.findById(attractionId)
                     .orElseThrow(() -> new RuntimeException("景點不存在: " + attractionId));
+                    
                 PackageTourAttraction pta = new PackageTourAttraction();
+                PackageTourAttractionId ptaId = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
+                pta.setId(ptaId);
                 pta.setPackageTour(packageTour);
                 pta.setAttraction(attraction);
                 packageTour.getPackageTourAttractions().add(pta);
