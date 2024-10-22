@@ -4,19 +4,25 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.booking.bean.dto.shopping.ProductCategoryDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
+import com.booking.bean.dto.shopping.ShopCartDTO;
+import com.booking.bean.dto.shopping.ShopCartItemDTO;
 import com.booking.service.shopping.ProductCategoryService;
 import com.booking.service.shopping.ProductService;
+import com.booking.service.shopping.ShopCartService;
 import com.booking.service.shopping.ShopClientService;
 import com.booking.utils.Result;
 
@@ -25,13 +31,13 @@ import com.booking.utils.Result;
 public class ShoppingCientController {
 
 	@Autowired
-	private ShopClientService shopclientService;
-
+	private ShopClientService shopClientService;
 	@Autowired
 	private ProductService productService;
-
 	@Autowired
 	private ProductCategoryService productCategoryService;
+	@Autowired
+	private ShopCartService shopCartService;
 
 	/**
 	 * 商城首页
@@ -65,7 +71,6 @@ public class ShoppingCientController {
 	    if (searchKeyword != null && !searchKeyword.isEmpty()) {
 	        results = productService.findProducts(productDTO);
 	    } else if (categoryId != null) {
-	        // 分页获取指定分类下的产品
 	        productDTO.setCategoryId(categoryId);
 	        results = productService.findProductsByCategoryId(productDTO);
 	        model.addAttribute("categoryId", categoryId);
@@ -87,48 +92,75 @@ public class ShoppingCientController {
 		return "client/shopping/shop";
 	}
 
-	//---前往----
-	// 商品頁面
-	// 購物車畫面
-	// 訂單畫面
-
+	// 商品加入購物車
+	@ResponseBody
+    @PostMapping("/cart/add")	
+    public ResponseEntity<Result<String>> addCartItem(@RequestBody ProductDTO productDTO) {
+		
+		System.out.println("======"+productDTO);
+		Integer currentUserId = shopCartService.getCurrentUserId();
+		Result<ShopCartDTO> userCart = shopCartService.findCartByUserId(currentUserId);
+	    
+    	ShopCartItemDTO shopCartItemDTO = new ShopCartItemDTO();
+    	shopCartItemDTO.setProductId(productDTO.getProductId());
+    	shopCartItemDTO.setPrice(productDTO.getProductPrice());
+    	shopCartItemDTO.setQuantity(1);
+    	
+    	Result<String> result = shopCartService.addShopCartItem(shopCartItemDTO,userCart.getData().getShopCartId());
+    	return ResponseEntity.ok(result);
+    }
 	
+	// 移除購物車商品
+	@GetMapping("/cart/remove/{cartItemId}")
+	public String removeCartItem(@PathVariable Integer cartItemId, Model model) {
+		System.out.println("cartItemId:"+cartItemId);
+		Result<String> result = shopCartService.removeShopCartItem(cartItemId);
+		model.addAttribute("shopCartDTO", result.getData());
+		return "redirect:/shop/cart";
+	}
 	
-	//---功能---
-	// 加入購物車
-	// 移除購物車
-	// 訂單結帳
-	
+	// 購物車結帳
 	@ResponseBody
 	@PostMapping("/ecpayCheckout")
 	public String ecpayCheckout() {
-		String ecpayCheckout = shopclientService.ecpayCheckout();
+		String ecpayCheckout = shopClientService.ecpayCheckout();
 		return ecpayCheckout;
 	}
 	
+	// 更新購物車商品數量
+	@PutMapping("/cart/update/{cartItemId}")
+	public String updateCartItemQuantity(@PathVariable Integer cartItemId, Integer quantity,Model model) {
+		Result<ShopCartDTO> result = shopCartService.updateCartItemQuantity(cartItemId, quantity);
+		model.addAttribute("shopCartDTO", result.getData());
+		return "redirect:/shop/cart";
+	}
 	
-	
-	
+	// 商品頁面
 	@GetMapping("/detail/{productId}")
 	public String sendDetail(@PathVariable Integer productId,Model model) {
 		
 		Result<ProductDTO> result = productService.findProductDTOById(productId);
-
-	    Result<List<ProductDTO>> topSellingProducts = shopclientService.findTopSellingProducts(4);
+	    Result<List<ProductDTO>> topSellingProducts = shopClientService.findTopSellingProducts(4);
 	    
 	    model.addAttribute("recommendedProducts", topSellingProducts.getData());
 		model.addAttribute("productDTO", result.getData());
 		return "client/shopping/shop-detail";
 	}
 	
+	// 購物車畫面
 	@GetMapping("/cart")
 	public String sendCart(Model model) {
+		Integer currentUserId = shopCartService.getCurrentUserId();
+		Result<ShopCartDTO> userCart = shopCartService.findCartByUserId(currentUserId);
+		
+		
+		model.addAttribute("shopCartDTO", userCart.getData());
 		return "client/shopping/shop-cart";
 	}
 	
+	// 訂單畫面
 	@GetMapping("/checkout")
 	public String sendCheckout(Model model) {
-		
 		return "client/shopping/shop-checkout";
 	}
 	

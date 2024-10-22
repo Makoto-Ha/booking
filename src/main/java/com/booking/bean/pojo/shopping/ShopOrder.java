@@ -2,6 +2,9 @@ package com.booking.bean.pojo.shopping;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.booking.bean.pojo.user.User;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +32,7 @@ public class ShopOrder {
     // 與 User 的多對一關係
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)  // 外鍵 user_id
-    private TestUser users;
+    private User users;
 
     private Integer orderPrice;
 
