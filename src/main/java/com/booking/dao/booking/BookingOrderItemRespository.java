@@ -23,40 +23,42 @@ public interface BookingOrderItemRespository extends JpaRepository<BookingOrderI
 	List<BookingOrderItem> findBookingBoi(Integer roomtypeId, LocalDate currentDate);
 
 	@Query(value = """
-				        WITH DateSequence AS (
-			    SELECT
-			        DATEADD(DAY, number, CAST(GETDATE() AS DATE)) AS date
-			    FROM master..spt_values
-			    WHERE
-			        type = 'P'
-			        AND DATEADD(DAY, number, CAST(GETDATE() AS DATE)) < DATEADD(MONTH, 4, CAST(GETDATE() AS DATE))
-			),
-			RoomAvailability AS (
-			    SELECT
-			        rt.roomtype_id,
-			        ds.date,
-			        (
-			            SELECT COUNT(DISTINCT boi.room_id)
-			            FROM booking_order_item boi
-			            WHERE boi.room_id IN (SELECT room_id FROM Room WHERE roomtype_id = rt.roomtype_id)
-			            AND ds.date >= boi.check_in_date
-			            AND ds.date <= boi.check_out_date
-			        ) AS booked_rooms,
-			        (
-			            SELECT COUNT(*)
-			            FROM Room r
-			            WHERE r.roomtype_id = rt.roomtype_id
-			        ) AS total_rooms
-			    FROM DateSequence ds
-			    CROSS JOIN Roomtype rt
-			    WHERE rt.roomtype_id = :roomtypeId
-			)
-			SELECT
-			    date as fullyBookedDate
-			FROM RoomAvailability
-			WHERE booked_rooms = total_rooms
-			AND total_rooms > 0
-			ORDER BY roomtype_id, date;
+				       WITH DateSequence AS (
+    SELECT
+        DATEADD(DAY, n - 1, CAST(GETDATE() AS DATE)) AS date
+    FROM (
+        -- 使用 ROW_NUMBER() 生成連續的數字
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS n
+        FROM sys.objects -- 使用系統表生成足夠的數字序列
+    ) AS Numbers
+    WHERE n <= DATEDIFF(DAY, GETDATE(), DATEADD(MONTH, 4, GETDATE()))
+),
+RoomAvailability AS (
+    SELECT
+        rt.roomtype_id,
+        ds.date,
+        (
+            SELECT COUNT(DISTINCT boi.room_id)
+            FROM booking_order_item boi
+            WHERE boi.room_id IN (SELECT room_id FROM Room WHERE roomtype_id = rt.roomtype_id)
+            AND ds.date >= boi.check_in_date
+            AND ds.date <= boi.check_out_date
+        ) AS booked_rooms,
+        (
+            SELECT COUNT(*)
+            FROM Room r
+            WHERE r.roomtype_id = rt.roomtype_id
+        ) AS total_rooms
+    FROM DateSequence ds
+    CROSS JOIN Roomtype rt
+    WHERE rt.roomtype_id = :roomtypeId
+)
+SELECT
+    date AS fullyBookedDate
+FROM RoomAvailability
+WHERE booked_rooms = total_rooms
+AND total_rooms > 0
+ORDER BY roomtype_id, date;
 				    """, nativeQuery = true)
 	List<?> findFullyBookedDates(Integer roomtypeId);
 }

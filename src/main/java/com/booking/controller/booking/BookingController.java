@@ -122,7 +122,7 @@ public class BookingController {
 	@PostMapping("/create")
 	@ResponseBody
 	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO) {
-		
+		System.out.println(boDTO);
 		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
 	
 		return saveBookingOrderResult.getMessage();

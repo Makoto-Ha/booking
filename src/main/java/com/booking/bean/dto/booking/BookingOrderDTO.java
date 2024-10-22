@@ -126,5 +126,10 @@ public class BookingOrderDTO {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
+	@Override
+	public String toString() {
+		return "BookingOrderDTO [roomtypeId=" + roomtypeId + ", bookingOrderItems=" + bookingOrderItems + "]";
+	}
+
 
 }

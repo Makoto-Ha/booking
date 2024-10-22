@@ -59,16 +59,30 @@ public class BookingService {
 		// 根據房型查所有房間
 		List<Room> rooms = roomtype.getRooms();
 		
-		// 過濾掉不是空房
-		List<Room> filterRooms = rooms.stream().filter(room -> room.getRoomStatus() == 0).collect(Collectors.toList());
-		
 		// 獲取請求的所有訂單項目
 		List<BookingOrderItemDTO> boiDTOs = boDTO.getBookingOrderItems();
 		
-		// 判斷請求的
-		if(boiDTOs.size() > filterRooms.size()) {
-			return Result.failure("訂單請求的房間數量大於目前的空房");
-		}
+		// 請求日期重疊的房間就是預定，需要過濾掉
+		
+		List<Room> filterRooms = rooms.stream().filter(room -> {
+			List<BookingOrderItem> bois = room.getBookingOrderItems();
+			for(BookingOrderItem boi : bois) {
+				LocalDate checkInDate = boi.getCheckInDate();
+				LocalDate checkOutDate = boi.getCheckOutDate();
+				for(BookingOrderItemDTO boiDTO : boiDTOs) {
+					LocalDate reqCheckInDate = boiDTO.getCheckInDate();
+					LocalDate reqCheckOutDate = boiDTO.getCheckOutDate();
+					
+					if(reqCheckOutDate.isAfter(checkInDate) && reqCheckInDate.isBefore(checkOutDate) && boi.getBookingStatus() == 1) {
+						return false;
+					}
+					
+				}
+			}
+			return true;
+		}).collect(Collectors.toList());
+		
+	
 		// 新增BookingOrder用於給BookingOrderItem設置
 		BookingOrder bo = new BookingOrder();
 		// 先新增BookingOrder獲取到有bookingId的saveBo
@@ -89,12 +103,12 @@ public class BookingService {
 			
 			Room room = filterRooms.get(i);
 			// 設置訂單項目的狀態為預訂
-			room.setRoomStatus(1);
+			boi.setBookingStatus(1);
 			// 設置訂單項目的金額
-			Long boiPrice = calcTotalPrice(boi, roomtype);
-			boi.setPrice(boiPrice);
+//			Long boiPrice = calcTotalPrice(boi, roomtype);
+//			boi.setPrice(boiPrice);
 			// 累積總訂單金額
-			totalPrice += boiPrice;
+//			totalPrice += boiPrice;
 			
 			// 設置中間表需要的物件
 			boi.setId(saveBo.getBookingId(), room.getRoomId());

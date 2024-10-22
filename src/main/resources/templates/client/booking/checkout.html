@@ -445,7 +445,7 @@
                 <div id="dialogSelectedDates"></div>
               </div>
               <div class="modal-footer border-0 ">
-                <button type="button" class="btn btn-primary w-100">結帳</button>
+                <button type="button" class="btn btn-primary w-100" id="submit">結帳</button>
                 <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">關閉</button>
               </div>
             </div>
@@ -484,6 +484,32 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
   <script th:inline="javascript">
     let roomtype = [[${roomtype}]];
+	
+	submit.addEventListener('click', async e => {
+		console.log(selectedRanges);
+		const bookingOrderItems = selectedRanges.map(rangeDate => {
+			return {
+				checkInDate: rangeDate.checkInDate,
+				checkOutDate: rangeDate.checkOutDate
+			}
+		});
+		
+		let respone = await fetch('/booking/management/booking/create', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				roomtypeId: roomtype.roomtypeId,
+				bookingOrderItems
+			})
+		});
+		
+		let result = await respone.text();
+		
+		console.log(result);
+	});
+	
     const aside = document.querySelector('aside');
     const modalBody = document.querySelector('.modal-body');
     const roomtypeInfo = document.getElementById('roomtypeInfo');
@@ -694,8 +720,8 @@
           let endMonth = endDate.getMonth() + 1;
           let endDay = endDate.getDate();
 
-          let checkInDate = `${startYear}/${startMonth}/${startDay}`;
-          let checkOutDate = `${endYear}/${endMonth}/${endDay}`;
+          let checkInDate = `${startYear}-${startMonth}-${startDay}`;
+          let checkOutDate = `${endYear}-${endMonth}-${endDay}`;
 
           const startDayOfWeek = weekdays[startDate.getDay()];
           const endDayOfWeek = weekdays[endDate.getDay()];
@@ -707,6 +733,8 @@
           selectedRanges.push({
             start: startDate,
             end: endDate,
+			checkInDate,
+			checkOutDate,
             rangeIndex
           });
 
@@ -766,13 +794,11 @@
               date: movedDate,
               roomtypeId: roomtype.roomtypeId
             }).toString();
-
-            let response = await fetch(`/booking/client/api/availablecount?${params}`);
-            let roomCount = await response.json();
-            console.log(target);
             
             tooltip = target.lastChild;
-            timer = setTimeout(() => {
+            timer = setTimeout(async () => {
+			  let response = await fetch(`/booking/client/api/availablecount?${params}`);
+              let roomCount = await response.json();
               tooltip.innerText = roomCount;
               tooltip?.classList.add('tooltip-text-show');
             }, 900);
