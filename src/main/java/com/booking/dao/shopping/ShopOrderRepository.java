@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.bean.pojo.shopping.ShopOrder;
+import com.booking.bean.pojo.user.User;
 
 public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer> {
 
@@ -27,5 +28,9 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer> {
 
 	@Query("SELECT new com.booking.bean.dto.shopping.ShopOrderDTO(o.orderId,o.user.userId,o.orderPrice,o.orderState,o.paymentMethod, o.paymentState, o.merchantTradeNo, o.transactionId,o.paymentCreatedAt, o.paymentUpdatedAt, o.updatedAt, o.createdAt,new com.booking.bean.dto.shopping.ShopOrderItemDTO(i.orderItemId, i.product.productId, i.productName, i.quantity, i.price, i.subtotal, i.updatedAt, i.createdAt))FROM ShopOrder o LEFT JOIN ShopOrderItem i ON o.orderId = i.shopOrder.orderId WHERE o.merchantTradeNo = :merchantTradeNo")
 	List<ShopOrderDTO> findOrderDTOByMerchantTradeNo(String merchantTradeNo);
+	
+	
+	Page<ShopOrder> findByUser(User user, Pageable pageable);
+	
 
 }
