@@ -24,27 +24,27 @@
 <body>
     <div th:replace="~{/client/common/header}"></div>
 
-    <div class="container mt-5">
+  <div class="container mt-5">
         <h2>結帳</h2>
         <div class="row">
             <!-- 左侧：收货信息和支付方式 -->
             <div class="col-md-8">
-                <form th:action="@{/checkout/confirm}" method="post">
+                <form th:action="@{/shop/checkout/confirm}" method="post">
                     <!-- 收货信息 -->
                     <div class="mb-4"><br>
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="fullName" class="form-label">收件人姓名</label>
-                                <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                <label for="userName" class="form-label">收件人姓名</label>
+                                <input type="text" class="form-control" id="userName" name="userName" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="phoneNumber" class="form-label">收件人電話</label>
-                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                                <label for="userPhone" class="form-label">收件人電話</label>
+                                <input type="text" class="form-control" id="userPhone" name="userPhone" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">收件地址</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
+                            <label for="userAddress" class="form-label">收件地址</label>
+                            <input type="text" class="form-control" id="userAddress" name="userAddress" required>
                         </div>
                     </div>
 
@@ -52,27 +52,18 @@
                     <div class="mb-4">
                         <h4>支付方式</h4>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethod1"
-                                value="1" checked>
-                            <label class="form-check-label" for="paymentMethod1">
-                                信用卡
-                            </label>
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethod" value="1" checked>
+                            <label class="form-check-label" for="paymentMethod">綠界支付</label>
                         </div>
                     </div>
 
                     <!-- 提交按钮 -->
                     <div class="d-flex justify-content-between">
-                        <a href="@{/cart}" class="btn btn-secondary">返回購物車</a>
+                        <a th:href="@{/shop/cart}" class="btn btn-secondary">返回購物車</a>
                         <button type="submit" class="btn btn-success">確認結帳</button>
                     </div>
                 </form>
-                <form th:action="@{/shop/ecpayCheckout}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-link mt-3">aaaa</button>
-                </form>
-
             </div>
-
-            <button></button>
 
             <!-- 右侧：订单摘要面板 -->
             <div class="col-md-4">
@@ -83,25 +74,21 @@
                     <div class="card-body">
                         <table class="table">
                             <tbody>
-                                <th:block th:each="item : ${cartItems}">
+                                <th:block th:each="item : ${orderDTO.orderItems}">
                                     <tr>
                                         <td th:text="${item.productName} + ' x ' + ${item.quantity}">商品名称 x 数量</td>
-                                        <td class="text-end" th:text="'$' + ${item.subtotal}">小计</td>
+                                        <td class="text-end" th:text="'$' + ${item.subtotal}">小計</td>
                                     </tr>
                                 </th:block>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>商品总价</th>
-                                    <th class="text-end" th:text="'$' + ${totalPrice}">总价</th>
+                                    <th>商品總價</th>
+                                    <th class="text-end" th:text="'$' + ${orderDTO.orderPrice}">總價</th>
                                 </tr>
                                 <tr>
-                                    <th>运费</th>
-                                    <th class="text-end" th:text="'$' + ${shippingFee}">运费</th>
-                                </tr>
-                                <tr>
-                                    <th>应付总额</th>
-                                    <th class="text-end" th:text="'$' + (${totalPrice} + ${shippingFee})">总额</th>
+                                    <th>應付總額</th>
+                                    <th class="text-end" th:text="'$' + ${orderDTO.orderPrice}">總額</th>
                                 </tr>
                             </tfoot>
                         </table>
