@@ -1,62 +1,65 @@
 package com.booking.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import com.booking.bean.dto.user.UserOrderDTO;
+import com.booking.bean.pojo.user.User;
 import com.booking.service.user.UserOrderService;
+import com.booking.service.user.UserService;
 
-@RestController
-@RequestMapping("/api/user")
+@Controller
+@RequestMapping("/user")
 public class UserOrderController {
+
+    @Autowired
+    private UserService userService;
+    
     @Autowired
     private UserOrderService userOrderService;
 
-    // 獲取會員所有訂單
-    @GetMapping("/{userId}/orders")
-    public ResponseEntity<UserOrderDTO> getUserOrders(@PathVariable Integer userId) {
-        UserOrderDTO userOrders = userOrderService.getUserOrders(userId);
-        return ResponseEntity.ok(userOrders);
-    }
-
-    // 獲取特定類型的訂單
-    @GetMapping("/{userId}/orders/{orderType}")
-    public ResponseEntity<?> getUserOrdersByType(
-            @PathVariable Integer userId,
-            @PathVariable String orderType) {
+    @GetMapping("/orders")
+    public String showUserOrders(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        switch (orderType.toLowerCase()) {
-            case "booking":
-                return ResponseEntity.ok(userOrderService.getUserBookingOrders(userId));
-            case "shop":
-                return ResponseEntity.ok(userOrderService.getUserShopOrders(userId));
-            case "package":
-                return ResponseEntity.ok(userOrderService.getUserPackageTourOrders(userId));
-            default:
-                return ResponseEntity.badRequest().body("Invalid order type");
+        if (auth == null) {
+            return "redirect:/auth/login";
         }
-    }
 
-    // 根據狀態查詢訂單
-    @GetMapping("/{userId}/orders/{orderType}/status/{status}")
-    public ResponseEntity<?> getUserOrdersByStatus(
-            @PathVariable Integer userId,
-            @PathVariable String orderType,
-            @PathVariable Integer status) {
-        
-        switch (orderType.toLowerCase()) {
-            case "booking":
-                return ResponseEntity.ok(userOrderService.getBookingOrdersByStatus(userId, status));
-            case "shop":
-                return ResponseEntity.ok(userOrderService.getShopOrdersByStatus(userId, status));
-            case "package":
-                return ResponseEntity.ok(userOrderService.getPackageOrdersByStatus(userId, status));
-            default:
-                return ResponseEntity.badRequest().body("Invalid order type");
+        User user;
+        try {
+            if (auth.getPrincipal() instanceof OAuth2User) {
+                OAuth2User oauth2User = (OAuth2User) auth.getPrincipal();
+                String email = oauth2User.getAttribute("email");
+                user = userService.findByUserMail(email);
+            } else {
+                String username = auth.getName();
+                user = userService.findByUserAccount(username);
+            }
+            
+            if (user == null) {
+                throw new RuntimeException("User not found");
+            }
+
+            // 獲取訂單數據
+            model.addAttribute("packageTourOrders", 
+                userOrderService.getPackageTourOrdersBasic(user.getUserId()));
+            model.addAttribute("shopOrders", 
+                userOrderService.getShopOrdersBasic(user.getUserId()));
+            model.addAttribute("bookingOrders", 
+                userOrderService.getBookingOrdersBasic(user.getUserId()));
+
+            return "users/orders";
+            
+        } catch (Exception e) {
+            // 記錄錯誤
+            e.printStackTrace();
+            // 重定向到錯誤頁面或登入頁面
+            return "redirect:/auth/login?error=用戶資訊獲取失敗";
         }
     }
 }
