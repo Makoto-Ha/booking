@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,16 +19,14 @@
 		}
 	</style>
 </head>
-
 <body>
 	<div th:replace="~{/client/common/header}"></div>
-
 	<div class="container mt-5">
 		<h2>購物車</h2>
 		<div class="row">
 			<!-- 左侧：购物车商品列表 -->
 			<div class="col-md-8">
-				<form th:action="@{/cart/update}" method="post">
+				<form th:action="@{/shop/checkout}" method="post">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -46,18 +43,18 @@
 									<tr>
 										<td>
 											<div class="d-flex align-items-center">
+												<input type="checkbox" name="selectedItems"	th:value="${item.cartItemId}">
 												<img th:src="@{'/management/product/image/' + ${item.productId}}"
 													alt="圖片" class="img-thumbnail" style="width: 80px; height: 80px;">
 												<div class="ms-3">
-													<a th:href="@{'/shop/detail/' + ${item.productId}}"
-														th:text="${item.productName}">商品名稱</a>
+													<a th:href="@{'/shop/detail/' + ${item.productId}}"	th:text="${item.productName}">商品名稱</a>
 												</div>
 											</div>
 										</td>
 										<td th:text="'$' + ${item.price}">價格</td>
 										<td><input type="number" name="quantities" th:value="${item.quantity}" min="1"
-												class="form-control" style="width: 80px;"> <input type="hidden"
-												name="cartItemIds" th:value="${item.cartItemId}"></td>
+												class="form-control" style="width: 80px;">
+												<input type="hidden" name="cartItemIds" th:value="${item.cartItemId}"></td>
 										<td th:text="'$' + ${item.subtotal}">小计</td>
 										<td><a th:href="@{/shop/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}"
 												class="btn btn-danger btn-sm">移除</a></td>
@@ -68,7 +65,7 @@
 					</table>
 					<div class="d-flex justify-content-between">
 						<a th:href="@{/shop}" class="btn btn-secondary w-30 mt-3">繼續購物</a>
-						<a th:href="@{/shop/checkout}" class="btn btn-success w-30 mt-3">結帳</a>
+						<button type="submit" class="btn btn-success w-30 mt-3">結帳</button>
 					</div>
 				</form>
 			</div>
@@ -91,11 +88,8 @@
 			</div>
 		</div>
 	</div>
-
 	<div th:replace="~{/client/common/footer}"></div>
 	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
-
 </html>

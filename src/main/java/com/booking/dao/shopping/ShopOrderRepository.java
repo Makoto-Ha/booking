@@ -28,4 +28,11 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer> {
 	@Query("SELECT new com.booking.bean.dto.shopping.ShopOrderDTO(o.orderId,o.user.userId,o.orderPrice,o.orderState,o.paymentMethod, o.paymentState, o.merchantTradeNo, o.transactionId,o.paymentCreatedAt, o.paymentUpdatedAt, o.updatedAt, o.createdAt,new com.booking.bean.dto.shopping.ShopOrderItemDTO(i.orderItemId, i.product.productId, i.productName, i.quantity, i.price, i.subtotal, i.updatedAt, i.createdAt))FROM ShopOrder o LEFT JOIN ShopOrderItem i ON o.orderId = i.shopOrder.orderId WHERE o.merchantTradeNo = :merchantTradeNo")
 	List<ShopOrderDTO> findOrderDTOByMerchantTradeNo(String merchantTradeNo);
 
+	@Query("SELECT new com.booking.bean.dto.shopping.ShopOrderDTO(o.orderId, o.user.userId, o.orderPrice, o.orderState, o.paymentMethod, o.paymentState, o.merchantTradeNo, o.transactionId, o.paymentCreatedAt, o.paymentUpdatedAt, o.updatedAt, o.createdAt) "
+	        + "FROM ShopOrder o "
+	        + "LEFT JOIN o.items i "
+	        + "WHERE o.user.userId = :userId AND o.orderState = :orderState ")
+	Page<ShopOrderDTO> findByUserIdAndOrderStateWithDTO(Integer userId, Integer orderState,Pageable pageable);
+	
+	Page<ShopOrder> findByUser_UserIdAndOrderState(@Param("userId") Integer userId, @Param("orderState") Integer orderState, Pageable pageable);
 }

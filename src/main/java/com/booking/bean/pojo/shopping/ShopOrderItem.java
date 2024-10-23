@@ -58,5 +58,12 @@ public class ShopOrderItem {
 		updatedAt = LocalDateTime.now();
 	}
 
+	@Override
+	public String toString() {
+		return "ShopOrderItem [orderItemId=" + orderItemId + ", productName=" + productName + ", quantity=" + quantity
+				+ ", price=" + price + ", subtotal=" + subtotal + ", updatedAt=" + updatedAt + ", createdAt="
+				+ createdAt + "]";
+	}
+
 	
 }
