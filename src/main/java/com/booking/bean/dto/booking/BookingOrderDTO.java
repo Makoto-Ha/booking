@@ -3,6 +3,8 @@ package com.booking.bean.dto.booking;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BookingOrderDTO {
 	
 	private Integer bookingId;

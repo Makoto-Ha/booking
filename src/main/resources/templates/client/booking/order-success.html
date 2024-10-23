@@ -361,6 +361,29 @@
     /* 保留陰影 */
     box-shadow: var(--bs-shadow-sm) !important;
 }
+
+
+#order-items > li:nth-child(2n) {
+	border: 1px solid #ccc !important;
+	border-left: 0 !important;
+	border-top: 0 !important;
+}
+
+#order-items > li:nth-child(2n+1) {
+	border: 1px solid #ccc !important;
+	border-top: 0 !important;
+}
+
+#order-items > li:nth-child(1) {
+	border: 1px solid #ccc !important;
+}
+
+#order-items > li:nth-child(2) {
+	border: 1px solid #ccc !important;
+	border-left: 0 !important;
+}
+
+
   </style>
 </head>
 
@@ -387,16 +410,22 @@
             </div>
             <hr>
             <div class="card-body pt-0">
-                <p><strong>訂單編號：</strong>123456789</p>
-                <p><strong>訂購日期：</strong>2024/10/23</p>
-                <p><strong>寄送地址：</strong>台北市中山區民權東路一段123號</p>
+                <p><strong>訂單編號：</strong><span th:text="${bookingOrderInfo.bookingOrder.orderNumber}"></span></p>
+                <p><strong>訂購日期：</strong><span th:text="${bookingOrderInfo.createdDate}"></span></p>
                 <p><strong>付款方式：</strong>信用卡</p>
                 <hr>
                 <h5>預定的房型</h5>
-                <ul class="list-group">
-                    <li class="list-group-item">商品 A - $1000</li>
-                    <li class="list-group-item">商品 B - $500</li>
-                    <li class="list-group-item">商品 C - $300</li>
+                <ul class="d-flex flex-wrap ps-0" id="order-items">
+                    <li th:each="bookingOrderItem : ${bookingOrderInfo.bookingOrderItems}" class="d-flex w-50 p-2">
+						<img class="me-2" th:src="@{/management/roomtype/image/{roomtypeId}(roomtypeId=${bookingOrderInfo.roomtype.roomtypeId})}" width="100">
+				
+						<div class="row">
+							<div class="col-md-12" th:text="${'房型名稱: ' + bookingOrderInfo.roomtype.roomtypeName}"></div>
+							<div>總金額: 2000</div>
+							<div class="col-md-12" th:text="${'入住日期: ' + bookingOrderItem.checkInDate}"></div>
+							<div class="col-md-12" th:text="${'退房日期: ' + bookingOrderItem.checkOutDate}"></div>
+						</div>
+					</li>
                 </ul>
                 <hr>
                 <p class="text-end"><strong>總金額：</strong>$1800</p>
@@ -410,7 +439,8 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script th:inline="javascript">
-
+	let bookingOrderInfo = [[${bookingOrderInfo}]];
+	console.log(bookingOrderInfo);
   </script>
 
 </body>

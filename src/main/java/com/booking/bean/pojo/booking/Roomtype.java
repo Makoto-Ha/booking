@@ -200,11 +200,5 @@ public class Roomtype {
 		this.amenities = amenities;
 	}
 
-	@Override
-	public String toString() {
-		return "Roomtype [amenities=" + amenities + "]";
-	}
-	
-	
 	
 }

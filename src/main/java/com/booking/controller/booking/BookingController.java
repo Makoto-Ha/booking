@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
@@ -121,14 +120,19 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	@ResponseBody
-	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO, HttpSession session) {	
+	private ResponseEntity<?> saveBookingOrder(@RequestBody BookingOrderDTO boDTO, HttpSession session) {	
 		
 		Result<BookingOrder> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
+		String message = saveBookingOrderResult.getMessage();
+		
+		if(saveBookingOrderResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
 		BookingOrder bookingOrder = saveBookingOrderResult.getData();
-		session.setAttribute("bookingOrderId", bookingOrder.getBookingId());
+		session.setAttribute("bookingId", bookingOrder.getBookingId());
 	
-		return saveBookingOrderResult.getMessage();
+		return ResponseEntity.ok(message);
 	}
 	
 	/**

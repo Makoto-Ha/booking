@@ -490,7 +490,7 @@
 
       console.log(bookingOrderItems);
       
-      let respone = await fetch('/booking/management/booking/create', {
+      let response = await fetch('/booking/management/booking/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -500,10 +500,15 @@
           bookingOrderItems
         })
       });
-      
-      let result = await respone.text();
-      
-      console.log(result);
+	  
+	  let result = await response.text();
+
+	  if(response.ok) {
+		location.href = '/booking/user/order/success';
+		return;
+	  }
+	  
+	  alert(result);
     });
 	
     const aside = document.querySelector('aside');
@@ -847,9 +852,6 @@
           });
 
         });
-
-      
-          
 
         picker.render()
       }

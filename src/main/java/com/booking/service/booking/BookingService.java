@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
+import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
@@ -280,12 +283,12 @@ public class BookingService {
 	}
 
 	/**
-	 * 根據bookingOrderId查找訂單
-	 * @param bookingOrderId
+	 * 根據bookingId查找訂單
+	 * @param bookingId
 	 * @return
 	 */
-	public Result<BookingOrderDTO> findById(Integer bookingOrderId) {
-		BookingOrder bookingOrder = bookingRepo.findById(bookingOrderId).orElse(null);
+	public Result<BookingOrderDTO> findById(Integer bookingId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingId).orElse(null);
 		
 		if(bookingOrder == null) {
 			return Result.failure("查找不到訂單");
@@ -296,6 +299,51 @@ public class BookingService {
 		BeanUtils.copyProperties(bookingOrder, bookingOrderDTO);
 		
 		return Result.success(bookingOrderDTO);
+	}
+	
+	/**
+	 * 根據訂單查找訂單項目
+	 * @return
+	 */
+	public Result<Map<String, Object> > findBookingInfo(Integer bookingId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingId).orElse(null);
+		
+		if(bookingOrder == null) {
+			return Result.failure("查找不到訂單");
+		}
+		
+		List<BookingOrderItem> bois = bookingOrder.getBookingOrderItems();
+
+		if(bois.size() <= 0) {
+			return Result.failure("該訂單沒有訂單項目");
+		}
+		
+		List<BookingOrderItemDTO> boiDTOs = new ArrayList<>();
+		
+		BookingOrderDTO bookingOrderDTO = new BookingOrderDTO();
+		BeanUtils.copyProperties(bookingOrder, bookingOrderDTO);
+		
+		LocalDate localDate = bookingOrder.getCreatedTime().toLocalDate();
+		
+		
+		Roomtype roomtype = bois.get(0).getRoomtype();
+		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+		BeanUtils.copyProperties(roomtype, roomtypeDTO);
+
+		
+		for(BookingOrderItem boi : bois) {
+			BookingOrderItemDTO boiDTO = new BookingOrderItemDTO();
+			BeanUtils.copyProperties(boi, boiDTO);
+			boiDTOs.add(boiDTO);
+		}
+		
+		Map<String, Object> bookingOrderInfo = new HashMap<>();
+		bookingOrderInfo.put("bookingOrder", bookingOrderDTO);
+		bookingOrderInfo.put("bookingOrderItems", boiDTOs);
+		bookingOrderInfo.put("roomtype", roomtypeDTO);
+		bookingOrderInfo.put("createdDate", localDate);
+		
+		return Result.success(bookingOrderInfo);
 	}
 
 }

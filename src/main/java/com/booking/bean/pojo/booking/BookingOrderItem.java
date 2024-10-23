@@ -172,10 +172,8 @@ public class BookingOrderItem {
 
 	@Override
 	public String toString() {
-		return "BookingOrderItem [id=" + id + ", bookingOrder=" + bookingOrder + ", room=" + room + ", roomtype="
-				+ roomtype + ", checkInDate=" + checkInDate + ", checkOutDate=" + checkOutDate + ", checkInTime="
-				+ checkInTime + ", checkOutTime=" + checkOutTime + ", updatedTime=" + updatedTime + ", price=" + price
-				+ ", bookingStatus=" + bookingStatus + "]";
+		return "BookingOrderItem [roomtype=" + roomtype.getRoomtypeId() + "]";
 	}
+
 
 }

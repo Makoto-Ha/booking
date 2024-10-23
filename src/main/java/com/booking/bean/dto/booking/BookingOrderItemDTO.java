@@ -3,13 +3,11 @@ package com.booking.bean.dto.booking;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.booking.bean.pojo.booking.Roomtype;
-
 public class BookingOrderItemDTO {
 
 	private Integer roomId;
 	
-	private Roomtype roomtypeId;
+	private Integer roomtypeId;
 	
 	private Long price;
 	
@@ -26,7 +24,7 @@ public class BookingOrderItemDTO {
 	public BookingOrderItemDTO() {
 	}
 	
-	public BookingOrderItemDTO(Integer roomId, Roomtype roomtypeId, Long price, LocalDate checkInDate,
+	public BookingOrderItemDTO(Integer roomId, Integer roomtypeId, Long price, LocalDate checkInDate,
 			LocalDate checkOutDate, LocalDateTime checkInTime, LocalDateTime checkOutTime, LocalDateTime updatedTime) {
 		this.roomId = roomId;
 		this.roomtypeId = roomtypeId;
@@ -46,11 +44,11 @@ public class BookingOrderItemDTO {
 		this.roomId = roomId;
 	}
 
-	public Roomtype getRoomtypeId() {
+	public Integer getRoomtypeId() {
 		return roomtypeId;
 	}
 
-	public void setRoomtypeId(Roomtype roomtypeId) {
+	public void setRoomtypeId(Integer roomtypeId) {
 		this.roomtypeId = roomtypeId;
 	}
 

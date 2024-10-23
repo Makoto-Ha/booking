@@ -1,6 +1,7 @@
 package com.booking.controller.booking.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,12 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
-import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.common.Amenity;
-import com.booking.dao.booking.BookingRepository;
 import com.booking.service.booking.BookingService;
 import com.booking.service.booking.client.RoomtypeClientService;
 import com.booking.service.common.AmenityService;
@@ -24,7 +22,7 @@ import com.booking.utils.Result;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class BookingCientController {
+public class BookingClientController {
 	
 	@Autowired
 	private RoomtypeClientService rtClientService;
@@ -59,18 +57,24 @@ public class BookingCientController {
 		return "client/booking/user-search";
 	}
 	
+	/**
+	 * 訂單新增後的成功頁面
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/user/order/success")
 	private String sendOrderSuccess(HttpSession session, Model model) {
-		Integer bookingOrderId = (Integer) session.getAttribute("bookingOrderId");
-		Result<BookingOrderDTO> findByIdResult = bookingService.findById(bookingOrderId);
+		Integer bookingId = (Integer) session.getAttribute("bookingId");
+		Result<Map<String, Object>> findBookingInfoResult = bookingService.findBookingInfo(bookingId);
 		
-		if(findByIdResult.isFailure()) {
+		if(findBookingInfoResult.isFailure()) {
 			return "";
 		}
 		
-		BookingOrderDTO bookingOrderDTO = findByIdResult.getData();
+		Map<String, Object> bookingOrderInfo = findBookingInfoResult.getData();
 		
-		model.addAttribute("bookingOrder", bookingOrderDTO);
+		model.addAttribute("bookingOrderInfo", bookingOrderInfo);
 		
 		return "client/booking/order-success";
 	}
