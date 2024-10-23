@@ -5,12 +5,13 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.booking.bean.pojo.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PackageTourOrderDTO {
 
     private Integer orderId;
-    private Integer userId;
+    private User user;
     private Integer packageTourId;
     private String packageTourName;
     private Integer orderStatus;
@@ -39,15 +40,15 @@ public class PackageTourOrderDTO {
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-
-
-	public Integer getUserId() {
-		return userId;
+	
+	
+	public User getUser() {
+		return user;
 	}
 
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 
@@ -153,10 +154,10 @@ public class PackageTourOrderDTO {
 
 	@Override
 	public String toString() {
-		return "PackageTourOrderDTO [orderId=" + orderId + ", userId=" + userId + ", packageTourId=" + packageTourId
+		return "PackageTourOrderDTO [orderId=" + orderId + ", user=" + user + ", packageTourId=" + packageTourId
 				+ ", packageTourName=" + packageTourName + ", orderStatus=" + orderStatus + ", orderDateTime="
-				+ orderDateTime + ", searchDate=" + searchDate + ", orderPrice=" + orderPrice + ", travelDate="
-				+ travelDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
+				+ orderDateTime + ", orderPrice=" + orderPrice + ", travelDate=" + travelDate + ", searchDate="
+				+ searchDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
 				+ selectedSort + "]";
 	}
 

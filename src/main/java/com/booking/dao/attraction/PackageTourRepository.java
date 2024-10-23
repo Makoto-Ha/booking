@@ -36,5 +36,7 @@ public interface PackageTourRepository extends JpaRepository<PackageTour, Intege
         
         return new PageImpl<>(results, pageable, page.getTotalElements());
     }
+    
+    List<PackageTour> findByPackageTourNameContaining(String keyword);
 
 }

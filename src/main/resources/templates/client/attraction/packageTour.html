@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>套裝行程</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4));
+            z-index: 1;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-container .input-group {
+            background: white;
+            padding: 8px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-container .form-control {
+            border: none;
+            background: transparent;
+            padding: 0.5rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px 0 0 50px;
+        }
+
+        .search-container .form-control:focus {
+            box-shadow: none;
+        }
+
+        .search-container .btn {
+            border-radius: 50px;
+            padding: 0.5rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        .carousel-item {
+            display: none;
+        }
+
+        .carousel-item.active {
+            display: block;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: nowrap;
+            margin: 0 -10px;
+        }
+
+        .tour-column {
+            width: 25%;
+            padding: 0 10px;
+            flex: 0 0 25%;
+        }
+
+        .carousel-inner {
+            overflow: hidden;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            height: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        #packageTourCarousel {
+            position: relative;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 10%;
+            background: none;
+            opacity: 1;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control-prev {
+            left: -80px;
+        }
+
+        .carousel-control-next {
+            right: -80px;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            opacity: 0.7;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            display: none;
+        }
+
+		.fa-circle-left,
+		.fa-circle-right {
+    		color: #000;  
+    		font-size: 2rem;
+    		opacity: 0.6;  
+    		transition: all 0.3s ease;
+		}
+
+        .fa-circle-left:hover,
+        .fa-circle-right:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .container {
+            padding: 0 100px;
+        }
+
+    </style>
+</head>
+<body>
+    <div th:replace="~{/client/common/header}"></div>
+
+    <main>
+        <div class="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>搜尋你的冒險之旅</h1>
+                <p>幫您找到世界各地最精采的活動體驗</p>
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="搜尋套裝行程...">
+                        <button class="btn btn-primary" type="button" id="searchButton">
+                            <i class="fas fa-search"></i> 搜尋
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <img th:src="@{client/common/image/hot-air-balloon.jpg}" class="hero-image" alt="熱氣球">
+        </div>
+
+        <div class="container">
+            <div id="packageTourCarousel" class="carousel slide" data-bs-interval="false">
+                <div class="carousel-inner">
+                    <div th:each="groupStart : ${#numbers.sequence(0, packageTours.size() - 1, 4)}" 
+                         th:with="end=${groupStart + 3 < packageTours.size() ? groupStart + 3 : packageTours.size() - 1}"
+                         th:class="${groupStart == 0} ? 'carousel-item active' : 'carousel-item'">
+                        <div class="row">
+                            <div th:each="index : ${#numbers.sequence(groupStart, end)}" 
+                                 class="tour-column">
+                                <div class="card">
+                                    <a th:href="@{'/packageTour/detail/' + ${packageTours[index].packageTourId}}" 
+                                       class="text-decoration-none">
+                                        <img th:src="@{'/management/packageTour/image/' + ${packageTours[index].packageTourId}}" 
+                                             class="card-img-top" alt="行程圖片">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${packageTours[index].packageTourName}">行程名稱</h5>
+                                            <p class="card-text small text-muted" 
+                                               th:text="'包含景點：' + ${#strings.listJoin(packageTours[index].attractionNames, ', ')}">
+                                            </p>
+                                            <p class="price-text" 
+                                               th:text="'NT$ ' + ${packageTours[index].packageTourPrice}">
+                                            </p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#packageTourCarousel" data-bs-slide="prev">
+                    <i class="fa-solid fa-circle-left"></i>
+                    <span class="visually-hidden">上一個</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#packageTourCarousel" data-bs-slide="next">
+                    <i class="fa-solid fa-circle-right"></i>
+                    <span class="visually-hidden">下一個</span>
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="~{/client/common/footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const keyword = document.getElementById('searchInput').value;
+            fetch(`/booking/packageTour/api/packageTours?keyword=${encodeURIComponent(keyword)}`)
+                .then(response => response.json())
+                .then(data => {
+                    let carouselContent = '';
+                    for(let i = 0; i < data.length; i += 4) {
+                        const end = Math.min(i + 4, data.length);
+                        carouselContent += `
+                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                <div class="row">
+                                    ${data.slice(i, end).map(package => `
+                                        <div class="tour-column">
+                                            <div class="card">
+                                                <a href="/booking/packageTour/detail/${package.packageTourId}" 
+                                                   class="text-decoration-none">
+                                                    <img src="/booking/management/packageTour/image/${package.packageTourId}" 
+                                                         class="card-img-top" alt="行程圖片">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${package.packageTourName}</h5>
+                                                        <p class="card-text small text-muted">
+                                                            包含景點：${package.attractionNames.join(', ')}
+                                                        </p>
+                                                        <p class="price-text">
+                                                            NT$ ${package.packageTourPrice}
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    document.querySelector('.carousel-inner').innerHTML = carouselContent;
+                });
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('searchButton').click();
+            }
+        });
+    </script>
+</body>
+</html>
