@@ -108,4 +108,26 @@ public class UserService {
         }
         return existUser;
     }
+    
+    @Transactional
+    public User updateUserProfile(User user) {
+        User existingUser = userRepository.findById(user.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // 更新基本資料
+        existingUser.setUserName(user.getUserName());
+        existingUser.setUserPhone(user.getUserPhone());
+        existingUser.setUserBirthday(user.getUserBirthday());
+        existingUser.setUserAddress(user.getUserAddress());
+        
+        // 保存更新時間
+        existingUser.setUpdatedTime(LocalDateTime.now());
+        
+        // 不更新敏感資料
+        // existingUser.setUserAccount(user.getUserAccount());
+        // existingUser.setUserPassword(user.getUserPassword());
+        // existingUser.setUserMail(user.getUserMail());
+        
+        return userRepository.save(existingUser);
+    }
 }

@@ -43,26 +43,40 @@
                     <a class="nav-link" th:href="@{/shop}">商城</a>
                 </li>
                 
-                <!-- 未登入顯示 -->
-                <li class="nav-item ms-auto d-flex" sec:authorize="!isAuthenticated()">
-                    <a href="/booking/auth/register" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
-                    <a class="nav-link" href="/booking/auth/login">登入</a>
-                </li>
-                
-                <!-- 已登入顯示 -->
-                <li class="nav-item ms-auto d-flex align-items-center" sec:authorize="isAuthenticated()">
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span th:text="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User) ? #authentication.principal.attributes.name : #authentication.principal.username}"></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" th:href="@{/user/orders}">會員訂單資訊</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/booking/auth/logout">登出</a></li>
-                        </ul>
-                    </div>
-                </li>
+                  <!-- 未登入顯示 -->
+                    <li class="nav-item ms-auto d-flex" sec:authorize="!isAuthenticated()">
+                        <a th:href="@{/auth/register}" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
+                        <a class="nav-link" th:href="@{/auth/login}">登入</a>
+                    </li>
+
+                    <!-- 已登入顯示 -->
+                    <li class="nav-item ms-auto d-flex align-items-center" sec:authorize="isAuthenticated()">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <span th:with="principal=${#authentication.principal}">
+                                    <span th:if="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}" 
+                                          th:text="${principal.attributes.name}"></span>
+                                    <span th:unless="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}"
+      th:text="${@userService.findByUserAccount(principal.username).userName}"></span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" th:href="@{/user/profile}">
+                                    <i class="bi bi-person me-2"></i>編輯會員資料</a>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/user/orders}">
+                                    <i class="bi bi-receipt me-2"></i>會員訂單資訊</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" th:href="@{/auth/logout}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>登出</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
             </ul>
+
         </div>
     </div>
 </nav>
