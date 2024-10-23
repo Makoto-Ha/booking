@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class PackageTourOrderDTO {
 
     private Integer orderId;
-    private User user;
+    private Integer userId;
     private Integer packageTourId;
     private String packageTourName;
     private Integer orderStatus;
@@ -21,7 +21,7 @@ public class PackageTourOrderDTO {
     private LocalDate travelDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate searchDate;
-    
+    private User user;
     
     private Integer pageNumber = 1;
     private String attrOrderBy = "orderId";
@@ -41,7 +41,18 @@ public class PackageTourOrderDTO {
 		this.orderId = orderId;
 	}
 	
-	
+
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+
 	public User getUser() {
 		return user;
 	}
@@ -154,12 +165,13 @@ public class PackageTourOrderDTO {
 
 	@Override
 	public String toString() {
-		return "PackageTourOrderDTO [orderId=" + orderId + ", user=" + user + ", packageTourId=" + packageTourId
+		return "PackageTourOrderDTO [orderId=" + orderId + ", userId=" + userId + ", packageTourId=" + packageTourId
 				+ ", packageTourName=" + packageTourName + ", orderStatus=" + orderStatus + ", orderDateTime="
 				+ orderDateTime + ", orderPrice=" + orderPrice + ", travelDate=" + travelDate + ", searchDate="
-				+ searchDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
-				+ selectedSort + "]";
+				+ searchDate + ", user=" + user + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
+				+ ", selectedSort=" + selectedSort + "]";
 	}
+
 
 
     

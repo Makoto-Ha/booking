@@ -138,12 +138,17 @@ public class PackageTourOrderController {
      */
     @PostMapping("/create")
     public String savePackageTourOrder(@ModelAttribute PackageTourOrderDTO packageTourOrderDTO, Model model) {
-        packageTourOrderDTO.setOrderDateTime(null); 
+        if (packageTourOrderDTO.getUserId() == null) {
+            model.addAttribute("errorMessage", "使用者 ID 不能為空");
+            return "redirect:/management/packageTourOrder/create/page";
+        }
+        
         Result<PackageTourOrderDTO> savePackageTourOrderResult = packageTourOrderService.savePackageTourOrder(packageTourOrderDTO);
         if (savePackageTourOrderResult.isSuccess()) {
             return "redirect:/management/packageTourOrder";
         } else {
-            return "management-system/attraction/packagetourorder-create";
+            model.addAttribute("errorMessage", savePackageTourOrderResult.getMessage());
+            return "redirect:/management/packageTourOrder/create/page";
         }
     }
     
