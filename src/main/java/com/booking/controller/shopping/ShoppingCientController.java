@@ -128,18 +128,16 @@ public class ShoppingCientController {
 	@PostMapping("/checkout/confirm")
 	public String confirmCheckout(PayDetailDTO payDetailDTO, Model model) {
 
-		// 假設已經生成訂單，可以在這裡發送訂單至綠界支付
 		Integer userId = shopClientService.getCurrentUserId();
-		Result<ShopOrderDTO> order = shopClientService.getOrderForUser(userId,1);
+		Result<ShopOrderDTO> order = shopClientService.getOrderByUserAndState(userId,1);
 
-		// 綠界支付結帳邏輯
 		String paymentForm = shopClientService.ecpayCheckout(order.getData(),payDetailDTO,userId);
 		
-		// 將綠界支付的表單HTML添加到模型，這樣可以在前端直接顯示
 		model.addAttribute("paymentForm", paymentForm);
 		return "client/shopping/ecpay-checkout";
 	}
 	
+	// 回傳資訊
 	@ResponseBody
 	@PostMapping("/checkout/success")
 	public String checkoutSuccess(HttpServletRequest request) {
@@ -157,6 +155,7 @@ public class ShoppingCientController {
         System.out.println(paymentResult);
         
         Integer userId =Integer.parseInt(paymentResult.get("CustomField1"));
+        System.out.println("====-=-=-=-=-=-=-userid"+userId);
 		shopClientService.setOrderComplete(userId);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -171,7 +170,6 @@ public class ShoppingCientController {
 		System.out.println("=============="+shopOrderDTO);
 		
 		shopClientService.setOrderPaid(userId,shopOrderDTO);
-	 
         
 	    return "1|OK";
 	}
@@ -180,8 +178,7 @@ public class ShoppingCientController {
 	@GetMapping("/orderDetail")
 	public String orderDetail(Model model) {
 		Integer userId = shopClientService.getCurrentUserId();
-		shopClientService.setOrderComplete(userId);
-		Result<ShopOrderDTO> order = shopClientService.getOrderForUser(userId,2);
+		Result<ShopOrderDTO> order = shopClientService.getOrderByUserAndState(userId,2);
 		model.addAttribute("orderDTO", order.getData());
 		return "client/shopping/order-detail";
 	}
@@ -197,7 +194,6 @@ public class ShoppingCientController {
 	// 商品頁面
 	@GetMapping("/detail/{productId}")
 	public String sendDetail(@PathVariable Integer productId, Model model) {
-
 		Result<ProductDTO> result = productService.findProductDTOById(productId);
 		Result<List<ProductDTO>> topSellingProducts = shopClientService.findTopSellingProducts(4);
 

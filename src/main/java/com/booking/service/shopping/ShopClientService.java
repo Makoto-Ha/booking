@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,6 @@ import com.booking.bean.dto.shopping.PayDetailDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.bean.dto.shopping.ShopOrderItemDTO;
-import com.booking.bean.pojo.shopping.ShopCart;
 import com.booking.bean.pojo.shopping.ShopCartItem;
 import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.bean.pojo.shopping.ShopOrderItem;
@@ -30,10 +30,12 @@ import com.booking.dao.shopping.ShopCartRepository;
 import com.booking.dao.shopping.ShopOrderItemRepository;
 import com.booking.dao.shopping.ShopOrderRepository;
 import com.booking.dao.user.UserRepository;
+import com.booking.utils.MyModelMapper;
 import com.booking.utils.Result;
 
 import ecpay.payment.integration.AllInOne;
 import ecpay.payment.integration.domain.AioCheckOutALL;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -51,7 +53,8 @@ public class ShopClientService {
 	private ShopCartItemRepository shopCartItemRepository;
 	@Autowired
 	private UserRepository userRepository;
-
+	@Autowired
+	private EntityManager entityManager;
 
 	// 從購物車生成選中商品的訂單
 	@Transactional
@@ -63,9 +66,11 @@ public class ShopClientService {
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
 
-		/////// 從購物車中篩選出選中的項目
+		// =============== 從購物車中篩選出選中的項目 ======================
+
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
 		Integer totalAmount = 0;
+
 		// 迭代選中的購物車項目
 		for (Integer itemId : selectedItemIds) {
 			Optional<ShopCartItem> optionalCartItem = shopCartItemRepository.findById(itemId);
@@ -73,17 +78,16 @@ public class ShopClientService {
 				return Result.failure("找不到對應的購物車項目: " + itemId);
 			}
 			ShopCartItem cartItem = optionalCartItem.get();
-
 			// 將購物車項目轉換為訂單項目
 			ShopOrderItem orderItem = new ShopOrderItem();
 			orderItem.setProduct(cartItem.getProduct());
+			orderItem.setProductName(cartItem.getProduct().getProductName());
 			orderItem.setQuantity(cartItem.getQuantity());
 			orderItem.setPrice(cartItem.getPrice());
 			orderItem.setSubtotal(cartItem.getSubtotal());
 			orderItem.setShopOrder(shopOrder);
 			orderItemList.add(orderItem);
-
-			// 計算訂單總金額
+			// 訂單總金額
 			totalAmount += cartItem.getSubtotal();
 			// 從購物車中移除選中的商品
 			shopCartItemRepository.deleteById(cartItem.getCartItemId());
@@ -139,27 +143,36 @@ public class ShopClientService {
 	}
 
 	// 設置最新的那筆已付款訂單
-	public Result<String> setOrderPaid(Integer userId,ShopOrderDTO orderDTO) {
-		ShopOrder shopOrder = shopOrderRepository.findTopByUserIdAndOrderState(userId, 2);
-		 if (shopOrder == null) {
-		        return Result.failure("無法找到符合條件的訂單");
-		    }
-		BeanUtils.copyProperties(orderDTO, shopOrder);
+	@Transactional
+	public Result<String> setOrderPaid(Integer userId, ShopOrderDTO orderDTO) {
+		PageRequest pageable = PageRequest.of(0, 1);
+		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 2, pageable);
+		System.out.println("========page" + page.getContent());
+		ShopOrder shopOrder = page.getContent().get(0);
+
+		if (shopOrder == null) {
+			return Result.failure("無法找到符合條件的訂單");
+		}
+		MyModelMapper.map(orderDTO, shopOrder);
 		shopOrderRepository.save(shopOrder);
-		
+
 		return Result.success("設置成功付款");
 	}
+
 	// 設置訂單完成
 	@Transactional
 	public boolean setOrderComplete(Integer userId) {
-		ShopOrder order = shopOrderRepository.findTopByUserIdAndOrderState(userId, 1);
-		if (order==null) {
+		PageRequest pageable = PageRequest.of(0, 1);
+		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 1, pageable);
+		ShopOrder order = page.getContent().get(0);
+
+		if (order == null) {
 			return false;
 		}
 		order.setOrderState(2);
 		return true;
 	}
-	
+
 	/**
 	 * 熱銷商品
 	 * 
@@ -173,40 +186,39 @@ public class ShopClientService {
 		return Result.success(result);
 	}
 
-	// 獲取待付款訂單
-	public Result<ShopOrderDTO> getOrderForUser(Integer userId, Integer orderState) {
-		ShopOrderDTO shopOrderDTO = shopOrderRepository.findByUser_UserIdAndOrderState(userId, orderState);
+	// 獲取會員訂單
+	public Result<ShopOrderDTO> getOrderByUserAndState(Integer userId, Integer orderState) {
+		PageRequest pageable = PageRequest.of(0, 1);
+		Page<ShopOrderDTO> page = shopOrderRepository.findByUserIdAndOrderStateWithDTO(userId, orderState, pageable);
+		ShopOrderDTO shopOrderDTO = page.getContent().get(0);
 		if (shopOrderDTO == null) {
 			return Result.failure("找不到對應的訂單");
 		}
-		 List<ShopOrderItemDTO> orderItems = shopOrderItemRepository.findByOrderId(shopOrderDTO.getOrderId());
-		    shopOrderDTO.setOrderItems(orderItems);
+		List<ShopOrderItemDTO> orderItems = shopOrderItemRepository.findByOrderId(shopOrderDTO.getOrderId());
+		shopOrderDTO.setOrderItems(orderItems);
 		return Result.success(shopOrderDTO);
 	}
-	
-	
-	
-	
+
 	// 綠界金流
 
-	public String ecpayCheckout(ShopOrderDTO orderDTO,PayDetailDTO payDetailDTO, Integer userId) {
+	public String ecpayCheckout(ShopOrderDTO orderDTO, PayDetailDTO payDetailDTO, Integer userId) {
 
 		AllInOne all = new AllInOne("");
-
+		String ngorkUrl = "https://37b6-2402-7500-46b-3963-c519-5745-6b54-9c2b.ngrok-free.app"
+				+ "/booking/shop/checkout/success";
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
-		String tradeDesc = "訂單號: " + orderDTO.getOrderId() + " - " + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		String itemNames = orderDTO.getOrderItems().stream()
-                 .map(ShopOrderItemDTO::getProductName)
-                 .collect(Collectors.joining("#"));
-		
+		String tradeDesc = "訂單號:" + orderDTO.getOrderId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		String itemNames = orderDTO.getOrderItems().stream().map(ShopOrderItemDTO::getProductName)
+				.collect(Collectors.joining("#"));
+
 		AioCheckOutALL obj = new AioCheckOutALL();
 		obj.setMerchantTradeNo(uuid);
 		obj.setMerchantTradeDate(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
 		obj.setMerchantID("3002599");
 		obj.setTotalAmount(orderDTO.getOrderPrice().toString());
 		obj.setTradeDesc(tradeDesc);
-		obj.setItemName(itemNames);  // "商品A#商品B#商品C"
-		obj.setReturnURL("https://49f6-114-25-188-115.ngrok-free.app/booking/shop/checkout/success");
+		obj.setItemName(itemNames); // "商品A#商品B#商品C"
+		obj.setReturnURL(ngorkUrl);
 		obj.setClientBackURL("http://localhost:8080/booking/shop/orderDetail");
 		obj.setCustomField1(userId.toString());
 		String form = all.aioCheckOut(obj, null);

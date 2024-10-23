@@ -74,12 +74,14 @@ public class ShopOrder {
 
 	@Override
 	public String toString() {
-		return "ShopOrder [orderId=" + orderId + ", user=" + user + ", user=" + user + ", orderPrice=" + orderPrice
-				+ ", orderState=" + orderState + ", paymentMethod=" + paymentMethod + ", paymentState=" + paymentState
-				+ ", merchantTradeNo=" + merchantTradeNo + ", transactionId=" + transactionId + ", paymentCreatedAt="
-				+ paymentCreatedAt + ", paymentUpdatedAt=" + paymentUpdatedAt + ", updatedAt=" + updatedAt
-				+ ", createdAt=" + createdAt + ", items=" + items + "]";
+		return "ShopOrder [orderId=" + orderId + ", orderPrice=" + orderPrice + ", orderState=" + orderState
+				+ ", paymentMethod=" + paymentMethod + ", paymentState=" + paymentState + ", merchantTradeNo="
+				+ merchantTradeNo + ", transactionId=" + transactionId + ", paymentCreatedAt=" + paymentCreatedAt
+				+ ", paymentUpdatedAt=" + paymentUpdatedAt + ", updatedAt=" + updatedAt + ", createdAt=" + createdAt
+				+ "]";
 	}
+
+	
 
     
 }
