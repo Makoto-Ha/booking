@@ -25,11 +25,11 @@ public class PackageTourOrder {
     @Column(name = "order_id")
     private Integer orderId;
     
-    @Column(name = "user_id", insertable = false, updatable = false) // 避免重复映射
+    @Column(name = "user_id", insertable = false, updatable = false) 
     private Integer userId;
     
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
+	@JoinColumn(name = "user_id", nullable = false) 
 	private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -105,18 +105,18 @@ public class PackageTourOrder {
 		this.travelDate = travelDate;
 	}
 
+
 	@Override
 	public String toString() {
-		return "PackageTourOrder [orderId=" + orderId + ", userId=" + userId + ", user=" + user + ", packageTour="
-				+ packageTour + ", orderStatus=" + orderStatus + ", orderDateTime=" + orderDateTime + ", orderPrice="
-				+ orderPrice + ", travelDate=" + travelDate + "]";
+		return "PackageTourOrder [orderId=" + orderId + ", user=" + user + ", packageTour=" + packageTour
+				+ ", orderStatus=" + orderStatus + ", orderDateTime=" + orderDateTime + ", orderPrice=" + orderPrice
+				+ ", travelDate=" + travelDate + "]";
 	}
 
-	public PackageTourOrder(Integer orderId, Integer userId, User user, PackageTour packageTour, Integer orderStatus,
+	public PackageTourOrder(Integer orderId, User user, PackageTour packageTour, Integer orderStatus,
 			LocalDateTime orderDateTime, Integer orderPrice, LocalDate travelDate) {
 		super();
 		this.orderId = orderId;
-		this.userId = userId;
 		this.user = user;
 		this.packageTour = packageTour;
 		this.orderStatus = orderStatus;
@@ -125,10 +125,9 @@ public class PackageTourOrder {
 		this.travelDate = travelDate;
 	}
 
-	public PackageTourOrder(Integer userId, User user, PackageTour packageTour, Integer orderStatus,
+	public PackageTourOrder(User user, PackageTour packageTour, Integer orderStatus,
 			LocalDateTime orderDateTime, Integer orderPrice, LocalDate travelDate) {
 		super();
-		this.userId = userId;
 		this.user = user;
 		this.packageTour = packageTour;
 		this.orderStatus = orderStatus;
@@ -148,7 +147,7 @@ public class PackageTourOrder {
 	}
 
 	public PackageTourOrder() {
-		super();
+		
 	}
 
 

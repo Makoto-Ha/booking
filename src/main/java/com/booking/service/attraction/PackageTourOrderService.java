@@ -20,9 +20,11 @@ import org.springframework.stereotype.Service;
 import com.booking.bean.dto.attraction.PackageTourOrderDTO;
 import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourOrder;
+import com.booking.bean.pojo.user.User;
 import com.booking.dao.attraction.PackageTourOrderRepository;
 import com.booking.dao.attraction.PackageTourOrderSpecification;
 import com.booking.dao.attraction.PackageTourRepository;
+import com.booking.dao.user.UserRepository;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -38,6 +40,8 @@ public class PackageTourOrderService {
     @Autowired
     private PackageTourRepository packageTourRepo;
 
+    @Autowired
+    private UserRepository userRepo;
     
     /**
      * 獲取所有訂單
@@ -57,6 +61,9 @@ public class PackageTourOrderService {
         for (PackageTourOrder packageTourOrder : packageTourOrders) {
             PackageTourOrderDTO responsePackageTourOrderDTO = new PackageTourOrderDTO();
             BeanUtils.copyProperties(packageTourOrder, responsePackageTourOrderDTO);
+            if (packageTourOrder.getUser() != null) {
+                responsePackageTourOrderDTO.setUserId(packageTourOrder.getUser().getUserId());
+            }
             if (packageTourOrder.getPackageTour() != null) {
                 responsePackageTourOrderDTO.setPackageTourId(packageTourOrder.getPackageTour().getPackageTourId());
                 responsePackageTourOrderDTO.setPackageTourName(packageTourOrder.getPackageTour().getPackageTourName());
@@ -139,14 +146,19 @@ public class PackageTourOrderService {
      */
     @Transactional
     public Result<PackageTourOrderDTO> savePackageTourOrder(PackageTourOrderDTO orderDTO) {
-        PackageTour packageTour = packageTourRepo.findById(orderDTO.getPackageTourId())
-            .orElse(null);
+        PackageTour packageTour = packageTourRepo.findById(orderDTO.getPackageTourId()).orElse(null);
         if (packageTour == null) {
             return Result.failure("套裝行程不存在");
         }
+        
+        User user = userRepo.findById(orderDTO.getUserId()).orElse(null);
+            if (user == null) {
+                return Result.failure("使用者不存在");
+            }
 
         PackageTourOrder packageTourOrder = new PackageTourOrder();
         BeanUtils.copyProperties(orderDTO, packageTourOrder);
+        packageTourOrder.setUser(user);
         packageTourOrder.setPackageTour(packageTour);
         packageTourOrder.setOrderDateTime(LocalDateTime.now());
         packageTourOrder.setOrderStatus(1); // 未付款狀態

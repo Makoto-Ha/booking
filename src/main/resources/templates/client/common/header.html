@@ -32,9 +32,13 @@
                 <li class="nav-item mx-2">
                     <a class="nav-link active" aria-current="page" href="#">搜好房</a>
                 </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="#">活動</a>
-                </li>
+            <li class="nav-item dropdown mx-2">
+                <a class="nav-link" id="navbarDropdownMenuLink" role="button" aria-expanded="false">景點</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" th:href="@{/attraction}">推薦景點</a></li>
+                    <li><a class="dropdown-item" th:href="@{/packageTour}">套裝行程</a></li>
+                </ul>
+            </li>
                 <li class="nav-item mx-2">
                     <a class="nav-link" th:href="@{/shop}">商城</a>
                 </li>
@@ -59,7 +63,6 @@
                     </div>
                 </li>
             </ul>
->>>>>>> 77196be (黃振瑋.新增:會員訂單)
         </div>
     </div>
 </nav>
