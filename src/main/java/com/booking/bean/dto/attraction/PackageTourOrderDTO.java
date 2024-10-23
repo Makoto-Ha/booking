@@ -42,7 +42,6 @@ public class PackageTourOrderDTO {
 	}
 	
 
-
 	public Integer getUserId() {
 		return userId;
 	}
@@ -171,7 +170,6 @@ public class PackageTourOrderDTO {
 				+ searchDate + ", user=" + user + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
 				+ ", selectedSort=" + selectedSort + "]";
 	}
-
 
 
     
