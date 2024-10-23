@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.booking.bean.dto.shopping.ShopCartDTO;
@@ -14,7 +12,6 @@ import com.booking.bean.dto.shopping.ShopCartItemDTO;
 import com.booking.bean.pojo.shopping.Product;
 import com.booking.bean.pojo.shopping.ShopCart;
 import com.booking.bean.pojo.shopping.ShopCartItem;
-import com.booking.bean.pojo.user.User;
 import com.booking.dao.shopping.ProductRepository;
 import com.booking.dao.shopping.ShopCartItemRepository;
 import com.booking.dao.shopping.ShopCartRepository;
@@ -36,22 +33,7 @@ public class ShopCartService {
 	private UserRepository userRepository;
 	
 	
-	public Integer getCurrentUserId() {
-		 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		    if (principal instanceof UserDetails) {
-		        String username = ((UserDetails) principal).getUsername();
-		        Optional<User> byUserAccount = userRepository.findByUserName(username);
-		        if (byUserAccount.isPresent()) {
-		            User user = byUserAccount.get();
-		            return user.getUserId();
-		        } else {
-		            throw new RuntimeException("找不到對應的使用者");
-		        }
-		    } else {
-		        throw new RuntimeException("使用者尚未登入");
-		    }
-		    
-	}
+	
 	
 	
 	/**
