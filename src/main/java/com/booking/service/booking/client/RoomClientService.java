@@ -32,6 +32,10 @@ public class RoomClientService {
 	public int findAvailableCount(LocalDate date, Integer roomtypeId) {
 		Roomtype roomtype = roomtypeRepo.findById(roomtypeId).orElse(null);
 		
+		if(roomtype == null) {
+			return 0;
+		}
+		
 		List<Room> rooms = roomtype.getRooms();
 		
 		int roomCount = rooms.size();

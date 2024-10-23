@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
+import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.service.booking.BookingService;
 import com.booking.utils.Result;
 
@@ -121,9 +122,11 @@ public class BookingController {
 	 */
 	@PostMapping("/create")
 	@ResponseBody
-	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO) {
-		System.out.println(boDTO);
-		Result<String> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
+	private String saveBookingOrder(@RequestBody BookingOrderDTO boDTO, HttpSession session) {	
+		
+		Result<BookingOrder> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
+		BookingOrder bookingOrder = saveBookingOrderResult.getData();
+		session.setAttribute("bookingOrderId", bookingOrder.getBookingId());
 	
 		return saveBookingOrderResult.getMessage();
 	}

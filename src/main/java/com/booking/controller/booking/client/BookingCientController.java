@@ -10,12 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
+import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.common.Amenity;
+import com.booking.dao.booking.BookingRepository;
+import com.booking.service.booking.BookingService;
 import com.booking.service.booking.client.RoomtypeClientService;
 import com.booking.service.common.AmenityService;
 import com.booking.utils.Result;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class BookingCientController {
@@ -24,6 +30,9 @@ public class BookingCientController {
 	private RoomtypeClientService rtClientService;
 	@Autowired
 	private AmenityService amenityService;
+	@Autowired
+	private BookingService bookingService;;
+	
 	
 	/**
 	 * 轉去首頁
@@ -48,6 +57,22 @@ public class BookingCientController {
 		model.addAttribute("roomtypes", roomtypes);
 		model.addAttribute("amenities", amenities);
 		return "client/booking/user-search";
+	}
+	
+	@GetMapping("/user/order/success")
+	private String sendOrderSuccess(HttpSession session, Model model) {
+		Integer bookingOrderId = (Integer) session.getAttribute("bookingOrderId");
+		Result<BookingOrderDTO> findByIdResult = bookingService.findById(bookingOrderId);
+		
+		if(findByIdResult.isFailure()) {
+			return "";
+		}
+		
+		BookingOrderDTO bookingOrderDTO = findByIdResult.getData();
+		
+		model.addAttribute("bookingOrder", bookingOrderDTO);
+		
+		return "client/booking/order-success";
 	}
 	
 	/**

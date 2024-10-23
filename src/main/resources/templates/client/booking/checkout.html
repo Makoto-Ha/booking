@@ -384,12 +384,6 @@
           border-color: #555 transparent transparent transparent;
       }
 
-      /* 當鼠標懸停時顯示氣泡 */
-      /* .day-item:hover .tooltip-text {
-          visibility: visible;
-          opacity: 1;
-      } */
-
       .tooltip-text-show {
         visibility: visible;
         opacity: 1;
@@ -485,30 +479,32 @@
   <script th:inline="javascript">
     let roomtype = [[${roomtype}]];
 	
-	submit.addEventListener('click', async e => {
-		console.log(selectedRanges);
-		const bookingOrderItems = selectedRanges.map(rangeDate => {
-			return {
-				checkInDate: rangeDate.checkInDate,
-				checkOutDate: rangeDate.checkOutDate
-			}
-		});
-		
-		let respone = await fetch('/booking/management/booking/create', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				roomtypeId: roomtype.roomtypeId,
-				bookingOrderItems
-			})
-		});
-		
-		let result = await respone.text();
-		
-		console.log(result);
-	});
+    submit.addEventListener('click', async e => {
+
+      const bookingOrderItems = selectedRanges.map(rangeDate => {
+        return {
+          checkInDate: rangeDate.checkInDate,
+          checkOutDate: rangeDate.checkOutDate
+        }
+      });
+
+      console.log(bookingOrderItems);
+      
+      let respone = await fetch('/booking/management/booking/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          roomtypeId: roomtype.roomtypeId,
+          bookingOrderItems
+        })
+      });
+      
+      let result = await respone.text();
+      
+      console.log(result);
+    });
 	
     const aside = document.querySelector('aside');
     const modalBody = document.querySelector('.modal-body');
@@ -542,6 +538,17 @@
       }
     }
 
+    function formatDate(date) {
+        
+        // 提取年份、月份、日期，並補全月份和日期到兩位數
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份從 0 開始計數，因此要加 1
+        const day = String(date.getDate()).padStart(2, '0');
+
+        // 返回格式化的日期字串
+        return `${year}-${month}-${day}`;
+    }
+
     // 定義多組日期區間和對應的顏色
     let dateRanges = [];
 
@@ -567,7 +574,7 @@
 
     function removeDateRange(e) {
 
-      let parent = e.target.parentElement.parentElement;
+      let parent = e.target.parentElement.parentElement.parentElement;
 
       let rangeIndex = parseInt(parent.dataset.index);
 
@@ -582,22 +589,28 @@
 
     let addRoom = function(e) {
     
-        let target = e.target;
+      let target = e.target;
 
-        let parent = e.target.parentElement.parentElement.parentElement;
+      let parent = e.target.parentElement.parentElement.parentElement;
 
-        let addRoomCount = parseInt(parent.dataset.addroomcount);
+      let addRoomCount = parseInt(parent.dataset.addroomcount);
 
-        let availablecount = parseInt(parent.dataset.availablecount);
+      let availablecount = parseInt(parent.dataset.availablecount);
 
-        if(addRoomCount >= availablecount) {
-          alert(`房間只有${availablecount}間`);
-          return;
-        }
+      if(addRoomCount >= availablecount) {
+        alert(`房間只有${availablecount}間`);
+        return;
+      }
 
-        addRoomCount++;
-        parent.dataset.addroomcount = addRoomCount;
-        e.target.nextElementSibling.textContent = addRoomCount;
+      let rangeIndex = parseInt(parent.dataset.index);
+      
+      let findDate = selectedRanges.find(range => range.rangeIndex == rangeIndex);
+
+      selectedRanges.push(findDate);
+
+      addRoomCount++;
+      parent.dataset.addroomcount = addRoomCount;
+      e.target.parentElement.parentElement.firstElementChild.textContent = addRoomCount;
  
     };
 
@@ -708,20 +721,19 @@
           });
         }
 
-        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        
         let rangeIndex = 0;
 
         picker.on('selected', async (startDate, endDate) => {
-          let startYear = startDate.getFullYear();
+          const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
           let startMonth = startDate.getMonth() + 1;
           let startDay = startDate.getDate();
 
-          let endYear = endDate.getFullYear();
           let endMonth = endDate.getMonth() + 1;
           let endDay = endDate.getDate();
 
-          let checkInDate = `${startYear}-${startMonth}-${startDay}`;
-          let checkOutDate = `${endYear}-${endMonth}-${endDay}`;
+          let checkInDate = formatDate(startDate);
+          let checkOutDate = formatDate(endDate);
 
           const startDayOfWeek = weekdays[startDate.getDay()];
           const endDayOfWeek = weekdays[endDate.getDay()];
@@ -733,8 +745,8 @@
           selectedRanges.push({
             start: startDate,
             end: endDate,
-			checkInDate,
-			checkOutDate,
+            checkInDate,
+            checkOutDate,
             rangeIndex
           });
 
@@ -745,24 +757,24 @@
           }).toString();
 
           let response = await fetch('/booking/client/api/availableRoomCountInRange?' + params);
-          let availableRoomCount = await response.json();
+          let availableRoomCount = await response.text();
 
           let selectedDateItem = `
             <div class="d-flex justify-content-between align-items-center" data-index=${rangeIndex} data-addroomcount="1" data-availablecount="${availableRoomCount}">
               <div class="d-flex flex-column">
-                <span class="fw-bold">${startMonth}月${startDay}日 ( ${startDayOfWeek} )</span>
+                <span class="fw-bold text-nowrap">${startMonth}月${startDay}日 ( ${startDayOfWeek} )</span>
                 <small class="text-customer-darkblue-subtle">入住日期</small>
               </div>   
               <i class="bi bi-arrow-right-short fs-2"></i>
               <div class="d-flex flex-column">
-                <span class="fw-bold">${endMonth}月${endDay}日 ( ${endDayOfWeek} )</span>
+                <span class="fw-bold text-nowrap">${endMonth}月${endDay}日 ( ${endDayOfWeek} )</span>
                 <small class="text-customer-darkblue-subtle">退房日期</small>
               </div> 
-              <div class="d-flex flex-column justify-content-between">
-                <i class="bi bi-x fs-2 lh-1 text-danger cursor-pointer opacity-50-hover" onclick="removeDateRange(event)"></i>
+              <div class="d-flex flex-column justify-content-center justify-content-between">   
+                <span class="fs-4 text-primary text-center lh-1">1</span>
                 <div class="d-flex align-items-center lh-1">
-                  <i class="bi bi-plus fs-2 lh-1 text-warning cursor-pointer opacity-50-hover" onclick="addRoom(event)"></i>
-                  <span class="fs-4 text-warning">1</span>
+                  <i class="bi bi-plus fs-2 lh-1 text-danger cursor-pointer opacity-50-hover" onclick="addRoom(event)"></i>
+                  <i class="bi bi-x fs-2 lh-1 text-danger cursor-pointer opacity-50-hover" onclick="removeDateRange(event)"></i>
                 </div>
               </div>
             </div>
@@ -785,11 +797,8 @@
           const dayMouseOverHandler = _.debounce(async e => {
             let target = e.target.closest('.day-item');
             let date = new Date(parseInt(target.dataset.time));
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
 
-            let movedDate = `${year}/${month}/${day}`;
+            let movedDate = formatDate(date);
             let params = new URLSearchParams({
               date: movedDate,
               roomtypeId: roomtype.roomtypeId
@@ -797,8 +806,8 @@
             
             tooltip = target.lastChild;
             timer = setTimeout(async () => {
-			  let response = await fetch(`/booking/client/api/availablecount?${params}`);
-              let roomCount = await response.json();
+			        let response = await fetch(`/booking/client/api/availablecount?${params}`);
+              let roomCount = await response.text();
               tooltip.innerText = roomCount;
               tooltip?.classList.add('tooltip-text-show');
             }, 900);
@@ -808,8 +817,6 @@
             tooltip?.classList.remove('tooltip-text-show');
             clearTimeout(timer);
           }
-
-         
 
           days.forEach(day => {
             // 獲取日期的時間戳

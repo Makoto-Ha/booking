@@ -25,10 +25,12 @@ import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
+import com.booking.bean.pojo.user.User;
 import com.booking.dao.booking.BookingOrderItemRespository;
 import com.booking.dao.booking.BookingRepository;
 import com.booking.dao.booking.BookingSpecification;
 import com.booking.dao.booking.RoomtypeRepository;
+import com.booking.dao.user.UserRepository;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -45,14 +47,11 @@ public class BookingService {
 	@Autowired
 	private BookingOrderItemRespository boiRepo;
 	
-	/**
-	 * 
-	 * @param boisDTO
-	 * @param roomtypeId
-	 * @return
-	 */
+	@Autowired
+	private UserRepository userRepo;
+	
 	@Transactional
-	public Result<String> saveBookingOrder(BookingOrderDTO boDTO) {
+	public Result<BookingOrder> saveBookingOrder(BookingOrderDTO boDTO) {
 		// 先獲得房型
 		Roomtype roomtype = roomtypeRepo.findById(boDTO.getRoomtypeId()).orElse(null);
 		
@@ -87,6 +86,14 @@ public class BookingService {
 		BookingOrder bo = new BookingOrder();
 		// 先新增BookingOrder獲取到有bookingId的saveBo
 		BookingOrder saveBo = bookingRepo.save(bo);
+		User user = userRepo.findById(1).orElse(null);
+		
+		if(user == null) {
+			return Result.failure("找不到使用者");
+		}
+		
+		saveBo.setUser(user);
+		
 		// 用於JPA新增所有BookingOrderItem
 		List<BookingOrderItem> bois = new ArrayList<>();
 		// 總訂單金額
@@ -113,7 +120,7 @@ public class BookingService {
 			// 設置中間表需要的物件
 			boi.setId(saveBo.getBookingId(), room.getRoomId());
 			boi.setRoom(room);
-			boi.setBookingOrder(bo);
+			boi.setBookingOrder(saveBo);
 			boi.setRoomtype(roomtype);	
 			bois.add(boi);
 		}
@@ -124,7 +131,7 @@ public class BookingService {
 		// 新增所有BookingOrderItem
 		boiRepo.saveAll(bois);
 			
-		return Result.success("訂單新增成功");
+		return Result.success(saveBo);
 	}
 	
 	// 根據房型計算訂單項目所需要金額
@@ -135,6 +142,7 @@ public class BookingService {
 		long daysBetween = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
 		return daysBetween * roomtypePrice;
 	}
+
 	
 	/**
 	 * 獲取所有訂單
@@ -269,6 +277,25 @@ public class BookingService {
 			totalPrice += boi.getPrice();
 		}
 		return totalPrice;
+	}
+
+	/**
+	 * 根據bookingOrderId查找訂單
+	 * @param bookingOrderId
+	 * @return
+	 */
+	public Result<BookingOrderDTO> findById(Integer bookingOrderId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingOrderId).orElse(null);
+		
+		if(bookingOrder == null) {
+			return Result.failure("查找不到訂單");
+		}
+		
+		BookingOrderDTO bookingOrderDTO = new BookingOrderDTO();
+		
+		BeanUtils.copyProperties(bookingOrder, bookingOrderDTO);
+		
+		return Result.success(bookingOrderDTO);
 	}
 
 }

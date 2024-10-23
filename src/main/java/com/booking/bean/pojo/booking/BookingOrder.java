@@ -32,7 +32,7 @@ public class BookingOrder {
 	private Integer bookingId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
+	@JoinColumn(name = "user_id") // 外鍵 user_id
 	private User user;
 
 	@Column(name = "order_number")
@@ -112,8 +112,6 @@ public class BookingOrder {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
-	
-
 	public User getUser() {
 		return user;
 	}
@@ -124,7 +122,6 @@ public class BookingOrder {
 
 	public BookingOrder(Integer bookingId, User user, String orderNumber, Integer orderStatus, Long totalPrice,
 			LocalDateTime updatedTime, LocalDateTime createdTime, List<BookingOrderItem> bookingOrderItems) {
-		super();
 		this.bookingId = bookingId;
 		this.user = user;
 		this.orderNumber = orderNumber;
@@ -137,7 +134,6 @@ public class BookingOrder {
 
 	public BookingOrder(User user, String orderNumber, Integer orderStatus, Long totalPrice, LocalDateTime updatedTime,
 			LocalDateTime createdTime, List<BookingOrderItem> bookingOrderItems) {
-		super();
 		this.user = user;
 		this.orderNumber = orderNumber;
 		this.orderStatus = orderStatus;
@@ -153,9 +149,5 @@ public class BookingOrder {
 				+ ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime
 				+ ", createdTime=" + createdTime + ", bookingOrderItems=" + bookingOrderItems + "]";
 	}
-
-
-
-	
 	
 }
