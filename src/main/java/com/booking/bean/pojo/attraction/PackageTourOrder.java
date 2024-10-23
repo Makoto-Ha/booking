@@ -56,13 +56,6 @@ public class PackageTourOrder {
 		this.orderId = orderId;
 	}
 
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
 
 	public User getUser() {
 		return user;
@@ -159,5 +152,4 @@ public class PackageTourOrder {
 	}
 
 
-	
 }
