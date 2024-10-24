@@ -2,40 +2,164 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>packagetour-detail</title>
+    <title>packageTourDetail</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-image {
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .attraction-image {
+            height: 240px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .attraction-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-radius: 20px;
+            margin: 0 8px 8px 0;
+        }
+        
+        .price-card {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+        }
+        
+        .price-text {
+            color: #dc3545;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .booking-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+        
+        .attraction-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .selected-date {
+            background-color: #e3f2fd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div th:replace="~{/client/common/header}"></div>
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6">
-                <img th:src="@{'/management/packageTour/image/' + ${packageTour.packageTourId}}" 
-                     class="img-fluid" alt="行程圖片">
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <img th:src="@{'/management/packageTour/image/' + ${packageTour.packageTourId}}"
+                     th:alt="${packageTour.packageTourName}"
+                     class="main-image w-100">
             </div>
-            
-            <div class="col-md-6">
-                <h2 th:text="${packageTour.packageTourName}">行程名稱</h2>
-                
-                <p class="h4 text-danger" th:text="'NT$ ' + ${packageTour.packageTourPrice}">價格</p>
-                
-                <div class="mt-4">
-                    <h5>行程介紹</h5>
-                    <p th:text="${packageTour.packageTourDescription}">行程描述</p>
+            <div class="col-md-4">
+                <div th:if="${not #lists.isEmpty(attractions)}" class="row">
+                    <div th:each="attraction, stat : ${attractions}" 
+                         th:if="${stat.index < 2}" class="col-12">
+                        <img th:src="@{'/management/attraction/image/' + ${attraction.attractionId}}"
+                             th:alt="${attraction.attractionName}"
+                             class="attraction-image w-100">
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4" th:text="${packageTour.packageTourName}">行程名稱</h1>
                 
-                <div class="mt-4">
-                    <h5>包含景點</h5>
-                    <ul>
-                        <li th:each="attractionName : ${packageTour.attractionNames}" 
-                            th:text="${attractionName}">景點名稱</li>
-                    </ul>
+                <div class="mb-4">
+                    <h4 class="mb-3">包含景點</h4>
+                    <div th:each="attractionName : ${packageTour.attractionNames}" 
+                         class="attraction-tag" 
+                         th:text="${attractionName}">
+                    </div>
                 </div>
-                
-                <button type="button" class="btn btn-primary btn-lg mt-4" id="checkoutButton">
-                    立即預定
-                </button>
+
+                <div class="mb-4">
+                    <h4 class="mb-3">行程介紹</h4>
+                    <p class="text-muted" th:text="${packageTour.packageTourDescription}"></p>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(attractions)}">
+                    <h4 class="mb-3">景點詳細資訊</h4>
+                    <div th:each="attraction : ${attractions}" class="attraction-card">
+                        <h5 th:text="${attraction.attractionName}"></h5>
+                        <p class="text-muted" th:text="${attraction.attractionDescription}"></p>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <div th:text="'地址：' + ${attraction.address}"></div>
+                                <div th:text="'開放時間：' + ${attraction.openingHour}"></div>
+                                <div th:text="'類型：' + ${attraction.attractionType}"></div>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="price-card">
+                    <div class="price-text mb-2" th:text="'NT$ ' + ${packageTour.packageTourPrice}"></div>
+                    <p class="text-muted">每人價格</p>
+                    <div id="selectedDateDisplay" class="selected-date">
+                        已選擇日期：<span id="selectedDateText"></span>
+                    </div>
+                    <button type="button" class="btn btn-primary booking-btn" 
+                            data-bs-toggle="modal" data-bs-target="#bookingModal">
+                        <i class="bi bi-calendar-check me-2"></i>立即預定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">選擇旅遊日期</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/packageTourOrder/create}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="packageTourId" th:value="${packageTour.packageTourId}">
+                        <input type="hidden" name="orderPrice" th:value="${packageTour.packageTourPrice}">
+                        <div class="mb-3">
+                            <label for="travelDate" class="form-label">選擇日期</label>
+                            <input type="date" class="form-control" id="travelDate" name="travelDate" required
+                                   th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">確認結帳</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -44,7 +168,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('checkoutButton').addEventListener('click', function() {
+        // 日期選擇顯示
+        document.getElementById('travelDate').addEventListener('change', function() {
+            const dateDisplay = document.getElementById('selectedDateDisplay');
+            const dateText = document.getElementById('selectedDateText');
+            if (this.value) {
+                const selectedDate = new Date(this.value);
+                const formattedDate = selectedDate.toLocaleDateString('zh-TW', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                dateText.textContent = formattedDate;
+                dateDisplay.style.display = 'block';
+            } else {
+                dateDisplay.style.display = 'none';
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const travelDate = document.getElementById('travelDate').value;
+            if (!travelDate) {
+                e.preventDefault();
+                alert('請選擇旅遊日期！');
+            }
         });
     </script>
 </body>

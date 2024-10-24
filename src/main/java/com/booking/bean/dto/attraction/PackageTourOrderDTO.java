@@ -42,7 +42,6 @@ public class PackageTourOrderDTO {
 	}
 	
 
-
 	public Integer getUserId() {
 		return userId;
 	}

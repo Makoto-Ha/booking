@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.booking.bean.dto.attraction.AttractionDTO;
 import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.service.attraction.client.PackageTourClientService;
 
@@ -19,14 +20,16 @@ import com.booking.service.attraction.client.PackageTourClientService;
 public class PackageTourClientController {
 	
     @Autowired
-    private PackageTourClientService packageTourService;
+    private PackageTourClientService packageTourClientService;
+    
+
 
     /**
      * 顯示套裝行程列表頁面
      */
     @GetMapping
     public String showPackageTourPage(Model model) {
-        List<PackageTourDTO> packageTours = packageTourService.getPackageTours("");
+        List<PackageTourDTO> packageTours = packageTourClientService.getPackageTours("");
         model.addAttribute("packageTours", packageTours);
         return "client/attraction/packageTour";
     }
@@ -36,8 +39,16 @@ public class PackageTourClientController {
      */
     @GetMapping("/detail/{id}")
     public String showPackageTourDetailPage(@PathVariable Integer id, Model model) {
-        PackageTourDTO packageTour = packageTourService.getPackageTourDetails(id);
+        PackageTourDTO packageTour = packageTourClientService.getPackageTourDetails(id);
+        if (packageTour == null) {
+            return "redirect:/packageTour";  
+        }
+
+        List<AttractionDTO> attractions = packageTourClientService.getAttractionsByName(packageTour.getAttractionNames());
+        
         model.addAttribute("packageTour", packageTour);
+        model.addAttribute("attractions", attractions);
+        
         return "client/attraction/packageTourDetail";
     }
 
@@ -47,6 +58,6 @@ public class PackageTourClientController {
     @GetMapping("/api/packageTours")
     @ResponseBody
     public List<PackageTourDTO> getPackageTours(@RequestParam(required = false) String keyword) {
-        return packageTourService.getPackageTours(keyword);
+        return packageTourClientService.getPackageTours(keyword);
     }
 }
