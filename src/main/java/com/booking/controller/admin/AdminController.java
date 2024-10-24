@@ -304,59 +304,5 @@ public class AdminController {
 				.body(resource);
 				
 	}
-	//////////////////////////////////////////////////////////////////////////////
-//
-//	/**
-//	 * 顯示登入表單
-//	 */
-//	@GetMapping("/login")
-//	public String showLoginForm() {
-//		return "adminsystem/admin/login";
-//	}
-//
-//	/**
-//	 * 處理登入請求
-//	 */
-//	@PostMapping("/login")
-//	public String loginAdmin(@RequestParam("admin-account") String adminAccount,
-//			@RequestParam("admin-password") String adminPassword, Model model, HttpSession session) {
-//		Result<Admin> loginResult = adminService.loginAdmin(adminAccount, adminPassword);
-//		if (!loginResult.isSuccess()) {
-//			model.addAttribute("errorMessage", loginResult.getMessage());
-//			return "adminsystem/admin/login";
-//		}
-//		// 登入成功，將管理員信息存入 Session
-//		session.setAttribute("admin", loginResult.getData());
-//		return "redirect:/admin";
-//	}
-//
-//	/**
-//	 * 顯示註冊表單
-//	 */
-//	@GetMapping("/register")
-//	public String showRegisterForm(Model model) {
-//		model.addAttribute("admin", new Admin());
-//		return "adminsystem/admin/register";
-//	}
-//
-//	/**
-//	 * 處理註冊請求
-//	 */
-//	@PostMapping("/register")
-//	public String registerAdmin(@ModelAttribute Admin admin, Model model) {
-//		Result<Admin> checkResult = adminService.checkAccountExists(admin.getAdminAccount());
-//		if (!checkResult.isSuccess()) {
-//			model.addAttribute("errorMessage", checkResult.getMessage());
-//			return "adminsystem/admin/register";
-//		}
-//
-//		Result<Integer> addResult = adminService.addNewAdmin(admin);
-//		if (!addResult.isSuccess()) {
-//			model.addAttribute("errorMessage", "註冊失敗");
-//			return "adminsystem/admin/register";
-//		}
-//
-//		return "redirect:/admin/login";
-//	}
 
 }
