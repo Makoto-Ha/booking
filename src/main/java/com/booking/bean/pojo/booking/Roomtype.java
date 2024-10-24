@@ -63,6 +63,12 @@ public class Roomtype {
 	@Column(name = "image_path")
 	private String imagePath;
 	
+	@Column(name = "score")
+	private Double score;
+	
+	@Column(name = "area")
+	private Double area;
+	
 	@OneToMany(mappedBy = "roomtype", cascade = CascadeType.ALL)
 	private List<Room> rooms = new ArrayList<>();
 	
@@ -200,5 +206,20 @@ public class Roomtype {
 		this.amenities = amenities;
 	}
 
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
+
+	public Double getArea() {
+		return area;
+	}
+
+	public void setArea(Double area) {
+		this.area = area;
+	}	
 	
 }

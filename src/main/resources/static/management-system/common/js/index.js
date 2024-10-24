@@ -54,7 +54,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 轉送到查詢
-	document.getElementById('search-btn').addEventListener('click', function() {
+	document.getElementById('search-btn')?.addEventListener('click', function() {
 		let hrefSplit = location.pathname.split('/');
 		let lastHref = hrefSplit[3];
 		location.href = `/booking/management/${lastHref}/select/page`;
@@ -90,7 +90,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 取消按鈕行為
-	document.getElementById('modal-cancel-btn').addEventListener('click', function() {
+	document.getElementById('modal-cancel-btn')?.addEventListener('click', function() {
 		document.getElementById('modal-overlay').style.display = 'none';
 	});
 
@@ -131,7 +131,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 為取消按鈕添加事件監聽
-	document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+	document.getElementById('cancelDeleteBtn')?.addEventListener('click', function() {
 		document.getElementById('delete-overlay').style.display = 'none';
 	});
 
@@ -152,7 +152,7 @@ function bindAdminSystemEvent() {
 	
 	let currentPage = parseInt(pageInput.value);
 	// 上一頁
-	prevPageBtn.addEventListener("click", () => {
+	prevPageBtn?.addEventListener("click", () => {
 		if (currentPage <= 1) {
 			return;
 		}
@@ -177,7 +177,7 @@ function bindAdminSystemEvent() {
 	});
 
 	// 下一頁
-	nextPageBtn.addEventListener("click", () => {
+	nextPageBtn?.addEventListener("click", () => {
 		if (parseInt(pageInput.value) >= totalPages) {
 			return;
 		}

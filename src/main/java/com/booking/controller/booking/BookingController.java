@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,11 @@ public class BookingController {
 	
 	@Autowired
 	private BookingService bookingService;
+	
+	@GetMapping("/dashboard")
+	private String sendDashBoard() {
+		return "management-system/booking/dashboard";
+	}
 	
 	/**
 	 * 轉發到預定訂單列表
@@ -120,9 +126,9 @@ public class BookingController {
 	 * @return
 	 */
 	@PostMapping("/create")
-	private ResponseEntity<?> saveBookingOrder(@RequestBody BookingOrderDTO boDTO, HttpSession session) {	
-		
-		Result<BookingOrder> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO);
+	private ResponseEntity<?> saveBookingOrder(@RequestBody BookingOrderDTO boDTO, HttpSession session, Authentication authentication) {	
+		String loginAccount = authentication.getName();
+		Result<BookingOrder> saveBookingOrderResult = bookingService.saveBookingOrder(boDTO, loginAccount);
 		String message = saveBookingOrderResult.getMessage();
 		
 		if(saveBookingOrderResult.isFailure()) {

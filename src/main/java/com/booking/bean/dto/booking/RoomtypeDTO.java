@@ -11,6 +11,8 @@ public class RoomtypeDTO {
 	private Integer roomtypePrice;
 	private Integer roomtypeCapacity;
 	private Integer roomtypeQuantity;
+	private Double area;
+	private Double score;
 	private String roomtypeDescription;
 	private String roomtypeAddress;
 	private String roomtypeCity;
@@ -171,6 +173,22 @@ public class RoomtypeDTO {
 
 	public void setAmenities(List<Amenity> amenities) {
 		this.amenities = amenities;
+	}
+	
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
+
+	public Double getArea() {
+		return area;
+	}
+
+	public void setArea(Double area) {
+		this.area = area;
 	}
 
 	@Override

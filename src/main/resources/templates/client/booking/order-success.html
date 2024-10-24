@@ -251,13 +251,7 @@
     .customer-blue-border {
       border: 1px solid rgb(193, 203, 224);
     }
-
-    input:focus {
-      background-color: #EBF0FC !important;
-      outline: 1px solid #3E6CEA !important;
-      /* 聚焦時設置深藍色邊框 */
-    }
-
+    
     #litepicker {
       width: 1200px;
       height: 70px;
@@ -427,7 +421,7 @@
 					</li>
                 </ul>
                 <hr>
-                <p class="text-end"><strong>總金額：</strong>$1800</p>
+                <p class="text-end"><strong th:text="${'總金額： ' + bookingOrderInfo.bookingOrder.totalPrice}"></strong></p>
             </div>
           </div>
       </div>

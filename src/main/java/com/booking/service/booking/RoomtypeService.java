@@ -82,7 +82,7 @@ public class RoomtypeService {
 	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Result<PageImpl<RoomtypeDTO>> findRoomtypes(RoomtypeDTO roomtypeDTO, List<Integer> roomtypeCapacityAll) {
+	public Result<PageImpl<RoomtypeDTO>> findRoomtypes(RoomtypeDTO roomtypeDTO, List<Integer> roomtypeCapacityAll, List<Amenity> amenities) {
 		
 		Specification<Roomtype> spec = Specification
 					 .where(RoomtypeSpecification.nameContains(roomtypeDTO.getRoomtypeName()))
@@ -91,7 +91,10 @@ public class RoomtypeService {
 					 .and(RoomtypeSpecification.cityContains(roomtypeDTO.getRoomtypeCity()))
 					 .and(RoomtypeSpecification.districtContains(roomtypeDTO.getRoomtypeDistrict()))
 					 .and(RoomtypeSpecification.descriptionContains(roomtypeDTO.getRoomtypeDescription()))
-					 .and(RoomtypeSpecification.moneyContains(roomtypeDTO.getMinMoney(), roomtypeDTO.getMaxMoney()));
+					 .and(RoomtypeSpecification.scoreContains(roomtypeDTO.getScore()))
+					 .and(RoomtypeSpecification.areaContains(roomtypeDTO.getArea()))
+					 .and(RoomtypeSpecification.moneyContains(roomtypeDTO.getMinMoney(), roomtypeDTO.getMaxMoney()))
+					 .and(RoomtypeSpecification.hasAmenities(amenities));
 		
 		if(roomtypeCapacityAll != null) {
 			Specification<Roomtype> specCapacity = Specification.where(null);

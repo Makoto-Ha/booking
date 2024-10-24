@@ -135,12 +135,10 @@ li {
 				</div>
 
 				<div class="content-area-pages">
-					<button class="content-area-page"
-						data-url="/booking/management/booking" style="height: 50px;">訂單</button>
-					<button class="content-area-page"
-						data-url="/booking/management/roomtype">房間類型</button>
-					<button class="content-area-page"
-						data-url="/booking/management/room">房間</button>
+					<button class="content-area-page" data-url="/booking/management/booking/dashboard">儀錶板</button>
+					<button class="content-area-page" data-url="/booking/management/booking" style="height: 50px;">訂單</button>
+					<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
+					<button class="content-area-page" data-url="/booking/management/room">房間</button>
 				</div>
 				<!-- 管理頁面內容 -->
 				<section id="content" class="content-area">
@@ -245,13 +243,13 @@ li {
 					let orderDetailHTML = `
 						<hr>
 						<p>
-							<strong>訂單編號：${bookingOrder.orderNumber}</strong>
+							<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
 						</p>
 						<p>
-							<strong>訂購日期：${createdDate}</strong>
+							<strong>訂購日期：<span style="color: red">${createdDate}</span></strong>
 						</p>
 						<p>
-							<strong>付款方式：</strong>信用卡
+							<strong>付款方式：<span style="color: red">信用卡</span></strong>
 						</p>
 						<hr>
 						<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
@@ -263,10 +261,10 @@ li {
 										src="/booking/management/roomtype/image/${roomtype.roomtypeId}"
 										width="120" alt="img">
 										<div class="order-infos">
-											<div class="order-info">房型名稱 ${roomtype.roomtypeName}</div>
-											<div class="order-info">總金額 ${bookingOrderItem.price}</div>
-											<div class="order-info">入住日期 ${bookingOrderItem.checkInDate}</div>
-											<div class="order-info">退房日期 ${bookingOrderItem.checkOutDate}</div>
+											<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
+											<div class="order-info"><span style="color: blue">總金額</span> ${bookingOrderItem.price}</div>
+											<div class="order-info"><span style="color: blue">入住日期</span> ${bookingOrderItem.checkInDate}</div>
+											<div class="order-info"><span style="color: blue">退房日期</span> ${bookingOrderItem.checkOutDate}</div>
 										</div>
 									</li>
 								`;
@@ -274,7 +272,7 @@ li {
 						</ul>
 						<hr>
 						<p>
-							<strong>總金額：${bookingOrder.totalPrice}</strong>
+							<strong style="font-size: 1.3rem;">總金額：<span style="color: red">${bookingOrder.totalPrice}</span></strong>
 						</p>
 					`;
 

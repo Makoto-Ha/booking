@@ -54,87 +54,87 @@ public class BookingService {
 	private UserRepository userRepo;
 	
 	@Transactional
-	public Result<BookingOrder> saveBookingOrder(BookingOrderDTO boDTO) {
-		// 先獲得房型
-		Roomtype roomtype = roomtypeRepo.findById(boDTO.getRoomtypeId()).orElse(null);
-		
-		// 根據房型查所有房間
-		List<Room> rooms = roomtype.getRooms();
-		
-		// 獲取請求的所有訂單項目
-		List<BookingOrderItemDTO> boiDTOs = boDTO.getBookingOrderItems();
-		
-		// 請求日期重疊的房間就是預定，需要過濾掉
-		
-		List<Room> filterRooms = rooms.stream().filter(room -> {
-			List<BookingOrderItem> bois = room.getBookingOrderItems();
-			for(BookingOrderItem boi : bois) {
-				LocalDate checkInDate = boi.getCheckInDate();
-				LocalDate checkOutDate = boi.getCheckOutDate();
-				for(BookingOrderItemDTO boiDTO : boiDTOs) {
-					LocalDate reqCheckInDate = boiDTO.getCheckInDate();
-					LocalDate reqCheckOutDate = boiDTO.getCheckOutDate();
-					
-					if(reqCheckOutDate.isAfter(checkInDate) && reqCheckInDate.isBefore(checkOutDate) && boi.getBookingStatus() == 1) {
-						return false;
-					}
-					
-				}
-			}
-			return true;
-		}).collect(Collectors.toList());
-		
-	
-		// 新增BookingOrder用於給BookingOrderItem設置
-		BookingOrder bo = new BookingOrder();
-		// 先新增BookingOrder獲取到有bookingId的saveBo
-		BookingOrder saveBo = bookingRepo.save(bo);
-		User user = userRepo.findById(1).orElse(null);
-		
-		if(user == null) {
-			return Result.failure("找不到使用者");
-		}
-		
-		saveBo.setUser(user);
-		
-		// 用於JPA新增所有BookingOrderItem
-		List<BookingOrderItem> bois = new ArrayList<>();
-		// 總訂單金額
-		long totalPrice = 0;
-		// 設置更新時間
-		LocalDateTime now = LocalDateTime.now();
-		// 設置所有BookingOrderItem的屬性
-		for(int i=0; i<boiDTOs.size(); i++) {
-			BookingOrderItemDTO boiDTO = boiDTOs.get(i);
-			BookingOrderItem boi = new BookingOrderItem();
-			// 設置屬性
-			BeanUtils.copyProperties(boiDTO, boi);
-			boi.setUpdatedTime(now);
-			
-			Room room = filterRooms.get(i);
-			// 設置訂單項目的狀態為預訂
-			boi.setBookingStatus(1);
-			// 設置訂單項目的金額
-			Long boiPrice = calcTotalPrice(boi, roomtype);
-			boi.setPrice(boiPrice);
-			// 累積總訂單金額
-			totalPrice += boiPrice;
-			
-			// 設置中間表需要的物件
-			boi.setId(saveBo.getBookingId(), room.getRoomId());
-			boi.setRoom(room);
-			boi.setBookingOrder(saveBo);
-			boi.setRoomtype(roomtype);	
-			bois.add(boi);
-		}
-		
-		// 設置訂單總金額
-		saveBo.setTotalPrice(totalPrice);
-		
-		// 新增所有BookingOrderItem
-		boiRepo.saveAll(bois);
-			
-		return Result.success(saveBo);
+	public Result<BookingOrder> saveBookingOrder(BookingOrderDTO boDTO, String loginAccount) {
+	    Roomtype roomtype = roomtypeRepo.findById(boDTO.getRoomtypeId()).orElse(null);
+	    if (roomtype == null) {
+	        return Result.failure("找不到指定房型");
+	    }
+
+	    List<Room> allRooms = roomtype.getRooms();
+	    List<BookingOrderItemDTO> boiDTOs = boDTO.getBookingOrderItems();
+	    
+	    // 對每個預訂項目分配房間
+	    List<Room> assignedRooms = new ArrayList<>();
+	    
+	    for (BookingOrderItemDTO boiDTO : boiDTOs) {
+	        // 獲取該時段可用的房間
+	        List<Room> availableRooms = allRooms.stream()
+	            .filter(room -> isRoomAvailable(room, boiDTO.getCheckInDate(), 
+	                                          boiDTO.getCheckOutDate()))
+	            .collect(Collectors.toList());
+	            
+	        // 從已分配的房間中移除
+	        availableRooms.removeAll(assignedRooms);
+	        
+	        if (availableRooms.isEmpty()) {
+	            return Result.failure("指定時段沒有足夠的房間可用");
+	        }
+	        
+	        // 分配第一個可用房間
+	        assignedRooms.add(availableRooms.get(0));
+	    }
+
+	    // 創建訂單
+	    BookingOrder bo = new BookingOrder();
+	    BookingOrder saveBo = bookingRepo.save(bo);
+	    User user = userRepo.findByUserAccount(loginAccount).orElse(null);
+
+	    if (user == null) {
+	        return Result.failure("找不到使用者");
+	    }
+	    saveBo.setUser(user);
+
+	    // 創建訂單項目
+	    List<BookingOrderItem> bois = new ArrayList<>();
+	    long totalPrice = 0;
+	    LocalDateTime now = LocalDateTime.now();
+
+	    for (int i = 0; i < boiDTOs.size(); i++) {
+	        BookingOrderItemDTO boiDTO = boiDTOs.get(i);
+	        Room assignedRoom = assignedRooms.get(i);
+	        
+	        BookingOrderItem boi = new BookingOrderItem();
+	        BeanUtils.copyProperties(boiDTO, boi);
+	        
+	        boi.setUpdatedTime(now);
+	        boi.setBookingStatus(1);
+	        
+	        Long boiPrice = calcTotalPrice(boi, roomtype);
+	        boi.setPrice(boiPrice);
+	        totalPrice += boiPrice;
+
+	        boi.setId(saveBo.getBookingId(), assignedRoom.getRoomId());
+	        boi.setRoom(assignedRoom);
+	        boi.setBookingOrder(saveBo);
+	        boi.setRoomtype(roomtype);
+	        bois.add(boi);
+	    }
+
+	    saveBo.setTotalPrice(totalPrice);
+	    boiRepo.saveAll(bois);
+
+	    return Result.success(saveBo);
+	}
+
+	private boolean isRoomAvailable(Room room, LocalDate checkIn, LocalDate checkOut) {
+	    // 檢查房間在指定時段是否已被預訂
+	    return room.getBookingOrderItems().stream()
+	        .filter(boi -> boi.getBookingStatus() == 1)  // 只檢查已確認的預訂
+	        .noneMatch(boi -> {
+	            // 檢查是否有日期重疊
+	            return !(checkOut.isBefore(boi.getCheckInDate()) || 
+	                    checkIn.isAfter(boi.getCheckOutDate()));
+	        });
 	}
 	
 	// 根據房型計算訂單項目所需要金額

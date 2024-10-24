@@ -86,10 +86,11 @@ public class RoomtypeClientService {
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))			
 										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
 										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
+										.and(RoomtypeSpecification.scoreContains(roomtypeSearchDTO.getScore())
 										.and(RoomtypeSpecification.hasAmenities(roomtypeSearchDTO.getAmenities()))
 										.and(RoomtypeSpecification.moneyContains(roomtypeSearchDTO.getMinMoney(), roomtypeSearchDTO.getMaxMoney()))			
 										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()))
-										.and(RoomtypeSpecification.orderBy(roomtypeSearchDTO.getAttrOrderBy(), roomtypeSearchDTO.getSelectedSort()));
+										.and(RoomtypeSpecification.orderBy(roomtypeSearchDTO.getAttrOrderBy(), roomtypeSearchDTO.getSelectedSort())));
 		// 獲取pageable					
 		Pageable pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber()-1, 10);
 

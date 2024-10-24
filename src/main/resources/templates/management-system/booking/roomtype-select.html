@@ -34,6 +34,16 @@
 		        </div>
 		        
 		        <div class="form-group">
+		            <label for="score">房間類型分數</label>
+		            <input type="range" id="score" name="score" min="0" max="9" value="0">
+		        </div>
+		        
+		        <div class="form-group">
+		            <label for="area">房間類型面積 (平分公尺)</label>
+		            <input type="number" id="area" name="area" placeholder="輸入內容">
+		        </div>
+		        
+		        <div class="form-group">
 		            <label for="select-city">縣市</label>
 		            <select id="select-city" name="roomtypeCity"></select>
 		        </div>
@@ -51,7 +61,7 @@
 			    <input class="money-range" type="range" id="max-range-money" name="maxMoney" min="0" max="50000" value="0">
 			    <p class="show-range-money">最高金額: $<span id="max-money" class="volumeValue">0</span></p>
 	
-		        <div class="form-group roomtype-capacity-group">
+		        <div class="form-group roomtype-capacity-group" style="margin-bottom: 0;">
 		            <div class="choose-roomtype-capacity" style="margin-left: 0;">
 			            <label class="radio-label">
 			            	一人房
@@ -84,12 +94,15 @@
 		            </div>
 		        </div>
 		
-		        <!--   <div class="form-group checkbox-group">
-		            <label class="checkbox-label">
-		                <input type="checkbox" id="breakfast" name="breakfast">
-		                附贈早餐
-		            </label>
-		        </div> -->
+				<div style="display: flex; flex-wrap: wrap">
+		        	<div class="form-group" th:each="amenity : ${amenities}" style="display: flex; align-items: center; width:25%;">	
+		        		<label class="checkbox-label" style="display: flex; align-items: center; margin-bottom: 0;">
+		        			<span th:text="${amenity.name}"></span>
+		        			<input type="checkbox" style="margin: 0 5px;" name="amenitiesId" th:value="${amenity.amenityId}">
+		        		</label>
+		        	</div>
+			    </div>
+		        
 		        <div class="form-group">
 		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
 		            <button type="button" class="cancel">取消</button>

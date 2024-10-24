@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>dashboard</title>
+	<link rel="stylesheet"
+	th:href="@{/management-system/common/css/index.css}">
+	<style>
+		html,
+		body {
+			height: 100% !important;
+		}
+		
+		.container {
+			max-width: 100vw !important;
+			padding: 0;
+			margin: 0;
+		}
+
+		/* 默認情況下隱藏遮罩層 */
+		#overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background-color: rgba(0, 0, 0, 0.5);
+			/* 半透明暗色效果 */
+			backdrop-filter: blur(5px);
+			/* 模糊效果 */
+			z-index: 998;
+			/* 高於其他元素但低於下拉選單 */
+			display: none;
+			/* 初始狀態隱藏 */
+		}
+
+		#date {
+			label {
+				cursor: pointer;
+			}
+
+			input {
+				cursor: pointer;
+			}
+		}
+
+		.border-box {
+			box-sizing: border-box !important;
+		}
+
+		.border-radius-22px {
+			border-radius: 22px;
+		}
+
+		.border-bottom-dashed {
+			border-bottom: 1px dashed black !important;
+		}
+
+		.border-bottom-gray {
+			border-bottom: 1px solid #ccc !important;
+		}
+
+		.border-bottom-gray-2 {
+			border-bottom: 2px solid #ccc !important;
+		}
+
+		.max-w-90 {
+			max-width: 90%;
+		}
+
+		.w-90 {
+			width: 90%;
+		}
+
+		.w-80 {
+			width: 80%;
+		}
+
+		.w-70 {
+			width: 70%;
+		}
+
+		.w-35 {
+			width: 35%;
+		}
+
+		.w-30 {
+			width: 30%;
+		}
+
+		.w-20 {
+			width: 20%;
+		}
+
+		.w-15 {
+			width: 15%;
+		}
+
+		.max-width-1200px {
+			max-width: 1200px;
+		}
+
+		.w-240px {
+			width: 240px;
+		}
+
+		.w-100px {
+			width: 100px;
+		}
+
+		.w-80px {
+			width: 80px;
+		}
+
+		.w-40px {
+			width: 40px;
+		}
+
+		.h-80 {
+			height: 80%;
+		}
+
+		.h-12d5px {
+			height: 12.5px;
+		}
+
+		.h-25px {
+			height: 25px;
+		}
+
+		.h-30px {
+			height: 30px;
+		}
+
+		.h-40px {
+			height: 40px;
+		}
+
+		.h-50px {
+			height: 50px;
+		}
+
+		.h-60px {
+			height: 60px;
+		}
+
+		.h-70px {
+			height: 70px;
+		}
+
+		.h-80px {
+			height: 80px;
+		}
+
+		.font-size-12px {
+			font-size: 12px;
+		}
+
+		.font-size-25px {
+			font-size: 25px;
+		}
+
+		.border-left-gray {
+			border-left: 1px solid #ccc;
+		}
+
+		/* 取消默認的外框 */
+		.form-control {
+			border: none !important;
+			/* 移除边框 */
+			box-shadow: none !important;
+			/* 移除阴影 */
+		}
+
+		/* 調整輸入下拉框的位置 */
+		.drop-menu-search {
+			transform: translate(0, 66px) !important;
+			/* X軸和Y軸的位移調整 */
+		}
+
+		/* 調整輸入下拉框的位置 */
+		.drop-people-number-search {
+			transform: translate(0, 66px) !important;
+		}
+
+		.footer-bgc {
+			background-color: rgb(42, 42, 46);
+		}
+
+		.flex-grow-2 {
+			flex-grow: 2;
+		}
+
+		.flex-grow-3 {
+			flex-grow: 3;
+		}
+
+		.flex-grow-4 {
+			flex-grow: 4;
+		}
+
+		.outline-0 {
+			outline: none;
+		}
+
+		.outline-1 {
+			outline: 1px solid black;
+		}
+
+		.aspect-radio-4-3 {
+			aspect-ratio: 4/3 !important;
+		}
+
+		.card {
+			cursor: pointer;
+			transition: box-shadow 0.2s ease;
+			/* 添加動畫過渡效果 */
+		}
+
+		.card:hover {
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 3px 20px rgba(95, 95, 95, 0.147);
+			/* hover時的陰影效果 */
+		}
+
+		.card-bgc {
+			background-color: #f5f8ff;
+		}
+
+		.card-bgc:hover {
+			background-color: white;
+		}
+
+		.cursor-pointer {
+			cursor: pointer;
+		}
+
+		#banner {
+			width: 100%;
+		}
+
+		#search-room {
+			position: relative;
+			z-index: 999;
+		}
+
+		#search {
+			cursor: pointer;
+
+			label {
+				cursor: pointer
+			}
+
+			input {
+				cursor: pointer;
+			}
+		}
+
+		/* 專屬於某個標籤的特定class */
+		.theme-instastay {
+			background-color: #20274d;
+		}
+
+		.room-detail-largeimg-radius {
+			border-radius: 22px 0.375rem 0.375rem 22px;
+		}
+
+		.room-detail-littleimg-radius1 {
+			border-radius: 0.375rem 22px 0.375rem 0.375rem;
+		}
+
+		.room-detail-littleimg-radius2 {
+			border-radius: 0.375rem 0.375rem 22px 0.375rem;
+		}
+
+		.w-search-input {
+			width: calc(171.428571428% + 8px);
+		}
+
+		.w-search-date-input {
+			width: calc(50% + 16px)
+		}
+
+		.search-btn-bgc {
+			background-color: #5392f9;
+			transition: .2s;
+		}
+
+		.search-btn-bgc:hover {
+			background-color: #5393f9ba;
+		}
+
+		.search-key-bgc {
+			background-color: #eff4fc !important;
+		}
+
+		.customer-col-md-3 {
+			flex: 0 0 auto;
+			width: calc(25% - 1rem);
+		}
+
+		.custom-box-shadow {
+			box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
+		}
+		
+		.main-list {
+			padding-top: 51px;
+		}
+		
+		#chart, #chart2, #chart3 {
+		  width: 33%;   /* 設定每張圖表的寬度為 48% */
+		  height: 400px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<section class="main-list">
+				<div class="content-area-pages">
+					<button class="content-area-page"
+						data-url="/booking/management/booking/dashboard" style="height: 50px;">儀錶板</button>
+					<button class="content-area-page"
+						data-url="/booking/management/booking">訂單</button>
+					<button class="content-area-page"
+						data-url="/booking/management/roomtype">房間類型</button>
+					<button class="content-area-page"
+						data-url="/booking/management/room">房間</button>
+				</div>
+				<section id="content" class="content-area">
+					<div style="display: flex;">
+						<div id="chart"></div>
+						<div id="chart2"></div>
+						<div id="chart3"></div>
+					</div>
+				</section>
+			</section>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script>
+	
+		var options = {
+		  chart: {
+		    type: 'area',
+		    width: '100%',
+		    height: 400
+		  },
+		  series: [{
+			  data: [{
+			    x: new Date('2018-02-12').getTime(),
+			    y: 0
+			  }, {
+			    x: new Date('2018-03-25').getTime(),
+			    y: 23
+			  }, {
+			    x: new Date('2020-03-25').getTime(),
+			    y: 45
+			  }, {
+			    x: new Date('2021-03-25').getTime(),
+			    y: 80
+			  }, {
+			    x: new Date('2021-05-25').getTime(),
+			    y: 25
+			  }]
+			}], 
+			xaxis: {
+			  type: 'datetime'
+			}  
+		}
+		
+		var chart = new ApexCharts(document.querySelector("#chart"), options);
+		
+		options2 = {
+		  chart: {
+		    type: 'bar',
+		    width: '100%',
+		    height: 400
+		  },
+		  plotOptions: {
+		    bar: {
+		      horizontal: true
+		    }
+		  },
+		  series: [{
+		    data: [{
+		      x: 'category A',
+		      y: 10
+		    }, {
+		      x: 'category B',
+		      y: 18
+		    }, {
+		      x: 'category C',
+		      y: 13
+		    }]
+		  }]
+		}
+		
+		var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
+		
+		var options3 = {
+		  chart: {
+		    type: 'radar',
+		    width: '100%',
+		    height: 400
+		  },
+		  series: [{
+		    name: 'Series 1',
+		    data: [80, 50, 30, 40, 100, 20]
+		  }],
+		  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+		  
+		  // 填充區域設定
+		  fill: {
+		    opacity: 0.2,  // 設置填充區域的透明度，0是全透明，1是完全不透明
+		    colors: ['#5392f9']  // 設定填充的顏色
+		  },
+		  
+		  stroke: {
+		    show: true,
+		    width: 2,
+		    colors: ['#5392f9']  // 設定邊框顏色
+		  },
+		  
+		  markers: {
+		    size: 4,  // 在每個點上顯示標記
+		    colors: ['#fff'],  // 標記內部顏色
+		    strokeColors: '#5392f9'  // 標記邊框顏色
+		  },
+		};
+		
+		var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
+		
+		chart.render();
+		
+		chart2.render();
+		
+		chart3.render();
+	
+		document.querySelectorAll('.content-area-page').forEach(function(page, i) {
+			if (i >= 1) {
+				page.style.left = i * 130 + "px";
+			}
+			page.addEventListener('click', function(e) {
+				let url = e.target.dataset.url;
+				location.href = url;
+			});
+	
+		});
+	</script>
+</body>
+
+</html>

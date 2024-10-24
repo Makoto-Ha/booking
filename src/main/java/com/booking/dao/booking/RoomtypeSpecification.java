@@ -143,6 +143,29 @@ public class RoomtypeSpecification {
 		};
 	}
 	
+	// 根據分數進行查詢
+	public static Specification<Roomtype> scoreContains (Double score) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			System.out.println(score);
+			if(score == null || score == 0) {
+				return builder.conjunction();
+			}
+			
+			return builder.equal(root.get("score"), score);
+		};
+	}
+	
+	// 根據平方面積進行查詢
+	public static Specification<Roomtype> areaContains (Double area) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+			if(area == null) {
+				return builder.conjunction();
+			}
+			
+			return builder.equal(root.get("area"), area);
+		};
+	}
+	
 	// 根據價錢區間進行查詢
 	public static Specification<Roomtype> moneyContains (Integer minMoney, Integer maxMoney) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {

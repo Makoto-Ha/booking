@@ -110,4 +110,8 @@ public class AmenityService {
 		foundRoomtype.setAmenities(amenities);
 		return Result.success("房型新增服務成功");
 	}
+	
+	public List<Amenity> findAmenitiesByIds(List<Integer> amenitiesId) {
+		return amenityRepo.findAllById(amenitiesId);
+	}
 }

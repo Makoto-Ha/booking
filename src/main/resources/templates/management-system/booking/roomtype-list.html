@@ -27,6 +27,8 @@
 			              <option value="roomtypeName" th:selected="roomtypeName == ${roomtype.attrOrderBy}">房間名字</option>
 			              <option value="roomtypeCapacity" th:selected="roomtypeCapacity == ${roomtype.attrOrderBy}">房間人數</option>
 			              <option value="roomtypeQuantity" th:selected="roomtypeQuantity == ${roomtype.attrOrderBy}">房間數量</option>
+			              <option value="score" th:selected="score == ${roomtype.attrOrderBy}">房間分數</option>
+			              <option value="area" th:selected="area == ${roomtype.attrOrderBy}">房間面積</option>
 			              <option value="roomtypeCity" th:selected="roomtypeCity == ${roomtype.attrOrderBy}">所在城市</option>
 			              <option value="roomtypeDistrict" th:selected="roomtypeDistrict == ${roomtype.attrOrderBy}">所在區域</option>
 			              <option value="updatedTime" th:selected="updatedTime == ${roomtype.attrOrderBy}">更新時間</option>
@@ -43,6 +45,7 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
+			  		<button class="content-area-page" data-url="/booking/management/booking/dashboard">儀錶板</button>
 			  		<button class="content-area-page" data-url="/booking/management/booking">訂單</button>
 			  		<button class="content-area-page" data-url="/booking/management/roomtype" style="height: 50px;">房間類型</button>
 			  		<button class="content-area-page" data-url="/booking/management/room">房間</button>       
@@ -67,6 +70,14 @@
 			                 </div>
 			                 <div class="form-group">
 			                     <label>房間數量</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間面積</label>
+			                     <input type="text" class="input-show-value" disabled>
+			                 </div>
+			                 <div class="form-group">
+			                     <label>房間分數</label>
 			                     <input type="text" class="input-show-value" disabled>
 			                 </div>
 			                 <div class="form-group">
@@ -129,7 +140,14 @@
 		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間說明</span>
-		                			<span th:text="${#strings.abbreviate(roomtype.roomtypeDescription,20)}"></span>              		   			
+		                			<span th:text="${#strings.abbreviate(roomtype.roomtypeDescription,20)}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間面積</span>
+		                			<span th:text="${roomtype.area}"></span>
+		                			<span class="item-info" style="color: darkred">平方公尺</span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間分數</span>
+		                			<span th:text="${roomtype.score}"></span>                   		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">

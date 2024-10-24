@@ -48,7 +48,9 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@GetMapping("/select/page")
-	private String sendSelectPage() {
+	private String sendSelectPage(Model model) {
+		List<Amenity> amenities = amenityService.findAll();
+		model.addAttribute("amenities", amenities);
 		return "/management-system/booking/roomtype-select";
 	}
 
@@ -122,11 +124,20 @@ public class RoomtypeController {
 	 * @return
 	 */
 	@GetMapping("/select")
-	private String findRoomtypes(@RequestParam Map<String, String> requestParameters,
+	private String findRoomtypes(
+			@RequestParam Map<String, String> requestParameters,
 			@RequestParam(value = "roomtypeCapacity", required = false) List<Integer> roomtypeCapacityAll,
-			RoomtypeDTO roomtypeDTO, Model model) {
-
-		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll);
+			@RequestParam(required = false) List<Integer> amenitiesId,
+			RoomtypeDTO roomtypeDTO, 
+			Model model
+	){
+		
+		List<Amenity> amenities = null;
+		if(amenitiesId != null && amenitiesId.size() >= 1) {
+			amenities = amenityService.findAmenitiesByIds(amenitiesId);
+		}
+		
+		Result<PageImpl<RoomtypeDTO>> findRoomtypesResult = roomtypeService.findRoomtypes(roomtypeDTO, roomtypeCapacityAll, amenities);
 
 		if (findRoomtypesResult.isFailure()) {
 			return "";
