@@ -15,6 +15,12 @@ public class ShopOrderDTO {
 	private Integer orderId;
 
 	private Integer userId;
+	
+	private String receiverName;
+
+	private Integer receiverPhone;
+	
+	private String receiverAddress;
 
 	private Integer orderPrice;
 
@@ -56,14 +62,19 @@ public class ShopOrderDTO {
 	public ShopOrderDTO() {
 		super();
 	}
+	
+	
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+	public ShopOrderDTO(Integer orderId, Integer userId,String receiverName,Integer receiverPhone,String receiverAddress, Integer orderPrice, Integer orderState, Integer paymentMethod,
 			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
 			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
 			List<ShopOrderItemDTO> orderItems, Integer pageNumber, String attrOrderBy, Boolean selectedSort) {
 		super();
 		this.orderId = orderId;
 		this.userId = userId;
+		this.receiverName = receiverName;
+		this.receiverPhone = receiverPhone;
+		this.receiverAddress = receiverAddress;
 		this.orderPrice = orderPrice;
 		this.orderState = orderState;
 		this.paymentMethod = paymentMethod;
@@ -80,13 +91,16 @@ public class ShopOrderDTO {
 		this.selectedSort = selectedSort;
 	}
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+	public ShopOrderDTO(Integer orderId, Integer userId,String receiverName,Integer receiverPhone,String receiverAddress, Integer orderPrice, Integer orderState, Integer paymentMethod,
 			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
 			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
 			List<ShopOrderItemDTO> orderItems) {
 		super();
 		this.orderId = orderId;
 		this.userId = userId;
+		this.receiverName = receiverName;
+		this.receiverPhone = receiverPhone;
+		this.receiverAddress = receiverAddress;
 		this.orderPrice = orderPrice;
 		this.orderState = orderState;
 		this.paymentMethod = paymentMethod;
@@ -100,12 +114,15 @@ public class ShopOrderDTO {
 		this.orderItems = orderItems;
 	}
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+	public ShopOrderDTO(Integer orderId, Integer userId,String receiverName,Integer receiverPhone,String receiverAddress, Integer orderPrice, Integer orderState, Integer paymentMethod,
 			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
 			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt) {
 		super();
 		this.orderId = orderId;
 		this.userId = userId;
+		this.receiverName = receiverName;
+		this.receiverPhone = receiverPhone;
+		this.receiverAddress = receiverAddress;
 		this.orderPrice = orderPrice;
 		this.orderState = orderState;
 		this.paymentMethod = paymentMethod;
@@ -118,12 +135,15 @@ public class ShopOrderDTO {
 		this.createdAt = createdAt;
 	}
 
-	public ShopOrderDTO(Integer orderId, Integer userId, Integer orderPrice, Integer orderState, Integer paymentMethod,
+	public ShopOrderDTO(Integer orderId, Integer userId,String receiverName,Integer receiverPhone,String receiverAddress, Integer orderPrice, Integer orderState, Integer paymentMethod,
 			Integer paymentState, String merchantTradeNo, String transactionId, LocalDateTime paymentCreatedAt,
 			LocalDateTime paymentUpdatedAt, LocalDateTime updatedAt, LocalDateTime createdAt,
 			ShopOrderItemDTO orderItemDTO) {
 		this.orderId = orderId;
 		this.userId = userId;
+		this.receiverName = receiverName;
+		this.receiverPhone = receiverPhone;
+		this.receiverAddress = receiverAddress;
 		this.orderPrice = orderPrice;
 		this.orderState = orderState;
 		this.paymentMethod = paymentMethod;
