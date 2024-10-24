@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <title>user search</title>
+  <title>roomtype search result</title>
 
   <style>
     html, body {
@@ -252,6 +252,10 @@
         color: white !important;
       }
     }
+	
+	.aspect-radio-5-3 {
+		aspect-ratio: 5/3;
+	}
 
     /* 專屬於某個標籤的特定class */
     .theme-instastay {
@@ -347,6 +351,24 @@
         border-radius: 50%;
         box-shadow: 0 0 5px rgba(0,0,0,0.3);
     }
+	
+	/* 畫協線 */
+	.diagonal-strike {
+        position: relative;
+        display: inline-block;
+    }
+
+    .diagonal-strike::after {
+        content: '';
+        position: absolute;
+        top: 50%;  /* 控制线条的位置 */
+        right: 0;
+        width: 50%;
+        height: 2px;  /* 线条的厚度 */
+        background-color: red;  /* 线条的颜色 */
+        transform: rotate(-10deg);  /* 旋转45度 */
+        transform-origin: center;
+    }
 
   </style>
 </head>
@@ -437,32 +459,35 @@
                 <div class="col-md-4 h-100">
                     <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-190px img-fluid" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
                     </div>
                 </div>
                 <div class="col-md-5">
-                    <div class="card-body h-100">
+                    <div class="card-body d-flex flex-column h-100">
                         <h4 class="card-title fw-bolder fs-5" th:text="${roomtype.roomtypeName}"></h4>
                         <div class="d-flex align-items-center">
                           <i class="bi bi-geo-alt-fill text-primary"></i>
                           <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeDistrict} + ','"></span>
                           <span class="small mx-1 text-primary" th:text="${roomtype.roomtypeCity}"></span>	   
                         </div>            
-                        <p class="card-text mb-0 small">這間住宿提供: </p>
+                        <p class="card-text mb-0 small">這間住宿提供： </p>
         
                         <div class="d-flex flex-wrap">
                             <span th:each="amenity : ${roomtype.amenities}" class="border px-2 small tag-color d-block me-2 mb-2 text-nowrap" th:text="${amenity.name}"></span>
                         </div>
+						<small class="text-secondary mt-auto"><i class="bi bi-coin me-1"></i>現金回饋：[[${(roomtype.roomtypePrice - roomtype.roomtypePrice * 0.9).intValue() + '元'}]]</small>
                     </div>
                 </div>
                 <div class="col-md-3 border-start">
                     <div class="card-body d-flex flex-column h-100 text-end">
-                        <h5 class="card-title text-success">9.1超棒</h5>
-                        <p class="card-text">空中商務旅館價錢</p>
-                        <p class="card-text mt-auto fs-4 text-danger">NT$ [[${roomtype.roomtypePrice}]]</p>
+                        <h5 class="card-title text-success fs-4" th:text="${roomtype.score + '超棒'}"></h5>
+                        <p class="card-text text-danger">超讚全館10%優惠</p>
+						<span class="card-text mt-auto fs-4 text-secondary diagonal-strike fw-bolder">NT$ [[${roomtype.roomtypePrice * 11/10}]]</span>
+						<small class="opacity-50 mt-auto">現金回饋後的價錢</small>
+                        <p class="card-text mt-auto fs-3 fw-bolder">NT$ [[${roomtype.roomtypePrice}]]</p>
                     </div>
                 </div>
             </div>
@@ -584,31 +609,34 @@
                 <div class="col-md-4 h-100">
                     <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-190px img-fluid" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-3 p-0 border border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>            
+                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>            
                     </div>
                 </div>
                 <div class="col-md-5">
-                    <div class="card-body h-100">
+                    <div class="card-body d-flex flex-column h-100">
                         <h4 class="card-title fw-bolder fs-5">${roomtype.roomtypeName}</h4>
                         <div class="d-flex align-items-center">
                           <i class="bi bi-geo-alt-fill text-primary"></i>
                           <span class="small mx-1 text-primary">${roomtype.roomtypeDistrict},</span>
                           <span class="small mx-1 text-primary">${roomtype.roomtypeCity}</span>	   
                         </div>            
-                        <p class="card-text mb-0 small">這間住宿提供: </p>
+                        <p class="card-text mb-0 small">這間住宿提供： </p>
                         <div class="d-flex flex-wrap">
                           ${roomtype.amenities.map(amenity => `<span class="tag border px-2 small tag-color d-block me-2 mb-2 text-nowrap">${amenity.name}</span>`).join('')}         
                         </div>
+						<small class="text-secondary mt-auto"><i class="bi bi-coin me-1"></i>現金回饋：${roomtype.roomtypePrice * 11/10 - roomtype.roomtypePrice}元</small>
                     </div>
                 </div>
                 <div class="col-md-3 border-start">
                     <div class="card-body d-flex flex-column h-100 text-end">
-                        <h5 class="card-title text-success">9.1超棒</h5>
-                        <p class="card-text">空中商務旅館價錢</p>
-                        <p class="card-text mt-auto fs-4 fw-bolder text-danger">NT$ ${roomtype.roomtypePrice}</p>
+                        <h5 class="card-title text-success fs-4">${roomtype.score.toFixed(1)}超棒</h5>
+                        <p class="card-text text-danger">超讚全館10%優惠</p>
+						<span class="card-text mt-auto fs-4 text-secondary diagonal-strike fw-bolder">NT$ ${roomtype.roomtypePrice*11/10}</span>
+						<small class="opacity-50 mt-auto">現金回饋後的價錢</small>
+                        <p class="card-text mt-auto fs-3 fw-bolder">NT$ ${roomtype.roomtypePrice}</p>
                     </div>
                 </div>
               </div>

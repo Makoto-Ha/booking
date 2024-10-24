@@ -444,6 +444,6 @@ public class RoomtypeService {
 	}
 
 	public List<String> getImageListByAWS(Integer roomtypeId) {	
-		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId).stream().filter(imgkey -> !imgkey.equals("booking/roomtype" + roomtypeId + "/avatar.png")).collect(Collectors.toList());
+		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId + "/").stream().filter(imgkey -> !imgkey.equals("booking/roomtype" + roomtypeId + "/avatar.png")).collect(Collectors.toList());
 	}
 }

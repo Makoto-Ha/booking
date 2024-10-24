@@ -3,6 +3,7 @@ package com.booking.controller.booking;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -193,10 +194,15 @@ public class RoomtypeController {
 	private String updateById(
 			@RequestParam(required = false) MultipartFile imageFile, 
 			Roomtype roomtype,
-			@RequestParam List<Integer> amenitiesId,
+			@RequestParam(required = false) List<Integer> amenitiesId,
 			@SessionAttribute Integer roomtypeId
 	) {
 		roomtype.setRoomtypeId(roomtypeId);
+		
+		if(amenitiesId == null) {
+			amenitiesId = new ArrayList<>();
+		}
+		
 		Result<String> updateRoomtypeResult = roomtypeService.updateRoomtype(imageFile, roomtype, amenitiesId);
 
 		if (updateRoomtypeResult.isFailure()) {

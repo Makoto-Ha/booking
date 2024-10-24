@@ -252,8 +252,12 @@
 
         (async function () {
         	let roomtypeId = [[${ roomtype.roomtypeId }]];
+			
             let response = await fetch('/booking/management/roomtype/aws3/' + roomtypeId);
             let imgKeyList = await response.json();
+			
+			console.log(imgKeyList)
+			
             let imageGallery = document.getElementById('imageGallery');
             
             imgKeyList.forEach(imgkey => { 
