@@ -19,6 +19,6 @@ public interface ShopCartItemRepository extends JpaRepository<ShopCartItem, Inte
             + "FROM ShopCartItem sci WHERE sci.shopCart.shopCartId = :cartId")
 	List<ShopCartItemDTO> findAllByCartId(Integer cartId);
 
-	
+	Integer countByShopCart_ShopCartId(Integer shopCartId);
 	
 }

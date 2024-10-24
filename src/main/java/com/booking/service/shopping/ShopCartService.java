@@ -32,7 +32,15 @@ public class ShopCartService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	
+	// 計算購物車筆數
+	public Integer getCartItemCount(Integer userId) {
+        ShopCart shopCart = shopCartRepository.findByUser_UserId(userId);
+        if (shopCart == null) {
+            return 0;
+        }
+        Integer count = shopCartItemRepository.countByShopCart_ShopCartId(shopCart.getShopCartId());
+        return count ;
+	}
 	/**
 	 * 會員ID獲取購物車
 	 * @param cartId
@@ -106,40 +114,39 @@ public class ShopCartService {
 	 */
 	
 	@Transactional
-	public Result<String> addShopCartItem(ShopCartItemDTO shopCartItemDTO, Integer CartId) {
-
+	public Result<String> addShopCartItem(Integer productId, Integer CartId) {
+		// 確認購物車和商品
 		Optional<ShopCart> findCart = shopCartRepository.findById(CartId);
 		if (!findCart.isPresent()) {
 			return Result.failure("購物車不存在");
 		}
-
-		Optional<Product> findProduct = productRepository.findById(shopCartItemDTO.getProductId());
+		Optional<Product> findProduct = productRepository.findById(productId);
 		if (!findProduct.isPresent()) {
 			return Result.failure("商品不存在");
 		}
-
 		ShopCart shopCart = findCart.get();
 		Product product = findProduct.get();
-
+		
+		// 確認購物車中是否已有項目
 		ShopCartItem cartItem = shopCartItemRepository.findByShopCartAndProduct(shopCart, product);
-
+		// 如果存在，數量+1
 		if (cartItem != null) {
-			cartItem.setQuantity(cartItem.getQuantity() + shopCartItemDTO.getQuantity());
-		} else {
-			cartItem = new ShopCartItem();
+			cartItem.setQuantity(cartItem.getQuantity()+1);
+		} else { 
+			cartItem = new ShopCartItem();  // 如果不存在，新增商品項目
 			cartItem.setShopCart(shopCart);
 			cartItem.setProduct(product);
-			cartItem.setQuantity(shopCartItemDTO.getQuantity());
+			cartItem.setQuantity(1);
 			cartItem.setPrice(product.getProductPrice());
-			cartItem.setSubtotal(product.getProductPrice() * shopCartItemDTO.getQuantity());
 		}
-		cartItem.calculateSubtotal();
+		// 更新小記後 將購物車項目存入
+		cartItem.calculateSubtotal();  
 		shopCartItemRepository.save(cartItem);
-
-		shopCart.setCartState(1);
+		// 更新總金額後 將購物車存入
 		shopCart.calculateTotalAmount();
 		shopCartRepository.save(shopCart);
-
+		
+		// 將購物車轉換為DTO
 		ShopCartDTO shopCartDTO = new ShopCartDTO();
 		BeanUtils.copyProperties(shopCart, shopCartDTO);
 		shopCartDTO.setUserId(shopCart.getUser().getUserId());
