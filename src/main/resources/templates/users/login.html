@@ -2,42 +2,193 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歡迎登入</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        .google-btn {
-            background-color: #4285F4;
-            color: white;
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
         }
-        .google-btn:hover {
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            min-height: 600px;
+        }
+
+        .login-image {
+            flex: 1;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .login-image {
+                display: block;
+            }
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 50px;
+            background: white;
+        }
+
+        .welcome-text {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .welcome-text h2 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 12px 15px;
+            height: auto;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #4285F4;
+            box-shadow: 0 0 0 0.2rem rgba(66,133,244,0.15);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #4285F4;
+            border: none;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary:hover {
             background-color: #357ae8;
-            color: white;
+            transform: translateY(-1px);
+        }
+
+        .google-btn {
+            background-color: #fff;
+            color: #757575;
+            border: 2px solid #e1e1e1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .google-btn:hover {
+            background-color: #f8f9fa;
+            color: #666;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .links a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .links a:hover {
+            color: #4285F4;
+        }
+
+        .alert {
+            border-radius: 8px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>登入</h2>
-        <form th:action="@{/auth/login}" method="post">
-      
-            <div class="form-group">
-                <label for="userAccount">會員帳號:</label>
-                <input type="text" class="form-control" id="userAccount" name="userAccount" required>
+    <div class="login-container">
+        <div class="login-image"></div>
+        <div class="login-form">
+            <div class="welcome-text">
+                <h2>歡迎回來</h2>
+                <p>登入您的帳戶以繼續</p>
             </div>
-            <div class="form-group">
-                <label for="userPassword">密碼:</label>
-                <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+            
+            <form th:action="@{/auth/login}" method="post">
+                <div class="form-group">
+                    <label for="userAccount">會員帳號</label>
+                    <input type="text" class="form-control" id="userAccount" name="userAccount" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userPassword">密碼</label>
+                    <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    登入
+                </button>
+
+                <a th:href="@{/oauth2/authorization/google}" class="btn google-btn">
+                    <i class="fab fa-google"></i>
+                    使用 Google 帳號登入
+                </a>
+            </form>
+
+            <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+            
+            <div class="links">
+                <a th:href="@{/auth/register}">註冊新帳號</a>
+                <span>|</span>
+                <a th:href="@{/auth/forgot-password}">忘記密碼？</a>
             </div>
-            <button type="submit" class="btn btn-primary">登入</button>
-        </form>
-        <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
-        <div class="mt-3">
-            <a th:href="@{/auth/register}">註冊</a> | 
-            <a th:href="@{/auth/forgot-password}">忘記密碼</a>
-        </div>
-        
-       <div class="mt-3">
-            <a th:href="@{/oauth2/authorization/google}" class="btn btn-danger">Login with Google</a>
         </div>
     </div>
 </body>

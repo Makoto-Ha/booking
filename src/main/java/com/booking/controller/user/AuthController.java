@@ -63,7 +63,7 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:/"; // 登入成功後重定向到首頁
         } catch (Exception e) {
-            model.addAttribute("error", "Invalid username or password");
+            model.addAttribute("error", "使用者名稱或密碼無效");
             return "users/login";
         }
     }
@@ -119,7 +119,7 @@ public class AuthController {
             model.addAttribute("message", "密码已成功重置。");
             return "users/reset-password-success";
         } else {
-            model.addAttribute("error", "无效或已过期的令牌。");
+            model.addAttribute("error", "無效或已過期的驗證。");
             return "users/reset-password";
         }
     }
@@ -129,7 +129,7 @@ public class AuthController {
     public String verifyEmail(@RequestParam String token, Model model) {
         try {
             userService.verifyEmail(token);
-            model.addAttribute("message", "Email verified successfully!");
+            model.addAttribute("message", "郵箱驗證成功！");
             return "users/verify-success";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
