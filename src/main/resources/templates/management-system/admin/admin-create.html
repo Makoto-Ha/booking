@@ -3,18 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <title>roomtype-create</title>
-<link rel="stylesheet"
-	th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet"
-	th:href="@{/management-system/booking/css/booking.css}">
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
 </head>
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
 			<div th:replace="~{/management-system/common/navbar}"></div>
-			<form class="form" action="../create" method="post"
-				enctype="multipart/form-data">
+			<form class="form" action="../create" method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="admin-account">新增員工帳號</label> <input type="text"
 						id="admin-account" name="adminAccount" placeholder="輸入內容">
@@ -70,6 +67,5 @@
 	</div>
 	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
 	<script th:src="@{/management-system/booking/js/form.js}"></script>
-	<script th:src="@{/management-system/booking/js/booking.js}"></script>
 </body>
 </html>

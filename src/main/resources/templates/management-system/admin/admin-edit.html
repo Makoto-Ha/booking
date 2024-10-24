@@ -67,14 +67,40 @@
 
 		
 		        <div class="form-group">
-		            <button type="submit" class="submit submit-edit" id="submit" style="background-color: #007bff;">保存</button>
-		            <button type="button" class="cancel">取消</button>
-		        </div>
-		    </form>
+						<button type="submit" class="submit submit-edit" id="submit"
+							style="background-color: #007bff;">保存</button>
+						<button type="button" class="cancel">取消</button>
+					</div>
+			</form>
 		</div>
 	</div>
-	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
-	<script th:src="@{/management-system/booking/js/form.js}"></script>
+	<script th:src="@{/management-system/shopping/js/CheckProduct.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+		// 更新檔案名稱顯示和圖片預覽
+		document.getElementById('file-upload').addEventListener('change', function (event) {
+			var file = event.target.files[0];
+			if (file) {
+				document.getElementById('file-name').textContent = file.name;
+			
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					var currentImage = document.getElementById('current-image');
+					currentImage.src = e.target.result;
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+		
+		// 移除前綴 'uploads/'
+	window.addEventListener('DOMContentLoaded', function () {
+		var fileNameElement = document.getElementById('file-name');
+		var filePath = fileNameElement.textContent;
+		
+		if (filePath.startsWith('uploads/')) {
+			fileNameElement.textContent = filePath.substring(8); // 去掉 'uploads/' 的部分
+		}
+	});
+	</script>
 </body>
 </html>
