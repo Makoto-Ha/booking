@@ -25,7 +25,6 @@ import com.booking.bean.dto.shopping.PayDetailDTO;
 import com.booking.bean.dto.shopping.ProductCategoryDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopCartDTO;
-import com.booking.bean.dto.shopping.ShopCartItemDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.service.shopping.ProductCategoryService;
 import com.booking.service.shopping.ProductService;
@@ -98,6 +97,29 @@ public class ShoppingCientController {
 		return "client/shopping/shop";
 	}
 
+	@ResponseBody
+	@GetMapping("/cart/itemCount")
+	public Result<Integer> getCartItemCount() {
+	    Integer currentUserId = shopClientService.getCurrentUserId();
+	    int cartItemCount = shopCartService.getCartItemCount(currentUserId);
+	    return Result.success(cartItemCount);
+	}
+	
+	
+	// 立刻購買
+	@ResponseBody
+	@PostMapping("/buyNow")
+	public Result<String> buyNow(@RequestBody ProductDTO productDTO) {
+		Integer userId = shopClientService.getCurrentUserId();
+		Result<String> result = shopClientService.createOrderByProductAndUser(userId, productDTO);
+		if (result.isSuccess()) {
+			return Result.success("立即購買成功");
+		} else {
+			return Result.failure(result.getMessage());
+		}
+	}
+	
+	
 	// --------------------- 購物車 -------------------- //
 
 	// 更新購物車商品數量
@@ -116,23 +138,17 @@ public class ShoppingCientController {
 		}
 	}
 
-	// 商品加入購物車
+	// 商品加入購物車    
 	@ResponseBody
 	@PostMapping("/cart/add")
-	public ResponseEntity<Result<String>> addCartItem(@RequestBody ProductDTO productDTO) {
-
+	public ResponseEntity<Result<String>> addCartItem(@RequestBody Integer productId) {
 		Integer currentUserId = shopClientService.getCurrentUserId();
 		Result<ShopCartDTO> userCart = shopCartService.findCartByUserId(currentUserId);
-
-		ShopCartItemDTO shopCartItemDTO = new ShopCartItemDTO();
-		shopCartItemDTO.setProductId(productDTO.getProductId());
-		shopCartItemDTO.setPrice(productDTO.getProductPrice());
-		shopCartItemDTO.setQuantity(1);
-
-		Result<String> result = shopCartService.addShopCartItem(shopCartItemDTO, userCart.getData().getShopCartId());
+		Result<String> result = shopCartService.addShopCartItem(productId, userCart.getData().getShopCartId());
 		return ResponseEntity.ok(result);
 	}
 
+	// 刪除購物車商品
 	@ResponseBody
 	@DeleteMapping("/cart/remove/{cartItemId}")
 	public Result<String> removeCartItem(@PathVariable Integer cartItemId) {
@@ -222,6 +238,15 @@ public class ShoppingCientController {
 		return "client/shopping/shop-checkout";
 	}
 
+	// 立即購買的訂單畫面
+    @GetMapping("/checkout/buyNow")
+    public String sendCheckoutForBuyNow(Model model) {
+        Integer userId = shopClientService.getCurrentUserId();
+        Result<ShopOrderDTO> order = shopClientService.getOrderByUserAndState(userId, 1);
+        model.addAttribute("orderDTO", order.getData());
+        return "client/shopping/shop-checkout";
+    }
+	
 	// 結帳成功頁面
 	@GetMapping("/orderDetail")
 	public String orderDetail(Model model) {

@@ -20,6 +20,7 @@ import com.booking.bean.dto.shopping.PayDetailDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.bean.dto.shopping.ShopOrderItemDTO;
+import com.booking.bean.pojo.shopping.Product;
 import com.booking.bean.pojo.shopping.ShopCart;
 import com.booking.bean.pojo.shopping.ShopCartItem;
 import com.booking.bean.pojo.shopping.ShopOrder;
@@ -175,18 +176,18 @@ public class ShopClientService {
 
 	@Transactional
 	public Result<String> setOrderDetail(Integer userId, ShopOrderDTO orderDTO) {
-		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC,"createdAt");
+		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createdAt");
 		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 2, pageable);
 		ShopOrder shopOrder = page.getContent().get(0);
 
-		System.out.println("=====轉換前的ORDER====="+shopOrder);
-		
+		System.out.println("=====轉換前的ORDER=====" + shopOrder);
+
 		if (shopOrder == null) {
 			return Result.failure("無法找到符合條件的訂單");
 		}
 		MyModelMapper.map(orderDTO, shopOrder);
-		System.out.println("=====綠界資訊 DTO====="+orderDTO);
-		System.out.println("=====轉換完存入 ORDER====="+shopOrder);
+		System.out.println("=====綠界資訊 DTO=====" + orderDTO);
+		System.out.println("=====轉換完存入 ORDER=====" + shopOrder);
 		shopOrderRepository.save(shopOrder);
 		return Result.success("設置成功付款");
 	}
@@ -200,7 +201,7 @@ public class ShopClientService {
 
 	@Transactional
 	public boolean setOrderIsCompleted(Integer userId) {
-		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC,"createdAt");
+		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createdAt");
 		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 1, pageable);
 		ShopOrder order = page.getContent().get(0);
 		if (order == null) {
@@ -225,6 +226,46 @@ public class ShopClientService {
 		return true;
 	}
 
+	// 立刻購買
+	@Transactional
+	public Result<String> createOrderByProductAndUser(Integer userId, ProductDTO productDTO) {
+
+		// 查詢商品
+		Optional<Product> optionalProduct = productRepository.findById(productDTO.getProductId());
+		if (!optionalProduct.isPresent()) {
+			return Result.failure("商品不存在");
+		}
+		Product product = optionalProduct.get();
+
+		// 創建新訂單
+		ShopOrder shopOrder = new ShopOrder();
+		shopOrder.setUser(userRepository.findById(userId).get());
+		shopOrder.setOrderState(1); // 待處理
+		shopOrder.setPaymentState(1); // 未付款
+
+		// 創建訂單項目
+		ShopOrderItem orderItem = new ShopOrderItem();
+		orderItem.setProduct(product);
+		orderItem.setProductName(product.getProductName());
+		orderItem.setQuantity(1); // 默認購買一個
+		orderItem.setPrice(product.getProductPrice());
+		orderItem.setSubtotal(product.getProductPrice());
+		orderItem.setShopOrder(shopOrder);
+
+		List<ShopOrderItem> orderItemList = new ArrayList<>();
+		orderItemList.add(orderItem);
+		
+		// 計算總金額
+		shopOrder.setOrderPrice(product.getProductPrice());
+		shopOrder.setItems(orderItemList);
+
+		// 保存訂單和訂單項目
+		shopOrderRepository.save(shopOrder);
+		shopOrderItemRepository.save(orderItem);
+
+		return Result.success("立即購買訂單建立成功");
+	}
+
 	/**
 	 * 熱銷商品
 	 * 
@@ -247,7 +288,7 @@ public class ShopClientService {
 	 */
 
 	public Result<ShopOrderDTO> getOrderByUserAndState(Integer userId, Integer orderState) {
-		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC,"createdAt");
+		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createdAt");
 		Page<ShopOrderDTO> page = shopOrderRepository.findByUserIdAndOrderStateWithDTO(userId, orderState, pageable);
 		ShopOrderDTO shopOrderDTO = page.getContent().get(0);
 		if (shopOrderDTO == null) {
