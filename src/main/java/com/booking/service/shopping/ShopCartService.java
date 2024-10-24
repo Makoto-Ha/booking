@@ -33,9 +33,6 @@ public class ShopCartService {
 	private UserRepository userRepository;
 	
 	
-	
-	
-	
 	/**
 	 * 會員ID獲取購物車
 	 * @param cartId
@@ -47,25 +44,24 @@ public class ShopCartService {
 		ShopCart shopCart = shopCartRepository.findByUser_UserId(userId);
 		
 	    if (shopCart == null) {
-	        // 如果該用戶尚未有購物車，創建新的購物車
 	        shopCart = new ShopCart();
 	        userRepository.findById(userId).ifPresent(shopCart::setUser);
 	        shopCartRepository.save(shopCart);
 	    }
-	    // 準備返回的購物車DTO
+	  
 	    ShopCartDTO shopCartDTO = new ShopCartDTO();
 	    BeanUtils.copyProperties(shopCart, shopCartDTO);
-	    // 獲取購物車中的所有項目
+	    
 	    Integer cartId = shopCart.getShopCartId();
 	    List<ShopCartItemDTO> itemDTOList = shopCartItemRepository.findAllByCartId(cartId);
-	    // 設置購物車項目和用戶ID
 	    shopCartDTO.setCartItems(itemDTOList);
 	    shopCartDTO.setUserId(shopCart.getUser().getUserId());
+	    
 	    return Result.success(shopCartDTO);
 	}
 
 	/**
-	 *  更新購物車的商品數量
+	 * 更新購物車的商品數量
 	 * @param cartItemId
 	 * @param newQuantity
 	 * @return
@@ -103,7 +99,7 @@ public class ShopCartService {
 	}
 
 	/**
-	 *  添加購物車商品
+	 * 添加購物車商品
 	 * @param shopCartItemDTO
 	 * @param CartId
 	 * @return
@@ -171,7 +167,6 @@ public class ShopCartService {
 		ShopCartItem shopCartItem = option.get();
 		ShopCart shopCart = shopCartItem.getShopCart();
 
-
 	    // 從購物車中移除該項目
 	    shopCart.getCartItems().remove(shopCartItem);
 		shopCartItemRepository.deleteById(cartItemId);
@@ -221,8 +216,5 @@ public class ShopCartService {
 
 		return Result.success("刪除成功");
 	}
-	
-	
-	
 
 }

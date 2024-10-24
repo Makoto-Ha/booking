@@ -1,95 +1,256 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Instastay Shop</title>
-	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Bootstrap Icons -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-	<style>
-		html,
-		body {
-			height: 100% !important;
-		}
 
-		.footer-bgc {
-			background-color: rgb(42, 42, 46);
-		}
-	</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instastay Shop</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 100% !important;
+        }
+
+        .footer-bgc {
+            background-color: rgb(42, 42, 46);
+        }
+    </style>
 </head>
+
 <body>
-	<div th:replace="~{/client/common/header}"></div>
-	<div class="container mt-5">
-		<h2>購物車</h2>
-		<div class="row">
-			<!-- 左侧：购物车商品列表 -->
-			<div class="col-md-8">
-				<form th:action="@{/shop/checkout}" method="post">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>商品</th>
-								<th>價格</th>
-								<th>數量</th>
-								<th>小記</th>
-								<th>操作</th>
-							</tr>
-						</thead>
-						<tbody>
-							<th:block th:if="${shopCartDTO.cartItems != null}">
-								<th:block th:each="item : ${shopCartDTO.cartItems}">
-									<tr>
-										<td>
-											<div class="d-flex align-items-center">
-												<input type="checkbox" name="selectedItems"	th:value="${item.cartItemId}">
-												<img th:src="@{'/management/product/image/' + ${item.productId}}"
-													alt="圖片" class="img-thumbnail" style="width: 80px; height: 80px;">
-												<div class="ms-3">
-													<a th:href="@{'/shop/detail/' + ${item.productId}}"	th:text="${item.productName}">商品名稱</a>
-												</div>
-											</div>
-										</td>
-										<td th:text="'$' + ${item.price}">價格</td>
-										<td><input type="number" name="quantities" th:value="${item.quantity}" min="1"
-												class="form-control" style="width: 80px;">
-												<input type="hidden" name="cartItemIds" th:value="${item.cartItemId}"></td>
-										<td th:text="'$' + ${item.subtotal}">小计</td>
-										<td><a th:href="@{/shop/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}"
-												class="btn btn-danger btn-sm">移除</a></td>
-									</tr>
-								</th:block>
-							</th:block>
-						</tbody>
-					</table>
-					<div class="d-flex justify-content-between">
-						<a th:href="@{/shop}" class="btn btn-secondary w-30 mt-3">繼續購物</a>
-						<button type="submit" class="btn btn-success w-30 mt-3">結帳</button>
-					</div>
-				</form>
-			</div>
-			<!-- 右侧：统计金额面板 -->
-			<div class="col-md-4">
-				<div class="card">
-					<div class="card-header">
-						<h5>訂單資訊</h5>
-					</div>
-					<div class="card-body">
-						<p class="d-flex justify-content-between">
-							<span>商品總價</span> <span th:text="'$' + ${shopCartDTO.totalAmount}"></span>
-						</p>
-						<hr>
-						<h5 class="d-flex justify-content-between">
-							<span>訂單總金額</span> <span th:text="'$' + ${shopCartDTO.totalAmount}"></span>
-						</h5>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div th:replace="~{/client/common/footer}"></div>
-	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div th:replace="~{/client/common/header}"></div>
+    <div class="container mt-5">
+        <h2>購物車</h2>
+        <div class="row">
+            <!-- 左側：購物車商品列表 -->
+            <div class="col-md-8">
+                <form th:action="@{/shop/checkout}" method="post" id="checkoutForm">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>商品</th>
+                                <th>價格</th>
+                                <th>數量</th>
+                                <th>小計</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <th:block th:if="${shopCartDTO.cartItems != null}">
+                                <th:block th:each="item : ${shopCartDTO.cartItems}">
+                                    <tr th:data-cart-item-id="${item.cartItemId}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <input type="checkbox" name="selectedItems"
+                                                    th:value="${item.cartItemId}">
+                                                <img th:src="@{'/management/product/image/' + ${item.productId}}"
+                                                    alt="圖片" class="img-thumbnail" style="width: 80px; height: 80px;">
+                                                <div class="ms-3">
+                                                    <a th:href="@{'/shop/detail/' + ${item.productId}}"
+                                                        th:text="${item.productName}">商品名稱</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="'$' + ${item.price}">價格</td>
+                                        <td>
+                                            <input type="number" name="quantity" th:value="${item.quantity}" min="1"
+                                                class="form-control quantity-input" style="width: 80px;"
+                                                th:data-item-id="${item.cartItemId}">
+                                        </td>
+                                        <td class="item-subtotal" th:text="'$' + ${item.subtotal}">小計</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm remove-item-btn"
+                                                th:data-item-id="${item.cartItemId}">移除</button>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                            </th:block>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/shop}" class="btn btn-secondary w-30 mt-3">繼續購物</a>
+                        <button type="submit" class="btn btn-success w-30 mt-3" id="checkoutButton" disabled>結帳</button>
+                    </div>
+                </form>
+            </div>
+            <!-- 右側：統計金額面板 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>訂單資訊</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="d-flex justify-content-between">
+                            <span>商品總價</span>
+                            <span id="totalAmount" th:text="'$' + ${shopCartDTO.totalAmount}"></span>
+                        </p>
+                        <hr>
+                        <h5 class="d-flex justify-content-between">
+                            <span>訂單總金額</span>
+                            <span id="totalAmountFinal" th:text="'$' + ${shopCartDTO.totalAmount}"></span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{/client/common/footer}"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+        // 更新右邊總金額方法
+        function updateTotalAmountInView() {
+            var totalAmout = 0;
+
+            document.querySelectorAll('.item-subtotal').forEach(function (subtotalElement) {
+                var subtotalText = subtotalElement.textContent.replace('$', '');
+                totalAmout += parseInt(subtotalText)
+            });
+
+            document.getElementById("totalAmount").textContent = "$" + totalAmout;
+            document.getElementById("totalAmountFinal").textContent = "$" + totalAmout;
+        }
+
+        // 監聽數量框，發送更新請求
+        document.querySelectorAll('.quantity-input').forEach(function (inputAmout) {
+            inputAmout.addEventListener('change', function () {
+
+                var cartItemId = this.getAttribute('data-item-id');
+                var newQuantity = this.value;
+                const url = 'http://localhost:8080/booking/shop/cart/update/' + cartItemId;
+
+                axios.put(url, {
+                    quantity: newQuantity
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+                ).then(function (response) {
+                    if (response.data.success) {
+                        // tr：表示選擇所有 <tr> 元素
+                        // 並帶有 [data-cart-item-id="cartItemId"] 這個屬性     
+                        var cartItemRow = document.querySelector('tr[data-cart-item-id="' + cartItemId + '"]');
+                        var priceText = cartItemRow.querySelector('td:nth-child(2)').textContent.replace('$', '')
+                        var newSubtotal = parseInt(priceText) * parseInt(newQuantity);
+                        cartItemRow.querySelector('.item-subtotal').textContent = '$' + newSubtotal;
+
+                        updateTotalAmountInView();
+                    } else {
+                        console.log("購物車數量更新失敗，回傳信息: " + response.data.message);
+                    }
+                }).catch(function (error) {
+                    console.error('錯誤: ', error);
+                });
+            });
+        });
+
+        // 監聽移除按鈕，發送刪除請求
+        document.querySelectorAll('.remove-item-btn').forEach(function (removeButtom) {
+            removeButtom.addEventListener("click", function () {
+                var cartItemId = this.getAttribute('data-item-id');
+                const url = 'http://localhost:8080/booking/shop/cart/remove/' + cartItemId;
+
+                axios.delete(url)
+                    .then(res => {
+                        if (res.data.success) {
+                            var cartItemRow = document.querySelector('tr[data-cart-item-id="' + cartItemId + '"]');
+                            cartItemRow.remove();
+                            updateTotalAmountInView();
+                        } else {
+                            alert('移除失敗：' + res.data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('錯誤：', err);
+                    })
+            })
+        })
+
+        // 檢查是否有選中的商品並啟用或禁用結帳按鈕
+        function updateCheckoutButtonState() {
+            var selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+            var checkoutButton = document.getElementById("checkoutButton");
+            if (selectedItems.length > 0) {
+                checkoutButton.disabled = false;
+            } else {
+                checkoutButton.disabled = true;
+            }
+        }
+
+        // 監聽商品選擇框的變化來更新結帳按鈕狀態
+        document.querySelectorAll('input[name="selectedItems"]').forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateCheckoutButtonState);
+        });
+
+        // 初始化按鈕狀態
+        updateCheckoutButtonState();
+
+        // 監聽表單 選中商品時才允許提交
+        document.getElementById("checkoutForm").addEventListener("submit", function (event) {
+            var selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+            if (selectedItems.length === 0) {
+                event.preventDefault();
+                alert('請選擇至少一件商品才能結帳！');
+            }
+        });
+
+
+        /*  JavaScript Note
+
+           function(subtotalElement)匿名函數是作為 forEach 的回調函數使用的。
+           forEach 方法會遍歷 .item-subtotal 選擇到的每一個元素
+           並且在每次迭代時調用這個匿名函數，把當前的元素作為參數傳遞進去。
+
+           subtotalElement 是這個匿名函數的參數
+           它代表遍歷到的每一個 .item-subtotal 元素。
+
+           forEach 方法會對所選擇的每個項目執行 subtotalElement 這個匿名函數
+           並將當前的項目作為參數傳遞給 subtotalElement。
+
+           ===============
+
+           .value：主要用於表單元素，比如 <input>、<textarea>、<select> 等
+           它返回這些元素的值（例如輸入框中的文本）。
+
+           .textContent：用於獲取和設定元素中的文本內容，通常用於非表單元素
+           例如 <div>、<span>、<td> 等，返回的是元素的純文本。
+
+       */
+
+        /*
+            axios.put('/api/resource/1', {
+                key1: 'newValue'
+            })
+            .then(function(response) {
+                console.log(response.data);
+            })
+            .catch(function(error) {
+                console.error('錯誤：', error);
+            });
+        */
+
+        /* CSS 屬性選擇器
+        
+        屬性選擇器允許根據元素是否包含特定屬性或屬性的特定值來選擇元素。其一般語法是：
+
+        [attribute]：選擇包含特定屬性的所有元素。
+        [attribute="value"]：選擇包含特定屬性且屬性值等於特定值的所有元素。
+        [attribute~="value"]：選擇屬性值中包含特定單詞的所有元素。
+        [attribute^="value"]：選擇屬性值以某些字元開頭的所有元素。
+        [attribute$="value"]：選擇屬性值以某些字元結尾的所有元素。
+        [attribute*="value"]：選擇屬性值中包含特定字元的所有元素。
+
+        */
+
+    </script>
 </body>
+
 </html>

@@ -34,6 +34,12 @@ public class ShopOrder {
 	@JoinColumn(name = "user_id", nullable = false) // 外鍵 user_id
 	private User user;
 
+	private String receiverName;
+
+	private Integer receiverPhone;
+	
+	private String receiverAddress;
+	
     private Integer orderPrice;
 
     private Integer orderState;  // 訂單狀態：1: pending, 2: processing, 3: shipped, 4: completed, 5: cancelled
@@ -74,7 +80,8 @@ public class ShopOrder {
 
 	@Override
 	public String toString() {
-		return "ShopOrder [orderId=" + orderId + ", orderPrice=" + orderPrice + ", orderState=" + orderState
+		return "ShopOrder [orderId=" + orderId + ", receiverName=" + receiverName + ", receiverPhone=" + receiverPhone
+				+ ", receiverAddress=" + receiverAddress + ", orderPrice=" + orderPrice + ", orderState=" + orderState
 				+ ", paymentMethod=" + paymentMethod + ", paymentState=" + paymentState + ", merchantTradeNo="
 				+ merchantTradeNo + ", transactionId=" + transactionId + ", paymentCreatedAt=" + paymentCreatedAt
 				+ ", paymentUpdatedAt=" + paymentUpdatedAt + ", updatedAt=" + updatedAt + ", createdAt=" + createdAt
