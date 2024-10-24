@@ -4,15 +4,24 @@
 <meta charset="UTF-8">
 <title>header</title>
 <style>
-    .dropdown:hover .dropdown-menu {
+    nav > .dropdown:hover .dropdown-menu {
         display: block;
     }
-    .dropdown-menu {
-        margin-top: 0;
+    
+    nav .dropdown {
+    	position: relative;
     }
-    .nav-item.dropdown > .nav-link::after {
+    
+    nav .dropdown-menu {
+        margin-top: 0;
+        position: absolute;
+        right: 0;
+    	left: auto;
+    }
+    nav .nav-item.dropdown > .nav-link::after {
         display: none;
     }
+    
 </style>
 </head>
 <body>

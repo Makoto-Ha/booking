@@ -54,7 +54,7 @@ public class BookingClientController {
 		model.addAttribute("searchKeywords", roomtypeKeywordSearchDTO);
 		model.addAttribute("roomtypes", roomtypes);
 		model.addAttribute("amenities", amenities);
-		return "client/booking/user-search";
+		return "client/booking/roomtype-search-result";
 	}
 	
 	/**

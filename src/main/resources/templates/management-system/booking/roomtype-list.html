@@ -129,7 +129,7 @@
 		                			<span th:text="${roomtype.roomtypeDistrict}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間說明</span>
-		                			<span th:text="${roomtype.roomtypeDescription}"></span>              		   			
+		                			<span th:text="${#strings.abbreviate(roomtype.roomtypeDescription,20)}"></span>              		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">

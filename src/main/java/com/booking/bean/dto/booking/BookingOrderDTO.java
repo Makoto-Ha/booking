@@ -17,6 +17,7 @@ public class BookingOrderDTO {
 	
 	private LocalDateTime updatedTime;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime createdTime;
 
 	private Integer roomtypeId;

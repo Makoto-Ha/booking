@@ -115,10 +115,10 @@ public class BookingService {
 			// 設置訂單項目的狀態為預訂
 			boi.setBookingStatus(1);
 			// 設置訂單項目的金額
-//			Long boiPrice = calcTotalPrice(boi, roomtype);
-//			boi.setPrice(boiPrice);
+			Long boiPrice = calcTotalPrice(boi, roomtype);
+			boi.setPrice(boiPrice);
 			// 累積總訂單金額
-//			totalPrice += boiPrice;
+			totalPrice += boiPrice;
 			
 			// 設置中間表需要的物件
 			boi.setId(saveBo.getBookingId(), room.getRoomId());

@@ -396,37 +396,7 @@
         <div class="border-bottom-gray-2 opacity-50 w-100 mb-1"></div>
 
         <div class="py-3">
-          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件2</span>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">淡水區</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">新春街</label>
-          </div>
-        </div>
-
-        <!-- 分隔線 -->
-        <div class="border-bottom-gray-2 opacity-50 w-100 mb-1"></div>
-
-        <div class="py-3">
-          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件3</span>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">淡水區</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">新春街</label>
-          </div>
-        </div>
-
-        <!-- 分隔線 -->
-        <div class="border-bottom-gray-2 opacity-50 w-100 mb-1"></div>
-
-        <div class="py-3">
-          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件4</span>
+          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件</span>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
             <label class="form-check-label small" for="flexCheckDefault">淡水區</label>
@@ -437,6 +407,7 @@
           </div>
         </div>
       </aside>
+      
       <div class="w-75 m-0">
         <div class="m-0 d-flex border rounded px-0 text-center mb-3">
           <div class="p-3 border-end flex-grow-1" style="background-color: rgb(248, 247, 249);">
@@ -466,12 +437,10 @@
                 <div class="col-md-4 h-100">
                     <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-190px img-fluid" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room5'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room6'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -615,12 +584,10 @@
                 <div class="col-md-4 h-100">
                     <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-190px img-fluid" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room5" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-2 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room6" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>            
                     </div>
                 </div>
                 <div class="col-md-5">

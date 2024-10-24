@@ -105,7 +105,7 @@
 		                			<span th:text="${room.bookingStatus == 1 ? '已預定' : (room.bookingStatus == 2 ? '已入住' : '空房')}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">房間介紹</span>
-		                			<span th:text="${room.roomDescription}"></span>              		   			
+		                			<span th:text="${#strings.abbreviate(room.roomDescription,20)}"></span>              		   			
 			                	</div>
 			                </div>
 			                <div class="item-actions">

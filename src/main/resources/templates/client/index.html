@@ -275,7 +275,7 @@
         searchDropdown.classList.remove('show');
       });
 
-      searchRoomtypesInput.addEventListener('input', _.debounce(async e => {
+      searchRoomtypesInput.addEventListener('input', _.throttle(async e => {
         let searchValue = e.target.value;
         let queryString = new URLSearchParams({
           roomtypeName: searchValue,
