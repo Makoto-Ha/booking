@@ -42,10 +42,6 @@ public class PackageTourOrderDTO {
 	}
 	
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3c5bf54 (鄭家霖.修改:修改後台訂單功能)
 	public Integer getUserId() {
 		return userId;
 	}
