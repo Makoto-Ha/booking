@@ -236,7 +236,7 @@ public class RoomService {
 			LocalDate checkInDate = boi.getCheckInDate();
 	    	LocalDate checkOutDate = boi.getCheckOutDate();
 	    	if((checkInDate.isBefore(date) || checkInDate.isEqual(date)) && (checkOutDate.isAfter(date) || checkOutDate.isEqual(date))) {
-	    		return 1;
+	    		return boi.getBookingStatus();
 	    	}
 		}
 		

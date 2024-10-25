@@ -110,6 +110,10 @@
     .w-40px {
       width: 40px;
     }
+    
+    .h-20 {
+      height: 20%;
+    }
 
     .h-80 {
       height: 80%;
@@ -253,8 +257,8 @@
       }
     }
 	
-	.aspect-radio-5-3 {
-		aspect-ratio: 5/3;
+	.aspect-radio-5-4 {
+		aspect-ratio: 5/4;
 	}
 
     /* 專屬於某個標籤的特定class */
@@ -370,6 +374,7 @@
         transform-origin: center;
     }
 
+	
   </style>
 </head>
 <body>
@@ -456,13 +461,13 @@
         <div class="card-list" id="cardList">       
           <div th:each="roomtype : ${roomtypes}" class="card card-bgc w-100 mb-3" th:data-id="${roomtype.roomtypeId}">
               <div class="row g-0 h-100">
-                <div class="col-md-4 h-100">
-                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 h-190px img-fluid" alt="...">
+                <div class="col-md-4 d-flex flex-column">
+                    <img th:src="@{/management/roomtype/image/{id}(id=${roomtype.roomtypeId})}" class="w-100 img-fluid object-fit-cover rounded-start flex-grow-1 aspect-radio-5-4" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white aspect-radio-5-3"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room1'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room2'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room3'}" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white"><img th:src="${'https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype' + roomtype.roomtypeId + '/room4'}" class="w-100 h-100" alt=""></div>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -493,7 +498,7 @@
                     </div>
                 </div>
             </div>
-			    </div>
+		  </div>
         </div>
       </div>
     </section>
@@ -608,14 +613,14 @@
           let card = `
             <div class="card card-bgc w-100 mb-3" data-id="${roomtype.roomtypeId}">
               <div class="row g-0 h-100">
-                <div class="col-md-4 h-100">
-                    <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 h-190px img-fluid" alt="...">
+                <div class="col-md-4 d-flex flex-column">
+                    <img src="/booking/management/roomtype/image/${roomtype.roomtypeId}" class="w-100 flex-grow-1 img-fluid object-fit-cover rouned-start aspect-radio-5-4" alt="...">
                     <div class="litte-img-group d-flex">
-                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
-                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white aspect-radio-5-3"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>            
-                    </div>
+                      <div class="col-md-3 p-0 border border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room1" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room2" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room3" class="w-100 h-100" alt=""></div>
+                      <div class="col-md-3 p-0 border-top border-bottom border-right border-white"><img src="https://bookingdb.s3.ap-east-1.amazonaws.com/booking/roomtype${roomtype.roomtypeId}/room4" class="w-100 h-100" alt=""></div>            
+                    </div> 
                 </div>
                 <div class="col-md-5">
                     <div class="card-body d-flex flex-column h-100">

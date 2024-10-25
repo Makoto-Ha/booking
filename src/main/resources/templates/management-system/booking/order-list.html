@@ -116,6 +116,14 @@ li {
 	background-color: red;
 	color: white;
 }
+
+.order-completle {
+	display: block;
+	padding: 5px;
+	text-wrap: nowrap;
+	border: 1px solid green;
+	color: green;
+}
 </style>
 </head>
 
@@ -261,12 +269,23 @@ li {
 														<div class="order-info"><span style="color: blue">總金額</span> ${bookingOrderItem.price}</div>
 														<div class="order-info"><span style="color: blue">入住日期</span> ${bookingOrderItem.checkInDate}</div>
 														<div class="order-info"><span style="color: blue">退房日期</span> ${bookingOrderItem.checkOutDate}</div>
-														<div class="order-info"><span style="color: blue" class="check-in-time">確切入住時間</span> ${bookingOrderItem.checkInTime == null ? '' : bookingOrderItem.checkInTime}</div>
-														<div class="order-info"><span style="color: blue" class="check-out-time">確切退房時間</span> ${bookingOrderItem.checkOutTime == null ? '' : bookingOrderItem.checkOutTime}</div>
+														<div class="order-info">
+															<span style="color: blue" class="check-in-time">確切入住時間 
+																<span style="color: black">${bookingOrderItem.checkInTime == null ? '未入住' : bookingOrderItem.checkInTime}
+															</span> 
+														</div>
+														<div class="order-info">
+															<span style="color: blue" class="check-out-time">確切退房時間
+																<span style="color: black"> 
+																	${bookingOrderItem.checkOutTime == null ? '未退房' : bookingOrderItem.checkOutTime}
+																</span>
+															</span> 
+														</div>
 													</div>
 													<div style="margin-left: 3px;" data-bookingid="${bookingOrderItem.id.bookingId}" data-roomid="${bookingOrderItem.id.roomId}">
 														${bookingOrderItem.bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` :  ''}
 														${bookingOrderItem.bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
+														${bookingOrderItem.bookingStatus == 3 ? `<span class="order-completle">已完成</span>` : ''}
 													</div>
 												</li>
 											`;
@@ -346,7 +365,7 @@ li {
 						
 						let checkDate = target.parentElement;
 			
-						checkDate.innerHTML = '';
+						checkDate.innerHTML = `<span class="order-completle">已完成</span>`;
 					}
 		
 				</script>

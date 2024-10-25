@@ -93,7 +93,13 @@ public class RoomSpecification {
 	                // 有預定項目但沒有在範圍之內
 	                builder.not(datePredicate) 
 	            );
-	        }
+	        } else if (bookingStatus == 2) {
+	        	return builder.and(
+	    	            builder.lessThanOrEqualTo(boiJoin.get("checkInDate"), bookingDate), // checkInDate <= date
+	    	            builder.greaterThanOrEqualTo(boiJoin.get("checkOutDate"), bookingDate), // checkOutDate >= date
+	    	            builder.equal(boiJoin.get("bookingStatus"), 2)
+	    	        );
+	        } 
 
 	        // 默認返回所有狀態的房間
 	        return builder.conjunction(); 

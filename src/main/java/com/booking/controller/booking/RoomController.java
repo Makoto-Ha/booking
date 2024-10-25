@@ -146,6 +146,8 @@ public class RoomController {
 		
 		Page<RoomDetailDTO> page = findRoomsResult.getData();
 		
+		System.out.println(page.getContent());
+		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);
 		model.addAttribute("room", roomDTO);
