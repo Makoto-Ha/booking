@@ -83,15 +83,12 @@
                     <div class="card-header">
                         <h5>訂單資訊</h5>
                     </div>
-                    <div class="card-body">
-                        <p class="d-flex justify-content-between">
-                            <span>商品總價</span>
-                            <span id="totalAmount" th:text="'$' + ${shopCartDTO.totalAmount}"></span>
-                        </p>
+                    <div class="card-body" id="orderSummary">
+                        <div id="selectedItemsList"></div> <!-- 顯示選中商品明細 -->
                         <hr>
                         <h5 class="d-flex justify-content-between">
                             <span>訂單總金額</span>
-                            <span id="totalAmountFinal" th:text="'$' + ${shopCartDTO.totalAmount}"></span>
+                            <span id="totalAmountFinal">$0</span>
                         </h5>
                     </div>
                 </div>
@@ -105,18 +102,43 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
 
-        // 更新右邊總金額方法
-        function updateTotalAmountInView() {
-            var totalAmout = 0;
+        // 更新右側訂單面板
+        function updateOrderSummary() {
+            let totalAmount = 0;
+            const selectedItemsList = document.getElementById("selectedItemsList");
+            selectedItemsList.innerHTML = ''; // 清空商品明細
 
-            document.querySelectorAll('.item-subtotal').forEach(function (subtotalElement) {
-                var subtotalText = subtotalElement.textContent.replace('$', '');
-                totalAmout += parseInt(subtotalText)
+            // 遍歷選中的商品
+            document.querySelectorAll('input[name="selectedItems"]:checked').forEach(function (checkbox) {
+                const cartItemId = checkbox.value;
+                const cartItemRow = document.querySelector('tr[data-cart-item-id="' + cartItemId + '"]');
+
+                // 獲取價格、數量和小計
+                const priceText = cartItemRow.querySelector('td:nth-child(2)').textContent.replace('$', '');
+                const quantity = parseInt(cartItemRow.querySelector('.quantity-input').value);
+                const subtotal = parseInt(priceText) * quantity;
+                totalAmount += subtotal;
+
+                // 新增商品明細到右側訂單面板
+                const itemDetail = document.createElement("div");
+                itemDetail.classList.add("d-flex", "justify-content-between", "mb-2");
+                itemDetail.innerHTML = `<span>${cartItemRow.querySelector('a').textContent} x ${quantity}</span><span>$${subtotal}</span>`;
+                selectedItemsList.appendChild(itemDetail);
             });
 
-            document.getElementById("totalAmount").textContent = "$" + totalAmout;
-            document.getElementById("totalAmountFinal").textContent = "$" + totalAmout;
+            // 更新總金額
+            // document.getElementById("totalAmount").textContent = "$" + totalAmount;
+            document.getElementById("totalAmountFinal").textContent = "$" + totalAmount;
         }
+
+        // 監聽選擇框和數量框的變化來更新訂單總金額和明細
+        document.querySelectorAll('input[name="selectedItems"]').forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateOrderSummary);
+        });
+        document.querySelectorAll('.quantity-input').forEach(function (quantityInput) {
+            quantityInput.addEventListener('change', updateOrderSummary);
+        });
+
 
         // 監聽數量框，發送更新請求
         document.querySelectorAll('.quantity-input').forEach(function (inputAmout) {
@@ -191,7 +213,7 @@
         });
 
         // 初始化按鈕狀態
-        updateCheckoutButtonState();
+        updateOrderSummary();
 
         // 監聽表單 選中商品時才允許提交
         document.getElementById("checkoutForm").addEventListener("submit", function (event) {

@@ -23,7 +23,6 @@
 
 <body>
     <div th:replace="~{/client/common/header}"></div>
-
     <div class="container mt-5">
         <h2>結帳</h2>
         <div class="row">
@@ -46,6 +45,10 @@
                             <label for="userAddress" class="form-label">收件地址</label>
                             <input type="text" class="form-control" id="userAddress" name="userAddress" required>
                         </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="sameUser">
+                            <label class="form-check-label" for="sameUser">同會員資料</label>
+                        </div>
                     </div>
 
                     <!-- 支付方式 -->
@@ -58,50 +61,92 @@
                         </div>
                     </div>
 
-                    <!-- 提交按钮 -->
-                    <div class="d-flex justify-content-between">
+                     <!-- 提交按钮 -->
+               		 <div class="d-flex justify-content-between">
+                   	 <div>
                         <a th:href="@{/shop/cart}" class="btn btn-secondary">返回購物車</a>
-                        <button type="submit" class="btn btn-success">確認結帳</button>
+                        <button type="button" id="typeDateButton" class="btn btn-success ms-2">測試用資料</button>
                     </div>
+                    <button type="submit" class="btn btn-success">確認結帳</button>
+               		</div>
                 </form>
             </div>
 
             <!-- 右侧：订单摘要面板 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>訂單資訊</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <tbody>
-                                <th:block th:each="item : ${orderDTO.orderItems}">
-                                    <tr>
-                                        <td th:text="${item.productName} + ' x ' + ${item.quantity}">商品名称 x 数量</td>
-                                        <td class="text-end" th:text="'$' + ${item.subtotal}">小計</td>
-                                    </tr>
-                                </th:block>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>商品總價</th>
-                                    <th class="text-end" th:text="'$' + ${orderDTO.orderPrice}">總價</th>
-                                </tr>
-                                <tr>
-                                    <th>應付總額</th>
-                                    <th class="text-end" th:text="'$' + ${orderDTO.orderPrice}">總額</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
+			<div class="col-md-4">
+			    <div class="card">
+			        <div class="card-header">
+			            <h5>訂單資訊</h5>
+			        </div>
+			        <div class="card-body">
+			            <div class="order-summary">
+			                <div class="order-item" th:each="item : ${orderDTO.orderItems}">
+			                    <!-- 左側：商品名稱和數量 -->
+			                    <div class="order-item-name d-flex justify-content-between mb-2">
+			                        <span th:text="${item.productName} + ' x ' + ${item.quantity}"></span>
+			                        <span th:text="'$' + ${item.subtotal}"></span>
+			                    </div>
+			                </div>
+			                <hr>
+			                <!-- 總計 -->
+			                <h5 class="d-flex justify-content-between">
+			                    <span>訂單總金額</span>
+			                    <span th:text="'$' + ${orderDTO.orderPrice}"></span>
+			               </h5>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+
         </div>
     </div>
 
     <div th:replace="~{/client/common/footer}"></div>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+ 
+        const userPayDetail = {
+            userName: [[${userPayDetail.receiverName}]],
+            userPhone: [[${userPayDetail.receiverPhone}]],
+            userAddress: [[${userPayDetail.receiverAddress}]]
+        };
+ 
+        // 應用會員資料的切換
+        document.getElementById("sameUser").addEventListener("change", function () {
+            const userNameField = document.getElementById("userName");
+            const userPhoneField = document.getElementById("userPhone");
+            const userAddressField = document.getElementById("userAddress");
+
+            if (this.checked) {
+                userNameField.value = userPayDetail.userName;
+                userPhoneField.value = userPayDetail.userPhone;
+                userAddressField.value = userPayDetail.userAddress;
+            } else {
+                userNameField.value = "";
+                userPhoneField.value = "";
+                userAddressField.value = "";
+            }
+        });
+
+        // 一鍵填入
+        const typeData = {
+            userName:"賴先生",
+            userPhone:"0987654321",
+            userAddress:'台北市中正區重慶南路一段122號'
+        };
+        
+        document.getElementById('typeDateButton').addEventListener('click',function(){
+            const userNameField = document.getElementById("userName");
+            const userPhoneField = document.getElementById("userPhone");
+            const userAddressField = document.getElementById("userAddress");
+
+            userNameField.value = typeData.userName;
+            userPhoneField.value = typeData.userPhone;
+            userAddressField.value = typeData.userAddress;
+        })
+
+    </script>
 </body>
 
 </html>

@@ -97,6 +97,7 @@ public class ShoppingCientController {
 		return "client/shopping/shop";
 	}
 
+	// 購物車計數
 	@ResponseBody
 	@GetMapping("/cart/itemCount")
 	public Result<Integer> getCartItemCount() {
@@ -234,6 +235,9 @@ public class ShoppingCientController {
 	public String sendCheckout(@RequestParam("selectedItems") List<Integer> selectedItemIds, Model model) {
 		Integer userId = shopClientService.getCurrentUserId();
 		Result<ShopOrderDTO> order = shopClientService.createOrderBySelect(userId, selectedItemIds);
+		Result<PayDetailDTO> userPayDetail = shopClientService.getUserPayDetail(userId);
+		
+		model.addAttribute("userPayDetail", userPayDetail.getData());
 		model.addAttribute("orderDTO", order.getData());
 		return "client/shopping/shop-checkout";
 	}

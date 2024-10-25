@@ -25,6 +25,7 @@ import com.booking.bean.pojo.shopping.ShopCart;
 import com.booking.bean.pojo.shopping.ShopCartItem;
 import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.bean.pojo.shopping.ShopOrderItem;
+import com.booking.bean.pojo.user.User;
 import com.booking.dao.shopping.ProductRepository;
 import com.booking.dao.shopping.ShopCartItemRepository;
 import com.booking.dao.shopping.ShopCartRepository;
@@ -166,6 +167,16 @@ public class ShopClientService {
 		return userRepository.findByUserAccount(userAccount).get().getUserId();
 	}
 
+	// 會員寄送資料
+	public Result<PayDetailDTO> getUserPayDetail(Integer userId){
+		User user = userRepository.findById(userId).get();
+		PayDetailDTO payDetailDTO = new PayDetailDTO();
+		payDetailDTO.setReceiverName(user.getUserName());
+		payDetailDTO.setReceiverPhone(user.getUserPhone());
+		payDetailDTO.setReceiverAddress(user.getUserAddress());
+		return Result.success(payDetailDTO);
+	}
+
 	/**
 	 * 設置最新已付款訂單資訊
 	 * 
@@ -254,7 +265,7 @@ public class ShopClientService {
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
 		orderItemList.add(orderItem);
-		
+
 		// 計算總金額
 		shopOrder.setOrderPrice(product.getProductPrice());
 		shopOrder.setItems(orderItemList);

@@ -20,7 +20,6 @@
 		}
 	</style>
 	<style>
-		/* 悬浮购物车图标样式 */
 		.floating-cart {
 			bottom: 30px;
 			right: 30px;
@@ -29,11 +28,13 @@
 			color: #333;
 			text-decoration: none;
 		}
-
 		.floating-cart .badge {
-			position: absolute;
-			top: -10px;
-			right: -10px;
+		   position: absolute;
+		   top: 0;
+		   right: 0;
+		   transform: translate(50%, -50%);
+		   font-size: 1rem;
+		   padding: 0.25em 0.4em;
 		}
 	</style>
 </head>
@@ -55,7 +56,6 @@
 							class="list-group-item list-group-item-action"></a>
 				</div>
 			</div>
-
 			<!-- 主內容 -->
 			<div class="col-12 col-md-9">
 				<!-- 懸浮購物車 -->
@@ -65,7 +65,7 @@
 						<span th:text="${cartItemCount}">0</span>
 					</span>
 				</a>
-				<!-- 页面顶部的搜索表单 -->
+				<!-- 搜索表單 -->
 				<div class="container my-4">
 					<form method="get" th:action="@{/shop}" class="row g-3">
 						<!-- 保留其他参数，如 categoryId 和 pageNumber -->
@@ -85,7 +85,7 @@
 				</div>
 				<!-- 分頁和排序 -->
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<!-- 分页 -->
+					<!-- 分頁 -->
 					<ul th:if="${page.totalPages != 0}" class="pagination mb-0">
 						<!-- 上一頁 -->
 						<th:block th:switch="${page.number == 0}">
@@ -120,22 +120,22 @@
 							<select name="orderOption" class="form-select me-2" onchange="this.form.submit()">
 								<option th:value="'productSales_asc'"
 									th:selected="${'productSales_asc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									商品销量升序</option>
+									商品銷量由低至高</option>
 								<option th:value="'productSales_desc'"
 									th:selected="${'productSales_desc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									商品销量降序</option>
+									商品銷量由高至低</option>
 								<option th:value="'createdAt_asc'"
 									th:selected="${'createdAt_asc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									上架日期升序</option>
+									上架日期由低至高</option>
 								<option th:value="'createdAt_desc'"
 									th:selected="${'createdAt_desc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									上架日期降序</option>
+									上架日期由高至低</option>
 								<option th:value="'productPrice_asc'"
 									th:selected="${'productPrice_asc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									商品售价由低至高</option>
+									商品售價由低至高</option>
 								<option th:value="'productPrice_desc'"
 									th:selected="${'productPrice_desc' == productDTO.attrOrderBy + '_' + (productDTO.selectedSort ? 'desc' : 'asc')}">
-									商品售价由高至低</option>
+									商品售價由高至低</option>
 							</select>
 						</form>
 
@@ -161,7 +161,6 @@
 										<button class="btn btn-outline-primary buy-now"
 											th:data-product-id="${productDTO.productId}"
 											th:data-product-price="${productDTO.productPrice}">立即購買</button>
-
 									</div>
 								</div>
 							</div>
