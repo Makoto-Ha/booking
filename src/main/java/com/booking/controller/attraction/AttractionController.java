@@ -214,5 +214,23 @@ public class AttractionController {
 				.body(resource);
 				
 	}
+	
+	
+	/**
+	 * 景點分析
+	 * @param model
+	 * @return
+	 */
+    @GetMapping("/analysis")
+    public String showAnalysis(Model model) {
+        Map<String, Object> analytics = attractionService.getAttractionAnalytics();
+        model.addAttribute("totalAttractions", analytics.get("totalAttractions"));
+        model.addAttribute("totalCities", analytics.get("totalCities"));
+        model.addAttribute("totalTypes", analytics.get("totalTypes"));
+        model.addAttribute("cityStats", analytics.get("cityStats"));
+        model.addAttribute("typeStats", analytics.get("typeStats"));
+        
+        return "management-system/attraction/attraction-analysis";
+    }
 
 }

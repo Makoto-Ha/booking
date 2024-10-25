@@ -40,7 +40,7 @@ public class PackageTourOrderDTO {
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-	
+
 
 	public Integer getUserId() {
 		return userId;

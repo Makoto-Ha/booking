@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>attraction-analysis</title>
+    <link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        .tab-container {
+            display: flex;
+            gap: 2px;
+            background-color: #f5f5f5;
+            padding: 10px 20px 0 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 10px 30px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .tab-button.active {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            margin-bottom: -1px;
+        }
+
+        .main-list {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .content-area {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            min-width: 300px;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .stat-title {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{/management-system/common/sidebar}"></div>
+        <div class="main-content">
+            <div th:replace="~{/management-system/common/navbar}"></div>
+
+            <div class="tab-container">
+            	<button class="tab-button" data-url="/booking/management/attraction/analysis"
+                    style="height: 50px;">景點儀錶板</button>
+                <button class="tab-button" data-url="/booking/management/attraction">景點</button>
+                <button class="tab-button" data-url="/booking/management/packageTour">套裝行程</button>
+                <button class="tab-button" data-url="/booking/management/packageTourOrder">訂單</button>
+            </div>
+
+            <section class="main-list">
+                <section id="content" class="content-area">
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">總景點數量</div>
+                            <div class="stat-value" th:text="${totalAttractions}">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">縣市涵蓋數</div>
+                            <div class="stat-value" th:text="${totalCities}">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">景點類型數</div>
+                            <div class="stat-value" th:text="${totalTypes}">0</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-box">
+                            <div class="chart-title">景點縣市分布</div>
+                            <canvas id="cityChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <div class="chart-title">景點類型分布</div>
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const cityData = /*[[${cityStats}]]*/[];
+        const typeData = /*[[${typeStats}]]*/[];
+
+        const colors = [
+            '#EA0000', '#FF60AF', '#930093', '#6F00D2', '#0000E3',
+            '#00FFFF', '#1AFD9C', '#C2FF68', '#F9F900', '#FF8000',
+            '#804040', '#000079', '#3A006F', '#A5A552', '#4F9D9D',
+            '#28FF28', '#9F0050', '#009393', '#DCB5FF', '#FFBD9D'
+        ];
+
+        // 創建縣市分布圖表
+        new Chart(document.getElementById('cityChart'), {
+            type: 'doughnut',
+            data: {
+                labels: cityData.map(item => `${item.name} (${item.count})`),
+                datasets: [{
+                    data: cityData.map(item => item.count),
+                    backgroundColor: colors
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 創建類型分布圖表
+        new Chart(document.getElementById('typeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: typeData.map(item => `${item.name} (${item.count})`),
+                datasets: [{
+                    data: typeData.map(item => item.count),
+                    backgroundColor: colors
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');
+                window.location.href = url;
+            });
+        });
+    </script>
+</body>
+</html>
