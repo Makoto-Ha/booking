@@ -4,7 +4,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -273,5 +275,68 @@ public class AttractionService {
 		}
 		return Result.success("更新景點成功");
 	}
+	
+	
+	
+    /**
+     * 獲取景點分析數據
+     * @return 包含所有統計數據的Map
+     */
+    public Map<String, Object> getAttractionAnalytics() {
+        Map<String, Object> analytics = new HashMap<>();
+        List<Attraction> allAttractions = attractionRepo.findAll();
+        
+        int totalAttractions = allAttractions.size();
+        analytics.put("totalAttractions", totalAttractions);
+        
+        Map<String, Integer> cityCountMap = new HashMap<>();
+        for (Attraction attraction : allAttractions) {
+            String city = attraction.getAttractionCity();
+            // 如果這個縣市已經在Map中，就把數量加1，否則設為1
+            cityCountMap.put(city, cityCountMap.getOrDefault(city, 0) + 1);
+        }
+        
+        List<Map<String, Object>> cityStatsList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : cityCountMap.entrySet()) {
+            Map<String, Object> cityData = new HashMap<>();
+            cityData.put("name", entry.getKey());
+            cityData.put("count", entry.getValue());
+            cityStatsList.add(cityData);
+        }
+        
+        //對縣市統計結果進行排序（按數量從大到小）
+        cityStatsList.sort((a, b) -> {
+            Integer countA = (Integer) a.get("count");
+            Integer countB = (Integer) b.get("count");
+            return countB.compareTo(countA);
+        });
+        
+        Map<String, Integer> typeCountMap = new HashMap<>();
+        for (Attraction attraction : allAttractions) {
+            String type = attraction.getAttractionType();
+            typeCountMap.put(type, typeCountMap.getOrDefault(type, 0) + 1);
+        }
+        
+        List<Map<String, Object>> typeStatsList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : typeCountMap.entrySet()) {
+            Map<String, Object> typeData = new HashMap<>();
+            typeData.put("name", entry.getKey());
+            typeData.put("count", entry.getValue());
+            typeStatsList.add(typeData);
+        }
+        //對類型統計結果進行排序（按數量從大到小）
+        typeStatsList.sort((a, b) -> {
+            Integer countA = (Integer) a.get("count");
+            Integer countB = (Integer) b.get("count");
+            return countB.compareTo(countA);
+        });
+        
+        analytics.put("cityStats", cityStatsList);
+        analytics.put("totalCities", cityCountMap.size());
+        analytics.put("typeStats", typeStatsList);
+        analytics.put("totalTypes", typeCountMap.size());
+        
+        return analytics;
+    }
 
 }

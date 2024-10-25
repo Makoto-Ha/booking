@@ -48,6 +48,7 @@
 			  </div> 
 				  
 			  <div class="content-area-pages">
+			  		<button class="content-area-page" data-url="/booking/management/attraction/analysis">景點儀錶板</button>
 			  		<button class="content-area-page" data-url="/booking/management/attraction" style="height: 50px;">景點</button>
     				<button class="content-area-page" data-url="/booking/management/packageTour">套裝行程</button>
     				<button class="content-area-page" data-url="/booking/management/packageTourOrder">訂單</button>
@@ -110,13 +111,13 @@
 		                			<span th:text="${attractionDTO.address}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">開放時間</span>
-		                			<span th:text="${attractionDTO.openingHour}"></span>
+		                			<span th:text="${#strings.abbreviate(attractionDTO.openingHour,15)}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">景點類型</span>
 		                			<span th:text="${attractionDTO.attractionType}"></span>
 		                			<span style="color: #e3e3e373"> ┃ </span>
 		                			<span class="item-info" style="color: darkred">景點介紹</span>
-		                			<span th:text="${attractionDTO.attractionDescription}"></span>
+		                			<span th:text="${#strings.abbreviate(attractionDTO.attractionDescription,15)}"></span>
 			                	</div>
 			                </div>
 			                <div class="item-actions">
