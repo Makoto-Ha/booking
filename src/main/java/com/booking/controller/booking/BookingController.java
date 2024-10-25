@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
+import com.booking.bean.pojo.booking.BookingOrderItemId;
 import com.booking.service.booking.BookingService;
 import com.booking.utils.Result;
 
@@ -175,5 +177,41 @@ public class BookingController {
 		}
 		
 		return ResponseEntity.ok(message);
+	}
+	
+	/**
+	 * 入住請求
+	 * @param id
+	 * @return
+	 */
+	@PostMapping("/checkIn")
+	@ResponseBody
+	private ResponseEntity<?> checkIn(@RequestBody BookingOrderItemId id) {
+		Result<Object> checkInResult = bookingService.checkIn(id);
+		String message = checkInResult.getMessage();
+		if(checkInResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		
+		String checkInTime = (String) checkInResult.getExtraData("checkInTime");
+		
+		return ResponseEntity.ok(checkInTime);
+	}
+	
+	/**
+	 * 退房請求 
+	 * @param id
+	 * @return
+	 */
+	@PostMapping("/checkOut")
+	@ResponseBody
+	private ResponseEntity<?> checkOut(@RequestBody BookingOrderItemId id) {
+		Result<Object> checkOutResult = bookingService.checkOut(id);
+		String message = checkOutResult.getMessage();
+		if(checkOutResult.isFailure()) {
+			return ResponseEntity.badRequest().body(message);
+		}
+		String checkOutTime = (String) checkOutResult.getExtraData("checkOutTime");
+		return ResponseEntity.ok(checkOutTime);
 	}
 }

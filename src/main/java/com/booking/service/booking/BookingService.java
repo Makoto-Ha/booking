@@ -2,6 +2,7 @@ package com.booking.service.booking;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
+import com.booking.bean.pojo.booking.BookingOrderItemId;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.bean.pojo.user.User;
@@ -344,6 +346,53 @@ public class BookingService {
 		bookingOrderInfo.put("createdDate", localDate);
 		
 		return Result.success(bookingOrderInfo);
+	}
+
+	/**
+	 * 入住請求
+	 * @param id
+	 * @return
+	 */
+	@Transactional
+	public Result<Object> checkIn(BookingOrderItemId id) {
+		
+		BookingOrderItem boi = boiRepo.findById(id).orElse(null);
+		
+		if(boi == null) {
+			return Result.failure("獲取訂單項目失敗");
+		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String checkInTime = now.format(formatter);
+		
+		boi.setCheckInTime(now);
+		boi.setBookingStatus(2);
+		
+		return Result.success("修改訂單項目，入住請求成功").setExtraData("checkInTime", checkInTime);
+	}
+
+	/**
+	 * 退房請求
+	 * @param id
+	 * @return
+	 */
+	@Transactional
+	public Result<Object> checkOut(BookingOrderItemId id) {
+		BookingOrderItem boi = boiRepo.findById(id).orElse(null);
+		
+		if(boi == null) {
+			return Result.failure("獲取訂單項目失敗");
+		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String checkOutTime = now.format(formatter);
+		
+		boi.setCheckOutTime(now);
+		boi.setBookingStatus(3);
+		
+		return Result.success("修改訂單項目，退房請求成功").setExtraData("checkOutTime", checkOutTime);
 	}
 
 }

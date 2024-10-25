@@ -80,17 +80,6 @@ public class BookingClientController {
 	}
 	
 	/**
-	 * 多條件搜尋房型
-	 * @param roomtpyeSearchDTO
-	 * @return
-	 */
-	@GetMapping("/search/roomtype")
-	@ResponseBody
-	private Page<RoomtypeDTO> roomtypeSearch(RoomtypeKeywordSearchDTO roomtpyeSearchDTO) {	
-		return null;
-	}
-	
-	/**
 	 * 根據關鍵字搜尋房型
 	 * @param roomtypeKeywordSearchDTO
 	 * @return

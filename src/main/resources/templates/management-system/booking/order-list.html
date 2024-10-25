@@ -59,8 +59,8 @@ li {
 }
 
 #order-items .order-item {
-	display: flex; 
-	width: 50%; 
+	display: flex;
+	width: 50%;
 	padding: 1rem;
 }
 
@@ -69,14 +69,13 @@ li {
 }
 
 #order-items .order-infos {
-	display: flex; 
-	flex-direction: column; 
-	justify-content: space-between; 
+	display: flex;
+	flex-wrap: wrap;
 	width: 100%;
 }
 
 #order-items .order-infos .order-info {
-	width: 100%; margin-bottom: 2px;
+	width: 100%;
 }
 
 .check-order {
@@ -89,6 +88,34 @@ li {
 	opacity: .8;
 }
 
+.check-date {
+	background-color: #f8f9fa;
+	text-wrap: nowrap;
+	width: 70px !important;
+	height: 40px !important;
+	margin: 0 !important;
+	transition: .2s;
+}
+
+.check-in-date {
+	border: 1px solid blue !important;
+	color: blue;
+}
+
+.check-in-date:hover {
+	background-color: blue;
+	color: white;
+}
+
+.check-out-date {
+	border: 1px solid red !important;
+	color: red;
+}
+
+.check-out-date:hover {
+	background-color: red;
+	color: white;
+}
 </style>
 </head>
 
@@ -135,10 +162,14 @@ li {
 				</div>
 
 				<div class="content-area-pages">
-					<button class="content-area-page" data-url="/booking/management/booking/dashboard">儀錶板</button>
-					<button class="content-area-page" data-url="/booking/management/booking" style="height: 50px;">訂單</button>
-					<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
-					<button class="content-area-page" data-url="/booking/management/room">房間</button>
+					<button class="content-area-page"
+						data-url="/booking/management/booking/dashboard">儀錶板</button>
+					<button class="content-area-page"
+						data-url="/booking/management/booking" style="height: 50px;">訂單</button>
+					<button class="content-area-page"
+						data-url="/booking/management/roomtype">房間類型</button>
+					<button class="content-area-page"
+						data-url="/booking/management/room">房間</button>
 				</div>
 				<!-- 管理頁面內容 -->
 				<section id="content" class="content-area">
@@ -148,31 +179,9 @@ li {
 
 							<!-- 訂單詳情 -->
 							<section id="order">
-								<div id="order-detail">
-									<hr>
-									<p>
-										<strong>訂單編號：</strong>
-									</p>
-									<p>
-										<strong>訂購日期：</strong>
-									</p>
-									<p>
-										<strong>付款方式：</strong>信用卡
-									</p>
-									<hr>
-									<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
-									<ul id="order-items">			
-									</ul>
-									<hr>
-									<p>
-										<strong>總金額：</strong>$1800
-									</p>
-								</div>
+								<div id="order-detail"></div>
 								<button type="button" id="modal-cancel-btn">取消</button>
-
 							</section>
-
-
 						</div>
 					</div>
 					<!-- 刪除確認視窗 -->
@@ -207,80 +216,153 @@ li {
 						</li>
 					</ul>
 				</section>
+
+				<script>
+				
+				{
+					let orderDetail = document.getElementById('order-detail');
+		
+					function bindEvent() {
+						document.querySelectorAll('.check-order').forEach(checkOrder => {
+						checkOrder.addEventListener('click',
+							async e => {
+								e.stopPropagation();
+								let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
+								document.getElementById('modal-overlay').style.display = 'flex';
+								orderDetail.innerHTML = '';
+								let response = await fetch(`/booking/api/bookingInfo/${currentListId}`);
+								let bookingInfo = await response.json();
+								console.log(bookingInfo);
+			
+								let { bookingOrder, bookingOrderItems, roomtype, createdDate } = bookingInfo;
+			
+								let orderDetailHTML = `
+									<hr>
+									<p>
+										<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
+									</p>
+									<p>
+										<strong>訂購日期：<span style="color: red">${createdDate}</span></strong>
+									</p>
+									<p>
+										<strong>付款方式：<span style="color: red">信用卡</span></strong>
+									</p>
+									<hr>
+									<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
+									<ul id="order-items">
+										${bookingOrderItems.map(bookingOrderItem => {
+											return `
+												<li class="order-item">
+													<img
+													src="/booking/management/roomtype/image/${roomtype.roomtypeId}"
+													width="120" alt="img">
+													<div class="order-infos">
+														<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
+														<div class="order-info"><span style="color: blue">總金額</span> ${bookingOrderItem.price}</div>
+														<div class="order-info"><span style="color: blue">入住日期</span> ${bookingOrderItem.checkInDate}</div>
+														<div class="order-info"><span style="color: blue">退房日期</span> ${bookingOrderItem.checkOutDate}</div>
+														<div class="order-info"><span style="color: blue" class="check-in-time">確切入住時間</span> ${bookingOrderItem.checkInTime == null ? '' : bookingOrderItem.checkInTime}</div>
+														<div class="order-info"><span style="color: blue" class="check-out-time">確切退房時間</span> ${bookingOrderItem.checkOutTime == null ? '' : bookingOrderItem.checkOutTime}</div>
+													</div>
+													<div style="margin-left: 3px;" data-bookingid="${bookingOrderItem.id.bookingId}" data-roomid="${bookingOrderItem.id.roomId}">
+														${bookingOrderItem.bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` :  ''}
+														${bookingOrderItem.bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
+													</div>
+												</li>
+											`;
+										}).join("")}				
+									</ul>
+									<hr>
+									<p>
+										<strong style="font-size: 1.3rem;">總金額：<span style="color: red">${bookingOrder.totalPrice}</span></strong>
+									</p>
+								`;
+			
+								orderDetail.innerHTML = orderDetailHTML;
+							}
+						)
+					});
+					}
+							}
+							
+							async function checkIn(e) {
+						let target = e.target;
+			
+						let bookingId = target.parentElement.dataset.bookingid;
+						let roomId = target.parentElement.dataset.roomid;
+			
+						let bookingOrderItemId = {
+							bookingId,
+							roomId
+						}
+			
+						let response = await fetch('/booking/management/booking/checkIn', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(bookingOrderItemId)
+						});
+			
+						let checkInTime = await response.text();
+			
+						let checkOutButton = `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>`;
+			
+						let parent = target.parentElement.parentElement;
+						parent.querySelector('.check-in-time').innerHTML = `確切入住時間</span> <span style="color: black">${checkInTime}</span>
+						`;
+			
+						let checkDate = target.parentElement;
+						checkDate.innerHTML = checkOutButton;
+					}
+			
+					async function checkOut(e) {
+						let target = e.target;
+			
+						let bookingId = target.parentElement.dataset.bookingid;
+						let roomId = target.parentElement.dataset.roomid;
+			
+						let bookingOrderItemId = {
+							bookingId,
+							roomId
+						}
+			
+						let response = await fetch('/booking/management/booking/checkOut', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(bookingOrderItemId)
+						});
+			
+						let checkOutTime = await response.text();
+			
+						let parent = target.parentElement.parentElement;
+			
+						console.log(parent);
+			
+						parent.querySelector('.check-out-time').innerHTML = `確切退房時間 <span style="color: black">${checkOutTime}</span>
+						`;
+						
+						let checkDate = target.parentElement;
+			
+						checkDate.innerHTML = '';
+					}
+		
+				</script>
+
 				<script th:inline="javascript">
 					var requestParameters = [[${ requestParameters }]] || {};
 					var page = [[${ page }]];
 					var totalPages = page.totalPages;
 					console.log(requestParameters);
+					bindEvent();
 				</script>
 			</section>
 		</div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
-	<script>
-		let orderDetail = document.getElementById('order-detail');
-		document.querySelectorAll('.check-order').forEach(checkOrder => {
-			checkOrder.addEventListener('click',
-				async e => {
-					e.stopPropagation();
-					let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
-					document.getElementById('modal-overlay').style.display = 'flex';
-					orderDetail.innerHTML = '';
-					let response = await fetch(`/booking/api/bookingInfo/${currentListId}`);
-					let bookingInfo = await response.json();
-					console.log(bookingInfo);
 
-					let { bookingOrder, bookingOrderItems, roomtype, createdDate } = bookingInfo;
-
-					console.log(bookingOrder);
-
-					console.log(bookingOrderItems);
-
-					console.log(bookingInfo);
-
-					console.log(createdDate);
-
-					let orderDetailHTML = `
-						<hr>
-						<p>
-							<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
-						</p>
-						<p>
-							<strong>訂購日期：<span style="color: red">${createdDate}</span></strong>
-						</p>
-						<p>
-							<strong>付款方式：<span style="color: red">信用卡</span></strong>
-						</p>
-						<hr>
-						<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
-						<ul id="order-items">
-							${bookingOrderItems.map(bookingOrderItem => {
-								return `
-									<li class="order-item">
-										<img
-										src="/booking/management/roomtype/image/${roomtype.roomtypeId}"
-										width="120" alt="img">
-										<div class="order-infos">
-											<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
-											<div class="order-info"><span style="color: blue">總金額</span> ${bookingOrderItem.price}</div>
-											<div class="order-info"><span style="color: blue">入住日期</span> ${bookingOrderItem.checkInDate}</div>
-											<div class="order-info"><span style="color: blue">退房日期</span> ${bookingOrderItem.checkOutDate}</div>
-										</div>
-									</li>
-								`;
-							}).join("")}				
-						</ul>
-						<hr>
-						<p>
-							<strong style="font-size: 1.3rem;">總金額：<span style="color: red">${bookingOrder.totalPrice}</span></strong>
-						</p>
-					`;
-
-					orderDetail.innerHTML = orderDetailHTML;
-				}
-			)
-		});
-	</script>
 </body>
 
 </html>

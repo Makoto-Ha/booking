@@ -3,20 +3,28 @@ package com.booking.bean.dto.booking;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.booking.bean.pojo.booking.BookingOrderItemId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BookingOrderItemDTO {
 
+	private BookingOrderItemId id;
+	
 	private Integer roomId;
 	
 	private Integer roomtypeId;
 	
 	private Long price;
 	
+	private Integer bookingStatus;
+	
 	private LocalDate checkInDate;
 	
 	private LocalDate checkOutDate;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime checkInTime;
-	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime checkOutTime;
 	
 	private LocalDateTime updatedTime;
@@ -99,5 +107,21 @@ public class BookingOrderItemDTO {
 	public void setPrice(Long price) {
 		this.price = price;
 	}
-	
+
+	public BookingOrderItemId getId() {
+		return id;
+	}
+
+	public void setId(BookingOrderItemId id) {
+		this.id = id;
+	}
+
+	public Integer getBookingStatus() {
+		return bookingStatus;
+	}
+
+	public void setBookingStatus(Integer bookingStatus) {
+		this.bookingStatus = bookingStatus;
+	}
+
 }

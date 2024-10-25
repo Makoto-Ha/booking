@@ -169,11 +169,6 @@ public class BookingOrderItem {
 	public void setBookingStatus(Integer bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
-
-	@Override
-	public String toString() {
-		return "BookingOrderItem [roomtype=" + roomtype.getRoomtypeId() + "]";
-	}
-
+	
 
 }

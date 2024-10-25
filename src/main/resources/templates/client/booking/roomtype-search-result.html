@@ -485,9 +485,11 @@
                     <div class="card-body d-flex flex-column h-100 text-end">
                         <h5 class="card-title text-success fs-4" th:text="${roomtype.score + '超棒'}"></h5>
                         <p class="card-text text-danger">超讚全館10%優惠</p>
-						<span class="card-text mt-auto fs-4 text-secondary diagonal-strike fw-bolder">NT$ [[${roomtype.roomtypePrice * 11/10}]]</span>
-						<small class="opacity-50 mt-auto">現金回饋後的價錢</small>
-                        <p class="card-text mt-auto fs-3 fw-bolder">NT$ [[${roomtype.roomtypePrice}]]</p>
+						<div class="d-flex flex-column mt-auto">
+							<span class="card-text fs-4 text-secondary diagonal-strike fw-bolder mt-1">NT$ [[${roomtype.roomtypePrice * 11/10}]]</span>
+							<small class="opacity-50 mt-1">現金回饋後的價錢</small>
+	                        <p class="card-text fs-3 fw-bolder mt-1">NT$ [[${roomtype.roomtypePrice}]]</p>
+						</div>
                     </div>
                 </div>
             </div>
@@ -627,16 +629,18 @@
                         <div class="d-flex flex-wrap">
                           ${roomtype.amenities.map(amenity => `<span class="tag border px-2 small tag-color d-block me-2 mb-2 text-nowrap">${amenity.name}</span>`).join('')}         
                         </div>
-						<small class="text-secondary mt-auto"><i class="bi bi-coin me-1"></i>現金回饋：${roomtype.roomtypePrice * 11/10 - roomtype.roomtypePrice}元</small>
+						<small class="text-secondary mt-auto"><i class="bi bi-coin me-1"></i>現金回饋：${Math.floor(roomtype.roomtypePrice * 11/10 - roomtype.roomtypePrice)}元</small>
                     </div>
                 </div>
                 <div class="col-md-3 border-start">
                     <div class="card-body d-flex flex-column h-100 text-end">
                         <h5 class="card-title text-success fs-4">${roomtype.score.toFixed(1)}超棒</h5>
                         <p class="card-text text-danger">超讚全館10%優惠</p>
-						<span class="card-text mt-auto fs-4 text-secondary diagonal-strike fw-bolder">NT$ ${roomtype.roomtypePrice*11/10}</span>
-						<small class="opacity-50 mt-auto">現金回饋後的價錢</small>
-                        <p class="card-text mt-auto fs-3 fw-bolder">NT$ ${roomtype.roomtypePrice}</p>
+                        <div class="d-flex flex-column mt-auto">
+							<span class="card-text fs-4 text-secondary diagonal-strike fw-bolder mt-1">NT$ ${Math.floor(roomtype.roomtypePrice*11/10)}</span>
+							<small class="opacity-50 mt-1">現金回饋後的價錢</small>
+	                        <p class="card-text fs-3 fw-bolder mt-1">NT$ ${roomtype.roomtypePrice}</p>
+                        </div>
                     </div>
                 </div>
               </div>
