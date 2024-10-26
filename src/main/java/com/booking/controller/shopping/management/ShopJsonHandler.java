@@ -1,4 +1,4 @@
-package com.booking.controller.shopping;
+package com.booking.controller.shopping.management;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.booking.bean.dto.shopping.ProductCategoryDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
-import com.booking.service.shopping.ProductCategoryService;
-import com.booking.service.shopping.ProductService;
-import com.booking.service.shopping.ShopOrderService;
+import com.booking.service.shopping.management.ProductCategoryService;
+import com.booking.service.shopping.management.ProductService;
+import com.booking.service.shopping.management.ShopOrderService;
 import com.booking.utils.JsonUtil;
 import com.booking.utils.Result;
 

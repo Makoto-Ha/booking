@@ -19,7 +19,7 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer> {
 	List<ShopOrder> findOrdersByProductIds(@Param("productIds") List<Integer> productIds);
 
 	@Query("SELECT new com.booking.bean.dto.shopping.ShopOrderDTO(o.orderId,o.user.userId,o.receiverName,o.receiverPhone,o.receiverAddress,o.orderPrice,o.orderState,o.paymentMethod, o.paymentState, o.merchantTradeNo, o.transactionId,o.paymentCreatedAt, o.paymentUpdatedAt, o.updatedAt, o.createdAt,new com.booking.bean.dto.shopping.ShopOrderItemDTO(i.orderItemId, i.product.productId, i.productName, i.quantity, i.price, i.subtotal, i.updatedAt, i.createdAt))FROM ShopOrder o LEFT JOIN ShopOrderItem i ON o.orderId = i.shopOrder.orderId WHERE o.orderId = :orderId")
-	ShopOrderDTO findOrderDTOById(Integer orderId);
+	List<ShopOrderDTO> findOrderDTOById(Integer orderId);
 
 	@Query("SELECT new com.booking.bean.dto.shopping.ShopOrderDTO(o.orderId,o.user.userId,o.receiverName,o.receiverPhone,o.receiverAddress,o.orderPrice,o.orderState,o.paymentMethod, o.paymentState, o.merchantTradeNo, o.transactionId,o.paymentCreatedAt, o.paymentUpdatedAt, o.updatedAt, o.createdAt,new com.booking.bean.dto.shopping.ShopOrderItemDTO(i.orderItemId, i.product.productId, i.productName, i.quantity, i.price, i.subtotal, i.updatedAt, i.createdAt))FROM ShopOrder o LEFT JOIN ShopOrderItem i ON o.orderId = i.shopOrder.orderId")
 	Page<ShopOrderDTO> findOrderDTOAll(Pageable pageable);

@@ -1,4 +1,4 @@
-package com.booking.service.shopping;
+package com.booking.service.shopping.management;
 
 import java.util.ArrayList;
 import java.util.List;

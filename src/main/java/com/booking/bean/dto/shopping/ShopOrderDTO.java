@@ -34,20 +34,20 @@ public class ShopOrderDTO {
 
 	private String transactionId;
 
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime paymentCreatedAt;
 
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime paymentUpdatedAt;
 
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime updatedAt;
 
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime createdAt;
 
 	private List<ShopOrderItemDTO> orderItems;

@@ -23,12 +23,12 @@ public class ShopOrderItemDTO {
     
     private Integer subtotal;
    
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime updatedAt;
     
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTF+8")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTF+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
 	public ShopOrderItemDTO() {
