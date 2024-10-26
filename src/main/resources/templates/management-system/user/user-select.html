@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>attraction-select</title>
+<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<form class="form" action="../select">
+				
+				<div class="form-group">
+					<label for="userAccount">會員帳號</label> <input type="text"
+						id="userAccount" name="userAccount">
+				</div>
+				<div class="form-group">
+					<label for="userName">會員姓名</label> <input type="text"
+						id="userName" name="userName">
+				</div>
+			
+				
+					<div class="form-group">
+					<label for="userPhone">會員電話</label> <input type="text"
+						id="userPhone" name="userPhone">
+				</div>
+				
+						<div class="form-group">
+					<label for="userAddress">會員地址</label> <input type="text"
+						id="userAddress" name="userAddress">
+				</div>
+				
+				
+				
+				 <div class="form-group">
+		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
+		            <button type="button" class="cancel">取消</button>
+		        </div>
+		    </form>
+		</div>
+	</div>
+	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
+	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+			const selectCity = document.getElementById("select-city");
+		
+		{
+			let option = document.createElement("option");
+			option.setAttribute('disabled', true);
+	        option.setAttribute('selected', true);
+			option.textContent = "請選擇縣市";
+			selectCity.appendChild(option);
+		}
+		
+		data.forEach(location => {
+			let optionCity = document.createElement("option");
+			optionCity.textContent = location.name;
+			selectCity.appendChild(optionCity);
+		});
+		
+	</script>
+</body>
+</html>
