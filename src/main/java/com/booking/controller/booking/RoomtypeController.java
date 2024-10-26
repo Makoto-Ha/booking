@@ -66,7 +66,7 @@ public class RoomtypeController {
 	private String sendRoomtypePage(Model model) {
 		// DTO用於分頁所需數據
 		RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
-		Result<PageImpl<RoomtypeDTO>> findRoomtypeAllResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
+		Result<Page<RoomtypeDTO>> findRoomtypeAllResult = roomtypeService.findRoomtypeAll(roomtypeDTO);
 
 		if (findRoomtypeAllResult.isFailure()) {
 			return "";
@@ -210,7 +210,7 @@ public class RoomtypeController {
 		}
 		return "redirect:/management/roomtype";
 	}
-
+	
 	/**
 	 * 根據RoomtypeId上傳圖片
 	 * 

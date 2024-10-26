@@ -458,7 +458,7 @@
               <small class="bg-success-subtle px-2 py-1 text-success">安心取消</small>
             </div>
             <h3 class="fw-bolder" th:text="${roomtype.roomtypeName.substring(0, 4) + '...'}"></h3>
-            <span class="text-primary">8.7很讚</span>
+            <span class="text-primary" th:text="${roomtype.score + '分數'}"></span>
             <span><small th:text="${roomtype.roomtypeDistrict + ', ' + roomtype.roomtypeCity} + ', 台灣' "></small></span>
           </div>
         </div>
@@ -636,7 +636,7 @@
       },
       inlineMode: true,
       startDate: new Date(),       // 起始日期（可选）
-      minDate: new Date(),
+      minDate: new Date()-1,
 
       setup: async picker => {
 

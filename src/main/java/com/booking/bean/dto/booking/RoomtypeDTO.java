@@ -31,6 +31,28 @@ public class RoomtypeDTO {
 	public RoomtypeDTO() {
 	}
 
+	public RoomtypeDTO(Integer roomtypeId, String roomtypeName, Integer roomtypePrice, Integer roomtypeCapacity,
+			Integer roomtypeQuantity, Double area, Double score, String roomtypeDescription, String roomtypeAddress,
+			String roomtypeCity, String roomtypeDistrict, LocalDateTime updatedTime, LocalDateTime createdTime,
+			String imagePath) {
+		this.roomtypeId = roomtypeId;
+		this.roomtypeName = roomtypeName;
+		this.roomtypePrice = roomtypePrice;
+		this.roomtypeCapacity = roomtypeCapacity;
+		this.roomtypeQuantity = roomtypeQuantity;
+		this.area = area;
+		this.score = score;
+		this.roomtypeDescription = roomtypeDescription;
+		this.roomtypeAddress = roomtypeAddress;
+		this.roomtypeCity = roomtypeCity;
+		this.roomtypeDistrict = roomtypeDistrict;
+		this.updatedTime = updatedTime;
+		this.createdTime = createdTime;
+		this.imagePath = imagePath;
+	}
+
+
+
 	public Integer getRoomtypeId() {
 		return roomtypeId;
 	}

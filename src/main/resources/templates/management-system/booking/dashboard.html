@@ -336,13 +336,54 @@
 						<div id="chart2"></div>
 						<div id="chart3"></div>
 					</div>
+					<!-- 這裡是管理頁面的動態內容 -->
+					<ul class="item-list">
+						<li th:each="bookedRoomtype : ${bookedRoomtypes}" class="list-item">
+							<img width="60" height="60" style="border-radius: 50%;" th:src="@{'/management/roomtype/image/' + ${bookedRoomtype.roomtype.roomtypeId}}">
+							<div class="item-content">
+								<span class="item-title" th:text="${bookedRoomtype.roomtype.roomtypeName}"></span>
+								<div class="listInfo-group">
+									<span class="item-info" style="color: darkred">被預訂次數</span>
+		                			<span th:text="${bookedRoomtype.bookedCount}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">房間價錢</span>
+		                			<span th:text="${bookedRoomtype.roomtype.roomtypePrice}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間數量</span>
+		                			<span th:text="${bookedRoomtype.roomtype.roomtypeQuantity}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間人數</span>
+		                			<span th:text="${bookedRoomtype.roomtype.roomtypeCapacity}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">所在城市</span>
+		                			<span th:text="${bookedRoomtype.roomtype.roomtypeCity}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">所在區域</span>
+		                			<span th:text="${bookedRoomtype.roomtype.roomtypeDistrict}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間說明</span>
+		                			<span th:text="${#strings.abbreviate(bookedRoomtype.roomtype.roomtypeDescription,20)}"></span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間面積</span>
+		                			<span th:text="${bookedRoomtype.roomtype.area}"></span>
+		                			<span class="item-info" style="color: darkred">平方公尺</span>
+		                			<span style="color: #e3e3e373"> ┃ </span>
+		                			<span class="item-info" style="color: darkred">房間分數</span>
+		                			<span th:text="${bookedRoomtype.roomtype.score}"></span>                  
+								</div>
+							</div>
+						</li>
+					</ul>
 				</section>
 			</section>
+				
 		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script>
-	
+	<script th:inline="javascript">
+		let countBookings = [[${countBookings}]];
+		
+		countBookings = countBookings.map(({checkInDate, count: y}) => ({x: checkInDate, y}));
 		var options = {
 		  chart: {
 		    type: 'area',
@@ -350,29 +391,27 @@
 		    height: 400
 		  },
 		  series: [{
-			  data: [{
-			    x: new Date('2018-02-12').getTime(),
-			    y: 0
-			  }, {
-			    x: new Date('2018-03-25').getTime(),
-			    y: 23
-			  }, {
-			    x: new Date('2020-03-25').getTime(),
-			    y: 45
-			  }, {
-			    x: new Date('2021-03-25').getTime(),
-			    y: 80
-			  }, {
-			    x: new Date('2021-05-25').getTime(),
-			    y: 25
-			  }]
-			}], 
-			xaxis: {
-			  type: 'datetime'
-			}  
+		  	  name: '查看近十日預定情況',
+			  data: countBookings
+			}],
+		    xaxis: {
+		        type: 'category',
+		        categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'], // X 軸標籤改成中文
+		        title: {
+		            text: '月份' // X 軸標題
+		        }
+		    },
+		    yaxis: {
+		        title: {
+		            text: '預定次數' // Y 軸標題
+		        }
+		    }  
 		}
 		
 		var chart = new ApexCharts(document.querySelector("#chart"), options);
+		
+		let bookedRoomtypes = [[${bookedRoomtypes}]];
+		let optionsData = bookedRoomtypes.slice(0, 3);
 		
 		options2 = {
 		  chart: {
@@ -387,20 +426,28 @@
 		  },
 		  series: [{
 		    data: [{
-		      x: 'category A',
-		      y: 10
+		      x: optionsData[0].roomtype.roomtypeName.slice(0,6),
+		      y: optionsData[0].bookedCount
 		    }, {
-		      x: 'category B',
-		      y: 18
+		      x: optionsData[1].roomtype.roomtypeName.slice(0,6),
+		      y: optionsData[1].bookedCount
 		    }, {
-		      x: 'category C',
-		      y: 13
+		      x: optionsData[2].roomtype.roomtypeName.slice(0,6),
+		      y: optionsData[2].bookedCount
 		    }]
 		  }]
 		}
 		
 		var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
 		
+		let bookedCapacties = [[${bookedCapacity}]];
+		
+		let tempCapacities = [0, 1, 2, 3, 4, 5, 6];
+		
+		bookedCapacties.map(bookedCapacity => tempCapacities.splice(bookedCapacity.capacity, 1, null)[0]);
+		let capacities = tempCapacities.map(capacity => capacity != null ? 0 : null);
+		bookedCapacties.forEach(bookedCapacity => capacities[bookedCapacity.capacity] = bookedCapacity.bookedCount);
+		capacities.shift();
 		var options3 = {
 		  chart: {
 		    type: 'radar',
@@ -409,9 +456,9 @@
 		  },
 		  series: [{
 		    name: 'Series 1',
-		    data: [80, 50, 30, 40, 100, 20]
+		    data: capacities
 		  }],
-		  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+		  labels: ['單人房', '雙人房', '三人房', '四人房', '五人房', '六人房'],
 		  
 		  // 填充區域設定
 		  fill: {

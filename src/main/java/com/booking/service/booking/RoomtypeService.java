@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ import com.booking.bean.pojo.common.Amenity;
 import com.booking.dao.booking.RoomDao;
 import com.booking.dao.booking.RoomtypeRepository;
 import com.booking.dao.booking.RoomtypeSpecification;
+import com.booking.dao.booking.mapping.RoomtypeBookingStats;
 import com.booking.dao.common.AmenityRepository;
 import com.booking.service.common.AmenityService;
 import com.booking.utils.AWSImageUtil;
@@ -56,7 +59,7 @@ public class RoomtypeService {
 	 * @param roomtypeDTO
 	 * @return
 	 */
-	public Result<PageImpl<RoomtypeDTO>> findRoomtypeAll(RoomtypeDTO roomtypeDTO) {
+	public Result<Page<RoomtypeDTO>> findRoomtypeAll(RoomtypeDTO roomtypeDTO) {
 		Integer pageNumber = roomtypeDTO.getPageNumber();
 		String attrOrderBy = roomtypeDTO.getAttrOrderBy();
 		Boolean selectedSort = roomtypeDTO.getSelectedSort();
@@ -446,4 +449,53 @@ public class RoomtypeService {
 	public List<String> getImageListByAWS(Integer roomtypeId) {	
 		return AWSImageUtil.listImagesInFolder("booking/roomtype" + roomtypeId + "/").stream().filter(imgkey -> !imgkey.equals("booking/roomtype" + roomtypeId + "/avatar.png")).collect(Collectors.toList());
 	}
+
+	/**
+	 * 查詢所有被預訂的房型總數，進行分組
+	 * @return
+	 */
+	public List<Map<String, Object>> findMostBookedRoomtypes(RoomtypeDTO requestDTO) {
+		Pageable pageable = PageRequest.of(requestDTO.getPageNumber()-1, 10);
+		List<RoomtypeBookingStats> rtbss = roomtypeRepo.findMostBookedRoomtypes(pageable);
+		
+		List<Map<String, Object>> responseData = new ArrayList<>();
+		
+		for(RoomtypeBookingStats rtbs : rtbss) {
+			Integer bookedCount = rtbs.getCount();
+			Integer roomtypeId = rtbs.getId();
+			Roomtype roomtype = roomtypeRepo.findById(roomtypeId).orElse(null);
+			
+			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, roomtypeDTO);
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("roomtype", roomtypeDTO);
+			map.put("bookedCount", bookedCount);
+			
+			responseData.add(map);
+		}
+
+		return responseData;
+	}
+	
+	/**
+	 * 查找房間人數預定次數
+	 * @param requestDTO
+	 * @return
+	 */
+	public List<Map<String, Object>> findMostBookedCapacity() {
+		List<RoomtypeBookingStats> rtbss = roomtypeRepo.findMostBookedCapacity();
+		
+		List<Map<String, Object>> responseData = new ArrayList<>();
+		for(RoomtypeBookingStats rtbs : rtbss) {
+			Integer bookedCount = rtbs.getCount();
+			Integer capacity = rtbs.getCapacity();
+			Map<String, Object> map = new HashMap<>();
+			map.put("capacity", capacity);
+			map.put("bookedCount", bookedCount);
+			responseData.add(map);
+		}
+		return responseData;
+	}
+
 }

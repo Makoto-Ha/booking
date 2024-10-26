@@ -12,6 +12,8 @@ public class BookingOrderItemDTO {
 	
 	private Integer roomId;
 	
+	private RoomDetailDTO room;
+	
 	private Integer roomtypeId;
 	
 	private Long price;
@@ -124,4 +126,12 @@ public class BookingOrderItemDTO {
 		this.bookingStatus = bookingStatus;
 	}
 
+	public RoomDetailDTO getRoom() {
+		return room;
+	}
+
+	public void setRoom(RoomDetailDTO room) {
+		this.room = room;
+	}
+	
 }

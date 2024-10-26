@@ -124,6 +124,14 @@ li {
 	border: 1px solid green;
 	color: green;
 }
+
+.aspect-ratio-3-4 {
+	aspect-ratio: 3/4;
+}
+
+.object-fit-cover {
+	object-fit: cover;bb
+}
 </style>
 </head>
 
@@ -141,7 +149,7 @@ li {
 						<button id="prev-page">上一頁</button>
 						<input type="number" id="page-input"
 							th:value="${page.pageable.pageNumber}+1" min="1"> / <span
-							id="total-pages"
+							id="total-pages"wd
 							th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
 						<button id="next-page">下一頁</button>
 					</div>
@@ -250,7 +258,7 @@ li {
 										<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
 									</p>
 									<p>
-										<strong>訂購日期：<span style="color: red">${createdDate}</span></strong>
+										<strong>下單日期：<span style="color: red">${createdDate}</span></strong>
 									</p>
 									<p>
 										<strong>付款方式：<span style="color: red">信用卡</span></strong>
@@ -258,34 +266,35 @@ li {
 									<hr>
 									<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
 									<ul id="order-items">
-										${bookingOrderItems.map(bookingOrderItem => {
+										${bookingOrderItems.map(({checkInDate, checkOutDate, checkInTime, checkOutTime, bookingStatus, price, room, id}) => {
 											return `
 												<li class="order-item">
-													<img
-													src="/booking/management/roomtype/image/${roomtype.roomtypeId}"
-													width="120" alt="img">
+													<div style="width:50%; margin-right: 1rem;">
+														<img style="width: 100%;" class="object-fit-cover aspect-ratio-3-4" src="/booking/management/roomtype/image/${roomtype.roomtypeId}" alt="img">
+													</div>
 													<div class="order-infos">
 														<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
-														<div class="order-info"><span style="color: blue">總金額</span> ${bookingOrderItem.price}</div>
-														<div class="order-info"><span style="color: blue">入住日期</span> ${bookingOrderItem.checkInDate}</div>
-														<div class="order-info"><span style="color: blue">退房日期</span> ${bookingOrderItem.checkOutDate}</div>
+														<div class="order-info"><span style="color: blue">房間號碼</span> ${room.roomNumber}</div>
+														<div class="order-info"><span style="color: blue">總金額</span> ${price}</div>
+														<div class="order-info"><span style="color: blue">入住日期</span> ${checkInDate}</div>
+														<div class="order-info"><span style="color: blue">退房日期</span> ${checkOutDate}</div>
 														<div class="order-info">
 															<span style="color: blue" class="check-in-time">確切入住時間 
-																<span style="color: black">${bookingOrderItem.checkInTime == null ? '未入住' : bookingOrderItem.checkInTime}
+																<span style="color: black">${checkInTime == null ? '未入住' : checkInTime}
 															</span> 
 														</div>
 														<div class="order-info">
 															<span style="color: blue" class="check-out-time">確切退房時間
 																<span style="color: black"> 
-																	${bookingOrderItem.checkOutTime == null ? '未退房' : bookingOrderItem.checkOutTime}
+																	${checkOutTime == null ? '未退房' : checkOutTime}
 																</span>
 															</span> 
 														</div>
 													</div>
-													<div style="margin-left: 3px;" data-bookingid="${bookingOrderItem.id.bookingId}" data-roomid="${bookingOrderItem.id.roomId}">
-														${bookingOrderItem.bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` :  ''}
-														${bookingOrderItem.bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
-														${bookingOrderItem.bookingStatus == 3 ? `<span class="order-completle">已完成</span>` : ''}
+													<div style="margin-left: 3px; margin-top: auto;" data-bookingid="${id.bookingId}" data-roomid="${id.roomId}">
+														${bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` :  ''}
+														${bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
+														${bookingStatus == 3 ? `<span class="order-completle">已完成</span>` : ''}
 													</div>
 												</li>
 											`;

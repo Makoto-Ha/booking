@@ -1,5 +1,6 @@
 package com.booking.controller.booking;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
+import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItemId;
 import com.booking.service.booking.BookingService;
+import com.booking.service.booking.RoomtypeService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,8 +35,23 @@ public class BookingController {
 	@Autowired
 	private BookingService bookingService;
 	
+	@Autowired
+	private RoomtypeService roomtypeService;
+	
+	/**
+	 * 查詢所有被預訂的房型總數，進行分組
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/dashboard")
-	private String sendDashBoard() {
+	private String sendDashBoard(Model model, RoomtypeDTO roomtypeDTO) {
+		List<Map<String, Object>> bookedRoomtypes = roomtypeService.findMostBookedRoomtypes(roomtypeDTO);
+		List<Map<String, Object>> bookedCapacity = roomtypeService.findMostBookedCapacity();
+		List<Map<String, Object>> countBookings = bookingService.countBookingsByCheckInDate();
+		
+		model.addAttribute("bookedRoomtypes", bookedRoomtypes);
+		model.addAttribute("bookedCapacity", bookedCapacity);
+		model.addAttribute("countBookings", countBookings);
 		return "management-system/booking/dashboard";
 	}
 	

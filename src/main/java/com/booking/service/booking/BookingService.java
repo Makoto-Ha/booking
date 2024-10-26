@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.booking.bean.dto.booking.BookingOrderDTO;
 import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
+import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
@@ -336,6 +337,12 @@ public class BookingService {
 		for(BookingOrderItem boi : bois) {
 			BookingOrderItemDTO boiDTO = new BookingOrderItemDTO();
 			BeanUtils.copyProperties(boi, boiDTO);
+			
+			Room room = boi.getRoom();
+			RoomDetailDTO roomDetailDTO = new RoomDetailDTO();
+			BeanUtils.copyProperties(room, roomDetailDTO);
+			boiDTO.setRoom(roomDetailDTO);
+			
 			boiDTOs.add(boiDTO);
 		}
 		
@@ -393,6 +400,29 @@ public class BookingService {
 		boi.setBookingStatus(3);
 		
 		return Result.success("修改訂單項目，退房請求成功").setExtraData("checkOutTime", checkOutTime);
+	}
+	
+	/**
+	 * 查找距離10天之前的預訂次數
+	 * @return
+	 */
+	public List<Map<String, Object>> countBookingsByCheckInDate() {
+		LocalDate today = LocalDate.now();
+		LocalDate minusDays = today.minusDays(10);
+		
+		List<Object[]> countBookings = boiRepo.countBookingsByCheckInDate(minusDays, today);
+		
+		List<Map<String, Object>> responseData = new ArrayList<>();
+		for(Object[] countBooking : countBookings) {
+			LocalDate checkInDate = (LocalDate) countBooking[0];
+			Long count = (Long) countBooking[1];
+			Map<String, Object> map = new HashMap<>();
+			map.put("checkInDate", checkInDate);
+			map.put("count", count);
+			responseData.add(map);
+		}
+		
+		return responseData;
 	}
 
 }

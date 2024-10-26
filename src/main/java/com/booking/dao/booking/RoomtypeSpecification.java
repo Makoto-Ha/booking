@@ -342,6 +342,7 @@ public class RoomtypeSpecification {
         };
 	}
 
+	// 排序房型
 	public static Specification<Roomtype> orderBy(String attrOrderBy, Boolean selectedSort) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
 			if(attrOrderBy == null || attrOrderBy.isEmpty()) {
