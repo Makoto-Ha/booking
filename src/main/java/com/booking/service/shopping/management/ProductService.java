@@ -1,4 +1,4 @@
-package com.booking.service.shopping;
+package com.booking.service.shopping.management;
 
 import java.net.MalformedURLException;
 import java.nio.file.Path;

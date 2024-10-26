@@ -146,7 +146,7 @@
 
                 var cartItemId = this.getAttribute('data-item-id');
                 var newQuantity = this.value;
-                const url = 'http://localhost:8080/booking/shop/cart/update/' + cartItemId;
+                const url = 'http://localhost:8080/booking/shop/api/cart/update/' + cartItemId;
 
                 axios.put(url, {
                     quantity: newQuantity
@@ -178,7 +178,7 @@
         document.querySelectorAll('.remove-item-btn').forEach(function (removeButtom) {
             removeButtom.addEventListener("click", function () {
                 var cartItemId = this.getAttribute('data-item-id');
-                const url = 'http://localhost:8080/booking/shop/cart/remove/' + cartItemId;
+                const url = 'http://localhost:8080/booking/shop/api/cart/remove/' + cartItemId;
 
                 axios.delete(url)
                     .then(res => {

@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.booking.bean.dto.shopping.ShopCartDTO;
 import com.booking.bean.dto.shopping.ShopCartItemDTO;
+import com.booking.service.shopping.management.ShopOrderService;
 import com.booking.utils.Result;
 
 @SpringBootTest

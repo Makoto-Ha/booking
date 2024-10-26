@@ -1,27 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instastay Shop</title>
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-html, body {
-	height: 100% !important;
-}
-.footer-bgc {
-	background-color: rgb(42, 42, 46);
-}
-</style>
-</head>
-<body>
-	<div th:replace="~{/client/common/header}"></div>
 
-	  <div class="container my-5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instastay Shop</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 100% !important;
+        }
+
+        .footer-bgc {
+            background-color: rgb(42, 42, 46);
+        }
+    </style>
+    <style>
+        .floating-cart {
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            font-size: 3rem;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .floating-cart .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
+            font-size: 1rem;
+            padding: 0.25em 0.4em;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{/client/common/header}"></div>
+
+    <div class="container my-5">
         <!-- 上半部分：商品详情 -->
+        <!-- 懸浮購物車 -->
+        <a th:href="@{/shop/cart}" class="floating-cart position-fixed">
+            <i class="bi bi-cart3"></i>
+            <span th:if="${cartItemCount > 0}" class="badge rounded-pill bg-danger">
+                <span th:text="${cartItemCount}">0</span>
+            </span>
+        </a>
         <div class="row">
             <!-- 商品主图 -->
             <div class="col-md-6">
@@ -36,14 +66,15 @@ html, body {
                     <label for="quantity" class="form-label">购买数量</label>
                     <div class="input-group" style="max-width: 200px;">
                         <button class="btn btn-outline-secondary" type="button" id="button-minus">-</button>
-                        <input type="text" class="form-control text-center" id="quantity" value="1" aria-label="Quantity">
+                        <input type="text" class="form-control text-center" id="quantity" value="1"
+                            aria-label="Quantity">
                         <button class="btn btn-outline-secondary" type="button" id="button-plus">+</button>
                     </div>
                 </div>
                 <!-- 操作按钮 -->
                 <div class="my-3">
-                    <button class="btn btn-primary btn-lg me-2">加入购物车</button>
-                    <button class="btn btn-danger btn-lg">立即购买</button>
+                    <button class="btn btn-primary btn-lg me-2 add-to-cart">加入购物车</button>
+                    <button class="btn btn-danger btn-lg buy-now">立即购买</button>
                 </div>
             </div>
         </div>
@@ -62,11 +93,14 @@ html, body {
                 <th:block th:each="recommendedProduct : ${recommendedProducts}">
                     <div class="col-6 col-md-3 mb-4">
                         <div class="card h-100">
-                            <img th:src="@{'/management/product/image/' + ${recommendedProduct.productId}}" class="card-img-top" alt="推荐商品图片">
+                            <img th:src="@{'/management/product/image/' + ${recommendedProduct.productId}}"
+                                class="card-img-top" alt="推荐商品图片">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${recommendedProduct.productName}">商品名称</h5>
-                                <p class="card-text text-danger" th:text="'$' + ${recommendedProduct.productPrice}">商品价格</p>
-                                <a th:href="@{'/product/detail/' + ${recommendedProduct.productId}}" class="btn btn-primary">查看详情</a>
+                                <p class="card-text text-danger" th:text="'$' + ${recommendedProduct.productPrice}">商品价格
+                                </p>
+                                <a th:href="@{'/product/detail/' + ${recommendedProduct.productId}}"
+                                    class="btn btn-primary">查看详情</a>
                             </div>
                         </div>
                     </div>
@@ -75,23 +109,121 @@ html, body {
         </div>
     </div>
 
-	<div th:replace="~{/client/common/footer}"></div>
-	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- 数量增减的 JavaScript -->
+    <div th:replace="~{/client/common/footer}"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 数量增减的 JavaScript -->
     <script>
-        document.getElementById('button-minus').addEventListener('click', function() {
+        document.getElementById('button-minus').addEventListener('click', function () {
             var quantityInput = document.getElementById('quantity');
             var currentValue = parseInt(quantityInput.value);
             if (currentValue > 1) {
                 quantityInput.value = currentValue - 1;
             }
         });
-        document.getElementById('button-plus').addEventListener('click', function() {
+        document.getElementById('button-plus').addEventListener('click', function () {
             var quantityInput = document.getElementById('quantity');
             var currentValue = parseInt(quantityInput.value);
             quantityInput.value = currentValue + 1;
         });
     </script>
+    <script th:inline="javascript">
+
+        const productId = [[${ productDTO.productId }]]
+        
+
+        // 加入購物車
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function (event) {
+  const quantity = parseInt(document.getElementById('quantity').value);
+                // 將產品ID和數量組合成一個物件
+                const addCartDTO = {
+                    productId: productId,
+                    quantity: quantity
+                };
+console.log(addCartDTO)
+                fetch('/booking/shop/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(addCartDTO)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('商品已成功加入購物車！');
+                            updateCartItemCount();
+                        } else {
+                            alert('添加購物車失敗：' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('發生錯誤，請稍後再試。');
+                    });
+            });
+        });
+
+
+        // 立即購買
+        document.querySelectorAll('.buy-now').forEach(buyButton => {
+            buyButton.addEventListener("click", function (event) {
+                const url = 'http://localhost:8080/booking/shop/api/buyNow';
+
+                axios.post(url, { productId: productId })
+                    .then(res => {
+                        if (res.data.success) {
+                            window.location.href = '/booking/shop/checkout/buyNow';
+                        } else {
+                            alert('購買失敗，請稍後再試：' + res.data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error', err);
+                        alert('發生錯誤，請稍後再試。');
+                    })
+
+            })
+        })
+
+
+        // 懸浮購物車
+        function updateCartItemCount() {
+            axios.get('/booking/shop/api/cart/itemCount')
+                .then(res => {
+                    if (res.data.success) {
+                        const cartItemCount = res.data.data;
+                        console.log(cartItemCount)
+                        let badge = document.querySelector('.floating-cart .badge');
+                        // 回傳有筆數，且現有徽章 : 更新徽章文字
+                        // 回傳有筆數，且沒有徽章 : 新建徽章、加文字
+                        // 回傳沒有筆數，但有徽章 : 移除徽章
+                        if (cartItemCount > 0) {
+                            if (!badge) {
+                                badge = document.createElement('span');
+                                badge.className = 'badge rounded-pill bg-danger';
+                                document.querySelector('.floating-cart').appendChild(badge);
+                            }
+                            badge.textContent = cartItemCount;
+                        } else if (badge) {
+                            badge.remove();
+                        }
+                    } else {
+                        console.error('無法獲取購物車商品數量：' + res.data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error("error:", err);
+                });
+        }
+
+
+        // 頁面加載時更新購物車商品數量
+        updateCartItemCount();
+    </script>
 </body>
+
 </html>
