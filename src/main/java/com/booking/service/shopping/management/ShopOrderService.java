@@ -1,4 +1,4 @@
-package com.booking.service.shopping;
+package com.booking.service.shopping.management;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class ShopOrderService {
 	 */
 
 	public Result<ShopOrderDTO> findOrderDTOById(Integer orderId) {
-		ShopOrderDTO shopOrderDTO = shopOrderRepository.findOrderDTOById(orderId);
+		ShopOrderDTO shopOrderDTO = shopOrderRepository.findOrderDTOById(orderId).get(0);
 		return Result.success(shopOrderDTO);
 	}
 

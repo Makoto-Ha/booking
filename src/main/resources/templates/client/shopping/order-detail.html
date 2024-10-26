@@ -25,12 +25,6 @@
     <div th:replace="~{/client/common/header}"></div>
 
     <div class="container mt-5">
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">付款成功！</h4>
-            <p>您的訂單已經成功付款！感謝您的購買。</p>
-            <hr>
-            <p class="mb-0">訂單詳情如下：</p>
-        </div>
 
         <!-- 訂單資訊 -->
         <div class="card mb-4">
@@ -51,8 +45,8 @@
                 </div>
                 <p class="card-text">訂單總金額: $<span th:text="${orderDTO.orderPrice}"></span></p>
                 <p class="card-text">交易編號: <span th:text="${orderDTO.transactionId}"></span></p>
-                <p class="card-text">下單時間: <span th:text="${orderDTO.createdAt}"></span></p>
-                <p class="card-text">付款時間: <span th:text="${orderDTO.paymentCreatedAt}"></span></p>
+                <p class="card-text">下單時間: <span th:text="${#temporals.format(orderDTO.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+                <p class="card-text">付款時間: <span th:text="${#temporals.format(orderDTO.paymentUpdatedAt, 'yyyy-MM-dd HH:mm')}"></span></p>
             </div>
         </div>
 

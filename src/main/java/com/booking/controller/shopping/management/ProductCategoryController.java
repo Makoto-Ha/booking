@@ -1,4 +1,4 @@
-package com.booking.controller.shopping;
+package com.booking.controller.shopping.management;
 
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.booking.bean.dto.shopping.ProductCategoryDTO;
-import com.booking.service.shopping.ProductCategoryService;
+import com.booking.service.shopping.management.ProductCategoryService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;

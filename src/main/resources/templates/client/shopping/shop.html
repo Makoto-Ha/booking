@@ -184,7 +184,7 @@
 
 		// 更新懸浮購物車商品數量
 		function updateCartItemCount() {
-			axios.get('/booking/shop/cart/itemCount')
+			axios.get('/booking/shop/api/cart/itemCount')
 				.then(res => {
 					if (res.data.success) {
 						const cartItemCount = res.data.data;
@@ -211,10 +211,10 @@
 				});
 		}
 
-		// 立刻購買 ProductId+Price
+		// 立刻購買 ProductId
 		document.querySelectorAll('.buy-now').forEach(buyButton => {
 			buyButton.addEventListener("click", function (event) {
-				const url = 'http://localhost:8080/booking/shop/buyNow';
+				const url = 'http://localhost:8080/booking/shop/api/buyNow';
 				const productId = parseInt(this.getAttribute('data-product-id'))
 
 				axios.post(url, { productId: productId })
@@ -233,17 +233,21 @@
 			})
 		})
 
-		// 加入購物車 ProductId+Price
+		// 加入購物車 ProductId
 		document.querySelectorAll('.add-to-cart').forEach(button => {
 			button.addEventListener('click', function (event) {
 				const productId = parseInt(this.getAttribute('data-product-id'))
-
-				fetch('/booking/shop/cart/add', {
+				const addCartDTO = {
+                    productId: productId,
+                    quantity: 1
+                };
+                console.log(addCartDTO);
+				fetch('/booking/shop/api/cart/add', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(productId)
+					body: JSON.stringify(addCartDTO)
 				})
 					.then(response => response.json())
 					.then(data => {

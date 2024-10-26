@@ -114,7 +114,7 @@ public class ShopCartService {
 	 */
 	
 	@Transactional
-	public Result<String> addShopCartItem(Integer productId, Integer CartId) {
+	public Result<String> addShopCartItem(Integer productId, Integer CartId, Integer addQuantity) {
 		// 確認購物車和商品
 		Optional<ShopCart> findCart = shopCartRepository.findById(CartId);
 		if (!findCart.isPresent()) {
@@ -131,12 +131,12 @@ public class ShopCartService {
 		ShopCartItem cartItem = shopCartItemRepository.findByShopCartAndProduct(shopCart, product);
 		// 如果存在，數量+1
 		if (cartItem != null) {
-			cartItem.setQuantity(cartItem.getQuantity()+1);
+			cartItem.setQuantity(cartItem.getQuantity()+addQuantity);
 		} else { 
 			cartItem = new ShopCartItem();  // 如果不存在，新增商品項目
 			cartItem.setShopCart(shopCart);
 			cartItem.setProduct(product);
-			cartItem.setQuantity(1);
+			cartItem.setQuantity(addQuantity);
 			cartItem.setPrice(product.getProductPrice());
 		}
 		// 更新小記後 將購物車項目存入

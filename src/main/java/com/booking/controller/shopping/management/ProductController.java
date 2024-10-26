@@ -1,4 +1,4 @@
-package com.booking.controller.shopping;
+package com.booking.controller.shopping.management;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.shopping.ProductDTO;
-import com.booking.service.shopping.ProductService;
+import com.booking.service.shopping.management.ProductService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
