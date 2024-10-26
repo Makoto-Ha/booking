@@ -69,12 +69,15 @@ public class AdminController {
     }
 
     // 处理登录请求
-    @PostMapping("/login")
-    public String login(@RequestParam String adminAccount, @RequestParam String adminPassword, Model model) {
+    @PostMapping("/login") 
+    public String login(@RequestParam String adminAccount, @RequestParam String adminPassword, 
+                       Model model, HttpSession session) {
         try {
-            adminService.login(adminAccount, adminPassword);
+            Admin admin = adminService.login(adminAccount, adminPassword);
+            // 將管理員資訊存入session
+            session.setAttribute("admin", admin);
             model.addAttribute("message", "Login successful");
-            return "redirect:/management/admin"; // 登录成功跳转主页
+            return "redirect:/management/admin";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "management-system/admin/login";
@@ -129,6 +132,12 @@ public class AdminController {
         message.setSubject("Password Reset Request");
         message.setText("Click the link below to reset your password:\n" + resetLink);
         mailSender.send(message);
+    }
+    
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/management/admin/login";
     }
 	
 

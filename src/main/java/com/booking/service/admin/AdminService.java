@@ -276,29 +276,31 @@ public class AdminService {
 		
 	
 	public Result<UrlResource> findImageById(Integer adminId) {
-		Admin admin = adminRepo.findById(adminId).orElse(null);
-		
-		if(admin == null) {
-			return Result.failure("根據ID查找不到管理員");
-		}
-		
-		String imagesFile = admin.getImgFile();
-		
-		Path path = Paths.get(imagesFile);
-		try {
-			UrlResource urlResource = new UrlResource(path.toUri());
-			 if (urlResource.exists() || urlResource.isReadable()) {
-		    	return Result.success(urlResource).setExtraData("path", path);
-		    } 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+	    try {
+	        Admin admin = adminRepo.findById(adminId).orElse(null);
+	        if (admin == null) {
+	            return Result.failure("找不到此管理員");
+	        }
 
-		DaoResult<?> updateAdminResult = adminRepo.updateAdmin(admin);
-		if (updateAdminResult.isFailure()) {
-			return Result.failure("更新失敗");
-		}
-		return Result.success("更新景點成功");
+	        String imagePath = admin.getImgFile();
+	        if (imagePath == null) {
+	            imagePath = "uploads/default.jpg";
+	        }
+
+	        Path path = Paths.get(imagePath);
+	        try {
+	            UrlResource resource = new UrlResource(path.toUri());
+	            if (resource.exists() || resource.isReadable()) {
+	                return Result.success(resource).setExtraData("path", path);
+	            }
+	        } catch (MalformedURLException e) {
+	            return Result.failure("圖片資源無效");
+	        }
+
+	        return Result.failure("無法讀取圖片");
+	    } catch (Exception e) {
+	        return Result.failure("獲取圖片失敗：" + e.getMessage());
+	    }
 	}
 
 	/////////////////////////////////////////////////////////////

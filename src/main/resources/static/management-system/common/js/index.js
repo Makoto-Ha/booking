@@ -290,6 +290,16 @@ function bindAdminSystemEvent() {
 				enableScript('.main-list');
 			});
 	});
+	
+	
+	// 添加登出功能
+	  document.querySelector('.logout-btn')?.addEventListener('click', function() {
+	      fetch('/booking/management/admin/logout', {
+	          method: 'POST'
+	      }).then(() => {
+	          window.location.href = '/booking/management/admin/login';
+	      });
+	  });
 }
 
 function enableScript(dom) {

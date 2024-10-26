@@ -1,12 +1,55 @@
 <header class="navbar">
+
+
+<style>
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: linear-gradient(to right, #ff4b69, #ff6b8b);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(to right, #ff6b8b, #ff4b69);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 75, 105, 0.2);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.logout-text {
+  letter-spacing: 1px;
+}
+</style>
     <h1 id="page-title" th:text="${manageListName}"></h1>
     <div class="user-nav">
-        <button class="nav-icon"><img th:src="@{/management-system/common/image/mail-icon.png}" alt="Mail"></button>
-        <button class="nav-icon"><img th:src="@{/management-system/common/image/bell-icon.png}" alt="Notifications"></button>
-        <button class="nav-icon"><img th:src="@{/management-system/common/image/power-icon.png}" alt="Logout"></button>
+       <!--   <button class="nav-icon"><img th:src="@{/management-system/common/image/mail-icon.png}" alt="Mail"></button>
+        <button class="nav-icon"><img th:src="@{/management-system/common/image/bell-icon.png}" alt="Notifications"></button> -->
+        <button class="nav-icon logout-btn">
+  <span class="logout-text">登出</span>
+</button>
         <div class="user-info">
-            <span>David Greymaax</span>
-            <img th:src="@{/management-system/common/image/profile.png}" alt="User Picture">
+            <span th:text="${session.admin.adminName}"></span>
+            <!-- 頭像顯示: 如果有上傳圖片就顯示上傳的圖片，否則顯示預設圖片 -->
+            <img th:if="${session.admin.imgFile != null}" 
+                 th:src="@{'/management/admin/image/' + ${session.admin.adminId}}" 
+                 class="user-avatar"
+                 alt="User Picture">
+            <img th:unless="${session.admin.imgFile != null}"
+                 th:src="@{/management-system/common/image/profile.png}" 
+                 class="user-avatar"
+                 alt="Default Picture">
         </div>
     </div>
 </header>
