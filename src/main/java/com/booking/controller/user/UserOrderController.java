@@ -1,5 +1,8 @@
 package com.booking.controller.user;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,8 +33,9 @@ public class UserOrderController {
             return "redirect:/auth/login";
         }
 
-        User user;
         try {
+            // 獲取用戶信息
+            User user;
             if (auth.getPrincipal() instanceof OAuth2User) {
                 OAuth2User oauth2User = (OAuth2User) auth.getPrincipal();
                 String email = oauth2User.getAttribute("email");
@@ -45,20 +49,37 @@ public class UserOrderController {
                 throw new RuntimeException("User not found");
             }
 
-            // 獲取訂單數據
-            model.addAttribute("packageTourOrders", 
-                userOrderService.getPackageTourOrdersBasic(user.getUserId()));
-            model.addAttribute("shopOrders", 
-                userOrderService.getShopOrdersBasic(user.getUserId()));
-            model.addAttribute("bookingOrders", 
-                userOrderService.getBookingOrdersBasic(user.getUserId()));
+            // 獲取訂單數據並處理狀態名稱
+            List<Map> packageTourOrders = userOrderService.getPackageTourOrdersBasic(user.getUserId());
+            List<Map> shopOrders = userOrderService.getShopOrdersBasic(user.getUserId());
+            List<Map> bookingOrders = userOrderService.getBookingOrdersBasic(user.getUserId());
+
+            // 處理每個訂單的狀態名稱
+            packageTourOrders.forEach(order -> {
+                Integer status = (Integer) order.get("status");
+                order.put("statusName", userOrderService.getPackageTourOrderStatusName(status));
+            });
+
+            shopOrders.forEach(order -> {
+                Integer orderState = (Integer) order.get("orderStatus");
+                Integer paymentState = (Integer) order.get("paymentStatus");
+                order.put("orderStatusName", userOrderService.getShopOrderStatusName(orderState));
+                order.put("paymentStatusName", userOrderService.getShopPaymentStatusName(paymentState));
+            });
+
+            bookingOrders.forEach(order -> {
+                Integer status = (Integer) order.get("status");
+                order.put("statusName", userOrderService.getBookingOrderStatusName(status));
+            });
+
+            model.addAttribute("packageTourOrders", packageTourOrders);
+            model.addAttribute("shopOrders", shopOrders);
+            model.addAttribute("bookingOrders", bookingOrders);
 
             return "users/orders";
             
         } catch (Exception e) {
-            // 記錄錯誤
             e.printStackTrace();
-            // 重定向到錯誤頁面或登入頁面
             return "redirect:/auth/login?error=用戶資訊獲取失敗";
         }
     }

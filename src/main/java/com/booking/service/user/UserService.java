@@ -1,15 +1,73 @@
 package com.booking.service.user;
 
+import com.booking.bean.dto.attraction.AttractionDTO;
+import com.booking.bean.dto.user.UserDTO;
+import com.booking.bean.pojo.attraction.Attraction;
 import com.booking.bean.pojo.user.User;
+import com.booking.dao.attraction.AttractionRepository;
+import com.booking.dao.attraction.AttractionSpecification;
 import com.booking.dao.user.UserRepository;
+import com.booking.dao.user.UserSpecification;
+import com.booking.utils.DaoResult;
+import com.booking.utils.MyModelMapper;
+import com.booking.utils.MyPageRequest;
+import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.booking.bean.dto.attraction.AttractionDTO;
+import com.booking.bean.pojo.attraction.Attraction;
+import com.booking.dao.attraction.AttractionRepository;
+import com.booking.dao.attraction.AttractionSpecification;
+import com.booking.utils.DaoResult;
+import com.booking.utils.MyModelMapper;
+import com.booking.utils.MyPageRequest;
+import com.booking.utils.Result;
+import com.booking.utils.UploadImageFile;
+
 
 @Service
 public class UserService {
@@ -130,4 +188,238 @@ public class UserService {
         
         return userRepository.save(existingUser);
     }
+    
+///////////////////////////////////////////////////////////////////////////////////
+  
+  
+	public Result<PageImpl<UserDTO>> findUserAll(UserDTO userDTO) {
+
+		Integer pageNumber = userDTO.getPageNumber();
+		String attrOrderBy = userDTO.getAttrOrderBy();
+		Boolean selectedSort = userDTO.getSelectedSort();
+		Pageable pageable = MyPageRequest.of(pageNumber, 10, selectedSort, attrOrderBy);
+		Page<User> page = userRepository.findAll(pageable);
+		List<UserDTO> userDTOs = new ArrayList<>();
+		List<User> users = page.getContent();
+
+		for (User user : users) {
+			UserDTO responseUserDTO = new UserDTO();
+			BeanUtils.copyProperties(user, responseUserDTO);
+			userDTOs.add(responseUserDTO);
+		}
+
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		return Result.success(new PageImpl<>(userDTOs, newPageable, page.getTotalElements()));
+	}
+	
+	/**
+	 * 返回所有景點
+	 * @return
+	 */
+	public List<UserDTO> findAllUsers() {
+	    List<User> allUsers = userRepository.findAll();
+	    return allUsers.stream()
+	            .map(user -> {
+	            	UserDTO userDTO = new UserDTO();
+	                BeanUtils.copyProperties(user, userDTO);
+	                return userDTO;
+	            })
+	            .collect(Collectors.toList());
+	}
+	
+	/**
+	 * 依模糊查詢得到多筆景點
+	 * 
+	 * @param attractionDTO
+	 * @return
+	 */
+	public Result<PageImpl<UserDTO>> findUsers(UserDTO userDTO) {
+		Specification<User> spec = Specification
+				.where(UserSpecification.nameContains(userDTO.getUserName()))
+				.and(UserSpecification.accountContains(userDTO.getUserAccount()));
+				
+
+		Pageable pageable = MyPageRequest.of(userDTO.getPageNumber(), 10, userDTO.getSelectedSort(),
+				userDTO.getAttrOrderBy());
+
+		Page<User> page = userRepository.findAll(spec, pageable);
+		List<User> users = page.getContent();
+		List<UserDTO> usersDTOs = new ArrayList<>();
+
+		for (User user : users) {
+			UserDTO responseUserDTO = new UserDTO();
+
+			BeanUtils.copyProperties(user, responseUserDTO);
+			usersDTOs.add(responseUserDTO);
+
+		}
+
+		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
+		return Result.success(new PageImpl<>(usersDTOs, newPageable, page.getTotalElements()));
+
+
+	}
+
+	/**
+	 * 依名稱獲取景點
+	 * 
+	 * @param attractionName
+	 * @return
+	 */
+	public Result<List<UserDTO>> findUserByName(String userName) {
+		DaoResult<List<User>> getUserByNameResult = userRepository.getuserByName(userName);
+
+		if (getUserByNameResult.isFailure()) {
+			return Result.failure("根據會員名稱獲取會員失敗");
+		}
+
+		List<UserDTO> list = new ArrayList<>();
+		List<User> users = getUserByNameResult.getData();
+
+		for (User user : users) {
+			UserDTO userDTO = new UserDTO();
+			BeanUtils.copyProperties(user, userDTO);
+			list.add(userDTO);
+		}
+
+		return Result.success(list);
+	}
+
+	/**
+	 * 依id獲取景點
+	 * 
+	 * @param attractionId
+	 * @return
+	 */
+	public Result<UserDTO> findUserById(Integer userId) {
+		Optional<User> optional = userRepository.findById(userId);
+		if (optional.isEmpty()) {
+			return Result.failure("沒有此會員");
+		}
+		User user = optional.get();
+		UserDTO userDTO = new UserDTO();
+		BeanUtils.copyProperties(user, userDTO);
+		return Result.success(userDTO);
+	}
+	
+
+	/**
+	 * 新增景點
+	 * 
+	 * @param attraction
+	 * @return
+	 */
+	@Transactional
+	public Result<String> saveUser(UserDTO userDTO, MultipartFile imageFile) {
+		Result<String> uploadResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadResult.isSuccess()) {
+			String fileName = imageFile.getOriginalFilename();
+			userDTO.setImgsFile("uploads" + "/" + fileName);
+		}else {
+			userDTO.setImgsFile("uploads/default.jpg");
+		}
+		User user = new User();
+		
+		BeanUtils.copyProperties(userDTO, user);
+		
+		userRepository.save(user);
+
+		return Result.success("新增會員成功");
+	}
+
+	/**
+	 * 依id刪除景點
+	 * 
+	 * @param attractionId
+	 */
+	@Transactional
+	public Result<String> deledeUserById(Integer userId) {
+		userRepository.deleteById(userId);
+
+		return Result.success("刪除會員成功");
+
+	}
+
+	/**
+	 * 更新景點
+	 * @param attractionDTO
+	 * @return
+	 */
+    @Transactional
+    public Result<String> updateUser(UserDTO userDTO, MultipartFile imageFile) {
+        User existingUser = userRepository.findById(userDTO.getUserId()).orElse(null);
+        if (existingUser == null) {
+            return Result.failure("會員不存在");
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            Result<String> uploadResult = UploadImageFile.upload(imageFile);
+            if (uploadResult.isSuccess()) {
+                String fileName = imageFile.getOriginalFilename();
+                userDTO.setImgsFile("uploads" + "/" + fileName);
+            } else {
+            	userDTO.setImgsFile("uploads/default.jpg");
+            }
+        } else {
+        	userDTO.setImgsFile(existingUser.getImgsFile());
+        }
+        
+        MyModelMapper.map(userDTO, existingUser);
+        userRepository.save(existingUser);
+        return Result.success("更新成功");
+    }
+	
+	
+	/**
+	 * 根據id上傳圖片
+	 * @param imageFile
+	 * @param attractionId
+	 * @return
+	 */
+	public Result<String> uploadImageById(MultipartFile imageFile, Integer userId){
+		User user = userRepository.findById(userId).orElse(null);
+		if(user == null) {
+			return Result.failure("沒有此會員");
+		}
+		
+		Result<String> uploadImageResult = UploadImageFile.upload(imageFile);
+		
+		if(uploadImageResult.isFailure()) {
+			return Result.failure(uploadImageResult.getMessage());
+		}
+		
+		Path path = (Path) uploadImageResult.getExtraData("path");
+		user.setImgsFile(path.toString());
+		
+		return Result.success("上傳圖片成功");
+	}
+		
+	
+	public Result<UrlResource> findImageById(Integer userId) {
+		User user = userRepository.findById(userId).orElse(null);
+		
+		if(user == null) {
+			return Result.failure("根據ID查找不到會員");
+		}
+		
+String imagesFile = user.getImgsFile();
+		
+		Path path = Paths.get(imagesFile);
+		try {
+			UrlResource urlResource = new UrlResource(path.toUri());
+			 if (urlResource.exists() || urlResource.isReadable()) {
+		    	return Result.success(urlResource).setExtraData("path", path);
+		    } 
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		DaoResult<?> updateUserResult = userRepository.updateUser(user);
+		if (updateUserResult.isFailure()) {
+			return Result.failure("更新失敗");
+		}
+		return Result.success("更新會員成功");
+	}
+
 }

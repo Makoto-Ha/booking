@@ -5,96 +5,101 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourOrder;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.shopping.ShopOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Integer userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
+	private Integer userId;
 
-    @Column(name = "user_name", nullable = false, length = 20)
-    private String userName;
+	@Column(name = "user_name", nullable = false, length = 20)
+	private String userName;
 
-    @Column(name = "user_account", nullable = false, length = 30, unique = true)
-    private String userAccount;
+	@Column(name = "user_account", nullable = false, length = 30, unique = true)
+	private String userAccount;
 
-    @Column(name = "user_password", nullable = false, length = 60)
-    private String userPassword;
+	@Column(name = "user_password", nullable = false, length = 60)
+	private String userPassword;
 
-    @Column(name = "user_mail", length = 100, unique = true)
-    private String userMail;
+	@Column(name = "user_mail", length = 100, unique = true)
+	private String userMail;
 
-    @Column(name = "user_phone", length = 30)
-    private String userPhone;
+	@Column(name = "user_phone", length = 30)
+	private String userPhone;
 
-    @Column(name = "user_birthday")
-    private LocalDate userBirthday;
+	@Column(name = "user_birthday")
+	private LocalDate userBirthday;
 
-    @Column(name = "user_address", length = 100)
-    private String userAddress;
+	@Column(name = "user_address", length = 100)
+	private String userAddress;
 
-   
+	@Column(name = "imgs_file")
+	private String imgsFile;
 
-    @Column(name = "credit_card", length = 20)
-    private String creditCard;
+	@Column(name = "credit_card", length = 20)
+	private String creditCard;
 
-    @Column(name = "created_time", nullable = false, updatable = false)
-    private LocalDateTime createdTime;
+	@Column(name = "created_time", nullable = false, updatable = false)
+	private LocalDateTime createdTime;
 
-    @Column(name = "updated_time")
-    private LocalDateTime updatedTime;
+	@Column(name = "updated_time")
+	private LocalDateTime updatedTime;
 
-    @Column(name = "email_verified")
-    private boolean emailVerified;
+	@Column(name = "email_verified")
+	private boolean emailVerified;
 
-    @Column(name = "verification_token")
-    private String verificationToken;
+	@Column(name = "verification_token")
+	private String verificationToken;
 
-    @Column(name = "reset_token")
-    private String resetToken;
+	@Column(name = "reset_token")
+	private String resetToken;
 
-    @Column(name = "provider")
-    private String provider;
+	@Column(name = "provider")
+	private String provider;
 
-    @Column(name = "provider_id")
-    private String providerId;
-    
+	@Column(name = "provider_id")
+	private String providerId;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<PackageTourOrder> packageTourOrder;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<ShopOrder> shopOrder;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<BookingOrder> bookingOrder;
 
 //	@OneToOne(mappedBy = "users")
 //	private AdminPermission adminPermission;
-	
+
 	@PreUpdate
-    protected void onUpdate() {
-        updatedTime = LocalDateTime.now();
-    }
+	protected void onUpdate() {
+		updatedTime = LocalDateTime.now();
+	}
 
-    public boolean isResetTokenValid() {
-        // Implement reset token validation logic
-        return true;
-    }
+	public boolean isResetTokenValid() {
+	
+		return true;
+	}
 
-    public void clearResetToken() {
-        this.resetToken = null;
-    }
-    
-    @PrePersist
-    protected void onCreate() {
-        createdTime = LocalDateTime.now();
-    }
+	public void clearResetToken() {
+		this.resetToken = null;
+	}
+
+	@PrePersist
+	protected void onCreate() {
+		createdTime = LocalDateTime.now();
+	}
 
 	public Integer getUserId() {
 		return userId;
@@ -385,9 +390,14 @@ public class User {
 		super();
 	}
 
-  //getter and setter
-    
-    
+	public String getImgsFile() {
+		return imgsFile;
+	}
 
-	
+	public void setImgsFile(String imgsFile) {
+		this.imgsFile = imgsFile;
+	}
+
+	// getter and setter
+
 }
