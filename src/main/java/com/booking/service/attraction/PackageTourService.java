@@ -275,30 +275,37 @@ public class PackageTourService {
             if(uploadResult.isSuccess()) {
                 String fileName = packageTourImg.getOriginalFilename();
                 packageTour.setPackageTourImg("uploads" + "/" + fileName);
-            } else {
-                packageTour.setPackageTourImg("uploads/default.jpg");
             }
-        } else {
-            packageTour.setPackageTourImg(packageTourDTO.getPackageTourImg());
         }
 
         packageTour.setPackageTourName(packageTourDTO.getPackageTourName());
         packageTour.setPackageTourPrice(packageTourDTO.getPackageTourPrice());
         packageTour.setPackageTourDescription(packageTourDTO.getPackageTourDescription());
 
-        // 更新景點關聯
+        List<PackageTourAttraction> currentAttractions = new ArrayList<>(packageTour.getPackageTourAttractions());
         packageTour.getPackageTourAttractions().clear();
+        
+        packageTour = packageTourRepo.save(packageTour);
+
+        for (PackageTourAttraction pta : currentAttractions) {
+            packageTourAttractionRepo.delete(pta);
+        }
+
         if (packageTourDTO.getSelectedAttractionIds() != null) {
             for (Integer attractionId : packageTourDTO.getSelectedAttractionIds()) {
-                Attraction attraction = attractionRepo.findById(attractionId)
-                    .orElseThrow(() -> new RuntimeException("景點不存在: " + attractionId));
+                Optional<Attraction> attractionOpt = attractionRepo.findById(attractionId);
+                if (attractionOpt.isPresent()) {
+                    Attraction attraction = attractionOpt.get();
                     
-                PackageTourAttraction pta = new PackageTourAttraction();
-                PackageTourAttractionId ptaId = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
-                pta.setId(ptaId);
-                pta.setPackageTour(packageTour);
-                pta.setAttraction(attraction);
-                packageTour.getPackageTourAttractions().add(pta);
+                    PackageTourAttraction pta = new PackageTourAttraction();
+                    PackageTourAttractionId ptaId = new PackageTourAttractionId(attractionId, packageTour.getPackageTourId());
+                    pta.setId(ptaId);
+                    pta.setPackageTour(packageTour);
+                    pta.setAttraction(attraction);
+                    
+                    packageTourAttractionRepo.save(pta);
+                    packageTour.getPackageTourAttractions().add(pta);
+                }
             }
         }
 
