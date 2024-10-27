@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -82,6 +83,9 @@ public class Roomtype {
         inverseJoinColumns = @JoinColumn(name = "amenity_id") 
     )
     private List<Amenity> amenities = new ArrayList<>();
+	
+	@OneToOne(mappedBy = "roomtype")
+	private BookingOrder bookingOrder;
 
 	public Roomtype() {
 	}
@@ -220,6 +224,14 @@ public class Roomtype {
 
 	public void setArea(Double area) {
 		this.area = area;
+	}
+
+	public BookingOrder getBookingOrder() {
+		return bookingOrder;
+	}
+
+	public void setBookingOrder(BookingOrder bookingOrder) {
+		this.bookingOrder = bookingOrder;
 	}	
-	
+
 }

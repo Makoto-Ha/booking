@@ -252,31 +252,8 @@
       let searchDropdown = document.querySelector('ul[aria-labelledby="searchRoomtypes"]');
       let searchRoomtypesInput = document.getElementById('searchRoomtypes');
 
-      searchDropdown.addEventListener('click', e => {
-        let targetDropdown = e.target.closest('li');
-        let keyword = targetDropdown.dataset.name;
-        searchInputType = targetDropdown.dataset.type;
-
-        submitParams = {}
-
-        switch(searchInputType) {
-          case 'city': 
-            submitParams.roomtypeCity = keyword;
-            break;
-          case 'district':
-            submitParams.roomtypeDistrict = keyword;
-            break;
-          case 'roomtype':
-            submitParams.roomtypeName = keyword;
-            break;
-        }
-
-        searchRoomtypesInput.value = keyword;
-        searchDropdown.classList.remove('show');
-      });
-
       searchRoomtypesInput.addEventListener('input', _.debounce(async e => {
-      
+  
         let searchValue = e.target.value;
         let queryString = new URLSearchParams({
           roomtypeName: searchValue,
@@ -380,6 +357,32 @@
           submitParams.roomtypeCity = searchValue;
         }
 
+        const searchDropdownHandler = e => {
+          let targetDropdown = e.target.closest('li');
+          let keyword = targetDropdown.dataset.name;
+          searchInputType = targetDropdown.dataset.type;
+
+          submitParams = {}
+
+          switch(searchInputType) {
+            case 'city': 
+              submitParams.roomtypeCity = keyword;
+              break;
+            case 'district':
+              submitParams.roomtypeDistrict = keyword;
+              break;
+            case 'roomtype':
+              submitParams.roomtypeName = keyword;
+              break;
+          }
+
+          searchRoomtypesInput.value = keyword;
+          searchDropdown.removeEventListener('click', searchDropdownHandler);
+          searchDropdown.classList.remove('show');
+        }
+
+        searchDropdown.addEventListener('click', searchDropdownHandler);
+
       }, 1200));
 
       searchRoomtypesInput.addEventListener('input', e => {
@@ -417,10 +420,9 @@
           </div>
         `;
 
-        searchDropdown.innerHTML += dropdown;
+          searchDropdown.innerHTML += dropdown;
       });
 
-      let today = new Date();
       const picker = new Litepicker({
         element: document.getElementById('datepicker'),
         singleMode: false,           // 启用范围选择
@@ -428,8 +430,24 @@
         autoApply: true,             // 自动应用选择
         numberOfMonths: 2,           // 显示2个月视图
         numberOfColumns: 2,          // 以2列显示
-        startDate: new Date(),       // 起始日期（可选）
-        minDate: today
+        minDate: new Date() - 1,
+        lang: 'zh-cn',
+        langObj: {
+          button_previous_month: '上個月',
+          button_next_month: '下個月',
+          tooltip_previous_month: '上個月',
+          tooltip_next_month: '下個月',
+          tooltip_previous_year: '上一年',
+          tooltip_next_year: '下一年',
+          months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+          months_short: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+          days: ['日', '一', '二', '三', '四', '五', '六'],
+          days_short: ['日', '一', '二', '三', '四', '五', '六'],
+          format_header_date: 'YYYY年M月',
+          pluralSelector: function (i) {
+            return 0;
+          }
+        }
       });
 
       const litePicker = document.querySelector('.litepicker');

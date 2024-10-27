@@ -3,6 +3,7 @@ package com.booking.bean.dto.booking;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.booking.bean.dto.user.UserDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class BookingOrderDTO {
@@ -21,6 +22,10 @@ public class BookingOrderDTO {
 	private LocalDateTime createdTime;
 
 	private Integer roomtypeId;
+	
+	private RoomtypeDTO roomtype;
+	
+	private UserDTO user;
 	
 	private List<BookingOrderItemDTO> bookingOrderItems;
 	
@@ -127,6 +132,22 @@ public class BookingOrderDTO {
 
 	public void setBookingOrderItems(List<BookingOrderItemDTO> bookingOrderItems) {
 		this.bookingOrderItems = bookingOrderItems;
+	}
+	
+	public RoomtypeDTO getRoomtype() {
+		return roomtype;
+	}
+
+	public void setRoomtype(RoomtypeDTO roomtype) {
+		this.roomtype = roomtype;
+	}
+
+	public UserDTO getUser() {
+		return user;
+	}
+
+	public void setUser(UserDTO user) {
+		this.user = user;
 	}
 
 	@Override

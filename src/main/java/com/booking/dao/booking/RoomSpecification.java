@@ -1,6 +1,7 @@
 package com.booking.dao.booking;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import org.springframework.data.jpa.domain.Specification;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 public class RoomSpecification {
 	// 根據號碼進行模糊查詢
@@ -73,32 +75,49 @@ public class RoomSpecification {
 
 	        // 使用 LEFT JOIN 關聯 Room 和 BookingOrderItem
 	        Join<Room, BookingOrderItem> boiJoin = root.join("bookingOrderItems", JoinType.LEFT);
+	        
+	        Predicate predicate = builder.and(
+	    	            builder.lessThanOrEqualTo(boiJoin.get("checkInDate"), bookingDate), // checkInDate <= date
+	    	            builder.greaterThanOrEqualTo(boiJoin.get("checkOutDate"), bookingDate)); // checkOutDate >= date)
+	        
+	        if(bookingStatus != 0) {	
 
-	        // 查找該日期範圍
-	        Predicate datePredicate = builder.and(
-	            builder.lessThanOrEqualTo(boiJoin.get("checkInDate"), bookingDate), // checkInDate <= date
-	            builder.greaterThanOrEqualTo(boiJoin.get("checkOutDate"), bookingDate) // checkOutDate >= date
-	        );
-
-	        if (bookingStatus == 1) {
-	        	// 查詢已預定的房間，有匹配的BookingOrderItem
-	            return datePredicate;
-	        } else if (bookingStatus == 0) {
-	            // 空房情況：
-	            // 1. 沒有關聯的BookingOrderItem（通过 room_id 或 booking_id 检查）
-	            // 2. 有關聯的BookingOrderItem但不符合日期范围
-	            return builder.or(
-	            	// 沒有任何關聯的房間
-	                builder.isNull(boiJoin.get("room").get("roomId")),
-	                // 有預定項目但沒有在範圍之內
-	                builder.not(datePredicate) 
-	            );
-	        } else if (bookingStatus == 2) {
-	        	builder.or(builder.equal(boiJoin.get("bookingStatus"), 2));
+	        	return builder.and(
+	    	            predicate,
+	    	            builder.equal(boiJoin.get("bookingStatus"), bookingStatus)
+	    	        );
+	        }else {
+	        	Predicate predicate2 = builder.or(builder.isNull(boiJoin.get("room").get("roomId")));
+	        	return builder.or(builder.not(predicate), predicate2);
 	        }
+	    };
+	}
+	
+	public static Specification<Room> findAvailableRooms(LocalDate checkDate, Integer availableRooms) {
+	    return (root, query, builder) -> {
+	        // 如果日期為空，返回所有房間
+	        if (availableRooms == null) {
+	            return builder.conjunction();
+	        }
+	        
+	        // 創建子查詢
+	        Subquery<BookingOrderItem> subquery = query.subquery(BookingOrderItem.class);
+	        Root<BookingOrderItem> boiRoot = subquery.from(BookingOrderItem.class);
+	        
+	        // 構建子查詢條件
+	        Predicate roomPredicate = builder.equal(boiRoot.get("id").get("roomId"), root.get("roomId"));
+	        Predicate statusPredicate = boiRoot.get("bookingStatus").in(Arrays.asList(1, 2));
+	        Predicate datePredicate = builder.and(
+	            builder.lessThanOrEqualTo(boiRoot.get("checkInDate"), checkDate),
+	            builder.greaterThanOrEqualTo(boiRoot.get("checkOutDate"), checkDate)
+	        );
+	        
+	        // 組合子查詢
+	        subquery.select(boiRoot.get("id").get("roomId"))
+	               .where(builder.and(roomPredicate, statusPredicate, datePredicate));
 
-	        // 默認返回所有狀態的房間
-	        return builder.conjunction(); 
+	        // 使用 NOT EXISTS
+	        return builder.not(builder.exists(subquery));
 	    };
 	}
 

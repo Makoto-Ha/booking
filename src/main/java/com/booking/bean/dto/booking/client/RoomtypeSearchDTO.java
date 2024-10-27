@@ -18,7 +18,7 @@ public class RoomtypeSearchDTO {
 	private String attrOrderBy = "roomtypeId";
 	private Boolean selectedSort = false;
 	private List<Amenity> amenities;
-	private Double score;
+	private List<Double> scores;
 
 	public RoomtypeSearchDTO() {
 	}
@@ -118,13 +118,13 @@ public class RoomtypeSearchDTO {
 	public void setSelectedSort(Boolean selectedSort) {
 		this.selectedSort = selectedSort;
 	}
-	
-	public Double getScore() {
-		return score;
+
+	public List<Double> getScores() {
+		return scores;
 	}
 
-	public void setScore(Double score) {
-		this.score = score;
+	public void setScores(List<Double> scores) {
+		this.scores = scores;
 	}
 
 	@Override

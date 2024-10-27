@@ -1,7 +1,6 @@
 package com.booking.controller.booking;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,20 +132,19 @@ public class RoomController {
 			@RequestParam Map<String, String> requestParameters,
 			// 因為index.js是看網址的類型，也就是/booking/management/room會發送roomName
 			@RequestParam(defaultValue = "") String roomName,
-			@RequestParam(value="bookingStatus", required = false) List<Integer> bookingStatusAll,
+			@RequestParam(required = false) Integer bookingStatus,
+			@RequestParam(required = false) Integer availableRooms,
 			RoomDTO roomDTO,
 			Model model
 	) {
 		roomDTO.setRoomtypeName(roomName);
-		Result<Page<RoomDetailDTO>> findRoomsResult = roomService.findRooms(roomDTO, bookingStatusAll);
+		Result<Page<RoomDetailDTO>> findRoomsResult = roomService.findRooms(roomDTO, bookingStatus, availableRooms);
 		
 		if(findRoomsResult.isFailure()) {
 			return "";
 		}
 		
 		Page<RoomDetailDTO> page = findRoomsResult.getData();
-		
-		System.out.println(page.getContent());
 		
 		model.addAttribute("page", page);
 		model.addAttribute("requestParameters", requestParameters);

@@ -146,12 +146,32 @@ public class RoomtypeSpecification {
 	// 根據分數進行查詢
 	public static Specification<Roomtype> scoreContains (Double score) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			System.out.println(score);
+
 			if(score == null || score == 0) {
 				return builder.conjunction();
 			}
 			
 			return builder.equal(root.get("score"), score);
+		};
+	}
+	
+	// 根據多個分數進行查詢
+	public static Specification<Roomtype> hasScores (List<Double> scores) {
+		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+
+			System.out.println(scores);
+			
+			if(scores == null || scores.isEmpty()) {
+				return builder.conjunction();
+			}
+			
+			List<Predicate> predicates = new ArrayList<>();
+			
+			for(Double score : scores) {
+				predicates.add(builder.equal(root.get("score"), score));
+			}
+			
+			return builder.or(predicates.toArray(new Predicate[0]));
 		};
 	}
 	

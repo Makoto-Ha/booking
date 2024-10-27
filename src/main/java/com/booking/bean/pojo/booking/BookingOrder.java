@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.booking.bean.pojo.user.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -52,6 +54,10 @@ public class BookingOrder {
 
 	@OneToMany(mappedBy = "bookingOrder")
 	private List<BookingOrderItem> bookingOrderItems = new ArrayList<>();
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "roomtype_id", referencedColumnName = "roomtype_id")
+	private Roomtype roomtype;
 
 	public BookingOrder() {
 	}
@@ -118,6 +124,14 @@ public class BookingOrder {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Roomtype getRoomtype() {
+		return roomtype;
+	}
+
+	public void setRoomtype(Roomtype roomtype) {
+		this.roomtype = roomtype;
 	}
 
 	public BookingOrder(Integer bookingId, User user, String orderNumber, Integer orderStatus, Long totalPrice,

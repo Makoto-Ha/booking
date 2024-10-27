@@ -145,26 +145,20 @@ public class RoomService {
 	 * @param extraValues
 	 * @return
 	 */
-	public Result<Page<RoomDetailDTO>> findRooms(RoomDTO roomDTO, List<Integer> bookingStatusAll) {
+	public Result<Page<RoomDetailDTO>> findRooms(RoomDTO roomDTO, Integer bookingStatus, Integer availableRooms) {
 		
 		// 選取的日期，查該日期的房間狀態
 		LocalDate bookingDate = roomDTO.getBookingDate();
 		
+
 		// =========================== 多條件查詢 ===========================
  
 		Specification<Room> spec = Specification.where(RoomSpecification.numberContains(roomDTO.getRoomNumber()))
-												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()));
-		
-		if(bookingStatusAll != null) {
-			Specification<Room> statusSpec = Specification.where(null);
-			for(Integer status : bookingStatusAll) {
-				statusSpec = statusSpec.or(RoomSpecification.hasBookingStatus(status, bookingDate));
-			}
-			spec = spec.and(statusSpec);
-		}
-													
-	    spec = spec.and(RoomSpecification.hasRoomtypeName(roomDTO.getRoomtypeName()));
-	    
+												.and(RoomSpecification.descriptionContains(roomDTO.getRoomDescription()))
+												.and(RoomSpecification.hasRoomtypeName(roomDTO.getRoomtypeName()))
+												.and(RoomSpecification.hasBookingStatus(bookingStatus, bookingDate))
+												.and(RoomSpecification.findAvailableRooms(bookingDate, availableRooms));
+	
 	    // ================================================================
 	
 	    // 獲取pageable
@@ -236,7 +230,11 @@ public class RoomService {
 			LocalDate checkInDate = boi.getCheckInDate();
 	    	LocalDate checkOutDate = boi.getCheckOutDate();
 	    	if((checkInDate.isBefore(date) || checkInDate.isEqual(date)) && (checkOutDate.isAfter(date) || checkOutDate.isEqual(date))) {
-	    		return boi.getBookingStatus();
+	    		if(boi.getBookingStatus() == 1) {
+	    			return 1;
+	    		}else if(boi.getBookingStatus() == 2) {
+	    			return 2;
+	    		}
 	    	}
 		}
 		

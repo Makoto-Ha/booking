@@ -216,13 +216,19 @@ li {
 							<div class="item-content">
 								<span class="item-title" th:text="${bookingOrder.orderNumber}"></span>
 								<div class="listInfo-group">
-									<span class="item-info" style="color: darkred">訂單總價錢</span> <span
-										th:text="${bookingOrder.totalPrice}"></span> <span
-										style="color: #e3e3e373"> ┃ </span> <span class="item-info"
-										style="color: darkred">使用者名稱</span> <span>Default</span> <span
-										style="color: #e3e3e373"> ┃ </span> <span class="item-info"
-										style="color: darkred">訂單狀態</span> <span
-										th:text="${bookingOrder.orderStatus}"></span>
+									<span class="item-info" style="color: darkred">下單帳號</span> 
+									<span th:text="${bookingOrder.user.userAccount}"></span>
+									<span style="color: #e3e3e373"> ┃ </span> 
+									<span class="item-info" style="color: darkred">訂單總價錢</span> 
+									<span th:text="${bookingOrder.totalPrice}"></span> 
+									<span style="color: #e3e3e373"> ┃ </span> 
+									<span class="item-info" style="color: darkred">預定房型名稱</span> 
+									<span th:text=${#strings.abbreviate(bookingOrder.roomtype.roomtypeName,10)}></span> 
+									<span style="color: #e3e3e373"> ┃ </span> 
+									<span class="item-info" style="color: darkred">訂單狀態</span> 
+									<span th:text="${bookingOrder.orderStatus}"></span>
+										
+										
 								</div>
 							</div>
 							<div class="item-actions">
@@ -250,12 +256,15 @@ li {
 								let bookingInfo = await response.json();
 								console.log(bookingInfo);
 			
-								let { bookingOrder, bookingOrderItems, roomtype, createdDate } = bookingInfo;
+								let { bookingOrder, bookingOrderItems, roomtype, createdDate, user } = bookingInfo;
 			
 								let orderDetailHTML = `
 									<hr>
 									<p>
 										<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
+									</p>
+									<p>
+										<strong>下單帳號：<span style="color: red">${user.userAccount}</span></strong>
 									</p>
 									<p>
 										<strong>下單日期：<span style="color: red">${createdDate}</span></strong>

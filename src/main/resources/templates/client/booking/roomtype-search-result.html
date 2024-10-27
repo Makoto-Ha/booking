@@ -423,14 +423,18 @@
         <div class="border-bottom-gray-2 opacity-50 w-100 mb-1"></div>
 
         <div class="py-3">
-          <span class="fw-bolder small d-block mb-3">新北市人氣篩選條件</span>
+          <span class="fw-bolder small d-block mb-3">評分篩選</span>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">淡水區</label>
+            <input class="form-check-input" onclick="myApp.scoresHandler(event)" type="checkbox" data-score="9.0" value="" id="score9.0">
+            <label class="form-check-label small" for="scoreNight">9.0 分</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label small" for="flexCheckDefault">新春街</label>
+            <input class="form-check-input" onclick="myApp.scoresHandler(event)" type="checkbox" data-score="8.0" value="" id="score8.0">
+            <label class="form-check-label small" for="scoreEight">8.0 分</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" onclick="myApp.scoresHandler(event)" type="checkbox" data-score="7.0" value="" id="score7.0">
+            <label class="form-check-label small" for="scoreSeven">7.0 分</label>
           </div>
         </div>
       </aside>
@@ -514,8 +518,10 @@
       // 請求參數
       let searchKeywords = [[${searchKeywords}]];
       searchKeywords.amenities = [];
+      searchKeywords.scores = [];
 
       let activeOption = document.querySelector('.customer-blue-active');
+      let filterCriteria = document.getElementById('filterCriteria');
 
       document.getElementById('sortOptions').addEventListener('click', async e => {
         let targetSort = e.target.closest('div');
@@ -586,7 +592,6 @@
       range1.addEventListener('change', rangeHandler);
       range2.addEventListener('change', rangeHandler);
       
-
       range1.addEventListener('input', updateRange);
       range2.addEventListener('input', updateRange);
 
@@ -598,7 +603,7 @@
 
       let footer = document.querySelector('footer');
       let footerHeight = footer.clientHeight + parseInt(getComputedStyle(footer).marginTop);
-      let filterCriteria = document.getElementById('filterCriteria');
+      
 
       // 用來過濾URLSearchParams屬性值為null或undefined
       myApp.createSearchParams = obj => {
@@ -696,7 +701,7 @@
           amenityId,
           name
         });
-        
+
 
         let checkbox = `
           <div class="form-check">
@@ -722,7 +727,64 @@
         renderCardList(roomtypes);
       }
 
-      console.log(searchKeywords);
+      myApp.scoresHandler = async function(e) {
+        let checked = e.target.checked;
+        let score = e.target.dataset.score;
+        searchKeywords.pageNumber = 1;
+
+        if(!checked) {
+
+          searchKeywords.scores = searchKeywords.scores.filter(originalScore => originalScore != score);
+
+          let scores =  [...filterCriteria.querySelectorAll('input[data-score]')];
+
+          let findScore = scores.find(originalScore => originalScore.dataset.score === score);
+          findScore?.parentElement.remove();
+          console.log(`score${score}`);
+          document.getElementById(`score${score}`).checked = false;
+
+          let response = await fetch('/booking/client/api/roomtype', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(searchKeywords)
+          });
+
+          let data = await response.json();
+          let roomtypes = data.content;
+
+          cardList.innerHTML = '';
+          renderCardList(roomtypes);
+
+          return;
+        }
+
+        searchKeywords.scores.push(score);
+
+        let checkbox = `
+          <div class="form-check">
+            <input class="form-check-input" onclick="myApp.scoresHandler(event)" checked type="checkbox" data-score="${score}" value="${score}">
+            <label class="form-check-label small">${score} 分</label>
+          </div>
+        `;
+
+        filterCriteria.innerHTML += checkbox;
+
+        let response = await fetch('/booking/client/api/roomtype', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(searchKeywords)
+        });
+
+        let data = await response.json();
+        let roomtypes = data.content;
+
+        cardList.innerHTML = '';
+        renderCardList(roomtypes);
+      }
 
       document.getElementById('searchKey').addEventListener('change', async e => {
         let keywords = e.target.value;

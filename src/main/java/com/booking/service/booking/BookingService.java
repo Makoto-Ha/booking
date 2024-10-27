@@ -26,6 +26,7 @@ import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
+import com.booking.bean.dto.user.UserDTO;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.BookingOrderItemId;
@@ -90,6 +91,7 @@ public class BookingService {
 	    // 創建訂單
 	    BookingOrder bo = new BookingOrder();
 	    BookingOrder saveBo = bookingRepo.save(bo);
+	    saveBo.setRoomtype(roomtype);
 	    User user = userRepo.findByUserAccount(loginAccount).orElse(null);
 
 	    if (user == null) {
@@ -155,7 +157,8 @@ public class BookingService {
 	 * @param bookingOrderDTO
 	 * @return
 	 */
-	public Result<PageImpl<BookingOrderDTO>> findBookingOrderAll(BookingOrderDTO bookingOrderDTO) {
+	public Result<Page<BookingOrderDTO>> findBookingOrderAll(BookingOrderDTO bookingOrderDTO) {
+		
 		// 獲取pageable
 		Pageable pageable = MyPageRequest.of(
 				bookingOrderDTO.getPageNumber(), 
@@ -171,8 +174,20 @@ public class BookingService {
 		List<BookingOrder> bookingOrders = page.getContent();
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bookingOrder : bookingOrders) {
+			
 			BookingOrderDTO responseBookingOrderDTO = new BookingOrderDTO();
 			BeanUtils.copyProperties(bookingOrder, responseBookingOrderDTO);
+			
+			Roomtype roomtype = bookingOrder.getRoomtype();
+			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+			BeanUtils.copyProperties(roomtype, roomtypeDTO);
+			responseBookingOrderDTO.setRoomtype(roomtypeDTO);
+			
+			User user = bookingOrder.getUser();
+			UserDTO userDTO = new UserDTO();
+			BeanUtils.copyProperties(user, userDTO);
+			bookingOrderDTO.setUser(userDTO);
+			
 			boDTOs.add(responseBookingOrderDTO);
 		}
 		
@@ -315,6 +330,8 @@ public class BookingService {
 			return Result.failure("查找不到訂單");
 		}
 		
+		User user = bookingOrder.getUser();
+		
 		List<BookingOrderItem> bois = bookingOrder.getBookingOrderItems();
 
 		if(bois.size() <= 0) {
@@ -351,6 +368,7 @@ public class BookingService {
 		bookingOrderInfo.put("bookingOrderItems", boiDTOs);
 		bookingOrderInfo.put("roomtype", roomtypeDTO);
 		bookingOrderInfo.put("createdDate", localDate);
+		bookingOrderInfo.put("user", user);
 		
 		return Result.success(bookingOrderInfo);
 	}

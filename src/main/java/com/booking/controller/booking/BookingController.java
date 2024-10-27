@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -63,13 +64,13 @@ public class BookingController {
 	@GetMapping
 	private String sendOrderPage(Model model) {
 		BookingOrderDTO bookingOrderDTO = new BookingOrderDTO();
-		Result<PageImpl<BookingOrderDTO>> findBookingOrderAllResult = bookingService.findBookingOrderAll(bookingOrderDTO);
+		Result<Page<BookingOrderDTO>> findBookingOrderAllResult = bookingService.findBookingOrderAll(bookingOrderDTO);
 		
 		if(findBookingOrderAllResult.isFailure()) {
 			return "";
 		}
 		
-		PageImpl<BookingOrderDTO> page = findBookingOrderAllResult.getData();
+		Page<BookingOrderDTO> page = findBookingOrderAllResult.getData();
 		model.addAttribute("page", page);
 		model.addAttribute("bookingOrder", bookingOrderDTO);
 		return "management-system/booking/order-list";
