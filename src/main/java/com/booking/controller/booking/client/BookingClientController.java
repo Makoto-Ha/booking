@@ -5,18 +5,25 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.booking.bean.dto.booking.BookingOrderDTO;
+import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
+import com.booking.bean.dto.user.UserDTO;
 import com.booking.bean.pojo.common.Amenity;
 import com.booking.service.booking.BookingService;
 import com.booking.service.booking.client.RoomtypeClientService;
 import com.booking.service.common.AmenityService;
+import com.booking.service.user.UserService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +36,9 @@ public class BookingClientController {
 	@Autowired
 	private AmenityService amenityService;
 	@Autowired
-	private BookingService bookingService;;
+	private BookingService bookingService;
+	@Autowired
+	private UserService userService;
 	
 	
 	/**
@@ -63,9 +72,9 @@ public class BookingClientController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/user/order/success")
-	private String sendOrderSuccess(HttpSession session, Model model) {
-		Integer bookingId = (Integer) session.getAttribute("bookingId");
+	@PostMapping("/user/order/success")
+	private String sendOrderSuccess(@SessionAttribute Integer bookingId, Model model) {
+		
 		Result<Map<String, Object>> findBookingInfoResult = bookingService.findBookingInfo(bookingId);
 		
 		if(findBookingInfoResult.isFailure()) {
@@ -98,7 +107,7 @@ public class BookingClientController {
 	 * @return
 	 */
 	@GetMapping("/room/detail")
-	public String sendRoomDetail(@RequestParam Integer roomtypeId, Model model) {
+	private String sendRoomDetail(@RequestParam Integer roomtypeId, Model model) {
 		Result<RoomtypeDTO> findByIdReseult = rtClientService.findById(roomtypeId);
 		RoomtypeDTO roomtype = findByIdReseult.getData();
 		model.addAttribute("roomtype", roomtype);
@@ -107,14 +116,42 @@ public class BookingClientController {
 
 	/**
 	 * 跳轉checkout-page頁面
-	 * 
+	 * @param roomtypeId
+	 * @param model
+	 * @param authentication
+	 * @return
 	 */
 	@GetMapping("/checkout")
-	public String sendCheckout(Integer roomtypeId, Model model) {
+	private String sendCheckout(Integer roomtypeId, Model model, Authentication authentication) {
+		String account = authentication.getName();
 		Result<RoomtypeDTO> findByIdResult = rtClientService.findById(roomtypeId);
+		Result<UserDTO> findUserDTOByAccountResult = userService.findUserDTOByAccount(account);
+		
+		if(findUserDTOByAccountResult.isFailure()) {
+			return "";
+		}
+		
+		UserDTO user = findUserDTOByAccountResult.getData();
+		
 		RoomtypeDTO roomtypeDTO = findByIdResult.getData();
 		model.addAttribute("roomtype", roomtypeDTO);
+		model.addAttribute("user", user);
 		return "/client/booking/checkout";
 	}
 	
+
+	@GetMapping("/ecpay")
+	private String sendEcpay(Model model, @SessionAttribute Integer bookingId) {
+		Result<Map<String, Object>> findBookingInfoResult = bookingService.findBookingInfo(bookingId);
+		Map<String, Object> bookingInfo = findBookingInfoResult.getData();
+		BookingOrderDTO boDTO = (BookingOrderDTO) bookingInfo.get("bookingOrder");
+		@SuppressWarnings("unchecked")
+		List<BookingOrderItemDTO> boiDTOs = (List<BookingOrderItemDTO>) bookingInfo.get("bookingOrderItems");
+		RoomtypeDTO roomtype = (RoomtypeDTO) bookingInfo.get("roomtype");
+		
+		
+		String ecpayForm = bookingService.createEcPay(boDTO, boiDTOs, roomtype);
+		model.addAttribute("ecpayForm", ecpayForm);
+		return "/client/booking/ecpay-checkout";
+	}
 }

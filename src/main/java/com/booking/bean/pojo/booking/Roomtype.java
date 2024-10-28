@@ -18,7 +18,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -84,8 +83,8 @@ public class Roomtype {
     )
     private List<Amenity> amenities = new ArrayList<>();
 	
-	@OneToOne(mappedBy = "roomtype")
-	private BookingOrder bookingOrder;
+	@OneToMany(mappedBy = "roomtype")
+	private List<BookingOrder> bookingOrder;
 
 	public Roomtype() {
 	}
@@ -226,11 +225,11 @@ public class Roomtype {
 		this.area = area;
 	}
 
-	public BookingOrder getBookingOrder() {
+	public List<BookingOrder> getBookingOrder() {
 		return bookingOrder;
 	}
 
-	public void setBookingOrder(BookingOrder bookingOrder) {
+	public void setBookingOrder(List<BookingOrder> bookingOrder) {
 		this.bookingOrder = bookingOrder;
 	}	
 

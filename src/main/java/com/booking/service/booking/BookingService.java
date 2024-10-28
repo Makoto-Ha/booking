@@ -45,6 +45,9 @@ import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
 
+import ecpay.payment.integration.AllInOne;
+import ecpay.payment.integration.domain.AioCheckOutALL;
+
 @Service
 public class BookingService {
 
@@ -100,6 +103,7 @@ public class BookingService {
 	    if (user == null) {
 	        return Result.failure("找不到使用者");
 	    }
+	    
 	    saveBo.setUser(user);
 
 	    // 創建訂單項目
@@ -178,6 +182,7 @@ public class BookingService {
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bookingOrder : bookingOrders) {
 			
+			System.out.println(bookingOrder);
 			BookingOrderDTO responseBookingOrderDTO = new BookingOrderDTO();
 			BeanUtils.copyProperties(bookingOrder, responseBookingOrderDTO);
 			
@@ -186,10 +191,12 @@ public class BookingService {
 			BeanUtils.copyProperties(roomtype, roomtypeDTO);
 			responseBookingOrderDTO.setRoomtype(roomtypeDTO);
 			
-			User user = bookingOrder.getUser();
-			UserDTO userDTO = new UserDTO();
-			BeanUtils.copyProperties(user, userDTO);
-			bookingOrderDTO.setUser(userDTO);
+//			User user = bookingOrder.getUser();
+//			
+//			
+//			UserDTO userDTO = new UserDTO();
+//			BeanUtils.copyProperties(user, userDTO);
+//			bookingOrderDTO.setUser(userDTO);
 			
 			boDTOs.add(responseBookingOrderDTO);
 		}
@@ -335,6 +342,9 @@ public class BookingService {
 		
 		User user = bookingOrder.getUser();
 		
+		UserDTO userDTO = new UserDTO();
+		BeanUtils.copyProperties(user, userDTO);
+		
 		List<BookingOrderItem> bois = bookingOrder.getBookingOrderItems();
 
 		if(bois.size() <= 0) {
@@ -371,7 +381,7 @@ public class BookingService {
 		bookingOrderInfo.put("bookingOrderItems", boiDTOs);
 		bookingOrderInfo.put("roomtype", roomtypeDTO);
 		bookingOrderInfo.put("createdDate", localDate);
-		bookingOrderInfo.put("user", user);
+		bookingOrderInfo.put("user", userDTO);
 		
 		return Result.success(bookingOrderInfo);
 	}
@@ -444,5 +454,31 @@ public class BookingService {
 		}
 		
 		return responseData;
+	}
+
+	public String createEcPay(BookingOrderDTO boDTO, List<BookingOrderItemDTO> boiDTOs, RoomtypeDTO roomtypeDTO) {
+		String orderNumber = boDTO.getOrderNumber();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+		String createdTime = boDTO.getCreatedTime().format(formatter);
+		String totalPrice = boDTO.getTotalPrice().toString();
+		String ItemName = boiDTOs.stream().map( boi -> {
+			String checkInDate = boi.getCheckInDate().toString();
+			String checkOutDate = boi.getCheckOutDate().toString();
+			return roomtypeDTO.getRoomtypeName() + " 預定日期: " + checkInDate + " " + "退房日期: " + checkOutDate;
+		}).collect(Collectors.joining("#"));
+		
+		
+		AllInOne ecpay = new AllInOne("");
+		AioCheckOutALL obj = new AioCheckOutALL();
+		obj.setMerchantID("3002599");
+		obj.setMerchantTradeNo(orderNumber);
+		obj.setMerchantTradeDate(createdTime);
+		obj.setTotalAmount(totalPrice);
+		obj.setTradeDesc("預定房型");
+		obj.setItemName(ItemName);
+		obj.setReturnURL("https://94d4-114-25-182-128.ngrok-free.app/booking/user/order/success");
+		obj.setOrderResultURL("https://94d4-114-25-182-128.ngrok-free.app/booking/user/order/success");
+		String form = ecpay.aioCheckOut(obj, null);
+		return form;
 	}
 }

@@ -407,12 +407,12 @@
           <div class="d-flex flex-column">
 
             <input class="form-control form-control-lg mt-3 outline-1 outline-success customer-blue-hover" type="text"
-              placeholder="用戶名" aria-label=".form-control-lg example">
+              placeholder="用戶名" aria-label=".form-control-lg example" th:value="${user.userAccount}">
 
             <input class="form-control form-control-lg mt-3 outline-1 outline-bluesubtle-color customer-blue-hover"
-              type="text" placeholder="電子信箱" aria-label=".form-control-lg example">
+              type="text" placeholder="電子信箱" aria-label=".form-control-lg example" th:value="${user.userMail}">
             <input class="form-control form-control-lg mt-3 outline-1 outline-bluesubtle-color customer-blue-hover"
-              type="text" placeholder="連絡電話" aria-label=".form-control-lg example">
+              type="text" placeholder="連絡電話" aria-label=".form-control-lg example" th:value="${user.userPhone}">
             <small class="my-3">如果您輸入電子信箱但未完成預訂，我們可能會向您發送提醒，以幫助您繼續完成預訂。</small>
             <input class="form-control form-control-lg outline-1 outline-success customer-blue-hover" type="text"
               placeholder="台灣" aria-label=".form-control-lg example">
@@ -504,7 +504,7 @@
 	  let result = await response.text();
 
 	  if(response.ok) {
-		location.href = '/booking/user/order/success';
+		location.href = '/booking/ecpay';
 		return;
 	  }
 	  

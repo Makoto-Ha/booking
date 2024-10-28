@@ -413,6 +413,8 @@
 		let bookedRoomtypes = [[${bookedRoomtypes}]];
 		let optionsData = bookedRoomtypes.slice(0, 3);
 		
+		console.log(bookedRoomtypes);
+		
 		options2 = {
 		  chart: {
 		    type: 'bar',
@@ -426,14 +428,14 @@
 		  },
 		  series: [{
 		    data: [{
-		      x: optionsData[0].roomtype.roomtypeName.slice(0,6),
-		      y: optionsData[0].bookedCount
+		      x: optionsData[0]?.roomtype.roomtypeName.slice(0,1) || '',
+		      y: optionsData[0]?.bookedCount
 		    }, {
-		      x: optionsData[1].roomtype.roomtypeName.slice(0,6),
-		      y: optionsData[1].bookedCount
+		      x: optionsData[1]?.roomtype.roomtypeName.slice(0,1) || '',
+		      y: optionsData[1]?.bookedCount
 		    }, {
-		      x: optionsData[2].roomtype.roomtypeName.slice(0,6),
-		      y: optionsData[2].bookedCount
+		      x: optionsData[2]?.roomtype?.roomtypeName.slice(0,1) || '',
+		      y: optionsData[2]?.bookedCount
 		    }]
 		  }]
 		}

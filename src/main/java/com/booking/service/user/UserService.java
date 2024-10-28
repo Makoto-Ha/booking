@@ -1,18 +1,14 @@
 package com.booking.service.user;
 
-import com.booking.bean.dto.attraction.AttractionDTO;
-import com.booking.bean.dto.user.UserDTO;
-import com.booking.bean.pojo.attraction.Attraction;
-import com.booking.bean.pojo.user.User;
-import com.booking.dao.attraction.AttractionRepository;
-import com.booking.dao.attraction.AttractionSpecification;
-import com.booking.dao.user.UserRepository;
-import com.booking.dao.user.UserSpecification;
-import com.booking.utils.DaoResult;
-import com.booking.utils.MyModelMapper;
-import com.booking.utils.MyPageRequest;
-import com.booking.utils.Result;
-import com.booking.utils.UploadImageFile;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,41 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.BeanUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.booking.bean.dto.attraction.AttractionDTO;
-import com.booking.bean.pojo.attraction.Attraction;
-import com.booking.dao.attraction.AttractionRepository;
-import com.booking.dao.attraction.AttractionSpecification;
+import com.booking.bean.dto.user.UserDTO;
+import com.booking.bean.pojo.user.User;
+import com.booking.dao.user.UserRepository;
+import com.booking.dao.user.UserSpecification;
 import com.booking.utils.DaoResult;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
@@ -101,6 +66,22 @@ public class UserService {
     public User findByUserAccount(String userAccount) {
         return userRepository.findByUserAccount(userAccount)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+    
+    /**
+     * 根據user的account查找UserDTO
+     * @param account
+     * @return
+     */
+    public Result<UserDTO> findUserDTOByAccount(String account) {
+    	User user = userRepository.findByUserAccount(account).orElse(null);
+    	if(user == null) {
+    		return Result.failure("根據使用者名稱，找不到使用者");
+    	}
+    	UserDTO userDTO = new UserDTO();
+    	BeanUtils.copyProperties(user, userDTO);
+    	
+    	return Result.success(userDTO);
     }
 
     public User findByUserMail(String userMail) {
