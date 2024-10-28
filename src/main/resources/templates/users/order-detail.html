@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>訂房訂單詳細資訊 - InstaStay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        nav > .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        nav .dropdown {
+            position: relative;
+        }
+        
+        nav .dropdown-menu {
+            margin-top: 0;
+            position: absolute;
+            right: 0;
+            left: auto;
+        }
+        
+        nav .nav-item.dropdown > .nav-link::after {
+            display: none;
+        }
+
+        .nav-link {
+            color: #000 !important;
+        }
+        
+        .nav-link:hover {
+            color: #000 !important;
+        }
+        
+        .dropdown-item {
+            color: #000 !important;
+        }
+
+        .navbar-brand {
+            color: #000 !important;
+        }
+        
+        .navbar-brand:hover {
+            color: #000 !important;
+        }
+
+        .bg-gradient {
+            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+        }
+
+        .rounded-4 {
+            border-radius: 1rem !important;
+        }
+
+        .rounded-top-4 {
+            border-top-left-radius: 1rem !important;
+            border-top-right-radius: 1rem !important;
+        }
+
+        .rounded-bottom-4 {
+            border-bottom-left-radius: 1rem !important;
+            border-bottom-right-radius: 1rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+        }
+
+        .info-box {
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
+            <div class="container-fluid">
+                <img th:src="@{/client/common/image/instastay-logo.png}" class="rounded me-2" style="width: 2.2rem;">
+                <a class="navbar-brand py-2" th:href="@{/}">InstaStay</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" 
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav w-100">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" th:href="@{/booking}">搜好房</a>
+                        </li>
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link" id="navbarDropdownMenuLink" role="button" aria-expanded="false">景點</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" th:href="@{/attraction}">推薦景點</a></li>
+                                <li><a class="dropdown-item" th:href="@{/packageTour}">套裝行程</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" th:href="@{/shop}">商城</a>
+                        </li>
+                        
+                        <!-- 已登入顯示 -->
+                        <li class="nav-item ms-auto d-flex align-items-center" sec:authorize="isAuthenticated()">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" 
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span th:with="principal=${#authentication.principal}">
+                                        <span th:if="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}" 
+                                              th:text="${principal.attributes.name}"></span>
+                                        <span th:unless="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}"
+                                              th:text="${@userService.findByUserAccount(principal.username).userName}"></span>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" th:href="@{/user/profile}">
+                                        <i class="bi bi-person me-2"></i>編輯會員資料</a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/user/orders}">
+                                        <i class="bi bi-receipt me-2"></i>會員訂單資訊</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" th:href="@{/auth/logout}">
+                                        <i class="bi bi-box-arrow-right me-2"></i>登出</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/user/orders}" class="text-decoration-none">
+                                <i class="bi bi-house-door me-1"></i>訂單列表
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">訂單詳細資訊</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="card border-0 rounded-4 shadow-lg" th:each="detail : ${orderDetails}">
+            <!-- 訂單標題區 -->
+            <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-house-heart fs-4 me-2"></i>
+                        <h5 class="mb-0">訂房訂單詳細資訊</h5>
+                    </div>
+                    <span class="badge rounded-pill px-4 py-2 fs-6" 
+                          th:classappend="${
+                              detail.status == 0 ? 'bg-warning' :
+                              detail.status == 1 ? 'bg-info' :
+                              detail.status == 2 ? 'bg-primary' :
+                              detail.status == 3 ? 'bg-success' :
+                              detail.status == 4 ? 'bg-secondary' :
+                              detail.status == 5 ? 'bg-danger' :
+                              detail.status == 6 ? 'bg-dark' : 'bg-secondary'
+                          }">
+                        <i class="bi" th:classappend="${
+                            detail.status == 0 ? 'bi-hourglass-split' :
+                            detail.status == 1 ? 'bi-credit-card' :
+                            detail.status == 2 ? 'bi-check-circle' :
+                            detail.status == 3 ? 'bi-house-check' :
+                            detail.status == 4 ? 'bi-check-all' :
+                            detail.status == 5 ? 'bi-x-circle' :
+                            detail.status == 6 ? 'bi-arrow-repeat' : 'bi-question-circle'
+                        }"></i>
+                        <span class="ms-1" th:text="${detail.statusName}"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <!-- 訂單基本資訊 -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-4 bg-light rounded-4 h-100 info-box">
+                            <h5 class="border-start border-4 border-primary ps-3 mb-4">
+                                <i class="bi bi-info-circle me-2"></i>訂單基本資訊
+                            </h5>
+                            <div class="ps-2">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-receipt text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">訂單編號</small>
+                                        <div class="fw-bold" th:text="${detail.orderNumber}"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-calendar-check text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">下單時間</small>
+                                        <div class="fw-bold" th:text="${#temporals.format(detail.orderDateTime, 'yyyy/MM/dd HH:mm')}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 住宿資訊 -->
+                    <div class="col-md-6">
+                        <div class="p-4 bg-light rounded-4 h-100 info-box">
+                            <h5 class="border-start border-4 border-primary ps-3 mb-4">
+                                <i class="bi bi-house me-2"></i>住宿資訊
+                            </h5>
+                            <div class="ps-2">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-calendar-plus text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">入住日期</small>
+                                        <div class="fw-bold" th:text="${#temporals.format(detail.checkInDate, 'yyyy/MM/dd')}"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-calendar-minus text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">退房日期</small>
+                                        <div class="fw-bold" th:text="${#temporals.format(detail.checkOutDate, 'yyyy/MM/dd')}"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-currency-dollar text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">房間價格</small>
+                                        <div class="fw-bold text-primary">
+                                            NT$ <span th:text="${#numbers.formatDecimal(detail.itemPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 價格摘要 -->
+                <div class="bg-gradient p-4 rounded-4 shadow-sm">
+                    <div class="row align-items-center">
+                        <div class="col text-end">
+                            <div class="text-muted mb-1">總金額</div>
+                            <div class="fs-4 fw-bold text-primary">
+                                NT$ <span th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片頁腳 -->
+            <div class="card-footer bg-white p-4 rounded-bottom-4 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a th:href="@{/user/orders}" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-arrow-left me-2"></i>返回列表
+                    </a>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" disabled th:if="${detail.status >= 4}">
+                            <i class="bi bi-check-circle me-2"></i>訂單已完成
+                        </button>
+                        <button class="btn btn-danger" disabled th:if="${detail.status == 5}">
+                            <i class="bi bi-x-circle me-2"></i>訂單已取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
