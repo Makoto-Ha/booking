@@ -19,10 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.booking.bean.dto.shopping.ProductDTO;
+import com.booking.bean.dto.shopping.ProductSalesDTO;
 import com.booking.bean.pojo.shopping.Product;
 import com.booking.bean.pojo.shopping.ProductCategory;
 import com.booking.dao.shopping.ProductRepository;
 import com.booking.dao.shopping.ProductSpecification;
+import com.booking.dao.shopping.ShopOrderItemRepository;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.MyPageRequest;
 import com.booking.utils.Result;
@@ -36,6 +38,14 @@ public class ProductService {
 
 	@Autowired
 	private ProductCategoryService productCategoryService;
+
+	@Autowired
+	private ShopOrderItemRepository shopOrderItemRepository;
+
+	// 商品銷量
+	public List<ProductSalesDTO> getProductSalesData() {
+		return shopOrderItemRepository.findProductSalesData();
+	}
 
 	/**
 	 * 單筆商品DTO
@@ -104,7 +114,7 @@ public class ProductService {
 		PageRequest newPageable = PageRequest.of(page.getNumber(), page.getSize(), page.getSort());
 
 		Page<ProductDTO> pageImpl = new PageImpl<>(productDTOs, newPageable, page.getTotalElements());
-		
+
 		return Result.success(pageImpl);
 	}
 
@@ -134,10 +144,11 @@ public class ProductService {
 	 * @return
 	 */
 	public Result<Page<ProductDTO>> findProductsByCategoryId(ProductDTO productDTO) {
-		
-		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10,productDTO.getSelectedSort(),productDTO.getAttrOrderBy());
-		
-		Page<ProductDTO> page = productRepository.findProductByCategoryIdWithPage(productDTO.getCategoryId(),pageable);
+
+		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10, productDTO.getSelectedSort(),
+				productDTO.getAttrOrderBy());
+
+		Page<ProductDTO> page = productRepository.findProductByCategoryIdWithPage(productDTO.getCategoryId(), pageable);
 
 		return Result.success(page);
 
@@ -152,7 +163,7 @@ public class ProductService {
 	 */
 	@Transactional
 	public Result<String> saveProduct(ProductDTO productDTO, MultipartFile imageFile) {
-		
+
 		Result<String> upload = UploadImageFile.upload(imageFile);
 		if (upload.isSuccess()) {
 			String originalFilename = imageFile.getOriginalFilename();
@@ -218,9 +229,9 @@ public class ProductService {
 		return Result.success("更新成功");
 	}
 
-	
-	// 圖片 ====================================================================================
-	
+	// 圖片
+	// ====================================================================================
+
 	/**
 	 * ID上傳圖片
 	 * 
@@ -228,7 +239,7 @@ public class ProductService {
 	 * @param productId
 	 * @return
 	 */
-	
+
 	public Result<String> uploadImageByProductId(MultipartFile imageFile, Integer productId) {
 		Product product = productRepository.findById(productId).orElse(null);
 		if (product == null) {
@@ -251,7 +262,7 @@ public class ProductService {
 	 * @param productId
 	 * @return
 	 */
-	
+
 	public Result<UrlResource> findImageByProductId(Integer productId) {
 		Product product = productRepository.findById(productId).orElse(null);
 		if (product == null) {

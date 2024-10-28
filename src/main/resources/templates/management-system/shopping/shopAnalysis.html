@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>booking-order-list</title>
+	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+	 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+ <style>
+    .chart-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap; 
+        gap: 20px;
+    }
+
+    .chart-item {
+        flex: 1 1 30%;
+        box-sizing: border-box;
+    }
+
+    .chart-item canvas {
+        width: 80% !important;
+        height: auto !important;
+    }
+
+    .chart-item h2 {
+        text-align: center;
+    }
+
+    .content-area {
+        padding: 20px;
+    }
+    
+</style>
+<body>
+
+	<div class="container">
+		<div th:replace="~{/management-system/common/sidebar}"></div>
+		<div class="main-content">
+			<div th:replace="~{/management-system/common/navbar}"></div>
+			<section class="main-list">
+				
+				<!-- ----------------跳轉----------------- -->
+				<div class="content-area-pages">
+					<button class="content-area-page" data-url="/booking/management/product" style=" height: 50px;">商品</button>
+					<button class="content-area-page" data-url="/booking/management/productCategory" style="height: 50px;">商品分類</button>
+					<button class="content-area-page" data-url="/booking/management/shopOrder" style="height: 50px;">訂單</button>
+					<button class="content-area-page" data-url="/booking/management/analysis" style="height: 50px;">後臺分析</button>
+				</div>
+
+				<!-- 分析表 -->
+				<div class="content-area">
+    				<div class="chart-container">
+     				   <div class="chart-item">
+          				  <h2>商品销量分析</h2>
+          				  <canvas id="productSalesChart"></canvas>
+				        </div>
+				        <div class="chart-item">
+				            <h2>每月订单数量分析</h2>
+				            <canvas id="monthlyOrderChart"></canvas>
+				        </div>
+				    </div>
+				</div>
+			</section>
+		</div>
+	</div>
+<script th:src="@{/management-system/common/js/index.js}"></script>
+<script th:inline="javascript">
+   
+    var productSalesData = /*[[${productSalesData}]]*/ [];
+    var monthlyOrderData = /*[[${monthlyOrderData}]]*/ [];
+    
+   
+    var productNames = productSalesData.map(function(item) {
+        return item.productName;
+    });
+    var salesQuantities = productSalesData.map(function(item) {
+        return item.salesQuantity;
+    });
+
+    // 繪製商品銷量圖表
+    var ctx1 = document.getElementById('productSalesChart').getContext('2d');
+    var productSalesChart = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+        labels: productNames,
+        datasets: [{
+            label: '商品銷量',
+            data: salesQuantities,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: '商品銷量分析'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `銷量: ${context.parsed.x}`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            },
+            y: {
+                ticks: {
+                    autoSkip: false
+                }
+            }
+        }
+    }
+});
+
+    // 解析每月訂單數據
+    var months = monthlyOrderData.map(function(item) {
+        return item.month;
+    });
+    var orderCounts = monthlyOrderData.map(function(item) {
+        return item.orderCount;
+    });
+
+    // 繪製每月訂單數量圖表
+    var ctx2 = document.getElementById('monthlyOrderChart').getContext('2d');
+   var monthlyOrderChart = new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: months,
+        datasets: [{
+            label: '訂單數量',
+            data: orderCounts,
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF',
+                '#FF9F40',
+                '#C9CBCF',
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: '每月訂單數量'
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

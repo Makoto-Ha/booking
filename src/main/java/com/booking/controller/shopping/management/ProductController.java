@@ -3,6 +3,7 @@ package com.booking.controller.shopping.management;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.booking.bean.dto.shopping.MonthlyOrderDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
+import com.booking.bean.dto.shopping.ProductSalesDTO;
 import com.booking.service.shopping.management.ProductService;
+import com.booking.service.shopping.management.ShopOrderService;
 import com.booking.utils.Result;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +36,19 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private ShopOrderService shopOrderService;
+
+	@GetMapping("/analysis")
+	public String analysis(Model model) {
+		List<ProductSalesDTO> productSalesData = productService.getProductSalesData();
+		List<MonthlyOrderDTO> monthlyOrderData = shopOrderService.getMonthlyOrderData();
+
+		model.addAttribute("productSalesData", productSalesData);
+		model.addAttribute("monthlyOrderData", monthlyOrderData);
+		return "/management-system/shopping/shopAnalysis";
+	}
 
 	/**
 	 * 首頁
@@ -70,7 +87,6 @@ public class ProductController {
 		model.addAttribute("page", page);
 		return "/management-system/shopping/product-list";
 	}
-
 
 	@PostMapping("/create")
 	private String saveProduct(ProductDTO productDTO, @RequestParam(required = false) MultipartFile imageFile) {
@@ -133,7 +149,7 @@ public class ProductController {
 	private String sendSelectPage() {
 		return "/management-system/shopping/product-select";
 	}
-	
+
 	/**
 	 * 前往建立頁面 return
 	 */
@@ -141,15 +157,15 @@ public class ProductController {
 	private String sendCreatePage() {
 		return "/management-system/shopping/product-create";
 	}
-	
+
 	/**
 	 * 前往編輯頁面 return
 	 */
 	@GetMapping("/edit/page")
 	private String sendOrderEditPage(@RequestParam Integer productId, HttpSession session, Model model) {
-		
+
 		session.setAttribute("productId", productId);
-		
+
 		Result<ProductDTO> result = productService.findProductDTOById(productId);
 		if (result.isFailure()) {
 			return "";

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.booking.bean.dto.shopping.MonthlyOrderDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.bean.pojo.user.User;
@@ -31,6 +32,13 @@ public class ShopOrderService {
 
 	private UserService userService;
 
+	
+	
+	// 每月訂單
+	public List<MonthlyOrderDTO> getMonthlyOrderData() {
+		return shopOrderRepository.findMonthlyOrderData();
+	}
+
 	/**
 	 * 多重查詢
 	 * 
@@ -41,8 +49,8 @@ public class ShopOrderService {
 	public Result<PageImpl<ShopOrderDTO>> findOrders(ShopOrderDTO shopOrderDTO) {
 
 		Specification<ShopOrder> spec = Specification
-				.where(ShopOrderSpecification.orderIdContains(shopOrderDTO.getOrderId())).and(ShopOrderSpecification
-                        .userIdContains(shopOrderDTO.getUserId()));
+				.where(ShopOrderSpecification.orderIdContains(shopOrderDTO.getOrderId()))
+				.and(ShopOrderSpecification.userIdContains(shopOrderDTO.getUserId()));
 
 		Pageable pageable = MyPageRequest.of(shopOrderDTO.getPageNumber(), 10, shopOrderDTO.getSelectedSort(),
 				shopOrderDTO.getAttrOrderBy());

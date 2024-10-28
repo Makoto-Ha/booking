@@ -53,6 +53,7 @@ public class ShopCartService {
 		
 	    if (shopCart == null) {
 	        shopCart = new ShopCart();
+	        shopCart.setCartState(1);
 	        userRepository.findById(userId).ifPresent(shopCart::setUser);
 	        shopCartRepository.save(shopCart);
 	    }
