@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商城訂單詳細資訊 - InstaStay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        nav > .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        nav .dropdown {
+            position: relative;
+        }
+        
+        nav .dropdown-menu {
+            margin-top: 0;
+            position: absolute;
+            right: 0;
+            left: auto;
+        }
+        
+        nav .nav-item.dropdown > .nav-link::after {
+            display: none;
+        }
+
+        .nav-link {
+            color: #000 !important;
+        }
+        
+        .nav-link:hover {
+            color: #000 !important;
+        }
+        
+        .dropdown-item {
+            color: #000 !important;
+        }
+
+        .navbar-brand {
+            color: #000 !important;
+        }
+        
+        .navbar-brand:hover {
+            color: #000 !important;
+        }
+
+        .order-detail-card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+        }
+
+        .detail-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .detail-section:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
+            <div class="container-fluid">
+                <img th:src="@{/client/common/image/instastay-logo.png}" class="rounded me-2" style="width: 2.2rem;">
+                <a class="navbar-brand py-2" th:href="@{/}">InstaStay</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" 
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav w-100">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" th:href="@{/}">搜好房</a>
+                        </li>
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link" id="navbarDropdownMenuLink" role="button" aria-expanded="false">景點</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" th:href="@{/attraction}">推薦景點</a></li>
+                                <li><a class="dropdown-item" th:href="@{/packageTour}">套裝行程</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" th:href="@{/shop}">商城</a>
+                        </li>
+                        
+                        <!-- 已登入顯示 -->
+                        <li class="nav-item ms-auto d-flex align-items-center" sec:authorize="isAuthenticated()">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" 
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span th:with="principal=${#authentication.principal}">
+                                        <span th:if="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}" 
+                                              th:text="${principal.attributes.name}"></span>
+                                        <span th:unless="${principal instanceof T(org.springframework.security.oauth2.core.user.OAuth2User)}"
+                                              th:text="${@userService.findByUserAccount(principal.username).userName}"></span>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" th:href="@{/user/profile}">
+                                        <i class="bi bi-person me-2"></i>編輯會員資料</a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:href="@{/user/orders}">
+                                        <i class="bi bi-receipt me-2"></i>會員訂單資訊</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" th:href="@{/auth/logout}">
+                                        <i class="bi bi-box-arrow-right me-2"></i>登出</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/user/orders}" class="text-decoration-none">訂單列表</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">訂單詳細資訊</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="card order-detail-card">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">商城訂單詳細資訊</h5>
+                    <div>
+                        <span class="status-badge bg-primary me-2">
+                            <span th:text="${
+                                shopOrder.orderState == 1 ? '待處理' :
+                                shopOrder.orderState == 2 ? '處理中' :
+                                shopOrder.orderState == 3 ? '已出貨' :
+                                shopOrder.orderState == 4 ? '已完成' :
+                                shopOrder.orderState == 5 ? '已取消' : '未知狀態'
+                            }"></span>
+                        </span>
+                        <span class="status-badge" th:classappend="${
+                            shopOrder.paymentState == 1 ? 'bg-warning' :
+                            shopOrder.paymentState == 2 ? 'bg-success' :
+                            shopOrder.paymentState == 3 ? 'bg-danger' :
+                            shopOrder.paymentState == 4 ? 'bg-dark' : 'bg-secondary'
+                        }">
+                            <span th:text="${
+                                shopOrder.paymentState == 1 ? '未付款' :
+                                shopOrder.paymentState == 2 ? '已付款' :
+                                shopOrder.paymentState == 3 ? '付款失敗' :
+                                shopOrder.paymentState == 4 ? '已退款' : '未知狀態'
+                            }"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <!-- 訂單基本資訊 -->
+                <div class="detail-section">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><i class="bi bi-receipt me-2"></i><strong>訂單編號：</strong>
+                                <span th:text="${shopOrder.orderId}"></span>
+                            </p>
+                            <p class="mb-2"><i class="bi bi-calendar-event me-2"></i><strong>下單日期：</strong>
+                                <span th:text="${#temporals.format(shopOrder.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+                            </p>
+                            <p class="mb-2"><i class="bi bi-credit-card me-2"></i><strong>付款方式：</strong>
+                                <span th:text="${shopOrder.paymentMethod == 1 ? '綠界支付' : 'Line Pay'}"></span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><i class="bi bi-currency-dollar me-2"></i><strong>總金額：</strong>
+                                <span class="text-primary fw-bold">NT$ 
+                                    <span th:text="${#numbers.formatDecimal(shopOrder.orderPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 收件人資訊 -->
+                <div class="detail-section">
+                    <h6 class="mb-3"><i class="bi bi-person me-2"></i>收件人資訊</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>收件人：</strong>
+                                <span th:text="${shopOrder.receiverName}"></span>
+                            </p>
+                            <p class="mb-2"><strong>電話：</strong>
+                                <span th:text="${shopOrder.receiverPhone}"></span>
+                            </p>
+                            <p class="mb-2"><strong>地址：</strong>
+                                <span th:text="${shopOrder.receiverAddress}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 商品明細 -->
+                <div class="detail-section">
+                    <h6 class="mb-3"><i class="bi bi-list-check me-2"></i>商品明細</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>商品名稱</th>
+                                    <th>數量</th>
+                                    <th>單價</th>
+                                    <th>小計</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${shopOrder.orderItems}">
+                                    <td th:text="${item.productName}"></td>
+                                    <td th:text="${item.quantity}"></td>
+                                    <td>NT$ <span th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}"></span></td>
+                                    <td>NT$ <span th:text="${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 0, 'POINT')}"></span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>總計：</strong></td>
+                                    <td class="text-primary fw-bold">
+                                        NT$ <span th:text="${#numbers.formatDecimal(shopOrder.orderPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer bg-light p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a th:href="@{/user/orders}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>返回訂單列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

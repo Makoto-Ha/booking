@@ -3,6 +3,8 @@ package com.booking.service.user;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,5 +119,29 @@ public class UserOrderService {
             case 2 -> "Line Pay";
             default -> "未知方式";
         };
+    }
+    
+    public List<Map> getBookingOrderDetailsBasic(Integer userId) {
+        String jpql = """
+            SELECT NEW map(
+                b.bookingId as orderId,
+                b.totalPrice as price,
+                b.orderStatus as status,
+                b.orderNumber as orderNumber,
+                b.createdTime as orderDateTime,
+                boi.checkInDate as checkInDate,
+                boi.checkOutDate as checkOutDate,
+                boi.price as itemPrice,
+                boi.bookingStatus as bookingStatus
+            )
+            FROM BookingOrder b
+            JOIN b.bookingOrderItems boi
+            WHERE b.user.userId = :userId
+            ORDER BY b.createdTime DESC
+            """;
+        
+        return entityManager.createQuery(jpql, Map.class)
+                           .setParameter("userId", userId)
+                           .getResultList();
     }
 }

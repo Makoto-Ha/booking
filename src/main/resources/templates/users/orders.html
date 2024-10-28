@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 <meta charset="UTF-8">
-<title>會員資料</title>
+<title>會員訂單資訊 - InstaStay</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <style>
@@ -121,7 +121,7 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav w-100">
                         <li class="nav-item mx-2">
-                            <a class="nav-link active" aria-current="page" href="#">搜好房</a>
+                            <a class="nav-link" th:href="@{/}">搜好房</a>
                         </li>
                         <li class="nav-item dropdown mx-2">
                             <a class="nav-link" id="navbarDropdownMenuLink" role="button" aria-expanded="false">景點</a>
@@ -134,12 +134,6 @@
                             <a class="nav-link" th:href="@{/shop}">商城</a>
                         </li>
                         
-                        <!-- 未登入顯示 -->
-                        <li class="nav-item ms-auto d-flex" sec:authorize="!isAuthenticated()">
-                            <a th:href="@{/auth/register}" class="btn btn-outline-primary border-radius-22px mx-2">我是新朋友</a>
-                            <a class="nav-link" th:href="@{/auth/login}">登入</a>
-                        </li>
-
                         <!-- 已登入顯示 -->
                         <li class="nav-item ms-auto d-flex align-items-center" sec:authorize="isAuthenticated()">
                             <div class="dropdown">
@@ -172,170 +166,245 @@
         </nav>
     </header>
 
-
-<div class="container my-5">
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold mb-4">會員訂單資訊</h2>
+    <!-- Main Content -->
+   <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="fw-bold mb-4">會員訂單資訊</h2>
+            </div>
         </div>
-    </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <ul class="nav nav-tabs border-0" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="booking-tab" data-bs-toggle="tab" href="#booking-orders">
-                        <i class="bi bi-house-door me-2"></i>住宿訂單
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="shop-tab" data-bs-toggle="tab" href="#shop-orders">
-                        <i class="bi bi-shop me-2"></i>商城訂單
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="tour-tab" data-bs-toggle="tab" href="#tour-orders">
-                        <i class="bi bi-compass me-2"></i>套裝行程訂單
-                    </a>
-                </li>
-            </ul>
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <ul class="nav nav-tabs border-0" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="booking-tab" data-bs-toggle="tab" href="#booking-orders">
+                            <i class="bi bi-house-door me-2"></i>住宿訂單
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="shop-tab" data-bs-toggle="tab" href="#shop-orders">
+                            <i class="bi bi-shop me-2"></i>商城訂單
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tour-tab" data-bs-toggle="tab" href="#tour-orders">
+                            <i class="bi bi-compass me-2"></i>套裝行程訂單
+                        </a>
+                    </li>
+                </ul>
 
-            <div class="tab-content p-4">
-                <!-- 住宿訂單 -->
-                <div class="tab-pane fade show active" id="booking-orders">
-                    <div class="table-responsive">
-                        <table class="table bg-white">
-                            <thead>
-                                <tr>
-                                    <th>訂單編號</th>
-                                    <th>訂單時間</th>
-                                    <th>訂單狀態</th>
-                                    <th>總金額</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="order : ${bookingOrders}" class="order-card">
-                                    <td>
-                                        <span class="fw-medium" th:text="${order.get('orderNumber')}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="badge" th:classappend="${
-                                            order.get('status') == 0 ? 'bg-warning' :
-                                            order.get('status') == 1 ? 'bg-info' :
-                                            order.get('status') == 2 ? 'bg-primary' :
-                                            order.get('status') == 3 ? 'bg-success' :
-                                            order.get('status') == 4 ? 'bg-secondary' :
-                                            order.get('status') == 5 ? 'bg-danger' :
-                                            order.get('status') == 6 ? 'bg-dark' : 'bg-secondary'
-                                        }" th:text="${order.get('statusName')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="text-primary fw-medium">
-                                            NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="tab-content p-4">
+                    <!-- 住宿訂單 -->
+                    <div class="tab-pane fade show active" id="booking-orders">
+                        <div class="table-responsive">
+                            <table class="table bg-white">
+                                <thead>
+                                    <tr>
+                                        <th>訂單編號</th>
+                                        <th>訂單時間</th>
+                                        <th>訂單狀態</th>
+                                        <th>總金額</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${bookingOrders}" class="order-card">
+                                        <td>
+                                            <span class="fw-medium" th:text="${order.get('orderNumber')}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge" th:classappend="${
+                                                order.get('status') == 0 ? 'bg-warning' :
+                                                order.get('status') == 1 ? 'bg-info' :
+                                                order.get('status') == 2 ? 'bg-primary' :
+                                                order.get('status') == 3 ? 'bg-success' :
+                                                order.get('status') == 4 ? 'bg-secondary' :
+                                                order.get('status') == 5 ? 'bg-danger' :
+                                                order.get('status') == 6 ? 'bg-dark' : 'bg-secondary'
+                                            }" th:text="${order.get('statusName')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="text-primary fw-medium">
+                                                NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/user/orders/' + ${order.get('orderId')}}" 
+                                               class="btn btn-outline-primary btn-detail">
+                                                <i class="bi bi-info-circle me-1"></i>查看詳細
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <!-- 商城訂單 -->
+                    <div class="tab-pane fade" id="shop-orders">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">訂單編號</th>
+                                        <th scope="col">訂單時間</th>
+                                        <th scope="col">訂單狀態</th>
+                                        <th scope="col">付款狀態</th>
+                                        <th scope="col" class="text-end">總金額</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${shopOrders}" class="order-card">
+                                        <td>
+                                            <a th:href="@{/user/shop/detail/{id}(id=${order.get('orderId')})}"
+                                               class="text-decoration-none">
+                                                <span class="fw-medium" th:text="${order.get('orderId')}"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary" th:text="${order.get('orderStatusName')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge" th:classappend="${
+                                                order.get('paymentStatus') == 1 ? 'bg-warning' :
+                                                order.get('paymentStatus') == 2 ? 'bg-success' :
+                                                order.get('paymentStatus') == 3 ? 'bg-danger' :
+                                                order.get('paymentStatus') == 4 ? 'bg-dark' : 'bg-secondary'
+                                            }" th:text="${order.get('paymentStatusName')}"></span>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="text-primary fw-medium">
+                                                NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${shopOrders.empty}">
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class="bi bi-inbox text-muted fs-1 d-block mb-2"></i>
+                                            <p class="text-muted mb-0">目前沒有商城訂單</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 套裝行程訂單 -->
+                    <div class="tab-pane fade" id="tour-orders">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">訂單編號</th>
+                                        <th scope="col">訂單時間</th>
+                                        <th scope="col">出發日期</th>
+                                        <th scope="col">訂單狀態</th>
+                                        <th scope="col" class="text-end">總金額</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${packageTourOrders}" class="order-card">
+                                        <td>
+                                            <span class="fw-medium" th:text="${order.get('orderId')}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
+                                            </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(order.get('travelDate'), 'yyyy/MM/dd')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge" th:classappend="${
+                                                order.get('status') == 0 ? 'bg-warning' :
+                                                order.get('status') == 1 ? 'bg-info' :
+                                                order.get('status') == 2 ? 'bg-primary' :
+                                                order.get('status') == 3 ? 'bg-success' :
+                                                order.get('status') == 4 ? 'bg-secondary' :
+                                                order.get('status') == 5 ? 'bg-danger' :
+                                                order.get('status') == 6 ? 'bg-dark' : 'bg-secondary'
+                                            }" th:text="${order.get('statusName')}"></span>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="text-primary fw-medium">
+                                                NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${packageTourOrders.empty}">
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class="bi bi-inbox text-muted fs-1 d-block mb-2"></i>
+                                            <p class="text-muted mb-0">目前沒有套裝行程訂單</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- 商城訂單 -->
-                <div class="tab-pane fade" id="shop-orders">
-                    <div class="table-responsive">
-                        <table class="table bg-white">
-                            <thead>
-                                <tr>
-                                    <th>訂單編號</th>
-                                    <th>訂單時間</th>
-                                    <th>訂單狀態</th>
-                                    <th>付款狀態</th>
-                                    <th>總金額</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="order : ${shopOrders}" class="order-card">
-                                    <td>
-                                        <span class="fw-medium" th:text="${order.get('orderId')}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-primary" th:text="${order.get('orderStatusName')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="badge" th:classappend="${
-                                            order.get('paymentStatus') == 1 ? 'bg-warning' :
-                                            order.get('paymentStatus') == 2 ? 'bg-success' :
-                                            order.get('paymentStatus') == 3 ? 'bg-danger' :
-                                            order.get('paymentStatus') == 4 ? 'bg-dark' : 'bg-secondary'
-                                        }" th:text="${order.get('paymentStatusName')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="text-primary fw-medium">
-                                            NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 套裝行程訂單 -->
-                <div class="tab-pane fade" id="tour-orders">
-                    <div class="table-responsive">
-                        <table class="table bg-white">
-                            <thead>
-                                <tr>
-                                    <th>訂單編號</th>
-                                    <th>訂單時間</th>
-                                    <th>出發日期</th>
-                                    <th>訂單狀態</th>
-                                    <th>總金額</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="order : ${packageTourOrders}" class="order-card">
-                                    <td>
-                                        <span class="fw-medium" th:text="${order.get('orderId')}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${#temporals.format(order.get('orderDateTime'), 'yyyy/MM/dd HH:mm')}"></span>
-                                    </td>
-                                    <td>
-                                        <span th:text="${#temporals.format(order.get('travelDate'), 'yyyy/MM/dd')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="badge" th:classappend="${
-                                            order.get('status') == 0 ? 'bg-warning' :
-                                            order.get('status') == 1 ? 'bg-info' :
-                                            order.get('status') == 2 ? 'bg-primary' :
-                                            order.get('status') == 3 ? 'bg-success' :
-                                            order.get('status') == 4 ? 'bg-secondary' :
-                                            order.get('status') == 5 ? 'bg-danger' :
-                                            order.get('status') == 6 ? 'bg-dark' : 'bg-secondary'
-                                        }" th:text="${order.get('statusName')}"></span>
-                                    </td>
-                                    <td>
-                                        <span class="text-primary fw-medium">
-                                            NT$ <span th:text="${#numbers.formatDecimal(order.get('price'), 0, 'COMMA', 0, 'POINT')}"></span>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <!-- 無訂單時的提示 -->
+        <div th:if="${bookingOrders.empty and shopOrders.empty and packageTourOrders.empty}" 
+             class="text-center py-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-5">
+                    <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted mb-3">目前沒有任何訂單</h4>
+                    <p class="text-muted mb-4">開始探索並建立您的第一筆訂單吧！</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a th:href="@{/}" class="btn btn-primary">
+                            <i class="bi bi-search me-2"></i>搜尋住宿
+                        </a>
+                        <a th:href="@{/shop}" class="btn btn-outline-primary">
+                            <i class="bi bi-shop me-2"></i>前往商城
+                        </a>
+                        <a th:href="@{/packageTour}" class="btn btn-outline-primary">
+                            <i class="bi bi-compass me-2"></i>瀏覽行程
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 保持當前選中的標籤頁在頁面重新整理後仍然顯示
+        document.addEventListener('DOMContentLoaded', function() {
+            // 從 URL 中獲取標籤頁參數
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTab = urlParams.get('tab');
+            
+            if (activeTab) {
+                // 找到對應的標籤頁並激活它
+                const tab = document.querySelector(`#${activeTab}-tab`);
+                if (tab) {
+                    const bsTab = new bootstrap.Tab(tab);
+                    bsTab.show();
+                }
+            }
+
+            // 為標籤頁添加點擊事件
+            const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabs.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(event) {
+                    // 更新 URL 中的標籤頁參數
+                    const tabId = event.target.id.replace('-tab', '');
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('tab', tabId);
+                    window.history.pushState({}, '', newUrl);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
