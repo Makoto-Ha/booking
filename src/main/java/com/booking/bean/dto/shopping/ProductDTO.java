@@ -74,7 +74,10 @@ public class ProductDTO {
 		this.productImage = productImage;
 	}
 
-
+	public ProductDTO(String productName, Integer productSales) {
+        this.productName = productName;
+        this.productSales = productSales;
+    }
 	
 
 }

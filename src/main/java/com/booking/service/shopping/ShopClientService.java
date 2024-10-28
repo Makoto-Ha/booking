@@ -68,7 +68,7 @@ public class ShopClientService {
 	public String ecpayCheckout(ShopOrderDTO orderDTO, PayDetailDTO payDetailDTO, Integer userId) {
 
 		AllInOne all = new AllInOne("");
-		String ngrokUrl = "https://7516-118-168-74-241.ngrok-free.app" + "/booking/shop/api/checkout/success";
+		String ngrokUrl = "https://b87b-116-241-202-168.ngrok-free.app" + "/booking/shop/api/checkout/success";
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
 		String tradeDesc = orderDTO.getOrderId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		String itemNames = orderDTO.getOrderItems().stream().map(ShopOrderItemDTO::getProductName)
@@ -233,11 +233,24 @@ public class ShopClientService {
 		ShopOrder order = option.get();
 		order.setOrderState(2);
 
+		// 更新產品庫存和銷量
+		List<ShopOrderItem> orderItems = order.getItems();
+		for (ShopOrderItem orderItem : orderItems) {
+			Product product = orderItem.getProduct();
+			Integer quantity = orderItem.getQuantity();
+			
+			product.setProductInventory(product.getProductInventory()-quantity);
+			product.setProductSales(product.getProductSales()+quantity);
+			
+			productRepository.save(product);
+		}
+		
 		// 在支付確認後移除對應的購物車項目
 		List<Integer> productIds = order.getItems().stream().map(item -> item.getProduct().getProductId())
 				.collect(Collectors.toList());
 
 		ShopCart cart = shopCartRepository.findByUser_UserId(userId);
+		
 		if (cart != null) {
 			List<ShopCartItem> cartItems = cart.getCartItems();
 			List<ShopCartItem> itemsToRemove = cartItems.stream()

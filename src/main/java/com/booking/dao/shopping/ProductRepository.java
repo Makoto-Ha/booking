@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.booking.bean.dto.shopping.ProductDTO;
+import com.booking.bean.dto.shopping.ProductSalesDTO;
 import com.booking.bean.pojo.shopping.Product;
 import com.booking.utils.Result;
 
@@ -38,4 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
 	@Query("SELECT new com.booking.bean.dto.shopping.ProductDTO(p.productId, p.productName, p.productDescription, p.productPrice, p.productSales, p.productInventory, p.productState, p.category.categoryId, p.category.categoryName,p.updatedAt,p.createdAt, p.productImage) FROM Product p ORDER BY p.productSales DESC")
 	List<ProductDTO> findTopSellingProductDTOs(Pageable pageable);
 
+	 @Query("SELECT new com.booking.bean.dto.shopping.ProductSalesDTO(soi.product.productName, SUM(soi.quantity)) " +
+	           "FROM ShopOrderItem soi GROUP BY soi.product.productName")
+	    List<ProductSalesDTO> findProductSalesData();
 }
