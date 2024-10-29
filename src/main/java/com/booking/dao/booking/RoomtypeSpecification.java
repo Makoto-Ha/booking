@@ -391,15 +391,13 @@ public class RoomtypeSpecification {
 	}
 
 	// 根據查找房型人數
-	public static Specification<Roomtype> hasPeopleNumber(Integer pageNumber) {
+	public static Specification<Roomtype> hasPeopleNumber(Integer peopleNumber) {
 		return (Root<Roomtype> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(pageNumber == null) {
+			if(peopleNumber == null) {
 				return builder.conjunction();
 			}
 			
-			System.out.println(pageNumber +"=====================");
-			
-			return builder.equal(root.get("roomtypeCapacity"), pageNumber);
+			return builder.equal(root.get("roomtypeCapacity"), peopleNumber);
 		};
 	}
 	
