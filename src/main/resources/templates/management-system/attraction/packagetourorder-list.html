@@ -35,9 +35,6 @@
 							<option value="true" th:selected="${packageTourOrderDTO.selectedSort}">降冪</option>
 						</select>
 					</div>
-					<div class="search-bar-addbtn">
-						<button class="action-btn add-btn">新增</button>
-					</div>
 				</div>
 
 				<div class="content-area-pages">
@@ -127,8 +124,6 @@
 							</div>
 							<div class="item-actions">
 								<button class="action-btn check-btn">查看</button>
-								<button class="action-btn edit-btn"
-									th:attr="data-order-id=${packageTourOrderDTO.orderId}">編輯</button>
 								<button class="action-btn delete-btn">刪除</button>
 							</div>
 						</li>
@@ -145,82 +140,5 @@
 		</div>
 	</div>
 	<script th:src="@{/management-system/common/js/index.js}"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.check-btn').forEach(button => {
-				button.addEventListener('click', function (e) {
-					e.stopPropagation();
-					let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
-					let hrefSplit = location.pathname.split('/');
-					let lastHref = hrefSplit[3];
-
-					deleteNullValue(requestParameters);
-					let queryString = new URLSearchParams(requestParameters).toString();
-					fetch(`/booking/api/${lastHref}/${currentListId}?${queryString}`)
-						.then(res => res.json())
-						.then(data => {
-							document.getElementById('modal-orderId').value = data.orderId;
-							document.getElementById('modal-userId').value = data.userId;
-							document.getElementById('modal-packageTourName').value = data.packageTourName;
-
-							let orderStatusText;
-							switch (data.orderStatus) {
-								case 1: orderStatusText = '未付款'; break;
-								case 2: orderStatusText = '已付款'; break;
-								default: orderStatusText = data.orderStatus;
-							}
-							document.getElementById('modal-orderStatus').value = orderStatusText;
-
-							document.getElementById('modal-orderDateTime').value = data.orderDateTime;
-							document.getElementById('modal-orderPrice').value = data.orderPrice;
-							document.getElementById('modal-travelDate').value = data.travelDate;
-						});
-
-					document.getElementById('modal-overlay').style.display = 'flex';
-				});
-			});
-
-			document.querySelectorAll('.edit-btn').forEach(button => {
-				button.addEventListener('click', function (e) {
-					e.preventDefault();
-					let orderId = this.getAttribute('data-order-id');
-					window.location.href = `/booking/management/packageTourOrder/edit/page?orderId=${orderId}`;
-				});
-			});
-			
-			let currentDeleteOrderId = null;
-
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    currentDeleteOrderId = this.closest('.list-item').dataset.currentListId;
-                    document.getElementById('delete-overlay').style.display = 'flex';
-                });
-            });
-
-            document.getElementById('confirmDelBtn').addEventListener('click', function() {
-                fetch('/booking/management/packageTourOrder/delete', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: 'orderId=' + currentDeleteOrderId
-                })
-                .then(response => response.text())
-                .then(message => {
-                    alert(message);
-                    if (message.includes('成功')) {
-                        document.querySelector(`[data-current-list-id="${currentDeleteOrderId}"]`).remove();
-                    }
-                })
-                .catch(() => alert('刪除操作出錯，請稍後再試'))
-                .finally(() => document.getElementById('delete-overlay').style.display = 'none');
-            });
-
-            document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
-                document.getElementById('delete-overlay').style.display = 'none';
-            });
-			
-
-		});
-	</script>
 </body>
 </html>
