@@ -1,10 +1,9 @@
 package com.booking.controller.attraction.client;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.booking.bean.dto.attraction.PackageTourDTO;
 import com.booking.bean.dto.attraction.PackageTourOrderDTO;
-import com.booking.service.attraction.PackageTourService;
 import com.booking.service.attraction.client.PackageTourOrderClientService;
 import com.booking.utils.Result;
 
@@ -28,48 +25,27 @@ public class PackageTourOrderClientController {
     @Autowired
     private PackageTourOrderClientService packageTourOrderClientService;
     
-    @Autowired
-    private PackageTourService packageTourService;
-
-    /**
-     * 顯示付款確認頁面
-     */
-    @GetMapping("/attraction/order-confirm")
-    public String showPaymentConfirm(@RequestParam Integer packageTourId,
-                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate travelDate,
-                                   Model model) {
-        Result<PackageTourDTO> result = packageTourService.findPackageTourById(packageTourId);
-        if(result.isSuccess()) {
-            model.addAttribute("packageTour", result.getData());
-            model.addAttribute("travelDate", travelDate);
-            return "client/attraction/order-confirm";
-        }
-        return "redirect:/packageTour";
-    }
 
     /**
      * 創建訂單並跳轉到綠界支付
      */
     @PostMapping("/create")
-    public String createOrder(@ModelAttribute PackageTourOrderDTO orderDTO) {
-        Result<PackageTourOrderDTO> result = packageTourOrderClientService.createOrder(orderDTO);
+    public String createOrder(@ModelAttribute PackageTourOrderDTO orderDTO, Authentication authentication, Model model) {
+    	String account = authentication.getName();
+        Result<PackageTourOrderDTO> result = packageTourOrderClientService.createOrder(orderDTO, account);
         
         if (result.isSuccess()) {
             // 進行綠界支付
-            String form = packageTourOrderClientService.ecpayCheckout(result.getData(), orderDTO.getUserId());
-            return form;
+            String form = packageTourOrderClientService.ecpayCheckout(result.getData());
+            
+            model.addAttribute("ecpayForm", form);
+            
+            return "/client/attraction/ecpay-checkout";
         }
         
         return "redirect:/packageTour";
     }
 
-    /**
-     * 顯示付款處理中頁面
-     */
-    @GetMapping("/attraction/order-processing")
-    public String showPaymentProcessing() {
-        return "client/attraction/order-processing";
-    }
 
     /**
      * 處理綠界支付回調
@@ -81,7 +57,7 @@ public class PackageTourOrderClientController {
         Integer orderId = Integer.parseInt(customField2);
         
         if (packageTourOrderClientService.handlePaymentSuccess(orderId)) {
-            return "1|OK";
+            return "redirect:/packageTourOrder/attraction/order-success?orderId=" + orderId;
         }
         return "0|Error";
     }
