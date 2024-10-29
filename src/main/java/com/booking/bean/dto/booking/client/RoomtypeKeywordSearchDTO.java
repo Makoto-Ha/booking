@@ -8,7 +8,7 @@ public class RoomtypeKeywordSearchDTO {
 	private String roomtypeName;
 	private String roomtypeDistrict;
 	private String roomtypeCity;
-	private String peopleNumber;
+	private Integer peopleNumber;
 	private Integer pageNumber = 1;
 
 	public RoomtypeKeywordSearchDTO() {
@@ -61,12 +61,12 @@ public class RoomtypeKeywordSearchDTO {
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	
-	public String getPeopleNumber() {
+
+	public Integer getPeopleNumber() {
 		return peopleNumber;
 	}
 
-	public void setPeopleNumber(String peopleNumber) {
+	public void setPeopleNumber(Integer peopleNumber) {
 		this.peopleNumber = peopleNumber;
 	}
 

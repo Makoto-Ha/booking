@@ -391,7 +391,7 @@
 		    height: 400
 		  },
 		  series: [{
-		  	  name: '查看近十日預定情況',
+		  	  name: '預定次數',
 			  data: countBookings
 			}],
 		    xaxis: {
@@ -427,6 +427,7 @@
 		    }
 		  },
 		  series: [{
+		  	name: '預定次數',
 		    data: [{
 		      x: optionsData[0]?.roomtype.roomtypeName.slice(0,1) || '',
 		      y: optionsData[0]?.bookedCount
@@ -457,7 +458,7 @@
 		    height: 400
 		  },
 		  series: [{
-		    name: 'Series 1',
+		    name: '預定次數',
 		    data: capacities
 		  }],
 		  labels: ['單人房', '雙人房', '三人房', '四人房', '五人房', '六人房'],

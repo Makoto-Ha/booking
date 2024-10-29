@@ -1,5 +1,6 @@
 package com.booking.controller.booking;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +73,6 @@ public class BookingController {
 		
 		Page<BookingOrderDTO> page = findBookingOrderAllResult.getData();
 		model.addAttribute("page", page);
-		System.out.println(page.getContent());
 		model.addAttribute("bookingOrder", bookingOrderDTO);
 		return "management-system/booking/order-list";
 	}
@@ -226,12 +226,16 @@ public class BookingController {
 	@PostMapping("/checkOut")
 	@ResponseBody
 	private ResponseEntity<?> checkOut(@RequestBody BookingOrderItemId id) {
-		Result<Object> checkOutResult = bookingService.checkOut(id);
+		Result<Integer> checkOutResult = bookingService.checkOut(id);
 		String message = checkOutResult.getMessage();
 		if(checkOutResult.isFailure()) {
 			return ResponseEntity.badRequest().body(message);
 		}
+		Integer checkOutStatus = checkOutResult.getData();
 		String checkOutTime = (String) checkOutResult.getExtraData("checkOutTime");
-		return ResponseEntity.ok(checkOutTime);
+		Map<String, Object> resData = new HashMap<>();
+		resData.put("checkOutTime", checkOutTime);
+		resData.put("checkOutStatus", checkOutStatus);
+		return ResponseEntity.ok(resData);
 	}
 }

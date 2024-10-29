@@ -155,7 +155,7 @@ public class BookingService {
 		LocalDate checkInDate = boi.getCheckInDate();
 		LocalDate checkOutDate = boi.getCheckOutDate();
 		Integer roomtypePrice = roomtype.getRoomtypePrice();
-		long daysBetween = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+		long daysBetween = ChronoUnit.DAYS.between(checkInDate, checkOutDate) + 1;
 		return daysBetween * roomtypePrice;
 	}
 
@@ -424,13 +424,13 @@ public class BookingService {
 	 * @return
 	 */
 	@Transactional
-	public Result<Object> checkOut(BookingOrderItemId id) {
+	public Result<Integer> checkOut(BookingOrderItemId id) {
 		BookingOrderItem boi = boiRepo.findById(id).orElse(null);
 		
 		if(boi == null) {
 			return Result.failure("獲取訂單項目失敗");
 		}
-		
+	
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String checkOutTime = now.format(formatter);
@@ -438,7 +438,20 @@ public class BookingService {
 		boi.setCheckOutTime(now);
 		boi.setBookingStatus(3);
 		
-		return Result.success("修改訂單項目，退房請求成功").setExtraData("checkOutTime", checkOutTime);
+		BookingOrder bookingOrder = boi.getBookingOrder();
+		List<BookingOrderItem> bois = bookingOrder.getBookingOrderItems();
+		
+		for(BookingOrderItem bookingOrderItem : bois) {
+			Integer bookingStatus = bookingOrderItem.getBookingStatus();
+			if(bookingStatus != 3) {
+				return Result.success(1).setExtraData("checkOutTime", checkOutTime);
+			}
+		}
+		
+		
+		bookingOrder.setOrderStatus(2);
+		
+		return Result.success(2).setExtraData("checkOutTime", checkOutTime);
 	}
 	
 	/**
@@ -463,17 +476,22 @@ public class BookingService {
 		
 		return responseData;
 	}
-
-	public String createEcPay(BookingOrderDTO boDTO, List<BookingOrderItemDTO> boiDTOs, RoomtypeDTO roomtypeDTO) {
-		String orderNumber = boDTO.getOrderNumber();
+	
+	/**
+	 * 綠界付款
+	 * @param bookingId
+	 * @return
+	 */
+	public String createEcPay(Integer bookingId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingId).orElse(null);
+		Roomtype roomtype = bookingOrder.getRoomtype();
+		
+		
+		String orderNumber = bookingOrder.getOrderNumber();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
-		String createdTime = boDTO.getCreatedTime().format(formatter);
-		String totalPrice = boDTO.getTotalPrice().toString();
-		String ItemName = boiDTOs.stream().map( boi -> {
-			String checkInDate = boi.getCheckInDate().toString();
-			String checkOutDate = boi.getCheckOutDate().toString();
-			return roomtypeDTO.getRoomtypeName() + " 預定日期: " + checkInDate + " " + "退房日期: " + checkOutDate;
-		}).collect(Collectors.joining("#"));
+		String createdTime = bookingOrder.getCreatedTime().format(formatter);
+		String totalPrice = bookingOrder.getTotalPrice() < 1 ? "1" : bookingOrder.getTotalPrice().toString();
+		String ItemName = roomtype.getRoomtypeName();
 		
 		
 		AllInOne ecpay = new AllInOne("");
@@ -488,5 +506,12 @@ public class BookingService {
 		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
 		String form = ecpay.aioCheckOut(obj, null);
 		return form;
+	}
+
+	@Transactional
+	public String setOrderStatus(Integer bookingId) {
+		BookingOrder bookingOrder = bookingRepo.findById(bookingId).orElse(null);
+		bookingOrder.setOrderStatus(1);
+		return "更新訂單狀態成功";
 	}
 }

@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.booking.bean.dto.booking.BookingOrderDTO;
-import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
 import com.booking.bean.dto.booking.client.RoomtypeKeywordSearchDTO;
 import com.booking.bean.dto.user.UserDTO;
@@ -72,6 +70,9 @@ public class BookingClientController {
 	 */
 	@PostMapping("/user/order/success")
 	private String sendOrderSuccess(@SessionAttribute Integer bookingId, Model model) {
+		String message = bookingService.setOrderStatus(bookingId);
+		
+		System.out.println(message);
 		
 		Result<Map<String, Object>> findBookingInfoResult = bookingService.findBookingInfo(bookingId);
 		
@@ -137,18 +138,15 @@ public class BookingClientController {
 		return "/client/booking/checkout";
 	}
 	
-
+	/**
+	 * 綠界付款
+	 * @param model
+	 * @param bookingId
+	 * @return
+	 */
 	@GetMapping("/ecpay")
 	private String sendEcpay(Model model, @SessionAttribute Integer bookingId) {
-		Result<Map<String, Object>> findBookingInfoResult = bookingService.findBookingInfo(bookingId);
-		Map<String, Object> bookingInfo = findBookingInfoResult.getData();
-		BookingOrderDTO boDTO = (BookingOrderDTO) bookingInfo.get("bookingOrder");
-		@SuppressWarnings("unchecked")
-		List<BookingOrderItemDTO> boiDTOs = (List<BookingOrderItemDTO>) bookingInfo.get("bookingOrderItems");
-		RoomtypeDTO roomtype = (RoomtypeDTO) bookingInfo.get("roomtype");
-		
-		
-		String ecpayForm = bookingService.createEcPay(boDTO, boiDTOs, roomtype);
+		String ecpayForm = bookingService.createEcPay(bookingId);
 		model.addAttribute("ecpayForm", ecpayForm);
 		return "/client/booking/ecpay-checkout";
 	}

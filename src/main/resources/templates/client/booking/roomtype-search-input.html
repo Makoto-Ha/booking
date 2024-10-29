@@ -336,18 +336,26 @@
 
           <ul class="dropdown-menu w-100 p-0" aria-labelledby="searchPeopleNumber">
             <li><a class="dropdown-item py-2" href="#" data-people="1">單人旅遊</a></li>
-            <li>
-              <hr class="dropdown-divider my-0">
-            </li>
-            <li><a class="dropdown-item py-2" href="#" data-people="2">雙人旅遊</a></li>
-            <li>
-              <hr class="dropdown-divider my-0">
-            </li>
-            <li><a class="dropdown-item py-2" href="#" data-people="-1">家庭旅遊</a></li>
-            <li>
-              <hr class="dropdown-divider my-0">
-            </li>
-            <li><a class="dropdown-item py-2" href="#" data-people="-2">團體旅遊</a></li>
+              <li>
+                <hr class="dropdown-divider my-0">
+              </li>
+              <li><a class="dropdown-item py-2" href="#" data-people="2">雙人旅遊</a></li>
+              <li>
+                <hr class="dropdown-divider my-0">
+              </li>
+              <li><a class="dropdown-item py-2" href="#" data-people="3">三人旅遊</a></li>
+              <li>
+                <hr class="dropdown-divider my-0">
+              </li>
+              <li><a class="dropdown-item py-2" href="#" data-people="4">四人旅遊</a></li>
+              <li>
+                <hr class="dropdown-divider my-0">
+              </li>
+              <li><a class="dropdown-item py-2" href="#" data-people="5">五人旅遊</a></li>
+              <li>
+                <hr class="dropdown-divider my-0">
+              </li>
+              <li><a class="dropdown-item py-2" href="#" data-people="6">六人旅遊</a></li>
           </ul>
         </div>
         <button id="submit" class="flex-grow-1 search-btn-bgc text-white h-50px px-4 border-0 rounded">搜尋好價</button>
@@ -688,11 +696,9 @@
         let params = new URLSearchParams({
           searchStartDate,
           searchEndDate,
-          peopleNumberParam,
+          peopleNumber: peopleNumberParam,
           ...submitParams
         });
-
-        console.log(searchInputType);
 
         console.log({
           searchStartDate,

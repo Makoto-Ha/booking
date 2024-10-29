@@ -60,6 +60,7 @@ public class RoomtypeClientService {
 		Specification<Roomtype> spec = Specification.where(RoomtypeSpecification.nameContains(roomtypeSearchDTO.getRoomtypeName()))			
 										.and(RoomtypeSpecification.likeCityContains(roomtypeSearchDTO.getRoomtypeCity()))								
 										.and(RoomtypeSpecification.likeDistrictContains(roomtypeSearchDTO.getRoomtypeDistrict()))
+										.and(RoomtypeSpecification.hasPeopleNumber(roomtypeSearchDTO.getPeopleNumber()))
 										.and(RoomtypeSpecification.availableRoomTypes(roomtypeSearchDTO.getSearchStartDate(), roomtypeSearchDTO.getSearchEndDate()));
 		// 獲取pageable
 		PageRequest pageable = PageRequest.of(roomtypeSearchDTO.getPageNumber() - 1, 10);

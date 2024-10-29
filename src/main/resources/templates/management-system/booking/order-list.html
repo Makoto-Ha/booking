@@ -2,137 +2,137 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<title>booking-order-list</title>
-<link rel="stylesheet"
-	th:href="@{/management-system/common/css/index.css}">
-<style>
-ul {
-	list-style: none;
-	padding-left: 0;
-}
+	<meta charset="UTF-8">
+	<title>booking-order-list</title>
+	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+	<style>
+		ul {
+			list-style: none;
+			padding-left: 0;
+		}
 
-li {
-	box-sizing: border-box;
-}
+		li {
+			box-sizing: border-box;
+		}
 
-#order {
-	max-width: 1200px;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	border-radius: 22px;
-}
+		#order {
+			max-width: 1200px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			border-radius: 22px;
+		}
 
-.modal {
-	width: 1200px;
-}
+		.modal {
+			width: 1200px;
+		}
 
-#modal-title {
-	margin-bottom: 0;
-}
+		#modal-title {
+			margin-bottom: 0;
+		}
 
-#order-items {
-	display: flex;
-	flex-wrap: wrap;
-}
+		#order-items {
+			display: flex;
+			flex-wrap: wrap;
+		}
 
-#order-items>li:nth-child(2n) {
-	border: 1px solid #ccc !important;
-	border-left: 0 !important;
-	border-top: 0 !important;
-}
+		#order-items>li:nth-child(2n) {
+			border: 1px solid #ccc !important;
+			border-left: 0 !important;
+			border-top: 0 !important;
+		}
 
-#order-items>li:nth-child(2n+1) {
-	border: 1px solid #ccc !important;
-	border-top: 0 !important;
-}
+		#order-items>li:nth-child(2n+1) {
+			border: 1px solid #ccc !important;
+			border-top: 0 !important;
+		}
 
-#order-items>li:nth-child(1) {
-	border: 1px solid #ccc !important;
-}
+		#order-items>li:nth-child(1) {
+			border: 1px solid #ccc !important;
+		}
 
-#order-items>li:nth-child(2) {
-	border: 1px solid #ccc !important;
-	border-left: 0 !important;
-}
+		#order-items>li:nth-child(2) {
+			border: 1px solid #ccc !important;
+			border-left: 0 !important;
+		}
 
-#order-items .order-item {
-	display: flex;
-	width: 50%;
-	padding: 1rem;
-}
+		#order-items .order-item {
+			display: flex;
+			width: 50%;
+			padding: 1rem;
+		}
 
-#order-items .order-item img {
-	margin-right: 1rem;
-}
+		#order-items .order-item img {
+			margin-right: 1rem;
+		}
 
-#order-items .order-infos {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-}
+		#order-items .order-infos {
+			display: flex;
+			flex-wrap: wrap;
+			width: 100%;
+		}
 
-#order-items .order-infos .order-info {
-	width: 100%;
-}
+		#order-items .order-infos .order-info {
+			width: 100%;
+		}
 
-.check-order {
-	background-color: #6c757d;
-	color: white;
-	transition: .2s;
-}
+		.check-order {
+			background-color: #6c757d;
+			color: white;
+			transition: .2s;
+		}
 
-.check-order:hover {
-	opacity: .8;
-}
+		.check-order:hover {
+			opacity: .8;
+		}
 
-.check-date {
-	background-color: #f8f9fa;
-	text-wrap: nowrap;
-	width: 70px !important;
-	height: 40px !important;
-	margin: 0 !important;
-	transition: .2s;
-}
+		.check-date {
+			background-color: #f8f9fa;
+			text-wrap: nowrap;
+			width: 70px !important;
+			height: 40px !important;
+			margin: 0 !important;
+			transition: .2s;
+		}
 
-.check-in-date {
-	border: 1px solid blue !important;
-	color: blue;
-}
+		.check-in-date {
+			border: 1px solid blue !important;
+			color: blue;
+		}
 
-.check-in-date:hover {
-	background-color: blue;
-	color: white;
-}
+		.check-in-date:hover {
+			background-color: blue;
+			color: white;
+		}
 
-.check-out-date {
-	border: 1px solid red !important;
-	color: red;
-}
+		.check-out-date {
+			border: 1px solid red !important;
+			color: red;
+		}
 
-.check-out-date:hover {
-	background-color: red;
-	color: white;
-}
+		.check-out-date:hover {
+			background-color: red;
+			color: white;
+		}
 
-.order-completle {
-	display: block;
-	padding: 5px;
-	text-wrap: nowrap;
-	border: 1px solid green;
-	color: green;
-}
+		.order-completle {
+			display: block;
+			padding: 5px;
+			text-wrap: nowrap;
+			border: 1px solid green;
+			color: green;
+		}
 
-.aspect-ratio-3-4 {
-	aspect-ratio: 3/4;
-}
+		.aspect-ratio-3-4 {
+			aspect-ratio: 3/4;
+		}
 
-.object-fit-cover {
-	object-fit: cover;bb
-}
-</style>
+		.object-fit-cover {
+			object-fit: cover;
+			bb
+		}
+	</style>
 </head>
 
 <body>
@@ -147,28 +147,21 @@ li {
 					<button id="search-btn">進階搜索</button>
 					<div class="pagination">
 						<button id="prev-page">上一頁</button>
-						<input type="number" id="page-input"
-							th:value="${page.pageable.pageNumber}+1" min="1"> / <span
-							id="total-pages"wd
-							th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
+						<input type="number" id="page-input" th:value="${page.pageable.pageNumber}+1" min="1"> / <span
+							id="total-pages" wd th:text="${page.totalPages == 0 ? 1 : page.totalPages}"></span>
 						<button id="next-page">下一頁</button>
 					</div>
 					<div class="attr-order-by">
 						<select class="attr-select-order-by" id="select-order-by">
-							<option value="orderNumber"
-								th:selected="orderNumber == ${bookingOrder.attrOrderBy}">訂單編號
+							<option value="orderNumber" th:selected="orderNumber == ${bookingOrder.attrOrderBy}">訂單編號
 							</option>
-							<option value="orderStatus"
-								th:selected="orderStatus == ${bookingOrder.attrOrderBy}">訂單狀態
+							<option value="orderStatus" th:selected="orderStatus == ${bookingOrder.attrOrderBy}">訂單狀態
 							</option>
-							<option value="totalPrice"
-								th:selected="totalPrice == ${bookingOrder.attrOrderBy}">總金額
+							<option value="totalPrice" th:selected="totalPrice == ${bookingOrder.attrOrderBy}">總金額
 							</option>
-							<option value="updatedTime"
-								th:selected="updatedTime == ${bookingOrder.attrOrderBy}">更新時間
+							<option value="updatedTime" th:selected="updatedTime == ${bookingOrder.attrOrderBy}">更新時間
 							</option>
-							<option value="createdTime"
-								th:selected="createdTime == ${bookingOrder.attrOrderBy}">創建時間
+							<option value="createdTime" th:selected="createdTime == ${bookingOrder.attrOrderBy}">創建時間
 							</option>
 						</select> <select class="attr-select-order-by" id="select-sort">
 							<option value="false" th:selected="${bookingOrder.selectedSort}">升冪</option>
@@ -178,14 +171,11 @@ li {
 				</div>
 
 				<div class="content-area-pages">
-					<button class="content-area-page"
-						data-url="/booking/management/booking/dashboard">儀錶板</button>
-					<button class="content-area-page"
-						data-url="/booking/management/booking" style="height: 50px;">訂單</button>
-					<button class="content-area-page"
-						data-url="/booking/management/roomtype">房間類型</button>
-					<button class="content-area-page"
-						data-url="/booking/management/room">房間</button>
+					<button class="content-area-page" data-url="/booking/management/booking/dashboard">儀錶板</button>
+					<button class="content-area-page" data-url="/booking/management/booking"
+						style="height: 50px;">訂單</button>
+					<button class="content-area-page" data-url="/booking/management/roomtype">房間類型</button>
+					<button class="content-area-page" data-url="/booking/management/room">房間</button>
 				</div>
 				<!-- 管理頁面內容 -->
 				<section id="content" class="content-area">
@@ -216,123 +206,126 @@ li {
 							<div class="item-content">
 								<span class="item-title" th:text="${bookingOrder.orderNumber}"></span>
 								<div class="listInfo-group">
-									<span class="item-info" style="color: darkred">下單帳號</span> 
+									<span class="item-info" style="color: darkred">下單帳號</span>
 									<span th:text="${bookingOrder.user.userAccount}"></span>
-									<span style="color: #e3e3e373"> ┃ </span> 
-									<span class="item-info" style="color: darkred">訂單總價錢</span> 
-									<span th:text="${bookingOrder.totalPrice}"></span> 
-									<span style="color: #e3e3e373"> ┃ </span> 
-									<span class="item-info" style="color: darkred">預定房型名稱</span> 
-									<span th:text=${#strings.abbreviate(bookingOrder.roomtype.roomtypeName,10)}></span> 
-									<span style="color: #e3e3e373"> ┃ </span> 
-									<span class="item-info" style="color: darkred">訂單狀態</span> 
-									<span th:text="${bookingOrder.orderStatus}"></span>
-										
-										
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">訂單總價錢</span>
+									<span th:text="${bookingOrder.totalPrice}"></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">預定房型名稱</span>
+									<span th:text=${#strings.abbreviate(bookingOrder.roomtype.roomtypeName,10)}></span>
+									<span style="color: #e3e3e373"> ┃ </span>
+									<span class="item-info" style="color: darkred">訂單狀態</span>
+									<span
+										th:text="${bookingOrder.orderStatus == 0 ? '待付款' : bookingOrder.orderStatus == 1 ? '已付款' : '已完成'}"></span>
 								</div>
 							</div>
 							<div class="item-actions">
 								<button class="action-btn check-order">查看</button>
-								<button class="action-btn delete-btn">刪除</button>
+								<button th:if="${bookingOrder.orderStatus != 2}"
+									class="action-btn delete-btn">刪除</button>
 							</div>
 						</li>
 					</ul>
 				</section>
 
 				<script>
-				
-				{
-					let orderDetail = document.getElementById('order-detail');
-		
-					function bindEvent() {
-						document.querySelectorAll('.check-order').forEach(checkOrder => {
-						checkOrder.addEventListener('click',
-							async e => {
-								e.stopPropagation();
-								let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
-								document.getElementById('modal-overlay').style.display = 'flex';
-								orderDetail.innerHTML = '';
-								let response = await fetch(`/booking/api/bookingInfo/${currentListId}`);
-								let bookingInfo = await response.json();
-								console.log(bookingInfo);
-			
-								let { bookingOrder, bookingOrderItems, roomtype, createdDate, user } = bookingInfo;
-			
-								let orderDetailHTML = `
-									<hr>
-									<p>
-										<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
-									</p>
-									<p>
-										<strong>下單帳號：<span style="color: red">${user.userAccount}</span></strong>
-									</p>
-									<p>
-										<strong>下單日期：<span style="color: red">${createdDate}</span></strong>
-									</p>
-									<p>
-										<strong>付款方式：<span style="color: red">信用卡</span></strong>
-									</p>
-									<hr>
-									<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
-									<ul id="order-items">
-										${bookingOrderItems.map(({checkInDate, checkOutDate, checkInTime, checkOutTime, bookingStatus, price, room, id}) => {
+
+					{
+						let orderDetail = document.getElementById('order-detail');
+
+						function bindEvent() {
+							document.querySelectorAll('.check-order').forEach(checkOrder => {
+								checkOrder.addEventListener('click',
+									async e => {
+										e.stopPropagation();
+										checkOrderButton = e.target;
+										let currentListId = e.target.parentElement.parentElement.dataset.currentListId;
+										document.getElementById('modal-overlay').style.display = 'flex';
+										orderDetail.innerHTML = '';
+										let response = await fetch(`/booking/api/bookingInfo/${currentListId}`);
+										let bookingInfo = await response.json();
+										console.log(bookingInfo);
+
+										let { bookingOrder, bookingOrderItems, roomtype, createdDate, user } = bookingInfo;
+
+										let orderDetailHTML = `
+												<hr>
+												<p>
+													<strong>訂單編號：<span style="color: red">${bookingOrder.orderNumber}</span></strong>
+												</p>
+												<p>
+													<strong>下單帳號：<span style="color: red">${user.userAccount}</span></strong>
+												</p>
+												<p>
+													<strong>下單日期：<span style="color: red">${createdDate}</span></strong>
+												</p>
+												<p>
+													<strong>付款方式：<span style="color: red">信用卡</span></strong>
+												</p>
+												<hr>
+												<h3 style="margin-bottom: 0; margin-top: 0;">預定的房型</h3>
+												<ul id="order-items">
+													${bookingOrderItems.map(({ checkInDate, checkOutDate, checkInTime, checkOutTime, bookingStatus, price, room, id }) => {
 											return `
-												<li class="order-item">
-													<div style="width:50%; margin-right: 1rem;">
-														<img style="width: 100%;" class="object-fit-cover aspect-ratio-3-4" src="/booking/management/roomtype/image/${roomtype.roomtypeId}" alt="img">
-													</div>
-													<div class="order-infos">
-														<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
-														<div class="order-info"><span style="color: blue">房間號碼</span> ${room.roomNumber}</div>
-														<div class="order-info"><span style="color: blue">總金額</span> ${price}</div>
-														<div class="order-info"><span style="color: blue">入住日期</span> ${checkInDate}</div>
-														<div class="order-info"><span style="color: blue">退房日期</span> ${checkOutDate}</div>
-														<div class="order-info">
-															<span style="color: blue" class="check-in-time">確切入住時間 
-																<span style="color: black">${checkInTime == null ? '未入住' : checkInTime}
-															</span> 
-														</div>
-														<div class="order-info">
-															<span style="color: blue" class="check-out-time">確切退房時間
-																<span style="color: black"> 
-																	${checkOutTime == null ? '未退房' : checkOutTime}
-																</span>
-															</span> 
-														</div>
-													</div>
-													<div style="margin-left: 3px; margin-top: auto;" data-bookingid="${id.bookingId}" data-roomid="${id.roomId}">
-														${bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` :  ''}
-														${bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
-														${bookingStatus == 3 ? `<span class="order-completle">已完成</span>` : ''}
-													</div>
-												</li>
-											`;
+															<li class="order-item">
+																<div style="width:50%; margin-right: 1rem;">
+																	<img style="width: 100%;" class="object-fit-cover aspect-ratio-3-4" src="/booking/management/roomtype/image/${roomtype.roomtypeId}" alt="img">
+																</div>
+																<div class="order-infos">
+																	<div class="order-info"><span style="color: blue">房型名稱</span> ${roomtype.roomtypeName}</div>
+																	<div class="order-info"><span style="color: blue">房間號碼</span> ${room.roomNumber}</div>
+																	<div class="order-info"><span style="color: blue">總金額</span> ${price}</div>
+																	<div class="order-info"><span style="color: blue">入住日期</span> ${checkInDate}</div>
+																	<div class="order-info"><span style="color: blue">退房日期</span> ${checkOutDate}</div>
+																	<div class="order-info">
+																		<span style="color: blue" class="check-in-time">確切入住時間 
+																			<span style="color: black">${checkInTime == null ? '未入住' : checkInTime}
+																		</span> 
+																	</div>
+																	<div class="order-info">
+																		<span style="color: blue" class="check-out-time">確切退房時間
+																			<span style="color: black"> 
+																				${checkOutTime == null ? '未退房' : checkOutTime}
+																			</span>
+																		</span> 
+																	</div>
+																</div>
+																<div style="margin-left: 3px; margin-top: auto;" data-bookingid="${id.bookingId}" data-roomid="${id.roomId}">
+																	${bookingStatus == 1 ? `<button class="check-date check-in-date" onclick="checkIn(event)">入住</button>` : ''}
+																	${bookingStatus == 2 ? `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>` : ''}
+																	${bookingStatus == 3 ? `<span class="order-completle">已完成</span>` : ''}
+																</div>
+															</li>
+														`;
 										}).join("")}				
-									</ul>
-									<hr>
-									<p>
-										<strong style="font-size: 1.3rem;">總金額：<span style="color: red">${bookingOrder.totalPrice}</span></strong>
-									</p>
-								`;
-			
-								orderDetail.innerHTML = orderDetailHTML;
-							}
-						)
-					});
+												</ul>
+												<hr>
+												<p>
+													<strong style="font-size: 1.3rem;">總金額：<span style="color: red">${bookingOrder.totalPrice}</span></strong>
+												</p>
+											`;
+
+										orderDetail.innerHTML = orderDetailHTML;
+									}
+								)
+							});
+						}
 					}
-							}
-							
-							async function checkIn(e) {
+
+					var checkOrderButton;
+
+					async function checkIn(e) {
 						let target = e.target;
-			
+
 						let bookingId = target.parentElement.dataset.bookingid;
 						let roomId = target.parentElement.dataset.roomid;
-			
+
 						let bookingOrderItemId = {
 							bookingId,
 							roomId
 						}
-			
+
 						let response = await fetch('/booking/management/booking/checkIn', {
 							method: 'POST',
 							headers: {
@@ -340,30 +333,30 @@ li {
 							},
 							body: JSON.stringify(bookingOrderItemId)
 						});
-			
+
 						let checkInTime = await response.text();
-			
+
 						let checkOutButton = `<button class="check-date check-out-date" onclick="checkOut(event)">退房</button>`;
-			
+
 						let parent = target.parentElement.parentElement;
 						parent.querySelector('.check-in-time').innerHTML = `確切入住時間</span> <span style="color: black">${checkInTime}</span>
-						`;
-			
+								`;
+
 						let checkDate = target.parentElement;
 						checkDate.innerHTML = checkOutButton;
 					}
-			
+
 					async function checkOut(e) {
 						let target = e.target;
-			
+
 						let bookingId = target.parentElement.dataset.bookingid;
 						let roomId = target.parentElement.dataset.roomid;
-			
+
 						let bookingOrderItemId = {
 							bookingId,
 							roomId
 						}
-			
+
 						let response = await fetch('/booking/management/booking/checkOut', {
 							method: 'POST',
 							headers: {
@@ -371,21 +364,30 @@ li {
 							},
 							body: JSON.stringify(bookingOrderItemId)
 						});
-			
-						let checkOutTime = await response.text();
-			
+
+						let data = await response.json();
+
+						let checkOutTime = data.checkOutTime;
+						let checkOutStatus = data.checkOutStatus;
+
 						let parent = target.parentElement.parentElement;
-			
-						console.log(parent);
-			
+
 						parent.querySelector('.check-out-time').innerHTML = `確切退房時間 <span style="color: black">${checkOutTime}</span>
 						`;
-						
+
 						let checkDate = target.parentElement;
-			
+
 						checkDate.innerHTML = `<span class="order-completle">已完成</span>`;
+
+						if (checkOutStatus === 2) {
+							checkOrderButton.parentElement.parentElement.firstElementChild.querySelector('.listInfo-group').lastElementChild.textContent = '已完成';
+							checkOrderButton.nextElementSibling.remove();
+							
+						}
+
+
 					}
-		
+
 				</script>
 
 				<script th:inline="javascript">
