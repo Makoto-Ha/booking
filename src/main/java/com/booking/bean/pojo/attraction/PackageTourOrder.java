@@ -57,6 +57,14 @@ public class PackageTourOrder {
 	}
 
 
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
 	public User getUser() {
 		return user;
 	}

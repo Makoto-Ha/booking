@@ -131,7 +131,7 @@ public class PackageTourOrderService {
         PackageTourOrderDTO packageTourOrderDTO = new PackageTourOrderDTO();
         BeanUtils.copyProperties(packageTourOrder, packageTourOrderDTO);
         packageTourOrderDTO.setOrderId(packageTourOrder.getOrderId());
-        packageTourOrderDTO.setUser(packageTourOrder.getUser());
+        packageTourOrderDTO.setUserId(packageTourOrder.getUser().getUserId());
         packageTourOrderDTO.setPackageTourName(packageTourOrder.getPackageTour().getPackageTourName());
         
         return Result.success(packageTourOrderDTO);

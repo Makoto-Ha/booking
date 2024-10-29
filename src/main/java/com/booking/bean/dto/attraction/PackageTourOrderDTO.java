@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.booking.bean.pojo.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PackageTourOrderDTO {
@@ -21,7 +20,6 @@ public class PackageTourOrderDTO {
     private LocalDate travelDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate searchDate;
-    private User user;
     
     private Integer pageNumber = 1;
     private String attrOrderBy = "orderId";
@@ -50,17 +48,6 @@ public class PackageTourOrderDTO {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-
-
-	public User getUser() {
-		return user;
-	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 
 	public Integer getPackageTourId() {
 		return packageTourId;
@@ -167,10 +154,9 @@ public class PackageTourOrderDTO {
 		return "PackageTourOrderDTO [orderId=" + orderId + ", userId=" + userId + ", packageTourId=" + packageTourId
 				+ ", packageTourName=" + packageTourName + ", orderStatus=" + orderStatus + ", orderDateTime="
 				+ orderDateTime + ", orderPrice=" + orderPrice + ", travelDate=" + travelDate + ", searchDate="
-				+ searchDate + ", user=" + user + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy
-				+ ", selectedSort=" + selectedSort + "]";
+				+ searchDate + ", pageNumber=" + pageNumber + ", attrOrderBy=" + attrOrderBy + ", selectedSort="
+				+ selectedSort + "]";
 	}
-
 
 
     
