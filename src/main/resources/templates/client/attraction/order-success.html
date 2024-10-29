@@ -19,7 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px; 
+            gap: 10px;
         }
         .success-icon {
             color: #28a745;
@@ -27,8 +27,8 @@
             margin-bottom: 20px;
         }
         .fa-circle-check {
-            color: #28a745;  
-            font-size: 40px;  
+            color: #28a745;
+            font-size: 40px;
         }
         .order-details {
             background: #f8f9fa;
@@ -91,14 +91,16 @@
                 <span th:text="${#temporals.format(order.travelDate, 'yyyy-MM-dd')}"></span>
             </div>
             <div class="detail-item">
+                <span>訂購日期</span>
+                <span th:text="${#temporals.format(order.orderDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <div class="detail-item">
                 <span>付款金額</span>
                 <span class="text-danger fw-bold">NT$ <span th:text="${order.orderPrice}"></span></span>
             </div>
         </div>
 
-
         <div class="buttons">
-            <a href="/booking/user/orders" class="btn btn-primary">查看我的訂單</a>
             <a href="/booking/packageTour" class="btn btn-outline-secondary">繼續瀏覽</a>
         </div>
     </div>
