@@ -14,6 +14,7 @@ import com.booking.bean.dto.attraction.PackageTourOrderDTO;
 import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourOrder;
 import com.booking.bean.pojo.user.User;
+import com.booking.config.NgrokUrlConfig;
 import com.booking.dao.attraction.PackageTourOrderRepository;
 import com.booking.dao.attraction.PackageTourRepository;
 import com.booking.dao.user.UserRepository;
@@ -38,6 +39,9 @@ public class PackageTourOrderClientService {
     
     @Autowired
     private UserService userService;
+    
+	@Autowired
+	private NgrokUrlConfig ngrokUrlConfig;
 
     /**
      * 綠界支付功能
@@ -60,8 +64,6 @@ public class PackageTourOrderClientService {
         // 訂單描述
         String tradeDesc = packageTourOrderDTO.getOrderId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         
-        // ngrok網址，用於接收綠界回調
-        String ngrokUrl = "https://98d8-61-222-34-1.ngrok-free.app" + "/booking/packageTourOrder/api/checkout/success";
         
         AioCheckOutALL obj = new AioCheckOutALL();
         obj.setMerchantTradeNo(uuid);
@@ -70,8 +72,8 @@ public class PackageTourOrderClientService {
         obj.setTotalAmount(packageTourOrderDTO.getOrderPrice().toString());
         obj.setTradeDesc(tradeDesc);
         obj.setItemName(packageTourOrderDTO.getPackageTourName());
-        obj.setReturnURL(ngrokUrl); // 綠界付款完成後通知網站的路徑
-        obj.setClientBackURL("http://localhost:8080/booking/packageTourOrder/attraction/order-success?orderId=" + packageTourOrderDTO.getOrderId());
+		obj.setReturnURL(ngrokUrlConfig.getNgrokURL() + "/booking/packageTourOrder/success");
+		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/packageTourOrder/success");
         obj.setCustomField1(user.getUserId().toString());
         obj.setCustomField2(packageTourOrderDTO.getOrderId().toString());
 
@@ -115,6 +117,7 @@ public class PackageTourOrderClientService {
 
         packageTourOrder = packageTourOrderRepo.save(packageTourOrder);
 
+        packageTourOrder.getOrderId();
         PackageTourOrderDTO packageTourOrderDTO = new PackageTourOrderDTO();
         BeanUtils.copyProperties(packageTourOrder, packageTourOrderDTO);
         packageTourOrderDTO.setPackageTourId(packageTour.getPackageTourId());
@@ -143,6 +146,7 @@ public class PackageTourOrderClientService {
         
         return true;
     }
+    
 
     /**
      * 根據訂單ID取得訂單資料
