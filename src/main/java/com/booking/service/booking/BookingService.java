@@ -26,16 +26,14 @@ import com.booking.bean.dto.booking.BookingOrderItemDTO;
 import com.booking.bean.dto.booking.BookingOrderSearchDTO;
 import com.booking.bean.dto.booking.RoomDetailDTO;
 import com.booking.bean.dto.booking.RoomtypeDTO;
-
 import com.booking.bean.dto.user.UserDTO;
-
-
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.booking.BookingOrderItem;
 import com.booking.bean.pojo.booking.BookingOrderItemId;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.bean.pojo.user.User;
+import com.booking.config.NgrokUrlConfig;
 import com.booking.dao.booking.BookingOrderItemRespository;
 import com.booking.dao.booking.BookingRepository;
 import com.booking.dao.booking.BookingSpecification;
@@ -62,6 +60,9 @@ public class BookingService {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private NgrokUrlConfig ngrokUrlConfig;
 	
 	@Transactional
 	public Result<BookingOrder> saveBookingOrder(BookingOrderDTO boDTO, String loginAccount) {
@@ -182,7 +183,6 @@ public class BookingService {
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bookingOrder : bookingOrders) {
 			
-			System.out.println(bookingOrder);
 			BookingOrderDTO responseBookingOrderDTO = new BookingOrderDTO();
 			BeanUtils.copyProperties(bookingOrder, responseBookingOrderDTO);
 			
@@ -191,12 +191,12 @@ public class BookingService {
 			BeanUtils.copyProperties(roomtype, roomtypeDTO);
 			responseBookingOrderDTO.setRoomtype(roomtypeDTO);
 			
-//			User user = bookingOrder.getUser();
-//			
-//			
-//			UserDTO userDTO = new UserDTO();
-//			BeanUtils.copyProperties(user, userDTO);
-//			bookingOrderDTO.setUser(userDTO);
+			User user = bookingOrder.getUser();
+			
+			UserDTO userDTO = new UserDTO();
+			BeanUtils.copyProperties(user, userDTO);
+			
+			responseBookingOrderDTO.setUser(userDTO);
 			
 			boDTOs.add(responseBookingOrderDTO);
 		}
@@ -290,9 +290,17 @@ public class BookingService {
 		List<BookingOrder> bookingOrders = page.getContent();
 		List<BookingOrderDTO> boDTOs = new ArrayList<>();
 		for(BookingOrder bo : bookingOrders) {
-			BookingOrderDTO responseBoDTO = new BookingOrderDTO();
 			List<BookingOrderItem> bois = bo.getBookingOrderItems();
+			User user = bo.getUser();
+			Roomtype roomtype = bo.getRoomtype();
+			BookingOrderDTO responseBoDTO = new BookingOrderDTO();
+			RoomtypeDTO roomtypeDTO = new RoomtypeDTO();
+			UserDTO userDTO = new UserDTO();
 			BeanUtils.copyProperties(bo, responseBoDTO);
+			BeanUtils.copyProperties(roomtype, roomtypeDTO);
+			BeanUtils.copyProperties(user, userDTO);
+			responseBoDTO.setRoomtype(roomtypeDTO);
+			responseBoDTO.setUser(userDTO);
 			responseBoDTO.setTotalPrice(calcTotalPrice(bois));
 			boDTOs.add(responseBoDTO);		
 		}
@@ -476,8 +484,8 @@ public class BookingService {
 		obj.setTotalAmount(totalPrice);
 		obj.setTradeDesc("預定房型");
 		obj.setItemName(ItemName);
-		obj.setReturnURL("https://94d4-114-25-182-128.ngrok-free.app/booking/user/order/success");
-		obj.setOrderResultURL("https://94d4-114-25-182-128.ngrok-free.app/booking/user/order/success");
+		obj.setReturnURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
+		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
 		String form = ecpay.aioCheckOut(obj, null);
 		return form;
 	}

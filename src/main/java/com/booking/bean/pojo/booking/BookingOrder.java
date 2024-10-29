@@ -156,11 +156,5 @@ public class BookingOrder {
 		this.bookingOrderItems = bookingOrderItems;
 	}
 
-	@Override
-	public String toString() {
-		return "BookingOrder [bookingId=" + bookingId + ", user=" + user + ", orderNumber=" + orderNumber
-				+ ", orderStatus=" + orderStatus + ", totalPrice=" + totalPrice + ", updatedTime=" + updatedTime
-				+ ", createdTime=" + createdTime + ", bookingOrderItems=" + bookingOrderItems + "]";
-	}
 	
 }

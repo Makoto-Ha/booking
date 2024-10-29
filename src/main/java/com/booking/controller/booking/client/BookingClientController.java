@@ -26,8 +26,6 @@ import com.booking.service.common.AmenityService;
 import com.booking.service.user.UserService;
 import com.booking.utils.Result;
 
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class BookingClientController {
 	

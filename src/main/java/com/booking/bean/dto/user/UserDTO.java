@@ -8,7 +8,6 @@ import com.booking.bean.pojo.attraction.PackageTourOrder;
 import com.booking.bean.pojo.booking.BookingOrder;
 import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.bean.pojo.user.Resettokens;
-import com.booking.bean.pojo.user.User;
 
 
 public class UserDTO {  

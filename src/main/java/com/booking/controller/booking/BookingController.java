@@ -72,6 +72,7 @@ public class BookingController {
 		
 		Page<BookingOrderDTO> page = findBookingOrderAllResult.getData();
 		model.addAttribute("page", page);
+		System.out.println(page.getContent());
 		model.addAttribute("bookingOrder", bookingOrderDTO);
 		return "management-system/booking/order-list";
 	}

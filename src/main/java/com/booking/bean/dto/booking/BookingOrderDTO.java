@@ -152,7 +152,7 @@ public class BookingOrderDTO {
 
 	@Override
 	public String toString() {
-		return "BookingOrderDTO [roomtypeId=" + roomtypeId + ", bookingOrderItems=" + bookingOrderItems + "]";
+		return "BookingOrderDTO [roomtypeId=" + roomtypeId + ", bookingOrderItems=" + bookingOrderItems + "user:" + user + "]";
 	}
 
 
