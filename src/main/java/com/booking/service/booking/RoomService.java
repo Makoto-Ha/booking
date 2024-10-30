@@ -305,7 +305,7 @@ public class RoomService {
 		Integer roomtypeQuanity = roomtype.getRoomtypeQuantity();
 		
 		for (int i = 0; i < roomtypeQuanity; i++) {
-			Room room = new Room("沒有", 0, roomtypeDescription, updatedTime, createdTime);
+			Room room = new Room("ROOM" + i, 0, roomtypeDescription, updatedTime, createdTime);
 			room.setRoomtype(roomtype);
 			roomRepo.save(room);
 		}

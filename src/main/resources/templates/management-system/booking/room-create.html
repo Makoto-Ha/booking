@@ -14,24 +14,25 @@
 			<form class="form" action="../create" method="post">
 				<div class="dropdown-input">	
 					<div class="form-group">
-						<label for="dropdown">房間類型名稱</label>
-						<input name="roomtypeName" type="text" id="dropdown" placeholder="請輸入房間類型名稱" autocomplete="off">
+						<label for="roomtypeName">房間類型名稱</label>
+						<input name="roomtypeName" type="text" id="roomtypeName" placeholder="請輸入房間類型名稱" autocomplete="off">
 					</div>
 					<a onclick="toggleDropdown()"></a>
 					<div class="dropdown-menu" id="menu"></div>
 				</div>
 
 				<div class="form-group">
-					<label for="room-number">房間號碼</label> <input type="text"
-						id="room-number" name="roomNumber" placeholder="輸入內容" required>
+					<label for="roomNumber">房間號碼</label> <input type="text"
+						id="roomNumber" name="roomNumber" placeholder="輸入內容" required>
 				</div>
 
 				<div class="form-group">
-					<label for="room-description">房間說明</label> <input type="text"
-						id="room-description" name="roomDescription" placeholder="輸入內容">
+					<label for="roomDescription">房間說明</label> <input type="text"
+						id="roomDescription" name="roomDescription" placeholder="輸入內容">
 				</div>
 
 				<div class="form-group">
+					<button type="button" id="onceInput" style="background-color: orange;">一鍵輸入</button>
 					<button type="submit" class="submit" id="submit" disabled>新增</button>
 					<button type="button" class="cancel">取消</button>
 				</div>
@@ -41,6 +42,13 @@
 	<script
 		th:src="@{/management-system/booking/js/booking.js}"></script>
 	<script>
+		document.getElementById('onceInput').addEventListener('click', () => {
+			document.getElementById('roomtypeName').value = '蘊泉庄 (Yun Estate Hotel)';
+			document.getElementById('roomNumber').value = 'ROOM100';
+			document.getElementById('roomDescription').value = '位於台北淡水區的蘊泉莊非常適合家庭旅客入住,為您帶來難忘的住宿體驗。您可以享受附近迷人的河濱和充滿活力的夜市。前往聖紅毛城和淡水老街探索歷史。飯店提供獨特的設施,如客房內早餐和免費無線網路。外帶服務。美味佳餚送到您家門口。在山景空調客房中放鬆身心。免費Wi-Fi 與外界保持聯繫,並提供免費洗浴用品。家庭房會喜歡寬敞的家庭房。在蘊泉莊酒店為您留下美好回憶台北冒險。';	
+			document.getElementById('submit').disabled = false;
+		});
+	
 		// form用到的下拉式選單
 
 		function toggleDropdown() {
@@ -49,12 +57,12 @@
 		}
 
 		function selectOption(value) {
-			document.getElementById("dropdown").value = value;
+			document.getElementById("roomtypeName").value = value;
 			document.getElementById("menu").classList.remove("show");
 		}
 
 		function filterOptions() {
-			var input = document.getElementById("dropdown").value.toLowerCase();
+			var input = document.getElementById("roomtypeName").value.toLowerCase();
 			var menu = document.getElementById("menu");
 			var options = menu.getElementsByTagName("div");
 			var hasMatchingOption = false;
@@ -84,7 +92,7 @@
 			}
 		});
 		
-		document.getElementById("dropdown").addEventListener('input', async function(e) {
+		document.getElementById("roomtypeName").addEventListener('input', async function(e) {
 			let value = this.value;
 			
 			if(value === '{' || value === '}' || value === '[' || value === ']') {
