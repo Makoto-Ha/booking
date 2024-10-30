@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.shopping.AddCartDTO;
-import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopCartDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.service.shopping.ShopCartService;
@@ -64,7 +63,7 @@ public class ShopApiController {
 		int orderId = Integer.parseInt(paymentResult.get("CustomField2"));
 		shopClientService.setOrderIsCompleted(userId, orderId);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
 		shopOrderDTO.setMerchantTradeNo(paymentResult.get("MerchantTradeNo"));

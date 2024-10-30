@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.booking.bean.dto.shopping.ShopCartDTO;
 import com.booking.bean.dto.shopping.ShopCartItemDTO;
+import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.service.shopping.management.ShopOrderService;
 import com.booking.utils.Result;
 
@@ -18,24 +19,11 @@ public class ShopTest {
 	private ShopClientService shopClientService;
 	@Autowired
 	private ShopCartService shopCartService;
-	
 
 	@Test
 	public void testShop() {
 		System.out.println("測試開始");
-
-//		ShopCartItemDTO shopCartItemDTO = new ShopCartItemDTO();
-//		shopCartItemDTO.setProductId(1);
-//		shopCartItemDTO.setQuantity(2);
-//		shopCartItemDTO.setPrice(1000);
-//		shopClientService.addShopCartItem(shopCartItemDTO, 3 );
-//		Result<ShopCartDTO> shopCart = shopClientService.getShopCart(1);
-//		System.out.println(shopCart.getData());
-
-		
-		
-//		shopClientService.deleteShopCart(1);
-		
+		Result<ShopOrderDTO> orderDTO = shopClientService.getOrderById(1);
 		System.out.println("測試結束");
 	}
 }
