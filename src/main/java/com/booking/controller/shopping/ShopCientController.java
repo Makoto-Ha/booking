@@ -1,7 +1,5 @@
 package com.booking.controller.shopping;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,6 +150,7 @@ public class ShopCientController {
 	public String orderDetail(@PathVariable Integer orderId, Model model) {
 		Result<ShopOrderDTO> result = shopClientService.getOrderById(orderId);
 		ShopOrderDTO orderDTO = result.getData();
+		System.out.println(orderDTO);
 		model.addAttribute("orderDTO", orderDTO);
 		return "client/shopping/order-detail";
 	}

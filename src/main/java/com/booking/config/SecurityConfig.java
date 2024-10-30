@@ -106,7 +106,6 @@ public class SecurityConfig {
                     "/frontend/**",
                     "/client/**",
                     "/uploads/**",
-                    "/shop/checkout/success",
                     "/management-system/**",
                     "/static/**",
                     "/META-INF/**",
