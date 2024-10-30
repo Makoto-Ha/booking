@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instastay Shop</title>
+<style>
+  /* 將 Bootstrap 樣式或必要的 CSS 放置於此 */
+  .container { max-width: 1140px; margin: 0 auto; padding: 1rem; }
+  .my-5 { margin-top: 3rem !important; margin-bottom: 3rem !important; }
+  .text-center { text-align: center !important; }
+  .footer-bgc { background-color: rgb(42, 42, 46); color: #ccc; padding: 2rem; }
+  .text-gray { color: #6c757d !important; }
+  .small { font-size: 0.875rem !important; }
+</style>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif;">
+
+    <!-- header 部分 -->
+    <header style="background-color: #ffffff; padding: 1rem; text-align: center;">
+        <img src="cid:instastayLogo" alt="InstaStay" style="width: 2.2rem; border-radius: 50%;">
+        <h1 style="display: inline-block; margin-left: 1rem;">InstaStay</h1>
+    </header>
+
+    <!-- 電子郵件主要內容 -->
+    <div class="container my-5">
+        <p>親愛的 <span th:text="${userName}">[用戶名稱]</span>，</p>
+        <p>感謝您的購買，您的訂單編號 <span th:text="${merchantTradeNo}">[訂單編號]</span>，已完成付款。</p>
+     	<p>您的購買項目：</p>
+	    <ul>
+	        <!-- 迴圈顯示購買項目 -->
+	        <li th:each="item : ${orderItems}">
+	           <span th:text="${item.productName}  ">[產品名稱]</span>
+	            數量：<span th:text="${item.quantity}  ">[數量]</span> 
+	            單價：<span th:text="${item.price}  ">[單價]</span> 
+	            金額：<span th:text="${item.subtotal}  ">[小計]</span>
+	        </li>
+	       
+	        <li>訂單總金額：<span th:text="${orderPrice}"></span></li>
+	    </ul>
+        <p>我們將盡快處理後續出貨流程</p>
+        <p>祝您有美好的一天！</p>
+    </div>
+
+    <!-- footer 部分 -->
+    <footer class="footer-bgc text-center">
+        <p class="small text-gray">本網站內容由© 2005–2024 ispan 資展國際保留所有權利</p>
+        <p class="small text-gray">Instastay.com隸屬台灣線上旅遊相關事業。</p>
+    </footer>
+</body>
+</html>

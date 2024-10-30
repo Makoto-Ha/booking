@@ -3,7 +3,9 @@ package com.booking.service.shopping;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,11 +36,13 @@ import com.booking.dao.shopping.ShopCartRepository;
 import com.booking.dao.shopping.ShopOrderItemRepository;
 import com.booking.dao.shopping.ShopOrderRepository;
 import com.booking.dao.user.UserRepository;
+import com.booking.service.user.EmailService;
 import com.booking.utils.MyModelMapper;
 import com.booking.utils.Result;
 
 import ecpay.payment.integration.AllInOne;
 import ecpay.payment.integration.domain.AioCheckOutALL;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -58,6 +62,8 @@ public class ShopClientService {
 	private ShopCartRepository shopCartRepository;
 	@Autowired
 	private NgrokUrlConfig ngrokUrlConfig;
+	@Autowired
+	private EmailService emailService;
 
 	/**
 	 * 綠界支付功能
@@ -120,7 +126,7 @@ public class ShopClientService {
 		shopOrder.setUser(userRepository.findById(userId).get());
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
-
+		System.out.println("=====NEW訂單===="+shopOrder);
 		// =============== 從購物車中篩選出選中的項目 ======================
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
@@ -170,6 +176,7 @@ public class ShopClientService {
 
 		shopOrderDTO.setOrderItems(orderItemDTOList);
 
+		System.out.println("=-===-=-=-=-=-=從購物車生成訂單最後"+shopOrderDTO);
 		return Result.success(shopOrderDTO);
 	}
 
@@ -204,9 +211,8 @@ public class ShopClientService {
 
 	@Transactional
 	public Result<String> setOrderDetail(Integer userId, ShopOrderDTO orderDTO) {
-		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createdAt");
-		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 2, pageable);
-		ShopOrder shopOrder = page.getContent().get(0);
+		
+		ShopOrder shopOrder = shopOrderRepository.findById(orderDTO.getOrderId()).get();
 
 		System.out.println("=====轉換前的ORDER=====" + shopOrder);
 
@@ -225,10 +231,11 @@ public class ShopClientService {
 	 * 
 	 * @param userId
 	 * @return
+	 * @throws 
 	 */
 
 	@Transactional
-	public boolean setOrderIsCompleted(Integer userId, Integer orderId) {
+	public boolean setOrderIsCompleted(Integer userId, Integer orderId){
 		Optional<ShopOrder> option = shopOrderRepository.findById(orderId);
 		if (!option.isPresent()) {
 			return false;
@@ -266,6 +273,23 @@ public class ShopClientService {
 			cart.setTotalAmount(0);
 			shopCartItemRepository.deleteAll(itemsToRemove);
 			shopCartRepository.save(cart);
+		}
+
+		
+		Map<String, Object> variables = new HashMap<>();
+		
+		variables.put("userName", order.getUser().getUserName());
+	    variables.put("merchantTradeNo", order.getMerchantTradeNo());
+	    variables.put("orderItems", order.getItems());
+	    variables.put("orderPrice", order.getOrderPrice());
+		
+	    String toEmail = order.getUser().getUserMail();
+        String subject = "訂單確認 #" + order.getMerchantTradeNo();
+	    
+		try {
+			emailService.sendOrderConfirmationEmail(toEmail,subject,variables);
+		} catch (MessagingException e) {
+			e.printStackTrace();
 		}
 		return true;
 	}
