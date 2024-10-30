@@ -68,8 +68,10 @@ public class PackageTourOrderClientService {
         obj.setTotalAmount(packageTourOrderDTO.getOrderPrice().toString());
         obj.setTradeDesc(tradeDesc);
         obj.setItemName(packageTourOrderDTO.getPackageTourName());
+
 		obj.setReturnURL("http:/localhost:8080/booking/packageTourOrder/success");
 		obj.setClientBackURL("http:/localhost:8080/booking/packageTourOrder/success");
+
         obj.setCustomField1(user.getUserId().toString());
         obj.setCustomField2(packageTourOrderDTO.getOrderId().toString());
 

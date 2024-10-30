@@ -14,12 +14,14 @@ public class UserDTO {
     private Integer userId;   
     private String userName;
     private String userMail;
-    private String userAccount;
     private String userPhone;
+    private String userAddress;
+    private String userAccount;
+    
     private String userPassword;   
     
     private LocalDate userBirthday;
-    private String userAddress;
+   
     private String imgsFile;
     private String creditCard;
     private LocalDateTime createdTime; 
