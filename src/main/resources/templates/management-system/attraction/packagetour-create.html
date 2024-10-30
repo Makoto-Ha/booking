@@ -59,6 +59,7 @@
 				</div>
 		
 		        <div class="form-group">
+		        	<button type="button" id="quickFill" style="background-color: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px; width: 100%;">一鍵輸入</button>
 		            <button type="submit" class="submit" id="submit">新增</button>
 		            <button type="button" class="cancel">取消</button>
 		        </div>
@@ -80,6 +81,22 @@
         		}
     		});
 		});
+		
+		document.getElementById('quickFill').addEventListener('click', function() {
+		
+	    document.getElementById('name').value = '台南之旅';
+	    document.getElementById('price').value = '1000';
+	    document.getElementById('description').value = '台南之旅從安平古堡開始，這裡是台灣歷史的縮影，古堡矗立於海邊，讓人可以欣賞到壯麗的海景與悠久的歷史故事。接著前往奇美博物館，這座結合藝術與自然的博物館展示了豐富的西方藝術作品和古典樂器，讓你沉浸在藝術的氛圍中，並探索自然歷史的奧秘。最後，結束這一天的行程在台南的夜市，品嚐當地小吃，如牛肉湯和擔仔麵，感受熱鬧的夜市氛圍，為你的台南之旅劃上完美的句點。';
+	    
+	    const attractionsSelect = document.getElementById('attractions');
+	    const options = attractionsSelect.options;
+	    for(let option of options) {
+	        if(option.text.includes('奇美博物館') || 
+	           option.text.includes('安平古堡')) {
+	            option.selected = true;
+	        }
+	    }
+	});
 	</script>
 </body>
 </html>
