@@ -214,10 +214,6 @@
       transition: box-shadow 0.2s ease; /* 添加動畫過渡效果 */
     }
 
-    .card:hover {
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 3px 20px rgba(95, 95, 95, 0.147); /* hover時的陰影效果 */
-    }
-
     .card-bgc {
       background-color: #f5f8ff;
     }
@@ -400,6 +396,14 @@
       background-color: #ffeded !important;
       color: #ff0000 !important;
     }
+    
+    /* 禁用卡片或列表項的 hover 背景色變化，但保持陰影 */
+	.card:hover, .list-group-item:hover {
+	    background-color: inherit !important;
+	    cursor: default;
+	    /* 保留陰影 */
+	    box-shadow: var(--bs-shadow-sm) !important;
+	}
   </style>
 </head>
 

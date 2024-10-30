@@ -693,12 +693,16 @@
         submitParams.searchStartDate = searchStartDate;
         submitParams.searchEndDate = searchEndDate;
 
-        let params = new URLSearchParams({
+        let params = {
           searchStartDate,
           searchEndDate,
           peopleNumber: peopleNumberParam,
           ...submitParams
-        });
+        };
+		
+		const searchParams = new URLSearchParams(
+		    Object.entries(params).filter(([key, value]) => value != null)
+		);
 
         console.log({
           searchStartDate,
@@ -707,7 +711,7 @@
           ...submitParams
         });
 
-        location.assign(`/booking/user/search/roomtype?${params}`);
+        location.assign(`/booking/user/search/roomtype?${searchParams}`);
       });
     }) 
   </script>
