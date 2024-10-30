@@ -62,7 +62,7 @@ public class ShopOrder {
 	private LocalDateTime createdAt;
 
 	// 與 ShoppingOrderItem 的一對多關係
-	@OneToMany(mappedBy = "shopOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "shopOrder", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ShopOrderItem> items;
 
 	// ----------------------------------

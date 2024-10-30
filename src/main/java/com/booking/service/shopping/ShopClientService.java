@@ -238,10 +238,14 @@ public class ShopClientService {
 
 		// 更新產品庫存和銷量
 		List<ShopOrderItem> orderItems = order.getItems();
+		System.out.println("訂單項目: " + orderItems);
+		System.out.println("=====" + orderItems.get(0).getProduct());
 		for (ShopOrderItem orderItem : orderItems) {
 			Product product = orderItem.getProduct();
 			Integer quantity = orderItem.getQuantity();
 
+			System.out.println("=====orderItem.getProduct()===" + orderItem.getProduct());
+			System.out.println("=====orderItem.getQuantity()===" + orderItem.getQuantity());
 			product.setProductInventory(product.getProductInventory() - quantity);
 			product.setProductSales(product.getProductSales() + quantity);
 
@@ -345,8 +349,25 @@ public class ShopClientService {
 	 * @param orderId
 	 * @return
 	 */
+	@Transactional
 	public Result<ShopOrderDTO> getOrderById(Integer orderId) {
-		ShopOrderDTO shopOrderDTO = shopOrderRepository.findOrderDTOById(orderId).get(0);
+		Optional<ShopOrder> byId = shopOrderRepository.findById(orderId);
+		ShopOrder shopOrder = byId.get();
+		
+		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
+		BeanUtils.copyProperties(shopOrder, shopOrderDTO);
+		
+		shopOrderDTO.setUserId(shopOrder.getUser().getUserId());
+		shopOrderDTO.setOrderItems(shopOrder.getItems().stream().map(item -> {
+            ShopOrderItemDTO orderItemDTO = new ShopOrderItemDTO();
+            MyModelMapper.map(item, orderItemDTO);
+            orderItemDTO.setProductId(item.getProduct().getProductId());
+            orderItemDTO.setProductName(item.getProduct().getProductName());
+            return orderItemDTO;
+        }).collect(Collectors.toList()));
+		
+		System.out.println(shopOrderDTO.getOrderItems());
+		
 		return Result.success(shopOrderDTO);
 	}
 

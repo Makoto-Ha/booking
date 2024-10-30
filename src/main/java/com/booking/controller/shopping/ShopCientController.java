@@ -150,6 +150,7 @@ public class ShopCientController {
 	public String orderDetail(@PathVariable Integer orderId, Model model) {
 		Result<ShopOrderDTO> result = shopClientService.getOrderById(orderId);
 		ShopOrderDTO orderDTO = result.getData();
+		
 		System.out.println(orderDTO);
 		model.addAttribute("orderDTO", orderDTO);
 		return "client/shopping/order-detail";
