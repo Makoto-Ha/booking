@@ -16,7 +16,7 @@ html, body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: #f2edf3;
+	background-color: rgb(240, 240, 240);
 }
 
 .register-container {
@@ -24,6 +24,7 @@ html, body {
 	padding: 20px;
 	border-radius: 8px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border: 1px solid rgb(62, 62, 78);
 	text-align: center;
 	width: 360px;
 	margin: auto 0;
@@ -38,12 +39,8 @@ html, body {
 }
 
 .register-container h2 {
-	height: 32px;
-	font-size: 24px;
+	font-size: 30px;
 	font-weight: bold;
-	background: linear-gradient(to right, #da8cff, #9a55ff);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
 }
 
 .input-group {
@@ -62,7 +59,7 @@ html, body {
 	font-size: 16px;
 	width: 320px !important;
 	border-radius: 5px;
-	border: 1px solid #cccccc94;
+	border: 1px solid rgb(62, 62, 78);
 	padding: 10px;
 	outline-color: #007BFF;
 	padding-left: 14px;
@@ -84,14 +81,19 @@ html, body {
 .register-button {
 	width: 100%;
 	padding: 10px;
-	background: linear-gradient(to right, #da8cff, #9a55ff);
-	color: white;
-	border: none;
+	color: rgb(62, 62, 78);
+	border: 1px solid rgb(62, 62, 78);
 	border-radius: 4px;
+	background-color: white;
 	font-size: 15px;
 	cursor: pointer;
 	margin-top: 10px;
 	transition: all .2s;
+}
+
+.register-button:hover {
+	background-color: rgb(62, 62, 78);
+	color: white;
 }
 
 .register-button:hover {
@@ -140,7 +142,7 @@ select[name="admin-status"] {
 .go-login {
 	width: 100%;
 	padding: 10px;
-	background-color: #ffc5e1;
+	background-color: rgb(62, 62, 78);
 	color: white;
 	border-radius: 4px;
 	font-size: 15px;
@@ -157,6 +159,7 @@ select[name="admin-status"] {
 	<div class="register-container">
 		
 		<div class="register-title">
+			<img th:src="@{/management-system/common/image/instastay-logo.png}" width="50" style="height: 50px; margin-right: 10px;">
 			<h2>管理員註冊</h2>
 		</div>
 		<form id="form" th:action="@{/management/admin/register}" method="post">

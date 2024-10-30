@@ -19,14 +19,15 @@ body {
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
-	color: #333;
-	background-color: #f2edf3;
+	color: white;
+	background-color: rgb(240, 240, 240);
 }
 
 .login-container {
-	background: white;
+	background-color: white;
 	padding: 20px;
 	border-radius: 10px;
+	border: 1px solid rgb(62, 62, 78);
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	width: 320px;
 	text-align: center;
@@ -43,11 +44,9 @@ body {
 
 .login-container h2 {
 	margin-bottom: 20px;
-	font-size: 24px;
+	font-size: 30px;
 	font-weight: bold;
-	background: linear-gradient(to right, #da8cff, #9a55ff);
-	-webkit-background-clip: text; /* 只顯示背景漸變在文字上 */
-	-webkit-text-fill-color: transparent; /* 將文字顏色設為透明，讓背景顯示出來 */
+	color: rgb(62, 62, 78);
 }
 
 .login-title {
@@ -71,7 +70,7 @@ body {
 .input-group input {
 	width: 100%;
 	padding: 10px;
-	border: 1px solid #cccccc94;
+	border: 1px solid rgb(62, 62, 78);
 	border-radius: 5px;
 	font-size: 16px;
 	box-sizing: border-box;
@@ -82,10 +81,10 @@ body {
 .login-button {
 	width: 100%;
 	padding: 10px;
-	background: linear-gradient(to right, #da8cff, #9a55ff);
-	color: white;
-	border: none;
+	color: rgb(62, 62, 78);
 	border-radius: 5px;
+	border: 1px solid rgb(62, 62, 78);
+	background-color: white;
 	cursor: pointer;
 	font-size: 16px;
 	margin-top: 10px;
@@ -93,7 +92,8 @@ body {
 }
 
 .login-button:hover {
-	opacity: .8;
+	background-color: rgb(62, 62, 78);
+	color: white;
 }
 
 .link-group {
@@ -125,9 +125,9 @@ body {
 	width: calc(100% -20px);
 	display: block;
 	padding: 10px;
-	background-color: #ffc5e1;
 	color: white;
 	border-radius: 4px;
+	background-color: rgb(62, 62, 78);
 	font-size: 15px;
 	margin-top: 10px;
 	transition: all .2s;
@@ -140,11 +140,9 @@ body {
 </head>
 <body>
 	<div class="login-container">
-		<div class="login-title">
-			
-				
-				
-			<h2>訂房後台管理系統</h2>
+		<div class="login-title">		
+			<img th:src="@{/management-system/common/image/instastay-logo.png}" width="50" style="height: 50px; margin-right: 10px;">	
+			<h2>InstaStay後台管理</h2>
 		</div>
 			<form id="form" th:action="@{/management/admin/login}" method="post">
 			<div class="input-group">
@@ -157,10 +155,7 @@ body {
 					name="adminPassword" required placeholder="密碼"> <span
 					id="password-error" class="error-message"></span>
 			</div>
-		
 
-			
-		
 			<button type="submit" class="login-button">登錄</button>
 			<div class="register"
 				style="text-align: center; margin-bottom: 10px;">
