@@ -135,18 +135,20 @@
 			document.getElementById('address').value = '新北市淡水區淡金路79巷16號';
 			document.getElementById('select-city').value = '新北市';
 			document.getElementById('select-district').innerHTML = '<option>淡水區</option>';
-			
+
 			document.querySelector('input[type="radio"][name="roomtypeCapacity"][value="3"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="2"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="9"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="21"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="1"]').checked = true;
-			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="1002"]').checked = true;
+			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="45"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="36"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="23"]').checked = true;
 			document.querySelector('input[type="checkbox"][name="amenitiesId"][value="3"]').checked = true;	
 			
 			document.getElementById('submit').disabled = false;
+						
+			document.querySelectorAll('input[type="text"]').forEach(input => input.classList.remove('invalid'));
 		});
 	</script>
 </body>

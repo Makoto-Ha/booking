@@ -47,6 +47,7 @@
 			document.getElementById('roomNumber').value = 'ROOM100';
 			document.getElementById('roomDescription').value = '位於台北淡水區的蘊泉莊非常適合家庭旅客入住,為您帶來難忘的住宿體驗。您可以享受附近迷人的河濱和充滿活力的夜市。前往聖紅毛城和淡水老街探索歷史。飯店提供獨特的設施,如客房內早餐和免費無線網路。外帶服務。美味佳餚送到您家門口。在山景空調客房中放鬆身心。免費Wi-Fi 與外界保持聯繫,並提供免費洗浴用品。家庭房會喜歡寬敞的家庭房。在蘊泉莊酒店為您留下美好回憶台北冒險。';	
 			document.getElementById('submit').disabled = false;
+			document.querySelectorAll('input[type="text"]').forEach(input => input.classList.remove('invalid'));
 		});
 	
 		// form用到的下拉式選單
