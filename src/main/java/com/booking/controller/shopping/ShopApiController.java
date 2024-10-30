@@ -66,6 +66,7 @@ public class ShopApiController {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
+		shopOrderDTO.setOrderId(orderId);
 		shopOrderDTO.setMerchantTradeNo(paymentResult.get("MerchantTradeNo"));
 		shopOrderDTO.setTransactionId(paymentResult.get("TradeNo"));
 		shopOrderDTO.setPaymentMethod(1);

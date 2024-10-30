@@ -120,7 +120,7 @@ public class ShopClientService {
 		shopOrder.setUser(userRepository.findById(userId).get());
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
-
+		System.out.println("=====NEW訂單===="+shopOrder);
 		// =============== 從購物車中篩選出選中的項目 ======================
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
@@ -170,6 +170,7 @@ public class ShopClientService {
 
 		shopOrderDTO.setOrderItems(orderItemDTOList);
 
+		System.out.println("=-===-=-=-=-=-=從購物車生成訂單最後"+shopOrderDTO);
 		return Result.success(shopOrderDTO);
 	}
 
@@ -204,9 +205,8 @@ public class ShopClientService {
 
 	@Transactional
 	public Result<String> setOrderDetail(Integer userId, ShopOrderDTO orderDTO) {
-		PageRequest pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createdAt");
-		Page<ShopOrder> page = shopOrderRepository.findByUser_UserIdAndOrderState(userId, 2, pageable);
-		ShopOrder shopOrder = page.getContent().get(0);
+		
+		ShopOrder shopOrder = shopOrderRepository.findById(orderDTO.getOrderId()).get();
 
 		System.out.println("=====轉換前的ORDER=====" + shopOrder);
 

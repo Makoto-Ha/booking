@@ -94,7 +94,7 @@ public class ShopCientController {
 
 		Integer userId = shopClientService.getCurrentUserId();
 		Result<ShopOrderDTO> order = shopClientService.getOrderByUserAndState(userId, 1);
-
+		System.out.println("=======-PPPPOINT=-=-=-===="+order.getData());
 		String paymentForm = shopClientService.ecpayCheckout(order.getData(), payDetailDTO, userId);
 
 		model.addAttribute("paymentForm", paymentForm);
