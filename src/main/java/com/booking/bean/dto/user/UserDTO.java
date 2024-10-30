@@ -16,12 +16,9 @@ public class UserDTO {
     private String userMail;
     private String userPhone;
     private String userAddress;
-    private String userAccount;
-    
-    private String userPassword;   
-    
-    private LocalDate userBirthday;
-   
+    private String userAccount;   
+    private String userPassword;      
+    private LocalDate userBirthday;  
     private String imgsFile;
     private String creditCard;
     private LocalDateTime createdTime; 
