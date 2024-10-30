@@ -54,7 +54,7 @@ public class PackageTourOrderClientController {
     /**
      * 訂單新增後的成功頁面
      */
-    @PostMapping("/success")
+    @GetMapping("/success")
     public String sendOrderSuccess(@SessionAttribute Integer orderId, Model model) {
         Result<PackageTourOrderDTO> result = packageTourOrderClientService.getOrderById(orderId);
 

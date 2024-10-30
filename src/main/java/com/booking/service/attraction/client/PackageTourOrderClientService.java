@@ -14,7 +14,6 @@ import com.booking.bean.dto.attraction.PackageTourOrderDTO;
 import com.booking.bean.pojo.attraction.PackageTour;
 import com.booking.bean.pojo.attraction.PackageTourOrder;
 import com.booking.bean.pojo.user.User;
-import com.booking.config.NgrokUrlConfig;
 import com.booking.dao.attraction.PackageTourOrderRepository;
 import com.booking.dao.attraction.PackageTourRepository;
 import com.booking.dao.user.UserRepository;
@@ -39,9 +38,6 @@ public class PackageTourOrderClientService {
     
     @Autowired
     private UserService userService;
-    
-	@Autowired
-	private NgrokUrlConfig ngrokUrlConfig;
 
     /**
      * 綠界支付功能
@@ -72,8 +68,8 @@ public class PackageTourOrderClientService {
         obj.setTotalAmount(packageTourOrderDTO.getOrderPrice().toString());
         obj.setTradeDesc(tradeDesc);
         obj.setItemName(packageTourOrderDTO.getPackageTourName());
-		obj.setReturnURL(ngrokUrlConfig.getNgrokURL() + "/booking/packageTourOrder/success");
-		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/packageTourOrder/success");
+		obj.setReturnURL("http:/localhost:8080/booking/packageTourOrder/success");
+		obj.setClientBackURL("http:/localhost:8080/booking/packageTourOrder/success");
         obj.setCustomField1(user.getUserId().toString());
         obj.setCustomField2(packageTourOrderDTO.getOrderId().toString());
 

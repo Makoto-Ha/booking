@@ -33,7 +33,6 @@ import com.booking.bean.pojo.booking.BookingOrderItemId;
 import com.booking.bean.pojo.booking.Room;
 import com.booking.bean.pojo.booking.Roomtype;
 import com.booking.bean.pojo.user.User;
-import com.booking.config.NgrokUrlConfig;
 import com.booking.dao.booking.BookingOrderItemRespository;
 import com.booking.dao.booking.BookingRepository;
 import com.booking.dao.booking.BookingSpecification;
@@ -60,9 +59,6 @@ public class BookingService {
 	
 	@Autowired
 	private UserRepository userRepo;
-	
-	@Autowired
-	private NgrokUrlConfig ngrokUrlConfig;
 	
 	@Transactional
 	public Result<BookingOrder> saveBookingOrder(BookingOrderDTO boDTO, String loginAccount) {
@@ -502,8 +498,9 @@ public class BookingService {
 		obj.setTotalAmount(totalPrice);
 		obj.setTradeDesc("預定房型");
 		obj.setItemName(ItemName);
-		obj.setReturnURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
-		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
+		obj.setReturnURL("http://localhost:8080/booking/user/order/success");
+		obj.setClientBackURL("http://localhost:8080/booking/user/order/success");
+//		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
 		String form = ecpay.aioCheckOut(obj, null);
 		return form;
 	}
