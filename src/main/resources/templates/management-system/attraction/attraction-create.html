@@ -62,8 +62,8 @@
 					</div>
 				</div>
 		
-
 		        <div class="form-group">
+                    <button type="button" id="quickFill" style="background-color: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px; width: 100%;">一鍵輸入</button>
 		            <button type="submit" class="submit" id="submit" disabled>新增</button>
 		            <button type="button" class="cancel">取消</button>
 		        </div>
@@ -73,5 +73,36 @@
 	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
 	<script th:src="@{/management-system/booking/js/form.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
+	<script>
+	document.getElementById('quickFill').addEventListener('click', function() {
+	    document.getElementById('name').value = '奇美博物館';
+	    
+	    setTimeout(() => {
+	        const citySelect = document.getElementById('select-city');
+	        for(let option of citySelect.options) {
+	            if(option.text === '台南市') {
+	                option.selected = true;
+	                break;
+	            }
+	        }
+	    }, 100);
+	    
+	    document.getElementById('address').value = '台南市仁德區文華路二段66號';
+	    
+	    document.getElementById('openinghour').value = '每日09:30~17:30，週三休息';
+	    
+	    const typeSelect = document.getElementById('type');
+	    for(let option of typeSelect.options) {
+	        if(option.value === '親子共遊') {
+	            option.selected = true;
+	            break;
+	        }
+	    }
+	    
+	    document.getElementById('description').value = '奇美博物館位於台南，是一座兼具藝術與自然的博物館，成立於1999年。館內收藏了大量西方藝術作品，包括油畫和雕塑，展現了從文藝復興到現代的藝術風格。此外，博物館的樂器館擁有各種古今樂器，並定期舉辦音樂會，讓遊客感受音樂的魅力。自然歷史展區則展示了化石和生物標本，讓人了解地球的演變與多樣性。博物館周圍的花園景觀優美，適合散步和休憩，是藝術與文化愛好者不可錯過的好去處。';
+	    
+	    document.getElementById('submit').disabled = false;
+	});
+	</script>
 </body>
 </html>
