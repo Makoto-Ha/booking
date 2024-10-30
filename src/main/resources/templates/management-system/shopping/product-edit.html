@@ -18,11 +18,17 @@
 	</style>
 	<style>
 		img {
-			cursor: pointer;
 			max-width: 200px;
 			max-height: 200px;
+			margin-top: 10px;
+			cursor: pointer;
+		}
+
+		.custom-file-upload-hidden {
+			display: none !important;
 		}
 	</style>
+
 <body>
 
 	<div class="container">
@@ -73,44 +79,62 @@
 					<div class="upload-container">
 						<!-- 沒圖 -->
 						<th:block th:if="${product.productImage == null}">
-							<label for="file-upload" class="custom-file-upload">
-								<i class="fas fa-cloud-upload-alt"></i>選擇檔案</label>
-							<input id="file-upload" name="imageFile" type="file" accept=".jpg, .png"
-								style="display: none;">
-							<p id="file-name" class="file-name">尚未選擇檔案</p>
-							<p class="upload-instruction">支持 JPG, PNG 檔案（最大 5MB）</p>
+							<div class="form-group">
+								<label id="upload-label" for="file-upload" class="custom-file-upload">
+									<i class="fas fa-cloud-upload-alt"></i>選擇文件
+								</label>
+								<input id="file-upload" name="imageFile" type="file" accept=".jpg, .png"
+									style="display: none;">
+								<img id="current-image" alt="預覽圖片" style="display: none; cursor: pointer;">
+								<p id="file-name" class="file-name">尚未選擇文件</p>
+							</div>
+							<p class="upload-instruction">支持 JPG, PNG 文件（最大 5MB）</p>
 						</th:block>
 						<!-- 有圖 -->
 						<th:block th:if="${product.productImage != null}">
 							<div class="form-group">
 								<label id="file-upload"><input id="file-upload" name="imageFile" type="file"
 										accept=".jpg, .png" style="display: none;">
-									<img id="current-image"
-										th:src="@{'/management/product/image/' + ${product.productId}}" alt="目前圖片">
 								</label>
+								<img id="current-image" th:src="@{'/management/product/image/' + ${product.productId}}"
+									alt="目前圖片">
 								<p id="file-name" class="file-name">[[${product.productImage}]]</p>
 							</div>
 							<p class="upload-instruction">支持 JPG, PNG 檔案（最大 5MB）</p>
 						</th:block>
 					</div>
 				</div>
-					<div class="form-group">
-						<button type="submit" class="submit submit-edit" id="submit"
-							style="background-color: #007bff;">保存</button>
-						<button type="button" class="cancel">取消</button>
-					</div>
+				<div class="form-group">
+					<button type="submit" class="submit submit-edit" id="submit"
+						style="background-color: #007bff;">保存</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
 			</form>
 		</div>
 	</div>
 	<script th:src="@{/management-system/shopping/js/CheckProduct.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
-	<script>
+	<script th:inline="javascript">
+		
+		// 上傳檔案
+		const fileInput = document.getElementById('file-upload');
+		const fileNameDisplay = document.getElementById('file-name');
+
+		fileInput.addEventListener('change', function () {
+			if (fileInput.files.length > 0) {
+				fileNameDisplay.textContent = fileInput.files[0].name;
+			} else {
+				fileNameDisplay.textContent = '尚未選擇檔案';
+			}
+		});
+
+
 		// 更新檔案名稱顯示和圖片預覽
 		document.getElementById('file-upload').addEventListener('change', function (event) {
 			var file = event.target.files[0];
 			if (file) {
 				document.getElementById('file-name').textContent = file.name;
-			
+
 				var reader = new FileReader();
 				reader.onload = function (e) {
 					var currentImage = document.getElementById('current-image');
@@ -119,16 +143,56 @@
 				reader.readAsDataURL(file);
 			}
 		});
-		
+
 		// 移除前綴 'uploads/'
-	window.addEventListener('DOMContentLoaded', function () {
-		var fileNameElement = document.getElementById('file-name');
-		var filePath = fileNameElement.textContent;
-		
-		if (filePath.startsWith('uploads/')) {
-			fileNameElement.textContent = filePath.substring(8); // 去掉 'uploads/' 的部分
-		}
-	});
+		window.addEventListener('DOMContentLoaded', function () {
+			var fileNameElement = document.getElementById('file-name');
+			var filePath = fileNameElement.textContent;
+
+			if (filePath.startsWith('uploads/')) {
+				fileNameElement.textContent = filePath.substring(8); // 去掉 'uploads/' 的部分
+			}
+		});
+
+
+		(function () {
+			var fileInput = document.getElementById('file-upload');
+			var fileNameElement = document.getElementById('file-name');
+			var currentImage = document.getElementById('current-image');
+			var uploadLabel = document.getElementById('upload-label');
+
+			// 檔案變化時動作
+			fileInput.addEventListener('change', function (event) {
+				var file = event.target.files[0];
+
+				if (file) {
+					fileNameElement.textContent = file.name;
+
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						// 更新預覽圖片，隱藏上傳按鈕
+						currentImage.src = e.target.result;
+						currentImage.style.display = 'inline-block';
+						uploadLabel.classList.add('custom-file-upload-hidden');
+					};
+
+					reader.readAsDataURL(file);
+				} else {
+					// 沒有圖片時，隱藏圖片，顯示按鈕
+					currentImage.style.display = 'none';
+					fileNameElement.textContent = '尚未選擇圖片';
+					uploadLabel.style.display = 'inline-block';
+				}
+			});
+
+			// 點圖片觸發上傳
+			currentImage.addEventListener('click', function () {
+				fileInput.click();
+			});
+		})();
+
 	</script>
 </body>
+
 </html>

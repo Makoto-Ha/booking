@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.booking.bean.dto.shopping.AddCartDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopCartDTO;
-import com.booking.bean.dto.shopping.ShopCartItemDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
 import com.booking.service.shopping.ShopCartService;
 import com.booking.service.shopping.ShopClientService;
@@ -38,9 +37,9 @@ public class ShopApiController {
 
 	// 立刻購買
 	@PostMapping("/buyNow")
-	public Result<String> buyNow(@RequestBody ProductDTO productDTO) {
+	public Result<String> buyNow(@RequestBody AddCartDTO addCartDTO) {
 		Integer userId = shopClientService.getCurrentUserId();
-		Result<String> result = shopClientService.createOrderByProductAndUser(userId, productDTO);
+		Result<String> result = shopClientService.createOrderByProductAndUser(userId, addCartDTO);
 		if (result.isSuccess()) {
 			return Result.success("立即購買成功");
 		} else {

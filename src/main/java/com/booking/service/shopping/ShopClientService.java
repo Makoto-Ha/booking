@@ -1,7 +1,6 @@
 package com.booking.service.shopping;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.booking.bean.dto.shopping.AddCartDTO;
 import com.booking.bean.dto.shopping.PayDetailDTO;
 import com.booking.bean.dto.shopping.ProductDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
@@ -27,6 +27,7 @@ import com.booking.bean.pojo.shopping.ShopCartItem;
 import com.booking.bean.pojo.shopping.ShopOrder;
 import com.booking.bean.pojo.shopping.ShopOrderItem;
 import com.booking.bean.pojo.user.User;
+import com.booking.config.NgrokUrlConfig;
 import com.booking.dao.shopping.ProductRepository;
 import com.booking.dao.shopping.ShopCartItemRepository;
 import com.booking.dao.shopping.ShopCartRepository;
@@ -55,6 +56,8 @@ public class ShopClientService {
 	private UserRepository userRepository;
 	@Autowired
 	private ShopCartRepository shopCartRepository;
+	@Autowired
+	private NgrokUrlConfig ngrokUrlConfig;
 
 	/**
 	 * 綠界支付功能
@@ -68,7 +71,7 @@ public class ShopClientService {
 	public String ecpayCheckout(ShopOrderDTO orderDTO, PayDetailDTO payDetailDTO, Integer userId) {
 
 		AllInOne all = new AllInOne("");
-		String ngrokUrl = "https://b87b-116-241-202-168.ngrok-free.app" + "/booking/shop/api/checkout/success";
+		String ngrokUrl = ngrokUrlConfig.getNgrokURL() + "/booking/shop/api/checkout/success";
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
 		String tradeDesc = orderDTO.getOrderId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		String itemNames = orderDTO.getOrderItems().stream().map(ShopOrderItemDTO::getProductName)
@@ -82,7 +85,7 @@ public class ShopClientService {
 		obj.setTradeDesc(tradeDesc);
 		obj.setItemName(itemNames); // "商品A#商品B#商品C"
 		obj.setReturnURL(ngrokUrl);
-		obj.setClientBackURL("http://localhost:8080/booking/shop/orderDetail/"+orderDTO.getOrderId());
+		obj.setClientBackURL("http://localhost:8080/booking/shop/orderDetail/" + orderDTO.getOrderId());
 		obj.setCustomField1(userId.toString());
 		obj.setCustomField2(orderDTO.getOrderId().toString());
 
@@ -94,7 +97,7 @@ public class ShopClientService {
 			order.setReceiverName(payDetailDTO.getReceiverName());
 			order.setReceiverPhone(Integer.parseInt(payDetailDTO.getReceiverPhone()));
 			order.setReceiverAddress(payDetailDTO.getReceiverAddress());
-		
+
 			shopOrderRepository.save(order);
 		});
 
@@ -225,7 +228,7 @@ public class ShopClientService {
 	 */
 
 	@Transactional
-	public boolean setOrderIsCompleted(Integer userId,Integer orderId) {
+	public boolean setOrderIsCompleted(Integer userId, Integer orderId) {
 		Optional<ShopOrder> option = shopOrderRepository.findById(orderId);
 		if (!option.isPresent()) {
 			return false;
@@ -238,19 +241,19 @@ public class ShopClientService {
 		for (ShopOrderItem orderItem : orderItems) {
 			Product product = orderItem.getProduct();
 			Integer quantity = orderItem.getQuantity();
-			
-			product.setProductInventory(product.getProductInventory()-quantity);
-			product.setProductSales(product.getProductSales()+quantity);
-			
+
+			product.setProductInventory(product.getProductInventory() - quantity);
+			product.setProductSales(product.getProductSales() + quantity);
+
 			productRepository.save(product);
 		}
-		
+
 		// 在支付確認後移除對應的購物車項目
 		List<Integer> productIds = order.getItems().stream().map(item -> item.getProduct().getProductId())
 				.collect(Collectors.toList());
 
 		ShopCart cart = shopCartRepository.findByUser_UserId(userId);
-		
+
 		if (cart != null) {
 			List<ShopCartItem> cartItems = cart.getCartItems();
 			List<ShopCartItem> itemsToRemove = cartItems.stream()
@@ -265,10 +268,10 @@ public class ShopClientService {
 
 	// 立刻購買
 	@Transactional
-	public Result<String> createOrderByProductAndUser(Integer userId, ProductDTO productDTO) {
+	public Result<String> createOrderByProductAndUser(Integer userId, AddCartDTO addCartDTO) {
 
 		// 查詢商品
-		Optional<Product> optionalProduct = productRepository.findById(productDTO.getProductId());
+		Optional<Product> optionalProduct = productRepository.findById(addCartDTO.getProductId());
 		if (!optionalProduct.isPresent()) {
 			return Result.failure("商品不存在");
 		}
@@ -284,7 +287,7 @@ public class ShopClientService {
 		ShopOrderItem orderItem = new ShopOrderItem();
 		orderItem.setProduct(product);
 		orderItem.setProductName(product.getProductName());
-		orderItem.setQuantity(1); // 默認購買一個
+		orderItem.setQuantity(addCartDTO.getQuantity()); // 默認購買一個
 		orderItem.setPrice(product.getProductPrice());
 		orderItem.setSubtotal(product.getProductPrice());
 		orderItem.setShopOrder(shopOrder);
@@ -336,7 +339,6 @@ public class ShopClientService {
 		return Result.success(shopOrderDTO);
 	}
 
-	
 	/**
 	 * 根據訂單ID獲取訂單
 	 * 
@@ -344,8 +346,8 @@ public class ShopClientService {
 	 * @return
 	 */
 	public Result<ShopOrderDTO> getOrderById(Integer orderId) {
-        ShopOrderDTO shopOrderDTO = shopOrderRepository.findOrderDTOById(orderId).get(0);		
-        return Result.success(shopOrderDTO);
+		ShopOrderDTO shopOrderDTO = shopOrderRepository.findOrderDTOById(orderId).get(0);
+		return Result.success(shopOrderDTO);
 	}
-	
+
 }

@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>product-create</title>
-<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
-<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
-<style>
-button[disabled] {
-	background-color: #cccccc; /* 禁用時的灰色背景 */
-	cursor: not-allowed; /* 指針顯示為禁止符號 */
-	opacity: 0.6; /* 減少透明度 */
-}
-</style>
+	<meta charset="UTF-8">
+	<title>product-create</title>
+	<link rel="stylesheet" th:href="@{/management-system/common/css/index.css}">
+	<link rel="stylesheet" th:href="@{/management-system/booking/css/booking.css}">
+	<style>
+		button[disabled] {
+			background-color: #cccccc;
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+
+		img {
+			max-width: 200px;
+			max-height: 200px;
+			margin-top: 10px;
+			display: none;
+			cursor: pointer;
+		}
+
+		.custom-file-upload-hidden {
+			display: none !important;
+		}
+	</style>
 </head>
+
 <body>
 	<div class="container">
 		<div th:replace="~{/management-system/common/sidebar}"></div>
 		<div class="main-content">
-		
+
 			<div th:replace="~{/management-system/common/navbar}"></div>
-		
+
 			<form id="productForm" class="form" action="../create" method="post" enctype="multipart/form-data">
-		        
-		        <div class="form-group">
-		            <label for="product-name">商品名稱</label>
-		            <input type="text" id="productName" name="productName" placeholder="輸入內容不可為空" required>
-		        </div> <span id="productNameSP"></span>
-		
-		        <div class="form-group">
-					<label for="category-id">分類編號</label> <select id="categoryId"
-						name="categoryId">
+
+				<div class="form-group">
+					<label for="product-name">商品名稱</label>
+					<input type="text" id="productName" name="productName" placeholder="輸入內容不可為空" required>
+				</div> <span id="productNameSP"></span>
+
+				<div class="form-group">
+					<label for="category-id">分類編號</label> <select id="categoryId" name="categoryId">
 						<option value="" disabled selected>請選擇分類編號</option>
 						<option value="100">100</option>
 						<option value="200">200</option>
@@ -38,61 +51,100 @@ button[disabled] {
 						<option value="500">500</option>
 					</select> <span id="categoryIdSP"></span>
 				</div>
-		
-		      <div class="form-group">
-					<label for="productDescription">商品描述</label> <input type="text"
-						id="productDescription" name="productDescription"
-						placeholder="輸入內容">
+
+				<div class="form-group">
+					<label for="productDescription">商品描述</label> <input type="text" id="productDescription"
+						name="productDescription" placeholder="輸入內容">
 				</div>
 
 				<div class="form-group">
-					<label for="productPrice">商品價格</label> <input type="number"
-						id="productPrice" name="productPrice" placeholder="輸入內容" min="0">
+					<label for="productPrice">商品價格</label> <input type="number" id="productPrice" name="productPrice"
+						placeholder="輸入內容" min="0">
 				</div>
 
 				<div class="form-group">
-					<label for="productSales">商品銷量</label> <input type="number"
-						id="productSales" name="productSales" placeholder="輸入內容" min="0">
+					<label for="productSales">商品銷量</label> <input type="number" id="productSales" name="productSales"
+						placeholder="輸入內容" min="0">
 				</div>
 
 				<div class="form-group">
-					<label for="productInventory">商品庫存</label> <input type="number"
-						id="productInventory" name="productInventory" placeholder="輸入內容"
-						min="0">
+					<label for="productInventory">商品庫存</label> <input type="number" id="productInventory"
+						name="productInventory" placeholder="輸入內容" min="0">
 				</div>
 
 				<div class="form-group">
-					<label for="productState">商品狀態</label> <select id="productState"
-						name="productState">
+					<label for="productState">商品狀態</label> <select id="productState" name="productState">
 						<option value="" disabled selected>請選擇商品狀態</option>
 						<option value="1">開放販售</option>
 						<option value="2">未開放販售</option>
 					</select> <span id="productStateSP"></span>
 				</div>
-		        
-		        <div class="form-group">
+
+				<div class="form-group">
 					<label>上傳圖片</label>
 					<div class="upload-container">
-					    <label for="file-upload" class="custom-file-upload">
-					      <i class="fas fa-cloud-upload-alt"></i> <!-- 上傳圖示 -->
-					      選擇檔案
-					    </label>
-					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
-					    <p id="file-name" class="file-name">尚未選擇檔案</p>
-					    <p class="upload-instruction">支持 JPG, PNG（最大 5MB）</p>
+						<label for="file-upload" class="custom-file-upload" id="upload-label">
+							<i class="fas fa-cloud-upload-alt"></i> 選擇圖片
+						</label>
+						<input id="file-upload" name="imageFile" type="file" accept=".jpg, .png" style="display: none;">
+						<img id="preview-image" src="#" alt="圖片預覽" style="display: none; cursor: pointer;">
+						<p id="file-name" class="file-name">尚未選擇購物車</p>
+						<p class="upload-instruction">支持 JPG, PNG（最大 5MB）</p>
 					</div>
 				</div>
-		        
-		        <div class="form-group">
-		            <button type="submit" class="submit" id="submit" disabled>新增</button>
-		            <button type="button" class="cancel">取消</button>
-		        </div>
-		    </form>
+
+				<div class="form-group">
+					<button type="submit" class="submit" id="submit" disabled>新增</button>
+					<button type="button" class="cancel">取消</button>
+				</div>
+			</form>
 		</div>
 	</div>
-	
+
 	<script th:src="@{/management-system/shopping/js/CheckProduct.js}"></script>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
-	
+	<script th:inline="javascript">
+		(function () {
+			
+			var fileInput = document.getElementById('file-upload');
+			var fileNameElement = document.getElementById('file-name');
+			var previewImage = document.getElementById('preview-image');
+			var uploadLabel = document.getElementById('upload-label');
+
+			// 檔案變化時動作
+			fileInput.addEventListener('change', function (event) {
+				var file = event.target.files[0];
+
+				if (file) {
+					// 更新檔案名稱顯示
+					fileNameElement.textContent = file.name;
+
+					var reader = new FileReader();
+
+					// 圖片讀取完成時的回調函數
+					reader.onload = function (e) {
+						// 設置圖片SRC，設為顯示，隱藏按鈕
+						previewImage.src = e.target.result;
+						previewImage.style.display = 'inline-block';
+						uploadLabel.classList.add('custom-file-upload-hidden');
+					};
+
+					reader.readAsDataURL(file); //讀取檔案
+				} else {
+					// 未選擇檔案
+					previewImage.style.display = 'none';
+					uploadLabel.classList.remove('custom-file-upload-hidden');
+					fileNameElement.textContent = '尚未選擇圖片';
+				}
+			});
+
+			// 點圖上傳
+			previewImage.addEventListener('click', function () {
+				fileInput.click();
+			});
+		})();
+	</script>
+
 </body>
+
 </html>
