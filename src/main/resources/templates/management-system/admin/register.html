@@ -157,34 +157,38 @@ select[name="admin-status"] {
 </head>
 <body>
 	<div class="register-container">
-		
+
 		<div class="register-title">
-			<img th:src="@{/management-system/common/image/instastay-logo.png}" width="50" style="height: 50px; margin-right: 10px;">
+			<img th:src="@{/management-system/common/image/instastay-logo.png}"
+				width="50" style="height: 50px; margin-right: 10px;">
 			<h2>管理員註冊</h2>
 		</div>
-		<form id="form" th:action="@{/management/admin/register}" method="post">
+		<form id="form" th:action="@{/management/admin/register}"
+			method="post">
 			<div class="input-group">
-				<label for="account"></label> <input type="text" id="account" name="adminAccount" required placeholder="帳號">
-				 <span
+				<label for="account"></label> <input type="text" id="account"
+					name="adminAccount" required placeholder="帳號"> <span
 					id="account-error" class="error-message"></span>
 			</div>
 			<div class="input-group">
-				<label for="password"></label> <input type="password" id="password" name="adminPassword" required placeholder="密碼"> <span
+				<label for="password"></label> <input type="password" id="password"
+					name="adminPassword" required placeholder="密碼"> <span
 					id="password-error" class="error-message"></span>
 			</div>
 			<div class="input-group">
-				<label for="name"></label> <input type="text" id="name" name="adminName" required placeholder="姓名"> <span
+				<label for="name"></label> <input type="text" id="name"
+					name="adminName" required placeholder="姓名"> <span
 					id="name-error" class="error-message"></span>
 			</div>
-		<div class="input-group">
-				<label for="mail"></label> <input type="text" id="name" name="adminMail" required placeholder="電子郵件信箱"> <span
+			<div class="input-group">
+				<label for="mail"></label> <input type="text" id="name"
+					name="adminMail" required placeholder="電子郵件信箱"> <span
 					id="mail-error" class="error-message"></span>
 			</div>
 			<div class="input-group">
 				<label for="hiredate">到職日期</label> <input type="date" id="hiredate"
-					name="hiredate"
-					value="today" required="">
-				<span id="hiredate-error" class="error-message"></span>
+					name="hiredate" value="today" required=""> <span
+					id="hiredate-error" class="error-message"></span>
 			</div>
 			<div class="input-group">
 				<label for="status">狀態</label> <select id="status"
@@ -193,23 +197,27 @@ select[name="admin-status"] {
 					<option value="0">離職</option>
 				</select> <span id="status-error" class="error-message"></span>
 			</div>
+			<!-- 提交按钮 -->
 			
 			<button type="submit" class="register-button">註冊</button>
 			<a class="go-login"
 				th:href="@{/management/admin/login}">我要登入</a>
+				<button type="button" id="typeDateButton" class="register-button">一鍵填寫</button>
 		</form>
 	</div>
 	<script src="https://kit.fontawesome.com/cc1b58587a.js"
 		crossorigin="anonymous"></script>
 	<script>
-		document.getElementById("form").addEventListener("submit", function(event) {
-			// 檢查密碼是否符合規定
-			if (!checkPassword()) {
-				event.preventDefault(); // 阻止表單提交
-			}
-		});
+		document.getElementById("form").addEventListener("submit",
+				function(event) {
+					// 檢查密碼是否符合規定
+					if (!checkPassword()) {
+						event.preventDefault(); // 阻止表單提交
+					}
+				});
 
-		document.getElementById("account").addEventListener("blur", checkAccount);
+		document.getElementById("account").addEventListener("blur",
+				checkAccount);
 
 		function checkAccount() {
 			let theAccountObj = document.getElementById("account");
@@ -223,7 +231,8 @@ select[name="admin-status"] {
 			}
 		}
 
-		document.getElementById("password").addEventListener("blur", checkPassword);
+		document.getElementById("password").addEventListener("blur",
+				checkPassword);
 
 		function checkPassword() {
 			let thePwdObj = document.getElementById("password");
@@ -276,6 +285,37 @@ select[name="admin-status"] {
 				sppp.innerHTML = ""; // 清除可能的錯誤訊息
 			}
 		}
+		
+		
+		 // 一鍵填入
+       // Update the type data object with your values
+const typeData = {
+    adminAccount: "Admin22",
+    adminPassword: "Admin223",
+    adminName: "Jason",
+    adminMail: "tony2382@gmail.com",
+    hiredate: "2024-10-22",
+    adminStatus: "1" 
+};
+
+document.getElementById('typeDateButton').addEventListener('click', function() {
+    // Get all form fields
+    const accountField = document.getElementById("account");
+    const passwordField = document.getElementById("password");
+    const nameField = document.getElementById("name");
+    const mailField = document.getElementsByName("adminMail")[0];
+    const hiredateField = document.getElementById("hiredate");
+    const statusField = document.getElementById("status");
+
+    // Fill in the values
+    accountField.value = typeData.adminAccount;
+    passwordField.value = typeData.adminPassword;
+    nameField.value = typeData.adminName;
+    mailField.value = typeData.adminMail;
+    hiredateField.value = typeData.hiredate;
+    statusField.value = typeData.adminStatus;
+});
+
 	</script>
 </body>
 </html>

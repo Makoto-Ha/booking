@@ -1,15 +1,12 @@
 <aside class="sidebar">
     <div class="profile">
         <!-- 使用管理員的頭像 -->
-        
+        <img th:src="@{/management/admin/image/{id}(id=${session.admin.adminId})}" alt="頭像" class="profile-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"/>
          <img th:if="${session.admin.imgFile != null}" 
              th:src="@{'/management/admin/image/' + ${session.admin.adminId}}" 
              class="profile-avatar"
              alt="Profile Picture">
-        <img th:unless="${session.admin.imgFile != null}"
-             th:src="@{/management-system/common/image/profile.png}" 
-             class="profile-avatar"
-             alt="Default Picture">
+        
         <h3 th:text="${session.admin.adminName}">Admin Name</h3>
         <p>管理員</p>
     </div>
