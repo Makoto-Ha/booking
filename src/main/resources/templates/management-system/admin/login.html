@@ -156,13 +156,14 @@ body {
 					id="password-error" class="error-message"></span>
 			</div>
 
-			<button type="submit" class="login-button">登錄</button>
+			<button type="submit" class="login-button">登入</button>
 			<div class="register"
 				style="text-align: center; margin-bottom: 10px;">
 				<a
 					th:href="@{/management/admin/register}"
 					class="go-register">我要註冊</a>
 			</div>
+			<button type="button" id="typeDateButton" class="login-button">一鍵登入</button>
 		</form>
 	</div>
 	<script src="https://kit.fontawesome.com/cc1b58587a.js" crossorigin="anonymous"></script>
@@ -196,6 +197,23 @@ body {
 				spp.innerHTML = ""; // 清除可能的錯誤訊息
 			}
 		}
+		
+		// 定義登入資料
+		const loginData = {
+		    adminAccount: "Admin22",
+		    adminPassword: "Admin223"
+		};
+
+		// 為一鍵登入按鈕添加事件監聽器
+		document.getElementById('typeDateButton').addEventListener('click', function() {
+		    // 獲取表單欄位
+		    const accountField = document.getElementById("account");
+		    const passwordField = document.getElementById("password");
+
+		    // 填入值
+		    accountField.value = loginData.adminAccount;
+		    passwordField.value = loginData.adminPassword;
+		});
 	</script>
 </body>
 </html>
