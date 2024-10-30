@@ -46,51 +46,6 @@
 				</div>
 				<!-- 管理頁面內容 -->
 				<section id="content" class="content-area">
-					<div id="modal-overlay" class="overlay">
-						<div class="modal">
-							<h2 id="modal-title">查看</h2>
-							<form id="modal-form">
-								<div class="form-group">
-									<label>訂單編號</label>
-									<input type="text" id="modal-orderId" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>使用者編號</label>
-									<input type="text" id="modal-userId" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>套裝行程名稱</label>
-									<input type="text" id="modal-packageTourName" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>訂單狀態</label>
-									<input type="text" id="modal-orderStatus" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>訂單建立時間</label>
-									<input type="text" id="modal-orderDateTime" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>訂單價格</label>
-									<input type="text" id="modal-orderPrice" class="input-show-value" disabled>
-								</div>
-								<div class="form-group">
-									<label>旅行日期</label>
-									<input type="text" id="modal-travelDate" class="input-show-value" disabled>
-								</div>
-								<button type="button" id="modal-cancel-btn">取消</button>
-							</form>
-						</div>
-					</div>
-					<!-- 刪除確認視窗 -->
-					<div id="delete-overlay" class="overlay">
-						<div class="delete-modal">
-							<h2>確認刪除</h2>
-							<p>你確定要刪除此項目嗎？此操作無法撤銷。</p>
-							<button id="confirmDelBtn">確認</button>
-							<button type="button" id="cancelDeleteBtn">取消</button>
-						</div>
-					</div>
 					<!-- 這裡是管理頁面的動態內容 -->
 					<ul class="item-list">
 						<li th:each="packageTourOrderDTO : ${page.content}" class="list-item"
@@ -121,10 +76,6 @@
 									<span class="item-info" style="color: darkred">旅遊日期</span>
 									<span th:text="${packageTourOrderDTO.travelDate}"></span>
 								</div>
-							</div>
-							<div class="item-actions">
-								<button class="action-btn check-btn">查看</button>
-								<button class="action-btn delete-btn">刪除</button>
 							</div>
 						</li>
 					</ul>
