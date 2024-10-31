@@ -1,14 +1,18 @@
 package com.booking.controller.shopping;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.bean.dto.shopping.AddCartDTO;
+import com.booking.bean.dto.shopping.PayDetailDTO;
 import com.booking.bean.dto.shopping.ShopCartDTO;
 import com.booking.bean.dto.shopping.ShopOrderDTO;
+import com.booking.service.shopping.LinePayService;
 import com.booking.service.shopping.ShopCartService;
 import com.booking.service.shopping.ShopClientService;
 import com.booking.utils.Result;
@@ -33,6 +39,8 @@ public class ShopApiController {
 	private ShopClientService shopClientService;
 	@Autowired
 	private ShopCartService shopCartService;
+	@Autowired
+	private LinePayService linePayService;
 
 	// 立刻購買
 	@PostMapping("/buyNow")
@@ -46,6 +54,26 @@ public class ShopApiController {
 		}
 	}
 
+	// LINEPAY
+	@PostMapping("/checkout/linepay")
+	public ResponseEntity<Void> linePayCheckout(@ModelAttribute PayDetailDTO payDetailDTO) {
+		  Integer userId = shopClientService.getCurrentUserId();
+		    Result<ShopOrderDTO> orderDTO = shopClientService.getOrderByUserAndState(userId, 1);
+
+		    try {
+		        String paymentUrl = linePayService.requestPayment(orderDTO.getData(), userId.toString(), payDetailDTO);
+
+		        // 重定向用戶到 LinePay 支付頁面
+		        return ResponseEntity.status(HttpStatus.FOUND)
+		                .header(HttpHeaders.LOCATION, paymentUrl)
+		                .build();
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		    }
+		}
+	
 	// 綠界回傳資訊
 	@PostMapping("/checkout/success")
 	public String checkoutSuccess(HttpServletRequest request) {

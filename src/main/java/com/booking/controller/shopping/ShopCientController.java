@@ -1,14 +1,17 @@
 package com.booking.controller.shopping;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -86,7 +89,28 @@ public class ShopCientController {
 		return "client/shopping/shop";
 	}
 
-	// --------------------- 綠界 ------------------------ //
+	// --------------------- 金流 ------------------------ //
+
+	// LINEPAY 回傳資料
+	@GetMapping("/checkout/linepay/confirm")
+	public String linePayConfirm(@RequestParam("transactionId") String transactionId,
+			@RequestParam("orderId") String merchantTradeNo) {
+		
+		Result<ShopOrderDTO> result = shopClientService.getOrderByMerchantTradeNo(merchantTradeNo);
+		ShopOrderDTO shopOrderDTO = result.getData();
+		Integer orderId = shopOrderDTO.getOrderId();
+		// 設置查詢到的訂單的交易資訊
+		shopOrderDTO.setTransactionId(transactionId);
+
+		// 更新訂單狀態為已完成
+		shopClientService.setOrderIsCompleted(shopOrderDTO.getUserId(), orderId);
+
+		// 更新訂單詳細資訊
+		shopClientService.setOrderDetail(shopOrderDTO.getUserId(), shopOrderDTO);
+
+		// 返回訂單詳細頁面
+		return "redirect:/shop/orderDetail/" + orderId;
+	}
 
 	// 綠界支付結帳
 	@PostMapping("/checkout/confirm")
@@ -94,7 +118,6 @@ public class ShopCientController {
 
 		Integer userId = shopClientService.getCurrentUserId();
 		Result<ShopOrderDTO> order = shopClientService.getOrderByUserAndState(userId, 1);
-		System.out.println("=======-PPPPOINT=-=-=-===="+order.getData());
 		String paymentForm = shopClientService.ecpayCheckout(order.getData(), payDetailDTO, userId);
 
 		model.addAttribute("paymentForm", paymentForm);
@@ -150,7 +173,7 @@ public class ShopCientController {
 	public String orderDetail(@PathVariable Integer orderId, Model model) {
 		Result<ShopOrderDTO> result = shopClientService.getOrderById(orderId);
 		ShopOrderDTO orderDTO = result.getData();
-		
+
 		System.out.println(orderDTO);
 		model.addAttribute("orderDTO", orderDTO);
 		return "client/shopping/order-detail";
