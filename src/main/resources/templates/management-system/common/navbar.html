@@ -43,10 +43,7 @@
             <span th:text="${session.admin.adminName}"></span>
             <img th:src="@{/management/admin/image/{id}(id=${session.admin.adminId})}" alt="頭像" class="profile-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"/>
             <!-- 頭像顯示: 如果有上傳圖片就顯示上傳的圖片，否則顯示預設圖片 -->
-            <img th:if="${session.admin.imgFile != null}" 
-                 th:src="@{'/management/admin/image/' + ${session.admin.adminId}}" 
-                 class="user-avatar"
-                 alt="User Picture">
+         
            
         </div>
     </div>
