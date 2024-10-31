@@ -164,7 +164,7 @@
                         var newSubtotal = parseInt(priceText) * parseInt(newQuantity);
                         cartItemRow.querySelector('.item-subtotal').textContent = '$' + newSubtotal;
 
-                        updateTotalAmountInView();
+                        updateOrderSummary();
                     } else {
                         console.log("購物車數量更新失敗，回傳信息: " + response.data.message);
                     }

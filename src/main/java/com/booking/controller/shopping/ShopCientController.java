@@ -109,7 +109,7 @@ public class ShopCientController {
 		shopClientService.setOrderDetail(shopOrderDTO.getUserId(), shopOrderDTO);
 
 		// 返回訂單詳細頁面
-		return "redirect:/shop/orderDetail/" + orderId;
+		return "redirect:http://localhost:8080/booking/shop/orderDetail/" + orderId;
 	}
 
 	// 綠界支付結帳
