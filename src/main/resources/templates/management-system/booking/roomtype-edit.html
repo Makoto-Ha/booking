@@ -112,7 +112,8 @@
                 
                 <div class="form-group">
 					<label>上傳頭貼</label>
-					<div class="upload-container">
+					<div class="upload-container" style="display: flex; flex-direction: column; align-items: center;">
+						<img th:src="'/booking/management/roomtype/image/' + ${roomtype.roomtypeId}" alt="圖片預覽" style="max-width: 300px; border-radius: 5px; margin-bottom: 21px; margin-top: -1px;">
 					    <label for="file-upload" class="custom-file-upload">
 					      <i class="fas fa-cloud-upload-alt"></i> <!-- 上傳圖示 -->
 					      選擇頭貼	

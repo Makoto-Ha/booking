@@ -29,11 +29,12 @@
 		        
 		        <div class="form-group">
 					<label>上傳圖片</label>
-					<div class="upload-container">
+					<div class="upload-container" style="display: flex; flex-direction: column; align-items: center;">
+						<img id="preview" src="" alt="圖片預覽" style="max-width: 300px; display: none; border-radius: 5px; margin-bottom: 21px; margin-top: -1px;">
 					    <label for="file-upload" class="custom-file-upload">
 					      <i class="fas fa-cloud-upload-alt"></i> <!-- 上傳圖示 -->
 					      選擇檔案
-					    </label>
+					    </label>    
 					    <input id="file-upload" name="imageFile" type="file" accept=".jpg, .png">
 					    <p id="file-name" class="file-name">尚未選擇檔案</p>
 					    <p class="upload-instruction">支持 JPG, PNG（最大 5MB）</p>
@@ -123,6 +124,21 @@
 	<script th:src="@{/management-system/common/js/taiwan_districts.js}"></script>
 	<script th:src="@{/management-system/booking/js/form.js}"></script>
 	<script>
+		document.getElementById('file-upload').addEventListener('change', e => {
+			const file = event.target.files[0]; // 取得上傳的檔案
+            if (file) {
+                const reader = new FileReader(); // 建立 FileReader 物件
+
+                // 當讀取完成時，將讀取的結果設定為 img 的 src
+                reader.onload = function(e) {
+                    preview.src = e.target.result; // 設定圖片來源
+                    preview.style.display = "block"; // 顯示圖片
+                };
+
+                reader.readAsDataURL(file); // 將圖片讀取為 Data URL
+            }
+		});
+	
 		document.getElementById('onceInput').addEventListener('click', () => {
 			
 			document.getElementById('name').value = '蘊泉庄 (Yun Estate Hotel)';

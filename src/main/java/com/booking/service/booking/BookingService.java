@@ -502,8 +502,8 @@ public class BookingService {
 		obj.setTotalAmount(totalPrice);
 		obj.setTradeDesc("預定房型");
 		obj.setItemName(ItemName);
-		obj.setReturnURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
-		obj.setClientBackURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
+		obj.setReturnURL("http://localhost:8080/booking/user/order/success");
+		obj.setClientBackURL("http://localhost:8080/booking/user/order/success");
 //		obj.setOrderResultURL(ngrokUrlConfig.getNgrokURL() + "/booking/user/order/success");
 		String form = ecpay.aioCheckOut(obj, null);
 		return form;
