@@ -43,5 +43,7 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer> {
 	@Query("SELECT new com.booking.bean.dto.shopping.MonthlyOrderDTO(CONCAT(YEAR(so.createdAt), '-', MONTH(so.createdAt)), COUNT(so.orderId)) "
 			+ "FROM ShopOrder so GROUP BY YEAR(so.createdAt), MONTH(so.createdAt) ORDER BY YEAR(so.createdAt), MONTH(so.createdAt)")
 	List<MonthlyOrderDTO> findMonthlyOrderData();
+	
+	ShopOrder findByMerchantTradeNo(String merchantTradeNo);
 
 }

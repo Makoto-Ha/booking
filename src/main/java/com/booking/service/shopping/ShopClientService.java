@@ -65,6 +65,7 @@ public class ShopClientService {
 	@Autowired
 	private EmailService emailService;
 
+
 	/**
 	 * 綠界支付功能
 	 * 
@@ -96,6 +97,7 @@ public class ShopClientService {
 		obj.setCustomField2(orderDTO.getOrderId().toString());
 
 		String form = all.aioCheckOut(obj, null);
+		
 		shopOrderRepository.findById(orderDTO.getOrderId()).ifPresent(order -> {
 			order.setMerchantTradeNo(uuid);
 			order.setTransactionId(tradeDesc);
@@ -126,7 +128,7 @@ public class ShopClientService {
 		shopOrder.setUser(userRepository.findById(userId).get());
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
-		System.out.println("=====NEW訂單===="+shopOrder);
+		System.out.println("=====NEW訂單====" + shopOrder);
 		// =============== 從購物車中篩選出選中的項目 ======================
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
@@ -176,7 +178,7 @@ public class ShopClientService {
 
 		shopOrderDTO.setOrderItems(orderItemDTOList);
 
-		System.out.println("=-===-=-=-=-=-=從購物車生成訂單最後"+shopOrderDTO);
+		System.out.println("=-===-=-=-=-=-=從購物車生成訂單最後" + shopOrderDTO);
 		return Result.success(shopOrderDTO);
 	}
 
@@ -211,7 +213,7 @@ public class ShopClientService {
 
 	@Transactional
 	public Result<String> setOrderDetail(Integer userId, ShopOrderDTO orderDTO) {
-		
+
 		ShopOrder shopOrder = shopOrderRepository.findById(orderDTO.getOrderId()).get();
 
 		System.out.println("=====轉換前的ORDER=====" + shopOrder);
@@ -219,8 +221,8 @@ public class ShopClientService {
 		if (shopOrder == null) {
 			return Result.failure("無法找到符合條件的訂單");
 		}
-		MyModelMapper.map(orderDTO, shopOrder);
-		System.out.println("=====綠界資訊 DTO=====" + orderDTO);
+		BeanUtils.copyProperties(orderDTO, shopOrder);
+		System.out.println("=====傳進來的DTO=====" + orderDTO);
 		System.out.println("=====轉換完存入 ORDER=====" + shopOrder);
 		shopOrderRepository.save(shopOrder);
 		return Result.success("設置成功付款");
@@ -231,11 +233,11 @@ public class ShopClientService {
 	 * 
 	 * @param userId
 	 * @return
-	 * @throws 
+	 * @throws
 	 */
 
 	@Transactional
-	public boolean setOrderIsCompleted(Integer userId, Integer orderId){
+	public boolean setOrderIsCompleted(Integer userId, Integer orderId) {
 		Optional<ShopOrder> option = shopOrderRepository.findById(orderId);
 		if (!option.isPresent()) {
 			return false;
@@ -245,14 +247,10 @@ public class ShopClientService {
 
 		// 更新產品庫存和銷量
 		List<ShopOrderItem> orderItems = order.getItems();
-		System.out.println("訂單項目: " + orderItems);
-		System.out.println("=====" + orderItems.get(0).getProduct());
 		for (ShopOrderItem orderItem : orderItems) {
 			Product product = orderItem.getProduct();
 			Integer quantity = orderItem.getQuantity();
 
-			System.out.println("=====orderItem.getProduct()===" + orderItem.getProduct());
-			System.out.println("=====orderItem.getQuantity()===" + orderItem.getQuantity());
 			product.setProductInventory(product.getProductInventory() - quantity);
 			product.setProductSales(product.getProductSales() + quantity);
 
@@ -275,19 +273,18 @@ public class ShopClientService {
 			shopCartRepository.save(cart);
 		}
 
-		
 		Map<String, Object> variables = new HashMap<>();
-		
+
 		variables.put("userName", order.getUser().getUserName());
-	    variables.put("merchantTradeNo", order.getMerchantTradeNo());
-	    variables.put("orderItems", order.getItems());
-	    variables.put("orderPrice", order.getOrderPrice());
-		
-	    String toEmail = order.getUser().getUserMail();
-        String subject = "訂單確認 #" + order.getMerchantTradeNo();
-	    
+		variables.put("merchantTradeNo", order.getMerchantTradeNo());
+		variables.put("orderItems", order.getItems());
+		variables.put("orderPrice", order.getOrderPrice());
+
+		String toEmail = order.getUser().getUserMail();
+		String subject = "訂單確認 #" + order.getMerchantTradeNo();
+
 		try {
-			emailService.sendOrderConfirmationEmail(toEmail,subject,variables);
+			emailService.sendOrderConfirmationEmail(toEmail, subject, variables);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
@@ -377,22 +374,45 @@ public class ShopClientService {
 	public Result<ShopOrderDTO> getOrderById(Integer orderId) {
 		Optional<ShopOrder> byId = shopOrderRepository.findById(orderId);
 		ShopOrder shopOrder = byId.get();
-		
+
 		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
 		BeanUtils.copyProperties(shopOrder, shopOrderDTO);
-		
+
 		shopOrderDTO.setUserId(shopOrder.getUser().getUserId());
 		shopOrderDTO.setOrderItems(shopOrder.getItems().stream().map(item -> {
-            ShopOrderItemDTO orderItemDTO = new ShopOrderItemDTO();
-            MyModelMapper.map(item, orderItemDTO);
-            orderItemDTO.setProductId(item.getProduct().getProductId());
-            orderItemDTO.setProductName(item.getProduct().getProductName());
-            return orderItemDTO;
-        }).collect(Collectors.toList()));
-		
+			ShopOrderItemDTO orderItemDTO = new ShopOrderItemDTO();
+			MyModelMapper.map(item, orderItemDTO);
+			orderItemDTO.setProductId(item.getProduct().getProductId());
+			orderItemDTO.setProductName(item.getProduct().getProductName());
+			return orderItemDTO;
+		}).collect(Collectors.toList()));
+
 		System.out.println(shopOrderDTO.getOrderItems());
-		
+
 		return Result.success(shopOrderDTO);
 	}
 
+	@Transactional
+	public Result<ShopOrderDTO> getOrderByMerchantTradeNo(String merchantTradeNo) {
+		
+		ShopOrder shopOrder = shopOrderRepository.findByMerchantTradeNo(merchantTradeNo);
+		System.out.println("findByTransactionId======"+shopOrder);
+		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
+		BeanUtils.copyProperties(shopOrder, shopOrderDTO);
+
+		shopOrderDTO.setUserId(shopOrder.getUser().getUserId());
+		shopOrderDTO.setOrderItems(shopOrder.getItems().stream().map(item -> {
+			ShopOrderItemDTO orderItemDTO = new ShopOrderItemDTO();
+			MyModelMapper.map(item, orderItemDTO);
+			orderItemDTO.setProductId(item.getProduct().getProductId());
+			orderItemDTO.setProductName(item.getProduct().getProductName());
+			return orderItemDTO;
+		}).collect(Collectors.toList()));
+		
+		System.out.println(shopOrderDTO.getOrderItems());
+
+		return Result.success(shopOrderDTO);
+	}
+	
+		
 }
