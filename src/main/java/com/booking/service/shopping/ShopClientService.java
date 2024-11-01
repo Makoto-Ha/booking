@@ -98,6 +98,7 @@ public class ShopClientService {
 
 		String form = all.aioCheckOut(obj, null);
 		
+		// 更新訂單
 		shopOrderRepository.findById(orderDTO.getOrderId()).ifPresent(order -> {
 			order.setMerchantTradeNo(uuid);
 			order.setTransactionId(tradeDesc);
@@ -128,7 +129,7 @@ public class ShopClientService {
 		shopOrder.setUser(userRepository.findById(userId).get());
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
-		System.out.println("=====NEW訂單====" + shopOrder);
+		
 		// =============== 從購物車中篩選出選中的項目 ======================
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
@@ -178,7 +179,6 @@ public class ShopClientService {
 
 		shopOrderDTO.setOrderItems(orderItemDTOList);
 
-		System.out.println("=-===-=-=-=-=-=從購物車生成訂單最後" + shopOrderDTO);
 		return Result.success(shopOrderDTO);
 	}
 
@@ -193,7 +193,11 @@ public class ShopClientService {
 		return userRepository.findByUserAccount(userAccount).get().getUserId();
 	}
 
-	// 會員寄送資料
+	/**
+	 * 獲取用戶支付資訊
+	 * @param userId
+	 * @return
+	 */
 	public Result<PayDetailDTO> getUserPayDetail(Integer userId) {
 		User user = userRepository.findById(userId).get();
 		PayDetailDTO payDetailDTO = new PayDetailDTO();
@@ -204,7 +208,7 @@ public class ShopClientService {
 	}
 
 	/**
-	 * 設置最新已付款訂單資訊
+	 * 設置回傳訂單資訊
 	 * 
 	 * @param userId
 	 * @param orderDTO
@@ -216,15 +220,17 @@ public class ShopClientService {
 
 		ShopOrder shopOrder = shopOrderRepository.findById(orderDTO.getOrderId()).get();
 
-		System.out.println("=====轉換前的ORDER=====" + shopOrder);
-
 		if (shopOrder == null) {
 			return Result.failure("無法找到符合條件的訂單");
 		}
-		BeanUtils.copyProperties(orderDTO, shopOrder);
-		System.out.println("=====傳進來的DTO=====" + orderDTO);
-		System.out.println("=====轉換完存入 ORDER=====" + shopOrder);
+		
+		shopOrder.setMerchantTradeNo(orderDTO.getMerchantTradeNo());
+		shopOrder.setTransactionId(orderDTO.getTransactionId());
+		shopOrder.setOrderState(orderDTO.getOrderState());
+		shopOrder.setPaymentState(orderDTO.getPaymentState());
+		shopOrder.setPaymentMethod(orderDTO.getPaymentMethod());
 		shopOrderRepository.save(shopOrder);
+		
 		return Result.success("設置成功付款");
 	}
 
@@ -238,12 +244,17 @@ public class ShopClientService {
 
 	@Transactional
 	public boolean setOrderIsCompleted(Integer userId, Integer orderId) {
+		
+		// 拿出訂單
 		Optional<ShopOrder> option = shopOrderRepository.findById(orderId);
 		if (!option.isPresent()) {
 			return false;
 		}
+		
+		// 更新訂單
 		ShopOrder order = option.get();
 		order.setOrderState(2);
+		shopOrderRepository.save(order);
 
 		// 更新產品庫存和銷量
 		List<ShopOrderItem> orderItems = order.getItems();
@@ -272,7 +283,8 @@ public class ShopClientService {
 			shopCartItemRepository.deleteAll(itemsToRemove);
 			shopCartRepository.save(cart);
 		}
-
+		
+		// 發送訂單確認郵件
 		Map<String, Object> variables = new HashMap<>();
 
 		variables.put("userName", order.getUser().getUserName());
@@ -291,7 +303,12 @@ public class ShopClientService {
 		return true;
 	}
 
-	// 立刻購買
+	/**
+	 * 立即購買
+	 * @param userId
+	 * @param addCartDTO
+	 * @return
+	 */
 	@Transactional
 	public Result<String> createOrderByProductAndUser(Integer userId, AddCartDTO addCartDTO) {
 
@@ -387,16 +404,18 @@ public class ShopClientService {
 			return orderItemDTO;
 		}).collect(Collectors.toList()));
 
-		System.out.println(shopOrderDTO.getOrderItems());
-
 		return Result.success(shopOrderDTO);
 	}
 
+	/**
+	 * 根據MerchantTradeNo獲取訂單
+	 * @param merchantTradeNo
+	 * @return
+	 */
 	@Transactional
 	public Result<ShopOrderDTO> getOrderByMerchantTradeNo(String merchantTradeNo) {
 		
 		ShopOrder shopOrder = shopOrderRepository.findByMerchantTradeNo(merchantTradeNo);
-		System.out.println("findByTransactionId======"+shopOrder);
 		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
 		BeanUtils.copyProperties(shopOrder, shopOrderDTO);
 
@@ -408,11 +427,7 @@ public class ShopClientService {
 			orderItemDTO.setProductName(item.getProduct().getProductName());
 			return orderItemDTO;
 		}).collect(Collectors.toList()));
-		
-		System.out.println(shopOrderDTO.getOrderItems());
 
 		return Result.success(shopOrderDTO);
 	}
-	
-		
 }

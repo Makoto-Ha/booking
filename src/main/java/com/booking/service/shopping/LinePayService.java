@@ -41,8 +41,18 @@ public class LinePayService {
     @Autowired
     private NgrokUrlConfig ngrokUrlConfig;
 
-    public String requestPayment(ShopOrderDTO orderDTO, String userId, PayDetailDTO payDetailDTO) throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
+    /**
+     * 請求支付
+     * @param orderDTO
+     * @param userId
+     * @param payDetailDTO
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+	public String requestPayment(ShopOrderDTO orderDTO, String userId, PayDetailDTO payDetailDTO) throws Exception {
+    	// 使用 RestTemplate 發送 HTTP 請求
+    	RestTemplate restTemplate = new RestTemplate();
 
         String merchantTradeNo = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
         orderDTO.setMerchantTradeNo(merchantTradeNo);
@@ -70,7 +80,7 @@ public class LinePayService {
         headers.set("X-LINE-Authorization-Nonce", nonce);
         headers.set("X-LINE-Authorization", generateSignature(API_PATH, requestBody, channelSecret, nonce));
 
-
+        // 更新訂單資訊
         shopOrderRepository.findById(orderDTO.getOrderId()).ifPresent(order -> {
             order.setMerchantTradeNo(merchantTradeNo);
             order.setPaymentMethod(2);
@@ -83,7 +93,7 @@ public class LinePayService {
         System.out.println("headers====" + headers);
         System.out.println("requestBody=====" + requestBody);
 
-
+        // 發送請求
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
@@ -97,13 +107,22 @@ public class LinePayService {
         }
     }
 
+    /**
+     * 組裝重定向 URL
+     * @return
+     */
     private Map<String, String> getRedirectUrls() {
         Map<String, String> redirectUrls = new HashMap<>();
-        redirectUrls.put("confirmUrl", ngrokUrlConfig.getNgrokURL() + "/booking/shop/checkout/linepay/confirm");
+        redirectUrls.put("confirmUrl", "http://localhost:8080/booking/shop/checkout/linepay/confirm");
         redirectUrls.put("cancelUrl", "http://localhost:8080/booking/shop/cart");
         return redirectUrls;
     }
 
+    /**
+     * 組裝商品清單
+     * @param orderDTO
+     * @return
+     */
     private List<Map<String, Object>> getPackages(ShopOrderDTO orderDTO) {
         Map<String, Object> packageData = new HashMap<>();
         packageData.put("id", orderDTO.getMerchantTradeNo()); // 包裝 ID
@@ -123,6 +142,15 @@ public class LinePayService {
         return List.of(packageData);
     }
 
+    /**
+     * 生成簽名
+     * @param apiPath
+     * @param requestBody
+     * @param channelSecret
+     * @param nonce
+     * @return
+     * @throws Exception
+     */
     public String generateSignature(String apiPath, String requestBody, String channelSecret, String nonce) throws Exception {
         String signatureString = channelSecret + apiPath + requestBody + nonce;
         Mac sha256HMAC = Mac.getInstance("HmacSHA256");

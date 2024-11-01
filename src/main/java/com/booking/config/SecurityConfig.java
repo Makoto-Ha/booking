@@ -113,7 +113,8 @@ public class SecurityConfig {
                     "/webjars/**",
                     "/api/**",
                     "/templates/**",
-                    "/shop/api/checkout/success/**"
+                    "/shop/api/checkout/success/**",
+                    "/shop/checkout/linepay/confirm/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

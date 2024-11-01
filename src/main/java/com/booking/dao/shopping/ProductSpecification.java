@@ -12,12 +12,13 @@ public class ProductSpecification {
 
 	/**
 	 * 模糊名稱
+	 * 
 	 * @param productName
 	 * @return
 	 */
 	public static Specification<Product> productNameContains(String productName) {
 		return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(productName == null || productName.isEmpty()) {
+			if (productName == null || productName.isEmpty()) {
 				return builder.conjunction();
 			}
 			return builder.like(root.get("productName"), "%" + productName + "%");
@@ -26,65 +27,74 @@ public class ProductSpecification {
 
 	/**
 	 * 分類ID
+	 * 
 	 * @param productCapacityId
 	 * @return
 	 */
-	public static Specification<Product> categoryIdContains (Integer productCategoryId) {
+	public static Specification<Product> categoryIdContains(Integer productCategoryId) {
 		return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(productCategoryId == null) {
+			if (productCategoryId == null) {
 				return builder.conjunction();
 			}
-			
+
 			return builder.equal(root.get("category").get("categoryId"), productCategoryId);
 		};
 	}
-	
 
 	/**
-	 * 價錢
-	 * @param productPrice
+	 * 價格區間
+	 * @param minPrice
+	 * @param maxPrice
 	 * @return
 	 */
-	public static Specification<Product> productPriceContains (Integer productPrice) {
+	public static Specification<Product> productPriceInRange(Integer minPrice, Integer maxPrice) {
 		return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(productPrice == null) {
+			if (minPrice != null && maxPrice != null) {
+				return builder.between(root.get("productPrice"), minPrice, maxPrice);
+			} else if (minPrice != null) {
+				return builder.greaterThanOrEqualTo(root.get("productPrice"), minPrice);
+			} else if (maxPrice != null) {
+				return builder.lessThanOrEqualTo(root.get("productPrice"), maxPrice);
+			} else {
 				return builder.conjunction();
 			}
-			
-			return builder.equal(root.get("productPrice"), productPrice);
 		};
 	}
 
-	
 	/**
-	 * 庫存量
-	 * @param productInventory
+	 * 庫存區間
+	 * @param minInventory
+	 * @param maxInventory
 	 * @return
 	 */
-	public static Specification<Product> productInventoryContains (Integer productInventory) {
+	public static Specification<Product> productInventoryInRange(Integer minInventory, Integer maxInventory) {
 		return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(productInventory == null) {
+			if (minInventory != null && maxInventory != null) {
+				return builder.between(root.get("productInventory"), minInventory, maxInventory);
+			} else if (minInventory != null) {
+				return builder.greaterThanOrEqualTo(root.get("productInventory"), minInventory);
+			} else if (maxInventory != null) {
+				return builder.lessThanOrEqualTo(root.get("productInventory"), maxInventory);
+			} else {
 				return builder.conjunction();
 			}
-			
-			return builder.equal(root.get("productInventory"), productInventory);
 		};
 	}
 
-	
 	/**
 	 * 模糊說明
+	 * 
 	 * @param productDescription
 	 * @return
 	 */
-	public static Specification<Product> productDescriptionContains (String productDescription) {
+	public static Specification<Product> productDescriptionContains(String productDescription) {
 		return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-			if(productDescription == null || productDescription.isEmpty()) {
+			if (productDescription == null || productDescription.isEmpty()) {
 				return builder.conjunction();
 			}
-			
+
 			return builder.like(root.get("productDescription"), "%" + productDescription + "%");
 		};
 	}
-	
+
 }

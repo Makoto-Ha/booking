@@ -18,8 +18,7 @@
         .footer-bgc {
             background-color: rgb(42, 42, 46);
         }
-    </style>
-    <style>
+
         .floating-cart {
             bottom: 30px;
             right: 30px;
@@ -113,6 +112,7 @@
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        // +-數量
         document.getElementById('button-minus').addEventListener('click', function () {
             var quantityInput = document.getElementById('quantity');
             var currentValue = parseInt(quantityInput.value);
@@ -129,18 +129,16 @@
     <script th:inline="javascript">
 
         const productId = [[${ productDTO.productId }]]
-        
-
         // 加入購物車
         document.querySelectorAll('.add-to-cart').forEach(button => {
             button.addEventListener('click', function (event) {
-  const quantity = parseInt(document.getElementById('quantity').value);
+                const quantity = parseInt(document.getElementById('quantity').value);
                 // 將產品ID和數量組合成一個物件
                 const addCartDTO = {
                     productId: productId,
                     quantity: quantity
                 };
-console.log(addCartDTO)
+                console.log(addCartDTO)
                 fetch('/booking/shop/api/cart/add', {
                     method: 'POST',
                     headers: {
@@ -169,10 +167,10 @@ console.log(addCartDTO)
         document.querySelectorAll('.buy-now').forEach(buyButton => {
             buyButton.addEventListener("click", function (event) {
                 const url = 'http://localhost:8080/booking/shop/api/buyNow';
-				const addCartDTO={
-				productId:productId,
-				quantity:parseInt(document.getElementById('quantity').value)
-				};
+                const addCartDTO = {
+                    productId: productId,
+                    quantity: parseInt(document.getElementById('quantity').value)
+                };
 
                 axios.post(url, addCartDTO)
                     .then(res => {
@@ -191,7 +189,7 @@ console.log(addCartDTO)
         })
 
 
-        // 懸浮購物車
+        // 懸浮購物車更新
         function updateCartItemCount() {
             axios.get('/booking/shop/api/cart/itemCount')
                 .then(res => {

@@ -17,37 +17,48 @@
 		            <label for="product-name">商品名稱</label>
 		            <input type="text" id="product-name" name="productName" placeholder="輸入內容">
 		        </div>
-			
-		        <div class="form-group">
-		            <label for="product-number">商品分類編號</label>
-		            <input type="text" id="product-categoryId" name="categoryId" placeholder="輸入內容">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="product-number">商品分類編號</label>
-		            <input type="text" id="product-price" name="productPrice" placeholder="輸入內容">
-		        </div>
-		
-		        <div class="form-group">
-		            <label for="product-number">商品分類編號</label>
-		            <input type="text" id="product-inventory" name="productInventory" placeholder="輸入內容">
-		        </div>
-		
-		        <div class="form-group">
+		        
+		         <div class="form-group">
 		            <label for="product-description">商品描述</label>
 		            <input type="text" id="product-description" name="productDescription" placeholder="輸入內容">
 		        </div>
-		        
-	<!--  	    <div class="form-group">
-		            <label for="product-description">商品更新時間</label>
-		            <input type="text" id="updated-at" name="updatedAt" placeholder="輸入內容">
-		        </div>
+			
+		         <!-- 商品分类下拉选单 -->
+                <div class="form-group">
+                    <label for="product-categoryId">商品分類</label>
+                    <select id="product-categoryId" name="categoryId" class="form-control">
+                        <option value="">請選擇商品分類</option>
+                        <option value="100" >糕餅類</option>
+                        <option value="200" >茶葉類</option>
+                        <option value="300" >水果類</option>
+                        <option value="400" >酒品類</option>
+                        <option value="500" >零食類</option>
+                    </select>
+                </div>
+		
+		        <!-- 價格區間 -->
+			    <div class="form-group">
+				    <label for="min-price">最低價格：<span id="min-price-value">0</span></label>
+				    <input type="range" id="min-price" name="minPrice" min="0" max="10000" value="0" step="100">
+				</div>
+				
+				<div class="form-group">
+				    <label for="max-price">最高價格：<span id="max-price-value">10000</span></label>
+				    <input type="range" id="max-price" name="maxPrice" min="0" max="10000" value="10000" step="100">
+				</div>
 
-		        <div class="form-group">
-		            <label for="product-description">商品上架時間</label>
-		            <input type="text" id="created-at" name="createdAt" placeholder="輸入內容">
-		        </div>
-		-->
+			
+			    <!-- 庫存區間 -->
+			    <div class="form-group">
+				    <label for="min-inventory">最低庫存：<span id="min-inventory-value">0</span></label>
+				    <input type="range" id="min-inventory" name="minInventory" min="0" max="1000" value="0" step="10">
+				</div>
+				
+				<div class="form-group">
+				    <label for="max-inventory">最高庫存：<span id="max-inventory-value">1000</span></label>
+				    <input type="range" id="max-inventory" name="maxInventory" min="0" max="1000" value="1000" step="10">
+				</div>
+		
 		        <div class="form-group">
 		            <button type="submit" style="background-color: #6c63ff;">查詢</button>
 		            <button type="button" class="cancel">取消</button>
@@ -56,8 +67,54 @@
 		</div>
 	</div>
 	<script th:src="@{/management-system/booking/js/booking.js}"></script>
-	<script>
-		
-	</script>
+	<script type="text/javascript">
+    // 初始化滑動條的值
+    document.getElementById('min-price-value').innerText = document.getElementById('min-price').value;
+    document.getElementById('max-price-value').innerText = document.getElementById('max-price').value;
+    document.getElementById('min-inventory-value').innerText = document.getElementById('min-inventory').value;
+    document.getElementById('max-inventory-value').innerText = document.getElementById('max-inventory').value;
+
+    // 更新價錢條的值
+    document.getElementById('min-price').addEventListener('input', function() {
+        var minPrice = parseInt(this.value);
+        var maxPrice = parseInt(document.getElementById('max-price').value);
+        if (minPrice > maxPrice) {
+            document.getElementById('max-price').value = minPrice;
+            document.getElementById('max-price-value').innerText = minPrice;
+        }
+        document.getElementById('min-price-value').innerText = minPrice;
+    });
+
+    document.getElementById('max-price').addEventListener('input', function() {
+        var maxPrice = parseInt(this.value);
+        var minPrice = parseInt(document.getElementById('min-price').value);
+        if (maxPrice < minPrice) {
+            document.getElementById('min-price').value = maxPrice;
+            document.getElementById('min-price-value').innerText = maxPrice;
+        }
+        document.getElementById('max-price-value').innerText = maxPrice;
+    });
+
+    // 更新庫存條的值
+    document.getElementById('min-inventory').addEventListener('input', function() {
+        var minInventory = parseInt(this.value);
+        var maxInventory = parseInt(document.getElementById('max-inventory').value);
+        if (minInventory > maxInventory) {
+            document.getElementById('max-inventory').value = minInventory;
+            document.getElementById('max-inventory-value').innerText = minInventory;
+        }
+        document.getElementById('min-inventory-value').innerText = minInventory;
+    });
+
+    document.getElementById('max-inventory').addEventListener('input', function() {
+        var maxInventory = parseInt(this.value);
+        var minInventory = parseInt(document.getElementById('min-inventory').value);
+        if (maxInventory < minInventory) {
+            document.getElementById('min-inventory').value = maxInventory;
+            document.getElementById('min-inventory-value').innerText = maxInventory;
+        }
+        document.getElementById('max-inventory-value').innerText = maxInventory;
+    });
+</script>
 </body>
 </html>
