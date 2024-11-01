@@ -42,7 +42,11 @@ public class ProductService {
 	@Autowired
 	private ShopOrderItemRepository shopOrderItemRepository;
 
-	// 商品銷量
+	/**
+	 * 商品銷售數據
+	 * 
+	 * @return
+	 */
 	public List<ProductSalesDTO> getProductSalesData() {
 		return shopOrderItemRepository.findProductSalesData();
 	}
@@ -87,12 +91,13 @@ public class ProductService {
 	 * @return
 	 */
 	public Result<Page<ProductDTO>> findProducts(ProductDTO productDTO) {
-
+		
 		Specification<Product> spec = Specification
 				.where(ProductSpecification.productNameContains(productDTO.getProductName()))
 				.and(ProductSpecification.categoryIdContains(productDTO.getCategoryId()))
-				.and(ProductSpecification.productPriceContains(productDTO.getProductPrice()))
-				.and(ProductSpecification.productInventoryContains(productDTO.getProductInventory()))
+				.and(ProductSpecification.productPriceInRange(productDTO.getMinPrice(), productDTO.getMaxPrice()))
+				.and(ProductSpecification.productInventoryInRange(productDTO.getMinInventory(),
+						productDTO.getMaxInventory()))
 				.and(ProductSpecification.productDescriptionContains(productDTO.getProductDescription()));
 
 		Pageable pageable = MyPageRequest.of(productDTO.getPageNumber(), 10, productDTO.getSelectedSort(),

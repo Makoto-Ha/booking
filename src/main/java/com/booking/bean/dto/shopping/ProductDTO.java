@@ -29,6 +29,11 @@ public class ProductDTO {
 	private LocalDateTime createdAt;
 
 	// --------------------------------------
+    private Integer minPrice;
+    private Integer maxPrice;
+    private Integer minInventory;
+    private Integer maxInventory;
+	// --------------------------------------
 	private String productImage;
 	private Integer pageNumber = 1;
 	private String attrOrderBy = "productId";

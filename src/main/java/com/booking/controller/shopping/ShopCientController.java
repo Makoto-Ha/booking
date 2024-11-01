@@ -1,17 +1,14 @@
 package com.booking.controller.shopping;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,15 +36,7 @@ public class ShopCientController {
 	@Autowired
 	private ShopCartService shopCartService;
 
-	/**
-	 * 商城首页
-	 * 
-	 * @param pageNumber
-	 * @param categoryId
-	 * @param orderOption
-	 * @param model
-	 * @return
-	 */
+	//商城首頁
 	@GetMapping
 	public String sendIndex(@RequestParam(required = false, defaultValue = "1") Integer pageNumber,
 			@RequestParam(required = false) Integer categoryId, @RequestParam(required = false) String orderOption,
@@ -101,10 +90,12 @@ public class ShopCientController {
 		Integer orderId = shopOrderDTO.getOrderId();
 		// 設置查詢到的訂單的交易資訊
 		shopOrderDTO.setTransactionId(transactionId);
+		shopOrderDTO.setPaymentMethod(2);
+		shopOrderDTO.setPaymentState(2);
+		shopOrderDTO.setOrderState(2);
 
 		// 更新訂單狀態為已完成
 		shopClientService.setOrderIsCompleted(shopOrderDTO.getUserId(), orderId);
-
 		// 更新訂單詳細資訊
 		shopClientService.setOrderDetail(shopOrderDTO.getUserId(), shopOrderDTO);
 
@@ -173,8 +164,6 @@ public class ShopCientController {
 	public String orderDetail(@PathVariable Integer orderId, Model model) {
 		Result<ShopOrderDTO> result = shopClientService.getOrderById(orderId);
 		ShopOrderDTO orderDTO = result.getData();
-
-		System.out.println(orderDTO);
 		model.addAttribute("orderDTO", orderDTO);
 		return "client/shopping/order-detail";
 	}

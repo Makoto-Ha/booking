@@ -27,7 +27,6 @@ public class NgrokUrlConfig {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.getForObject("http://localhost:4040/api/tunnels", String.class);
-  
             JSONObject jsonObject = new JSONObject(response);
    
             return jsonObject.getJSONArray("tunnels").getJSONObject(0).getString("public_url");

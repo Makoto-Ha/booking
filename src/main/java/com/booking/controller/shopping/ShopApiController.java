@@ -1,6 +1,5 @@
 package com.booking.controller.shopping;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -57,29 +56,28 @@ public class ShopApiController {
 	// LINEPAY
 	@PostMapping("/checkout/linepay")
 	public ResponseEntity<Void> linePayCheckout(@ModelAttribute PayDetailDTO payDetailDTO) {
-		  Integer userId = shopClientService.getCurrentUserId();
-		    Result<ShopOrderDTO> orderDTO = shopClientService.getOrderByUserAndState(userId, 1);
+		Integer userId = shopClientService.getCurrentUserId();
+		Result<ShopOrderDTO> orderDTO = shopClientService.getOrderByUserAndState(userId, 1);
 
-		    try {
-		        String paymentUrl = linePayService.requestPayment(orderDTO.getData(), userId.toString(), payDetailDTO);
+		try {
+			String paymentUrl = linePayService.requestPayment(orderDTO.getData(), userId.toString(), payDetailDTO);
+			// 重定向用戶到 LinePay 支付頁面
+			return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, paymentUrl).build();
 
-		        // 重定向用戶到 LinePay 支付頁面
-		        return ResponseEntity.status(HttpStatus.FOUND)
-		                .header(HttpHeaders.LOCATION, paymentUrl)
-		                .build();
-
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-	
+	}
+
 	// 綠界回傳資訊
 	@PostMapping("/checkout/success")
 	public String checkoutSuccess(HttpServletRequest request) {
 
+		// 取得回傳參數
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		Map<String, String> paymentResult = new HashMap<>();
+
 		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
 			paymentResult.put(entry.getKey(), entry.getValue()[0]);
 		}
@@ -87,11 +85,12 @@ public class ShopApiController {
 			return "0|error";
 		}
 		System.out.println(paymentResult);
+		// 更新訂單狀態
 		Integer userId = Integer.parseInt(paymentResult.get("CustomField1"));
 		int orderId = Integer.parseInt(paymentResult.get("CustomField2"));
-		shopClientService.setOrderIsCompleted(userId, orderId);
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+		shopClientService.setOrderIsCompleted(userId, orderId);
 
 		ShopOrderDTO shopOrderDTO = new ShopOrderDTO();
 		shopOrderDTO.setOrderId(orderId);
@@ -99,6 +98,7 @@ public class ShopApiController {
 		shopOrderDTO.setTransactionId(paymentResult.get("TradeNo"));
 		shopOrderDTO.setPaymentMethod(1);
 		shopOrderDTO.setPaymentState(2);
+		shopOrderDTO.setOrderState(2);
 		shopOrderDTO.setPaymentCreatedAt(LocalDateTime.parse(paymentResult.get("TradeDate"), formatter));
 		shopOrderDTO.setPaymentUpdatedAt(LocalDateTime.parse(paymentResult.get("PaymentDate"), formatter));
 
@@ -136,9 +136,9 @@ public class ShopApiController {
 	@PostMapping("/cart/add")
 	public ResponseEntity<Result<String>> addCartItem(@RequestBody AddCartDTO addCartDTO) {
 		Integer currentUserId = shopClientService.getCurrentUserId();
-		System.out.println("shopshopsho"+addCartDTO);
 		Result<ShopCartDTO> userCart = shopCartService.findCartByUserId(currentUserId);
-		Result<String> result = shopCartService.addShopCartItem(addCartDTO.getProductId(), userCart.getData().getShopCartId(), addCartDTO.getQuantity());
+		Result<String> result = shopCartService.addShopCartItem(addCartDTO.getProductId(),
+				userCart.getData().getShopCartId(), addCartDTO.getQuantity());
 		return ResponseEntity.ok(result);
 	}
 
