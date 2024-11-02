@@ -237,6 +237,8 @@
                 <button type="submit" class="btn btn-primary">
                     立即註冊
                 </button>
+                <!-- 在提交按鈕上方添加這行 -->
+<button type="button" id="quickFillBtn" class="btn btn-primary">一鍵填入資料</button>
 
                 <a th:href="@{/oauth2/authorization/google}" class="btn google-btn">
                     <i class="fab fa-google"></i>
@@ -269,6 +271,24 @@
             if(strength === 1) strengthBar.classList.add('strength-weak');
             if(strength === 2) strengthBar.classList.add('strength-medium');
             if(strength === 3) strengthBar.classList.add('strength-strong');
+        });
+        
+        
+     // 定義註冊資料
+        const registerData = {
+            userName: "小陳",
+            userAccount: "tony3322",
+            userPassword: "Tony3322",
+            userMail: "wei33332222@gmail.com"
+        };
+
+        // 一鍵填入功能
+        document.getElementById('quickFillBtn').addEventListener('click', function() {
+            // 填入所有註冊資料
+            document.getElementById('userName').value = registerData.userName;
+            document.getElementById('userAccount').value = registerData.userAccount;
+            document.getElementById('userPassword').value = registerData.userPassword;
+            document.getElementById('userMail').value = registerData.userMail;
         });
     </script>
 </body>
