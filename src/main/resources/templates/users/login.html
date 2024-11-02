@@ -150,6 +150,27 @@
             border-radius: 8px;
             font-size: 0.9rem;
         }
+        
+        /* 修改一鍵登入按鈕樣式 */
+        .btn-quick-login {
+            background-color: #E8F5E9; /* 淺綠底色 */
+            border: 1px solid #81C784; /* 綠色邊框 */
+            color: #2E7D32; /* 深綠色文字 */
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-quick-login:hover {
+            background-color: #C8E6C9; /* hover 時稍微深一點的綠色 */
+            color: #1B5E20; /* hover 時更深的文字顏色 */
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-quick-login i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -180,7 +201,13 @@
                     <i class="fab fa-google"></i>
                     使用 Google 帳號登入
                 </a>
-            </form>
+                
+                
+               <!-- 一鍵登入按鈕 -->
+                <button type="button" id="quickLoginBtn" class="btn btn-quick-login">
+                    <i class="fas fa-bolt"></i>
+                    一鍵登入
+                </button>
 
             <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
             
@@ -191,5 +218,20 @@
             </div>
         </div>
     </div>
+    
+    <script>
+ // 定義登入資料
+    const loginData = {
+        userAccount: "tony3322",
+        userPassword: "Tony3322"
+    };
+
+    // 一鍵登入功能
+    document.getElementById('quickLoginBtn').addEventListener('click', function() {
+        // 填入帳號密碼
+        document.getElementById('userAccount').value = loginData.userAccount;
+        document.getElementById('userPassword').value = loginData.userPassword;
+    });
+	</script>
 </body>
 </html>
