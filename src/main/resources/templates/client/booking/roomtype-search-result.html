@@ -495,7 +495,7 @@
                         <h5 class="card-title text-success fs-4" th:text="${roomtype.score + '超棒'}"></h5>
                         <p class="card-text text-danger">超讚全館10%優惠</p>
 						<div class="d-flex flex-column mt-auto">
-							<span class="card-text fs-4 text-secondary diagonal-strike fw-bolder mt-1">NT$ [[${roomtype.roomtypePrice * 11/10}]]</span>
+							<span class="card-text fs-4 text-secondary diagonal-strike fw-bolder mt-1">NT$ [[${#numbers.formatInteger(roomtype.roomtypePrice/0.9, 0)}]]</span>
 							<small class="opacity-50 mt-1">現金回饋後的價錢</small>
 	                        <p class="card-text fs-3 fw-bolder mt-1">NT$ [[${roomtype.roomtypePrice}]]</p>
 						</div>
