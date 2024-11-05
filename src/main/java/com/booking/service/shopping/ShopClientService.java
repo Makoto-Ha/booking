@@ -324,21 +324,21 @@ public class ShopClientService {
 		shopOrder.setUser(userRepository.findById(userId).get());
 		shopOrder.setOrderState(1); // 待處理
 		shopOrder.setPaymentState(1); // 未付款
-
+		System.out.println("======-=-="+addCartDTO.getQuantity());
 		// 創建訂單項目
 		ShopOrderItem orderItem = new ShopOrderItem();
 		orderItem.setProduct(product);
 		orderItem.setProductName(product.getProductName());
-		orderItem.setQuantity(addCartDTO.getQuantity()); // 默認購買一個
+		orderItem.setQuantity(addCartDTO.getQuantity());
 		orderItem.setPrice(product.getProductPrice());
-		orderItem.setSubtotal(product.getProductPrice());
+		orderItem.setSubtotal(product.getProductPrice()*addCartDTO.getQuantity());
 		orderItem.setShopOrder(shopOrder);
 
 		List<ShopOrderItem> orderItemList = new ArrayList<>();
 		orderItemList.add(orderItem);
 
 		// 計算總金額
-		shopOrder.setOrderPrice(product.getProductPrice());
+		shopOrder.setOrderPrice(orderItem.getSubtotal());
 		shopOrder.setItems(orderItemList);
 
 		// 保存訂單和訂單項目
