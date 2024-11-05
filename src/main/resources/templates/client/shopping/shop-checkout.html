@@ -26,10 +26,9 @@
     <div class="container mt-5">
         <h2>結帳</h2>
         <div class="row">
-            <!-- 左侧：收货信息和支付方式 -->
+            <!-- 左側輸入欄 -->
             <div class="col-md-8">
                 <form th:action="@{/shop/checkout/confirm}" method="post" id="paymentForm">
-                    <!-- 收货信息 -->
                     <div class="mb-4"><br>
                         <div class="row">
                             <div class="col-md-6">
@@ -76,7 +75,7 @@
                 </form>
             </div>
 
-            <!-- 右侧：订单摘要面板 -->
+            <!-- 右側：訂單面板 -->
 			<div class="col-md-4">
 			    <div class="card">
 			        <div class="card-header">
@@ -85,7 +84,6 @@
 			        <div class="card-body">
 			            <div class="order-summary">
 			                <div class="order-item" th:each="item : ${orderDTO.orderItems}">
-			                    <!-- 左側：商品名稱和數量 -->
 			                    <div class="order-item-name d-flex justify-content-between mb-2">
 			                        <span th:text="${item.productName} + ' x ' + ${item.quantity}"></span>
 			                        <span th:text="'$' + ${item.subtotal}"></span>
